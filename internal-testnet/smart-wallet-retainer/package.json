@@ -1,0 +1,21 @@
+{
+  "name": "smart-wallet-retainer",
+  "version": "1.0.0",
+  "description": "A project for managing smart wallets and asset retention using smart contracts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "truffle test",
+    "migrate": "truffle migrate",
+    "dev": "truffle develop"
+  },
+  "dependencies": {
+    "truffle": "^5.4.0",
+    "web3": "^1.5.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.0",
+    "mocha": "^8.3.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
