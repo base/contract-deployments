@@ -25,7 +25,15 @@ is ready".
 
 ### 3. Run relevant script(s)
 
-#### 3.1 Sign the transaction
+#### 3.1 Deploy new Dispute Game Implementations
+
+```bash
+make deploy
+```
+
+This will output the new addresses of the `FaultDisputeGame` and `PermissionedDisputeGame` contracts to an `addresses.json` file. You will need to commit this file to the repo before signers can sign.
+
+#### 3.2 Sign the transaction
 
 Coinbase signer:
 
@@ -47,7 +55,7 @@ message hash to approve on your Ledger:
 2. Validate correctness of the state diff.
 3. Validate and extract domain hash and message hash to approve.
 
-##### 3.1.1 Validate integrity of the simulation.
+##### 3.2.1 Validate integrity of the simulation.
 
 Make sure you are on the "Overview" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
@@ -57,12 +65,12 @@ validate integrity of the simulation, we need to check the following:
    recent timestamp (i.e. close to when you run the script).
 3. "Sender": Check the address shown is your signer account. If not see the derivation path Note above.
 
-##### 3.1.2. Validate correctness of the state diff.
+##### 3.2.2. Validate correctness of the state diff.
 
 Now click on the "State" tab, and refer to the [State Validations](./VALIDATION.md) instructions for the transaction you are signing.
 Once complete return to this document to complete the signing.
 
-##### 3.1.3. Extract the domain hash and the message hash to approve.
+##### 3.2.3. Extract the domain hash and the message hash to approve.
 
 Now that we have verified the transaction performs the right
 operation, we need to extract the domain hash and the message hash to
@@ -106,7 +114,7 @@ Signature: <SIGNATURE>
 
 Double check the signer address is the right one.
 
-### 3.1.4 Send the output to Facilitator(s)
+##### 3.2.4 Send the output to Facilitator(s)
 
 Nothing has occurred onchain - these are offchain signatures which
 will be collected by Facilitators for execution. Execution can occur
@@ -116,15 +124,16 @@ Facilitator will do the final execution for convenience.
 Share the `Data`, `Signer` and `Signature` with the Facilitator, and
 congrats, you are done!
 
-## [For Facilitator ONLY] How to execute
+### [For Facilitator ONLY] How to execute
 
-### Execute the transaction
+#### Execute the transaction
 
+1. IMPORTANT: Ensure op-challenger has been updated before executing.
 1. Collect outputs from all participating signers.
-2. Concatenate all signatures and export it as the `SIGNATURES`
+1. Concatenate all signatures and export it as the `SIGNATURES`
    environment variable, i.e. `export
 SIGNATURES="[SIGNATURE1][SIGNATURE2]..."`.
-3. Run the `make execute` command as described below to execute the transaction.
+1. Run the `make execute` command as described below to execute the transaction.
 
 For example, if the quorum is 2 and you get the following outputs:
 
