@@ -73,7 +73,7 @@ validate integrity of the simulation, we need to check the following:
 
 Now click on the "State" tab. Verify that:
 
-1. Verify that the nonce is incremented for the Incident Multisig under the "GnosisSafeProxy" at address `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`. We should see the nonce increment from 52 to 53:
+1. Verify that the nonce is incremented for the Incident Multisig under the "GnosisSafeProxy" at address `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`. We should see the nonce increment from 54 to 55:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000005
@@ -81,7 +81,7 @@ Before: 0x0000000000000000000000000000000000000000000000000000000000000034
 After: 0x0000000000000000000000000000000000000000000000000000000000000035
 ```
 
-2. Verify that gas limit value is appropriately updated under "Proxy" at address `0x73a79fab69143498ed3712e519a88a918e1f4072`. We should see that the gas limit has been changed from TODO to TODO:
+2. Verify that gas limit value is appropriately updated under "Proxy" at address `0x73a79fab69143498ed3712e519a88a918e1f4072`. We should see that the gas limit has been changed from 100000000 to 104000000:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000068
