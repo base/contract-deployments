@@ -1,6 +1,6 @@
 # Update Gas Limit in L1 `SystemConfig`
 
-Status: DONE
+Status: READY
 
 ## Objective
 
