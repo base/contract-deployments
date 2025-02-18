@@ -14,6 +14,8 @@ import {GameTypes, GameType, Duration, Hash} from "@eth-optimism-bedrock/src/dis
 import {FaultDisputeGame} from "@eth-optimism-bedrock/src/dispute/FaultDisputeGame.sol";
 import {PermissionedDisputeGame} from "@eth-optimism-bedrock/src/dispute/PermissionedDisputeGame.sol";
 
+/// @notice This script updates the FaultDisputeGame and PermissionedDisputeGame implementations in the
+///         DisputeGameFactory contract.
 contract UpgradeDGF is MultisigBuilder {
     using stdJson for string;
 
@@ -36,19 +38,19 @@ contract UpgradeDGF is MultisigBuilder {
         _precheckDisputeGameImplementation(GameTypes.PERMISSIONED_CANNON, pdgImpl);
     }
 
-    // _precheckDisputeGameImplementation checks that the new game being set has the same configuration as the existing
-    // implementation with the exception of the absolutePrestate. This is the most common scenario where the game
-    // implementation is upgraded to provide an updated fault proof program that supports an upcoming hard fork.
-    function _precheckDisputeGameImplementation(GameType _targetGameType, address _newImpl) internal view {
-        console.log("pre-check new game implementations", _targetGameType.raw());
+    // Checks that the new game being set has the same configuration as the existing implementation with the exception
+    // of the absolutePrestate. This is the most common scenario where the game implementation is upgraded to provide an
+    // updated fault proof program that supports an upcoming hard fork.
+    function _precheckDisputeGameImplementation(GameType targetGameType, address newImpl) internal view {
+        console.log("pre-check new game implementations", targetGameType.raw());
 
-        FaultDisputeGame currentImpl = FaultDisputeGame(address(dgfProxy.gameImpls(GameType(_targetGameType))));
+        FaultDisputeGame currentImpl = FaultDisputeGame(address(dgfProxy.gameImpls(GameType(targetGameType))));
         // No checks are performed if there is no prior implementation.
         // When deploying the first implementation, it is recommended to implement custom checks.
         if (address(currentImpl) == address(0)) {
             return;
         }
-        FaultDisputeGame faultDisputeGame = FaultDisputeGame(_newImpl);
+        FaultDisputeGame faultDisputeGame = FaultDisputeGame(newImpl);
         require(address(currentImpl.vm()) == address(faultDisputeGame.vm()), "10");
         require(address(currentImpl.weth()) == address(faultDisputeGame.weth()), "20");
         require(address(currentImpl.anchorStateRegistry()) == address(faultDisputeGame.anchorStateRegistry()), "30");
@@ -66,7 +68,7 @@ contract UpgradeDGF is MultisigBuilder {
             "80"
         );
 
-        if (_targetGameType.raw() == GameTypes.PERMISSIONED_CANNON.raw()) {
+        if (targetGameType.raw() == GameTypes.PERMISSIONED_CANNON.raw()) {
             PermissionedDisputeGame currentPDG = PermissionedDisputeGame(address(currentImpl));
             PermissionedDisputeGame permissionedDisputeGame = PermissionedDisputeGame(address(faultDisputeGame));
             require(address(currentPDG.proposer()) == address(permissionedDisputeGame.proposer()), "90");
@@ -74,7 +76,7 @@ contract UpgradeDGF is MultisigBuilder {
         }
     }
 
-    /// @dev Confirm the proxy admin owner is now the alias address of the L1 Proxy Admin Owner
+    // Confirm the stored implementations are updated and the anchor states still exist.
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         require(address(dgfProxy.gameImpls(GameTypes.CANNON)) == fdgImpl, "post-110");
         require(address(dgfProxy.gameImpls(GameTypes.PERMISSIONED_CANNON)) == pdgImpl, "post-120");
@@ -82,14 +84,13 @@ contract UpgradeDGF is MultisigBuilder {
         _postcheckHasAnchorState(GameTypes.PERMISSIONED_CANNON);
     }
 
-    // @notice Checks the anchor state for the source game type still exists after re-initialization.
-    // The actual anchor state may have been updated since the task was defined so just assert it exists, not that
-    // it has a specific value.
-    function _postcheckHasAnchorState(GameType _gameType) internal view {
-        console.log("check anchor state exists", _gameType.raw());
+    // Checks the anchor state for the source game type still exists after re-initialization. The actual anchor state
+    // may have been updated since the task was defined so just assert it exists, not that it has a specific value.
+    function _postcheckHasAnchorState(GameType gameType) internal view {
+        console.log("check anchor state exists", gameType.raw());
 
-        FaultDisputeGame impl = FaultDisputeGame(address(dgfProxy.gameImpls(GameType(_gameType))));
-        (Hash root, uint256 rootBlockNumber) = FaultDisputeGame(address(impl)).anchorStateRegistry().anchors(_gameType);
+        FaultDisputeGame impl = FaultDisputeGame(address(dgfProxy.gameImpls(GameType(gameType))));
+        (Hash root, uint256 rootBlockNumber) = FaultDisputeGame(address(impl)).anchorStateRegistry().anchors(gameType);
 
         require(root.raw() != bytes32(0), "check-300");
         require(rootBlockNumber != 0, "check-310");
