@@ -38,7 +38,7 @@ To execute a new task, run one of the following commands (depending on the type 
 - For incident response commands: `make setup-incident network=<network> incident=<incident-name>`
 - For gas increase commands: `make setup-gas-increase network=<network>`
 - For full new deployment (of L1 contracts related to Base): `make setup-deploy network=<network>`
-- For fault proof upgrade: `make setup-hardfork network=<network>`
+- For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For contract calls, upgrades, or one-off contract deployments: `make setup-task network=<network> task=<task-name>`
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
@@ -98,7 +98,7 @@ This template is increasing the throughput on Base Chain.
 This template is used to upgrade the fault proof contracts. This is commonly done in conjunction with a hardfork.
 
 1. Ensure you have followed the instructions above in `setup`
-1. Go to the folder that was created using the `make setup-hardfork network=<network>` step
+1. Go to the folder that was created using the `make setup-upgrade-fault-proofs network=<network>` step
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file
 1. Run `make deps`
 1. Add the new absolute prestate to the `.env` file. This can be found in the op-program prestates [releases.json](https://github.com/ethereum-optimism/optimism/blob/develop/op-program/prestates/releases.json) file.

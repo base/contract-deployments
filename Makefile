@@ -2,12 +2,12 @@ PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 DEPLOY_DIR = $(network)/$(shell date +'%Y-%m-%d')-deploy
 INCIDENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(incident)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
-HARDFORK_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
+FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_DEPLOY = setup-templates/template-deploy
 TEMPLATE_INCIDENT = setup-templates/template-incident
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
-TEMPLATE_HARDFORK = setup-templates/template-hardfork
+TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
@@ -42,9 +42,9 @@ setup-gas-increase:
 	rm -rf $(TEMPLATE_GAS_INCREASE)/cache $(TEMPLATE_GAS_INCREASE)/lib $(TEMPLATE_GAS_INCREASE)/out
 	cp -r $(TEMPLATE_GAS_INCREASE) $(GAS_INCREASE_DIR)
 
-# Run `make setup-hardfork network=<network>`
-setup-hardfork:
-	cp -r $(TEMPLATE_HARDFORK) $(HARDFORK_DIR)
+# Run `make setup-upgrade-fault-proofs network=<network>`
+setup-upgrade-fault-proofs:
+	cp -r $(TEMPLATE_UPGRADE_FAULT_PROOFS) $(FAULT_PROOF_UPGRADE_DIR)
 
 ##
 # Solidity Setup
