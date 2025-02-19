@@ -7,7 +7,7 @@ override LEDGER_ACCOUNT = 0
 endif
 
 ##
-# Commands for transfering ownership of L1 and L2 contracts to corresponding nested multisigs
+# Commands for transferring ownership of L1 and L2 contracts to corresponding nested multisigs
 # with CB and OP as signers
 ##
 
