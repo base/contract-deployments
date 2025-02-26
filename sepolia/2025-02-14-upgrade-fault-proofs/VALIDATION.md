@@ -14,13 +14,13 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 - **Key**: `0x4d5a9bd2e41301728d41c8e705190becb4e74abe869f75bdb405b63716a35f9e` <br/>
   **Before**: `0x00000000000000000000000068f600e592799c16d1b096616edbf1681fb9c0de` <br/>
-  **After**: Newly deployed `PermissionedDisputeGame` address converted to bytes32 <br/>
-  **Meaning**: Updates the `PermissionedDisputeGame` implementation address from `0x68f600e592799c16D1b096616eDbf1681FB9c0De` to the newly deployed contract address.
+  **After**: `0x00000000000000000000000071ff927ee7b96f873c249093846aa292f374aef4` <br/>
+  **Meaning**: Updates the `PermissionedDisputeGame` implementation address from `0x68f600e592799c16D1b096616eDbf1681FB9c0De` to the newly deployed contract address (`0x71ff927ee7b96f873c249093846aa292f374aef4`).
   **Verify**: You can verify the key derivation by running `cast index uint32 1 101` in your terminal.
 - **Key**: `0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b` <br/>
   **Before**: `0x000000000000000000000000b7fb44a61fde2b9db28a84366e168b14d1a1b103` <br/>
-  **After**: Newly deployed `FaultDisputeGame` address converted to bytes32 <br/>
-  **Meaning**: Updates the `FaultDisputeGame` implementation address from `0xB7fB44a61fdE2b9DB28a84366e168b14D1a1b103` to the newly deployed contract address.
+  **After**: `0x000000000000000000000000605b4248500c0a144e39bbb04c05c539e388e222` <br/>
+  **Meaning**: Updates the `FaultDisputeGame` implementation address from `0xB7fB44a61fdE2b9DB28a84366e168b14D1a1b103` to the newly deployed contract address (`0x605b4248500c0a144e39bbb04c05c539e388e222`).
   **Verify**: You can verify the key derivation by running `cast index uint32 0 101` in your terminal.
 
 You should also see nonce updates for the `ProxyAdminOwner` (`0x0fe884546476dDd290eC46318785046ef68a0BA9`) and the address you're signing with.
