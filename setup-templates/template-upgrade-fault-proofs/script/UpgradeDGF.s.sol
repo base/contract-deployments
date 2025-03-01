@@ -37,6 +37,17 @@ contract UpgradeDGF is NestedMultisigBuilder {
         _precheckDisputeGameImplementation(GameTypes.CANNON, fdgImpl);
         _precheckDisputeGameImplementation(GameTypes.PERMISSIONED_CANNON, pdgImpl);
         // TODO: Add extra pre-checks here
+        
+        // Check that the new implementations are valid contracts
+        require(fdgImpl.code.length > 0, "FDG implementation is not a contract");
+        require(pdgImpl.code.length > 0, "PDG implementation is not a contract");
+        
+        // Check that the owner of the DisputeGameFactory is correct
+        require(dgfProxy.owner() == _OWNER_SAFE, "DGF owner is not the expected owner");
+        
+        // Verify that the implementations are different from the current ones
+        require(address(dgfProxy.gameImpls(GameTypes.CANNON)) != fdgImpl, "New FDG implementation is the same as current");
+        require(address(dgfProxy.gameImpls(GameTypes.PERMISSIONED_CANNON)) != pdgImpl, "New PDG implementation is the same as current");
     }
 
     // Checks that the new game being set has the same configuration as the existing implementation with the exception
@@ -84,6 +95,21 @@ contract UpgradeDGF is NestedMultisigBuilder {
         _postcheckHasAnchorState(GameTypes.CANNON);
         _postcheckHasAnchorState(GameTypes.PERMISSIONED_CANNON);
         // TODO: Add extra post-checks here
+        
+        // Verify that the implementations are correctly set
+        FaultDisputeGame fdgImplContract = FaultDisputeGame(fdgImpl);
+        PermissionedDisputeGame pdgImplContract = PermissionedDisputeGame(pdgImpl);
+        
+        // Check that the implementations have the correct version
+        require(fdgImplContract.version() > 0, "FDG implementation has invalid version");
+        require(pdgImplContract.version() > 0, "PDG implementation has invalid version");
+        
+        // Verify that the implementations are initialized
+        require(fdgImplContract.initialized(), "FDG implementation is not initialized");
+        require(pdgImplContract.initialized(), "PDG implementation is not initialized");
+        
+        // Check that the game types are correctly registered
+        require(dgfProxy.gameCount() >= 2, "DGF should have at least 2 game types registered");
     }
 
     // Checks the anchor state for the source game type still exists after re-initialization. The actual anchor state
