@@ -238,7 +238,6 @@ contract DeployBedrock is Script {
         vm.serializeAddress(json, "L1ERC721BridgeImpl", address(l1ERC721BridgeImpl));
         vm.serializeAddress(json, "SystemConfigImpl", address(systemConfigImpl));
         vm.serializeAddress(json, "SystemDictatorImpl", address(systemDictatorImpl));
-        vm.serializeAddress(json, "SystemDictatorImpl", address(systemDictatorImpl));
 
         vm.serializeUint(json, "BlockNumber", block.number);
         string memory finalJson = vm.serializeUint(json, "BlockTimestamp", block.timestamp);
