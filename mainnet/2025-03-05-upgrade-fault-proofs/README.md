@@ -1,6 +1,6 @@
 # Upgrade Fault Proofs
 
-Status: PENDING
+Status: READY TO DEPLOY
 
 ## Description
 
