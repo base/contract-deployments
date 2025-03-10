@@ -19,6 +19,7 @@ contract UpdateProposer is Script {
         console.log("Current proposer: ");
         console.log(pdg.proposer());
 
+        vm.startBroadcast();
         PermissionedDisputeGame newPdgImpl = new PermissionedDisputeGame({
             _gameType: pdg.gameType(),
             _absolutePrestate: pdg.absolutePrestate(),
@@ -42,5 +43,6 @@ contract UpdateProposer is Script {
         require(newPdgImpl.proposer() == NEW_PROPOSER, "Deploy: proposer is incorrect");
         console.log("Updated proposer to: ");
         console.log(NEW_PROPOSER);
+        vm.stopBroadcast();
     }
 }
