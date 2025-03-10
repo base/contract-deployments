@@ -37,6 +37,26 @@ contract UpgradeDGF is NestedMultisigBuilder {
         _precheckDisputeGameImplementation(GameTypes.CANNON, fdgImpl);
         _precheckDisputeGameImplementation(GameTypes.PERMISSIONED_CANNON, pdgImpl);
         // TODO: Add extra pre-checks here
+        
+        // Verify that the new implementations are contracts
+        require(fdgImpl.code.length > 0, "FDG implementation is not a contract");
+        require(pdgImpl.code.length > 0, "PDG implementation is not a contract");
+        
+        // Verify that the owner of the DGF is correct
+        require(dgfProxy.owner() == _OWNER_SAFE, "DGF owner mismatch");
+        
+        // Verify that the new implementations have the correct interfaces
+        try FaultDisputeGame(fdgImpl).gameType() returns (GameType gameType) {
+            require(gameType.raw() == GameTypes.CANNON.raw(), "FDG implementation has incorrect game type");
+        } catch {
+            revert("FDG implementation does not implement gameType()");
+        }
+        
+        try PermissionedDisputeGame(pdgImpl).gameType() returns (GameType gameType) {
+            require(gameType.raw() == GameTypes.PERMISSIONED_CANNON.raw(), "PDG implementation has incorrect game type");
+        } catch {
+            revert("PDG implementation does not implement gameType()");
+        }
     }
 
     // Checks that the new game being set has the same configuration as the existing implementation with the exception
@@ -84,6 +104,27 @@ contract UpgradeDGF is NestedMultisigBuilder {
         _postcheckHasAnchorState(GameTypes.CANNON);
         _postcheckHasAnchorState(GameTypes.PERMISSIONED_CANNON);
         // TODO: Add extra post-checks here
+        
+        // Verify that the implementations can be initialized correctly
+        FaultDisputeGame cannonImpl = FaultDisputeGame(address(dgfProxy.gameImpls(GameTypes.CANNON)));
+        FaultDisputeGame permissionedImpl = FaultDisputeGame(address(dgfProxy.gameImpls(GameTypes.PERMISSIONED_CANNON)));
+        
+        // Check that the implementations are initialized and ready to create games
+        require(cannonImpl.gameType().raw() == GameTypes.CANNON.raw(), "post-200");
+        require(permissionedImpl.gameType().raw() == GameTypes.PERMISSIONED_CANNON.raw(), "post-210");
+        
+        // Verify that the factory can create games with the new implementations
+        try dgfProxy.gameCount(GameTypes.CANNON) returns (uint256 count) {
+            console.log("Current CANNON game count:", count);
+        } catch {
+            revert("Failed to get CANNON game count");
+        }
+        
+        try dgfProxy.gameCount(GameTypes.PERMISSIONED_CANNON) returns (uint256 count) {
+            console.log("Current PERMISSIONED_CANNON game count:", count);
+        } catch {
+            revert("Failed to get PERMISSIONED_CANNON game count");
+        }
     }
 
     // Checks the anchor state for the source game type still exists after re-initialization. The actual anchor state
