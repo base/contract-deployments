@@ -3,11 +3,13 @@ DEPLOY_DIR = $(network)/$(shell date +'%Y-%m-%d')-deploy
 INCIDENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(incident)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
+SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-swap-owner
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_DEPLOY = setup-templates/template-deploy
 TEMPLATE_INCIDENT = setup-templates/template-incident
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
 TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
+TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
@@ -45,6 +47,11 @@ setup-gas-increase:
 # Run `make setup-upgrade-fault-proofs network=<network>`
 setup-upgrade-fault-proofs:
 	cp -r $(TEMPLATE_UPGRADE_FAULT_PROOFS) $(FAULT_PROOF_UPGRADE_DIR)
+
+# Run `make setup-safe-management network=<network>`
+setup-safe-management:
+	rm -rf $(TEMPLATE_SAFE_MANAGEMENT)/cache $(TEMPLATE_SAFE_MANAGEMENT)/lib $(TEMPLATE_SAFE_MANAGEMENT)/out
+	cp -r $(TEMPLATE_SAFE_MANAGEMENT) $(SAFE_MANAGEMENT_DIR)
 
 ##
 # Solidity Setup
