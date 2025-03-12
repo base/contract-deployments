@@ -5,7 +5,7 @@ import "@base-contracts/script/universal/MultisigBuilder.sol";
 import {IGnosisSafe} from "@base-contracts/script/universal/IGnosisSafe.sol";
 
 contract SwapOwner is MultisigBuilder {
-    address internal _OWNER_SAFE = vm.envAddress("OWNER_SAFE");
+    address internal OWNER_SAFE = vm.envAddress("OWNER_SAFE");
     address internal OLD_SIGNER = vm.envAddress("OLD_SIGNER");
     address internal NEW_SIGNER = vm.envAddress("NEW_SIGNER");
     address internal constant SENTINEL_OWNERS = address(0x1);
@@ -14,7 +14,7 @@ contract SwapOwner is MultisigBuilder {
     address internal prevOwnerLinked; // The previous owner in Safe's linked list of owners
 
     function setUp() public {
-        safeOwners = IGnosisSafe(_OWNER_SAFE).getOwners();
+        safeOwners = IGnosisSafe(OWNER_SAFE).getOwners();
         _precheck();
 
         // We need to locate the previous owner in the linked list of owners to properly swap out the target signer
@@ -33,8 +33,8 @@ contract SwapOwner is MultisigBuilder {
 
     function _precheck() internal view {
         // Sanity checks on the current owner state of the safe
-        require(IGnosisSafe(_OWNER_SAFE).isOwner(OLD_SIGNER), "Signer to swap is not an owner");
-        require(!IGnosisSafe(_OWNER_SAFE).isOwner(NEW_SIGNER), "New signer is already an owner");
+        require(IGnosisSafe(OWNER_SAFE).isOwner(OLD_SIGNER), "Signer to swap is not an owner");
+        require(!IGnosisSafe(OWNER_SAFE).isOwner(NEW_SIGNER), "New signer is already an owner");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3[] memory) {
@@ -42,7 +42,7 @@ contract SwapOwner is MultisigBuilder {
 
         // While more roundabout then simply calling execTransaction with a swapOwner call, this still works and lets us use our existing tooling
         calls[0] = IMulticall3.Call3({
-            target: _OWNER_SAFE,
+            target: OWNER_SAFE,
             allowFailure: false,
             callData: abi.encodeCall(IGnosisSafe.swapOwner, (prevOwnerLinked, OLD_SIGNER, NEW_SIGNER))
         });
@@ -51,11 +51,11 @@ contract SwapOwner is MultisigBuilder {
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
-        require(IGnosisSafe(_OWNER_SAFE).isOwner(NEW_SIGNER), "New signer was not added as an owner");
-        require(!IGnosisSafe(_OWNER_SAFE).isOwner(OLD_SIGNER), "Old signer was not removed as an owner");
+        require(IGnosisSafe(OWNER_SAFE).isOwner(NEW_SIGNER), "New signer was not added as an owner");
+        require(!IGnosisSafe(OWNER_SAFE).isOwner(OLD_SIGNER), "Old signer was not removed as an owner");
     }
 
     function _ownerSafe() internal view override returns (address) {
-        return _OWNER_SAFE;
+        return OWNER_SAFE;
     }
 }

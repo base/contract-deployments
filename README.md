@@ -111,6 +111,20 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 1. Check in the task when it's ready to sign and collect signatures from signers
 1. Once executed, check in the records files and mark the task `DONE` in the README.
 
+## Using the swap owner template
+
+This template is used to perform ownership management on a Gnosis Safe multisig, specifically it can swap owners on the multisig.
+
+1. Ensure you have followed the instructions above in `setup`.
+1. Run `make setup-safe-management network=<network>` and go to the folder that was created by this command.
+1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file.
+1. Run `make deps`.
+1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced, the `OLD_SIGNER` (current owner) to remove, and the `NEW_SIGNER` (new owner) to be added in the `.env` file.
+1. Build the contracts with `forge build`.
+1. Simulate the task with `make sign` and update the generic validations in `VALIDATION.md` with the real values.
+1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
+1. Once executed, check in the records files and mark the task `DONE` in the README.
+
 ## Using the generic template
 
 This template can be used to do contract calls, upgrades, or one-off deployments.
