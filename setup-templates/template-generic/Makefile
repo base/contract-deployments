@@ -56,10 +56,38 @@ example-nested-sign:
 example-approve:
 	forge script --rpc-url $(RPC_URL) $(script) \
 	--sig "approve(address,bytes)" $(SIGNER_SAFE_ADDR) $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 # This step is run once after all children safes have approved and can be run by anyone (doesn't have to be a signer)
 .PHONY: example-execute
 example-execute:
 	forge script --rpc-url $(RPC_URL) $(script) \
-	--sig "run()" --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"
+	--sig "run()" --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+
+##
+# DoubleNestedMultisigBuilder commands
+# The following commands can be used for tasks that utilize the DoubleNestedMultisigBuilder.
+# Note that --ledger --hd-paths <PATH> can be replaced with --private-key $(PRIVATE_KEY)
+# in any command when using a local key.
+# See more documentation on the various steps in DoubleNestedMultisigBuilder.sol.
+# Note: All NestedMultisigBuilder commands above can also be used with the DoubleNestedMultisigBuilder.
+# In this case, we have an `ADMIN_SAFE` owned by `PARENT_SAFE`s. The `PARENT_SAFE`s are owned by `CHILD_SAFE`s.
+##
+
+.PHONY: example-double-nested-sign
+example-double-nested-sign:
+	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+	forge script --rpc-url $(RPC_URL) $(script) \
+	--sig "sign(address,address)" $(CHILD_SAFE) $(PARENT_SAFE)
+
+.PHONY: example-double-nested-child-approve
+example-double-nested-child-approve:
+	forge script --rpc-url $(RPC_URL) $(script) \
+	--sig "approveOnBehalfOfSignerSafe(address,address,bytes)" $(CHILD_SAFE) $(PARENT_SAFE) $(SIGNATURES) \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+
+.PHONY: example-double-nested-parent-approve
+example-double-nested-parent-approve:
+	forge script --rpc-url $(RPC_URL) $(script) \
+	--sig "approveOnBehalfOfIntermediateSafe(address)" $(PARENT_SAFE) \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
