@@ -13,7 +13,7 @@ contract TestIncrement {
 
     function increment() external {
         if (msg.sender != owner) {
-            revert("Only owner can increment");
+            revert("can increment");
         }
         number++;
     }
