@@ -31,7 +31,7 @@ sign-cb:
 	--sig "sign(address)" $(CB_SAFE_ADDR)
 
 ##
-# Commands for faciliators to run to test the nested safe
+# Commands for facilitators to run to test the nested safe
 ##
 
 .PHONY: approve-op
