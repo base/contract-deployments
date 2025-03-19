@@ -3,7 +3,7 @@ pragma solidity 0.8.15;
 
 import "forge-std/Script.sol";
 
-contract SomeScript is Script {
+contract BasicScript is Script {
     function setUp() public {}
 
     function run() public {
