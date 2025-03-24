@@ -1,0 +1,76 @@
+{
+  "singles": [
+    {
+      "name": "stargatefinance",
+      "addr": "0x81EAb64E630C4a2E3E849268A6B64cb76D1C8109"
+    },
+    {
+      "name": "caldera",
+      "addr": "0x87Ef0aB1189F76eBCaEe736A5EB8F639a8cF156d"
+    },
+    {
+      "name": "parallel",
+      "addr": "0x8982Bd35f40f95f348A06902474BE0b5872c1D31"
+    },
+    {
+      "name": "jumper",
+      "addr": "0x91aD352C1e419E6AA579F6a9307A7D88b28a147C"
+    },
+    {
+      "name": "bsx",
+      "addr": "0x974dD3B4e5E00BC3117Fbba15E521B6B5aFC151C"
+    },
+    {
+      "name": "ankr",
+      "addr": "0xA30a04384c162f4458aa5919a0FAE2db579d802a"
+    },
+    {
+      "name": "oku",
+      "addr": "0xa6e8772af29b29B9202a073f8E36f447689BEef6"
+    },
+    {
+      "name": "odos",
+      "addr": "0xa7471690db0c93a7F827D1894c78Df7379be11c0"
+    },
+    {
+      "name": "gelato",
+      "addr": "0xAabB54394E8dd61Dd70897E9c80be8de7C64A895"
+    },
+    {
+      "name": "aave",
+      "addr": "0xac140648435d03f784879cd789130F22Ef588Fcd"
+    },
+    {
+      "name": "rugfun",
+      "addr": "0xAC5D18e17267Df1D6fdf7E76F974f3a405fE14f1"
+    },
+    {
+      "name": "decent",
+      "addr": "0xAcCC1fe6537eb8EB56b31CcFC48Eb9363e8dd32E"
+    },
+    {
+      "name": "qidao",
+      "addr": "0xAd95A5fE898679B927C266eB2eDfAbC7fe268C27"
+    },
+    {
+      "name": "extrafinance",
+      "addr": "0xB04A484387a7242339DA615A63D2d49D8968aaDa"
+    },
+    {
+      "name": "drpc",
+      "addr": "0xB12C13975A4e928BC09432Dbd1eD3fd832Bf99e5"
+    },
+    {
+      "name": "worldmobile",
+      "addr": "0xB539e34936b0160A9c3b1E449f368e5942a9244C"
+    },
+    {
+      "name": "blast",
+      "addr": "0xb8950c47e8b9e539601cb47a167de8bf4cb1289e"
+    },
+    {
+      "name": "unifra",
+      "addr": "0xbDC205d09D602eCe9F2cc341F3CD02b045965A4d"
+    }
+  ]
+}
