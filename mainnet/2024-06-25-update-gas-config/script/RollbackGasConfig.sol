@@ -22,7 +22,7 @@ contract RollbackGasConfig is MultisigBuilder {
 
     function _postCheck(Vm.AccountAccess[] memory, SimulationPayload memory) internal view override {
         require(SystemConfig(L1_SYSTEM_CONFIG).scalar() == FALLBACK_SCALAR);
-        require(SystemConfig(L1_SYSTEM_CONFIG).overhead() == 0);
+        require(SystemConfig(L1_SYSTEM_CONFIG).overhead() == 1);
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3[] memory) {
