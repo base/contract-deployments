@@ -26,3 +26,5 @@ yarn-error.log
 .gitmodules
 
 .DS_Store
+
+.vscode
