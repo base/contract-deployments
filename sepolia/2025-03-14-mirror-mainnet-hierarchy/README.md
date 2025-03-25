@@ -1,6 +1,6 @@
 # Mirror Mainnet Hierarchy
 
-Status: READY TO SIGN
+Status: EXECUTED https://sepolia.etherscan.io/tx/0x401023c69aa9195f540d19019365b081a557c19b9ceb00f8f13615fb20ac9684
 
 ## Description
 
