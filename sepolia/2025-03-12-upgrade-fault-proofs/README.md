@@ -1,6 +1,6 @@
 # Upgrade Fault Proofs
 
-Status: READY TO SIGN
+Status: EXECUTED https://sepolia.etherscan.io/tx/0xec809a93b8c946a64587fff87ac64586a3e17a5626b916279e39c87854a94bf4
 
 ## Description
 
