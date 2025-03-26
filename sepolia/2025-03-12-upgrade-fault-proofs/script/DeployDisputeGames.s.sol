@@ -10,18 +10,20 @@ import {
     IBigStepper
 } from "@eth-optimism-bedrock/src/dispute/FaultDisputeGame.sol";
 import {PermissionedDisputeGame} from "@eth-optimism-bedrock/src/dispute/PermissionedDisputeGame.sol";
-import {GameTypes, Duration, Claim} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
+import {GameTypes, Duration, Claim, LibClaim} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
 import {DisputeGameFactory} from "@eth-optimism-bedrock/src/dispute/DisputeGameFactory.sol";
 import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {console} from "forge-std/console.sol";
 
 /// @notice This script deploys new versions of FaultDisputeGame and PermissionedDisputeGame with all the same
 ///         parameters as the existing implementations excluding the absolute prestate.
 contract DeployDisputeGames is Script {
     using Strings for address;
+    using LibClaim for Claim;
 
     SystemConfig internal _SYSTEM_CONFIG = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
-    Claim absolutePrestate = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
+    Claim immutable absolutePrestate;
 
     DisputeGameFactory dgfProxy;
 
@@ -37,13 +39,16 @@ contract DeployDisputeGames is Script {
     IAnchorStateRegistry anchorStateRegistry;
     IBigStepper bigStepper;
 
+    constructor() {
+        absolutePrestate = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
+    }
+
     function setUp() public {
         dgfProxy = DisputeGameFactory(_SYSTEM_CONFIG.disputeGameFactory());
         FaultDisputeGame currentFdg = FaultDisputeGame(address(dgfProxy.gameImpls(GameTypes.CANNON)));
         PermissionedDisputeGame currentPdg =
             PermissionedDisputeGame(address(dgfProxy.gameImpls(GameTypes.PERMISSIONED_CANNON)));
 
-        absolutePrestate = currentFdg.absolutePrestate();
         maxGameDepth = currentFdg.maxGameDepth();
         splitDepth = currentFdg.splitDepth();
         clockExtension = currentFdg.clockExtension();
@@ -58,7 +63,48 @@ contract DeployDisputeGames is Script {
         challenger = currentPdg.challenger();
     }
 
+    function _postCheck(address fdg, address pdg) private view {
+        require(FaultDisputeGame(fdg).absolutePrestate().raw() == vm.envBytes32("ABSOLUTE_PRESTATE"), "Postcheck 1");
+        require(
+            PermissionedDisputeGame(pdg).absolutePrestate().raw() == vm.envBytes32("ABSOLUTE_PRESTATE"), "Postcheck 2"
+        );
+    }
+
     function run() public {
+        console.log("FDG Args:");
+        console.logBytes(
+            abi.encode(
+                GameTypes.CANNON,
+                absolutePrestate,
+                maxGameDepth,
+                splitDepth,
+                clockExtension,
+                maxClockDuration,
+                bigStepper,
+                faultDisputeGameWeth,
+                anchorStateRegistry,
+                l2ChainId
+            )
+        );
+
+        console.log("PDG Args:");
+        console.logBytes(
+            abi.encode(
+                GameTypes.PERMISSIONED_CANNON,
+                absolutePrestate,
+                maxGameDepth,
+                splitDepth,
+                clockExtension,
+                maxClockDuration,
+                bigStepper,
+                permissionedDisputeGameWeth,
+                anchorStateRegistry,
+                l2ChainId,
+                proposer,
+                challenger
+            )
+        );
+
         (address fdg, address pdg) = _deployContracts();
 
         vm.writeFile(
