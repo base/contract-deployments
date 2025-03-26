@@ -1,6 +1,6 @@
 # Upgrade Fault Proofs
 
-Status: READY TO DEPLOY
+Status: READY TO SIGN
 
 ## Description
 

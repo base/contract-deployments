@@ -101,9 +101,12 @@ checkout-base-contracts-commit:
 	[ -n "$(BASE_CONTRACTS_COMMIT)" ] || (echo "BASE_CONTRACTS_COMMIT must be set in .env" && exit 1)
 	rm -rf lib/base-contracts
 	mkdir -p lib/base-contracts
-	cd lib/base-contracts && git init && git remote add origin https://github.com/base-org/contracts.git
-	git -C lib/base-contracts fetch --depth=1 origin $(BASE_CONTRACTS_COMMIT)
-	git -C lib/base-contracts reset --hard FETCH_HEAD
+  
+cd lib/base-contracts && \
+git init && \
+git remote add origin https://github.com/base-org/contracts.git && \
+git fetch --depth=1 origin $(BASE_CONTRACTS_COMMIT) && \
+git reset --hard FETCH_HEAD
 
 ##
 # Solidity Testing
