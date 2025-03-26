@@ -11,20 +11,33 @@ deploy:
 	forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-##
-# MultisigBuilder commands
-# The following commands can be used for tasks that utilize the MultisigBuilder.
-# Note that --ledger --hd-paths <PATH> can be replaced with --private-key $(PRIVATE_KEY)
-# in any command when using a local key.
-##
-
 .PHONY: sign
 sign:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF --sig "sign()"
+	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
+	--sig "sign(address)" $(SAFE_A)
 
+.PHONY: sign-b
+sign-b:
+	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
+	--sig "sign(address)" $(SAFE_B)
+
+# This step is run once per "child" safe, and can be run by anyone (doesn't have to be a signer)
+.PHONY: approve
+approve:
+	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
+	--sig "approve(address,bytes)" $(SAFE_A) $(SIGNATURES) \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+
+.PHONY: approve-b
+approve-b:
+	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
+	--sig "approve(address,bytes)" $(SAFE_B) $(SIGNATURES) \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+
+# This step is run once after all children safes have approved and can be run by anyone (doesn't have to be a signer)
 .PHONY: execute
 execute:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "run(bytes)" $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+	--sig "run()" --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
