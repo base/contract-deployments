@@ -21,7 +21,7 @@ contract DeployDisputeGames is Script {
     using Strings for address;
 
     SystemConfig internal _SYSTEM_CONFIG = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
-    Claim absolutePrestate = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
+    Claim immutable absolutePrestate;
 
     DisputeGameFactory dgfProxy;
 
@@ -37,13 +37,16 @@ contract DeployDisputeGames is Script {
     IAnchorStateRegistry anchorStateRegistry;
     IBigStepper bigStepper;
 
+    constructor() {
+        absolutePrestate = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
+    }
+
     function setUp() public {
         dgfProxy = DisputeGameFactory(_SYSTEM_CONFIG.disputeGameFactory());
         FaultDisputeGame currentFdg = FaultDisputeGame(address(dgfProxy.gameImpls(GameTypes.CANNON)));
         PermissionedDisputeGame currentPdg =
             PermissionedDisputeGame(address(dgfProxy.gameImpls(GameTypes.PERMISSIONED_CANNON)));
 
-        absolutePrestate = currentFdg.absolutePrestate();
         maxGameDepth = currentFdg.maxGameDepth();
         splitDepth = currentFdg.splitDepth();
         clockExtension = currentFdg.clockExtension();
@@ -58,8 +61,38 @@ contract DeployDisputeGames is Script {
         challenger = currentPdg.challenger();
     }
 
+    function _postCheck(address fdgImpl, address pdgImpl) private view {
+        FaultDisputeGame fdg = FaultDisputeGame(fdgImpl);
+        PermissionedDisputeGame pdg = PermissionedDisputeGame(pdgImpl);
+
+        require(fdg.gameType().raw() == GameTypes.CANNON.raw(), "Postcheck 1");
+        require(fdg.absolutePrestate().raw() == vm.envBytes32("ABSOLUTE_PRESTATE"), "Postcheck 2");
+        require(fdg.maxGameDepth() == maxGameDepth, "Postcheck 3");
+        require(fdg.splitDepth() == splitDepth, "Postcheck 4");
+        require(fdg.clockExtension().raw() == clockExtension.raw(), "Postcheck 5");
+        require(fdg.maxClockDuration().raw() == maxClockDuration.raw(), "Postcheck 6");
+        require(fdg.vm() == bigStepper, "Postcheck 7");
+        require(fdg.weth() == faultDisputeGameWeth, "Postcheck 8");
+        require(fdg.anchorStateRegistry() == anchorStateRegistry, "Postcheck 9");
+        require(fdg.l2ChainId() == l2ChainId, "Postcheck 10");
+
+        require(pdg.gameType().raw() == GameTypes.PERMISSIONED_CANNON.raw(), "Postcheck 11");
+        require(pdg.absolutePrestate().raw() == vm.envBytes32("ABSOLUTE_PRESTATE"), "Postcheck 12");
+        require(pdg.maxGameDepth() == maxGameDepth, "Postcheck 13");
+        require(pdg.splitDepth() == splitDepth, "Postcheck 14");
+        require(pdg.clockExtension().raw() == clockExtension.raw(), "Postcheck 15");
+        require(pdg.maxClockDuration().raw() == maxClockDuration.raw(), "Postcheck 16");
+        require(pdg.vm() == bigStepper, "Postcheck 17");
+        require(pdg.weth() == permissionedDisputeGameWeth, "Postcheck 18");
+        require(pdg.anchorStateRegistry() == anchorStateRegistry, "Postcheck 19");
+        require(pdg.l2ChainId() == l2ChainId, "Postcheck 20");
+        require(pdg.proposer() == proposer, "Postcheck 21");
+        require(pdg.challenger() == challenger, "Postcheck 22");
+    }
+
     function run() public {
         (address fdg, address pdg) = _deployContracts();
+        _postCheck(fdg, pdg);
 
         vm.writeFile(
             "addresses.json",
