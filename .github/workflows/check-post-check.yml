@@ -1,0 +1,52 @@
+name: Check Post-Check Implementation
+
+on:
+  pull_request:
+    paths:
+      - "**/*.sol"
+
+jobs:
+  check-post-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Foundry
+        run: |
+          curl -L https://foundry.paradigm.xyz | bash
+          ~/.foundry/bin/foundryup
+
+      - name: Install dependencies
+        run: |
+          make install-foundry
+
+      - name: Check for _postCheck implementation
+        run: |
+          # Get all Solidity files that have been modified or added in the PR
+          FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.sol$')
+
+          # Initialize error flag
+          ERROR=0
+
+          for file in $FILES; do
+            # Skip if file doesn't exist (was deleted)
+            if [ ! -f "$file" ]; then
+              continue
+            fi
+            
+            # Check if file is in script directory
+            if [[ $file == *"/script/"* ]]; then
+              # Check if _postCheck function is implemented
+              if ! grep -q "function _postCheck" "$file"; then
+                echo "❌ Error: $file is missing the required _postCheck function implementation"
+                ERROR=1
+              fi
+            fi
+          done
+
+          if [ $ERROR -eq 1 ]; then
+            echo "::error::Some script files are missing the required _postCheck function implementation"
+            exit 1
+          fi
+
+          echo "✅ All script files properly implement the _postCheck function"
