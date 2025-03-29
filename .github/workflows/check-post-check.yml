@@ -10,20 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Foundry
-        run: |
-          curl -L https://foundry.paradigm.xyz | bash
-          ~/.foundry/bin/foundryup
-
-      - name: Install dependencies
-        run: |
-          make install-foundry
+        with:
+          fetch-depth: 2
 
       - name: Check for _postCheck implementation
         run: |
           # Get all Solidity files that have been modified or added in the PR
-          FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '\.sol$')
+          FILES=$(git diff --name-only HEAD^1 HEAD | grep '\.sol$')
 
           # Initialize error flag
           ERROR=0
@@ -34,13 +27,10 @@ jobs:
               continue
             fi
             
-            # Check if file is in script directory
-            if [[ $file == *"/script/"* ]]; then
-              # Check if _postCheck function is implemented
-              if ! grep -q "function _postCheck" "$file"; then
-                echo "❌ Error: $file is missing the required _postCheck function implementation"
-                ERROR=1
-              fi
+            # Check if _postCheck function is implemented
+            if ! grep -q "function _postCheck" "$file"; then
+              echo "❌ Error: $file is missing the required _postCheck function implementation"
+              ERROR=1
             fi
           done
 
