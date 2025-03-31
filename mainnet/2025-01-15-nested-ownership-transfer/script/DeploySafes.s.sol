@@ -29,6 +29,12 @@ contract DeploySafes is Script {
         SAFE_B_OWNERS = abi.decode(vm.envBytes("SAFE_B_OWNERS_ENCODED"), (address[]));
         SAFE_B_THRESHOLD = vm.envUint("SAFE_B_THRESHOLD");
 
+        require(OWNER_SAFE_OWNERS.length == 6, "Owner safe owners length must be 6");
+        require(SAFE_B_OWNERS.length == 10, "Safe B owners length must be 10");
+
+        require(OWNER_SAFE_THRESHOLD == 3, "Owner safe threshold must be 3");
+        require(SAFE_B_THRESHOLD == 7, "Safe B threshold must be 7");
+
         console.log("Deploying SafeA with owners:");
         _printOwners(OWNER_SAFE_OWNERS);
 
@@ -41,7 +47,7 @@ contract DeploySafes is Script {
         vm.startBroadcast();
         // First safe maintains the same owners + threshold as the current owner safe
         address safeA = _createAndInitProxy(OWNER_SAFE_OWNERS, OWNER_SAFE_THRESHOLD);
-        // Second safe just uses threshold of 1
+        // Second safe specifies its own owners + threshold
         address safeB = _createAndInitProxy(SAFE_B_OWNERS, SAFE_B_THRESHOLD);
         vm.stopBroadcast();
         _postCheck(safeA, safeB);
@@ -64,11 +70,11 @@ contract DeploySafes is Script {
         address[] memory safeBOwners = safeB.getOwners();
         uint256 safeBThreshold = safeB.getThreshold();
 
-        require(safeAThreshold == OWNER_SAFE_THRESHOLD, "PostCheck 1");
-        require(safeBThreshold == SAFE_B_THRESHOLD, "PostCheck 2");
+        require(safeAThreshold == 3, "PostCheck 1");
+        require(safeBThreshold == 7, "PostCheck 2");
 
-        require(safeAOwners.length == OWNER_SAFE_OWNERS.length, "PostCheck 3");
-        require(safeBOwners.length == SAFE_B_OWNERS.length, "PostCheck 4");
+        require(safeAOwners.length == 6, "PostCheck 3");
+        require(safeBOwners.length == 10, "PostCheck 4");
 
         for (uint256 i; i < safeAOwners.length; i++) {
             require(safeAOwners[i] == OWNER_SAFE_OWNERS[i], "PostCheck 5");

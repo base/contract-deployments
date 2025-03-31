@@ -41,8 +41,14 @@ contract UpdateSigners is MultisigBuilder {
         A_OWNERS = Safe(SAFE_A).getOwners();
         A_THRESHOLD = Safe(SAFE_A).getThreshold();
 
+        require(A_OWNERS.length == 6, "A owners length must be 6");
+        require(A_THRESHOLD == 3, "A threshold must be 3");
+
         B_OWNERS = Safe(SAFE_B).getOwners();
         B_THRESHOLD = Safe(SAFE_B).getThreshold();
+
+        require(B_OWNERS.length == 10, "B owners length must be 10");
+        require(B_THRESHOLD == 7, "B threshold must be 7");
 
         address[] memory ownerSafeOwners = Safe(OWNER_SAFE).getOwners();
         uint256 ownerSafeThreshold = Safe(OWNER_SAFE).getThreshold();
@@ -78,6 +84,14 @@ contract UpdateSigners is MultisigBuilder {
 
         require(ownerSafeOwners[0] == SAFE_B, "Postcheck new signer mismatch - B");
         require(ownerSafeOwners[1] == SAFE_A, "Postcheck new signer mismatch - A");
+
+        for (uint256 i; i < aOwners.length; i++) {
+            require(aOwners[i] == A_OWNERS[i], "PostCheck 5");
+        }
+
+        for (uint256 i; i < bOwners.length; i++) {
+            require(bOwners[i] == B_OWNERS[i], "PostCheck 6");
+        }
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3[] memory) {
