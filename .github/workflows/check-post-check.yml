@@ -12,11 +12,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Fetch base branch
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
 
       - name: Check for _postCheck implementation
         run: |
           # Get all Solidity files that have been modified or added in the PR
-          FILES=$(git diff --name-only HEAD^1 HEAD | grep '\.sol$')
+          FILES=$(git diff --name-only --diff-filter=AMR ${{ github.event.pull_request.base.ref }} | grep '\.sol$')
 
           # Initialize error flag
           ERROR=0
@@ -27,11 +32,20 @@ jobs:
               continue
             fi
             
-            # Check if _postCheck function is implemented
-            if ! grep -q "function _postCheck" "$file"; then
+            # Create a temporary file with comments removed
+            # This removes both single-line and multi-line comments
+            sed -E '/\/\*/,/\*\//d' "$file" | sed '/\/\//d' > "${file}.tmp"
+            
+            # Check if _postCheck function is properly implemented (not in comments)
+            # Look for a line that starts with "function _postCheck" (ignoring whitespace)
+            # and contains an opening brace anywhere after it
+            if ! grep -A10 -E '^\s*function\s+_postCheck' "${file}.tmp" | grep -q '{'; then
               echo "❌ Error: $file is missing the required _postCheck function implementation"
               ERROR=1
             fi
+            
+            # Clean up temporary file
+            rm "${file}.tmp"
           done
 
           if [ $ERROR -eq 1 ]; then
