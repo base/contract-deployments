@@ -13,7 +13,7 @@ import {OwnerManager} from "safe-smart-account/contracts/base/OwnerManager.sol";
 // Adds `SAFE_A` and `SAFE_B` as owners to `OWNER_SAFE` and sets threshold to 2
 // `SAFE_A` should have same owners as `OWNER_SAFE`
 // `SAFE_A` should have same threshold as `OWNER_SAFE`
-// `SAFE_B` should be a 1-of-10 multisig
+// `SAFE_B` should be a 1-of-14 multisig
 contract UpdateSigners is MultisigBuilder {
     using stdJson for string;
 
@@ -47,7 +47,7 @@ contract UpdateSigners is MultisigBuilder {
         B_OWNERS = Safe(SAFE_B).getOwners();
         B_THRESHOLD = Safe(SAFE_B).getThreshold();
 
-        require(B_OWNERS.length == 10, "B owners length must be 10");
+        require(B_OWNERS.length == 14, "B owners length must be 14");
         require(B_THRESHOLD == 1, "B threshold must be 1");
 
         address[] memory ownerSafeOwners = Safe(OWNER_SAFE).getOwners();
