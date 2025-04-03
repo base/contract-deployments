@@ -54,9 +54,7 @@ contract UpdateSigners is MultisigBuilder {
         uint256 ownerSafeThreshold = Safe(OWNER_SAFE).getThreshold();
 
         require(ownerSafeOwners.length == A_OWNERS.length, "Precheck owner count mismatch - A");
-
         require(ownerSafeThreshold == A_THRESHOLD, "Precheck threshold mismatch - A");
-
         for (uint256 i; i < ownerSafeOwners.length; i++) {
             require(ownerSafeOwners[i] == A_OWNERS[i], "Precheck owner mismatch - A");
         }
