@@ -12,7 +12,7 @@ deploy-l2:
 	jq --sort-keys . unsortedl2Impls.json > inputs/addresses-l2.json && \
 	rm unsortedl2Impls.json
 
-etherscan-verifiy-l2-bedrock-implementations:
+etherscan-verify-l2-bedrock-implementations:
 	forge verify-contract $(BASE_FEE_VAULT) BaseFeeVault --constructor-args $(shell cast abi-encode "constructor(address,uint256,uint8)" 0x0b933fFD030d2679986560C414d26093b9d3130F 0x1bc16d674ec80000 1) --verifier ${VERIFIER} --watch --chain-id $(L2_CHAIN_ID)  --verifier-url ${VERIFIER_URL} --compiler-version v0.8.15+commit.e14f2714 --num-of-optimizations=99999 --retries=1
 	forge verify-contract ${GAS_PRICE_ORACLE} GasPriceOracle --verifier ${VERIFIER} --watch --chain-id $(L2_CHAIN_ID) --verifier-url ${VERIFIER_URL} --compiler-version v0.8.15+commit.e14f2714 --num-of-optimizations=99999 --retries=1
 	forge verify-contract ${L1_BLOCK} L1Block --verifier ${VERIFIER} --watch --chain-id $(L2_CHAIN_ID)  --verifier-url ${VERIFIER_URL} --compiler-version v0.8.15+commit.e14f2714 --num-of-optimizations=99999 --retries=1
