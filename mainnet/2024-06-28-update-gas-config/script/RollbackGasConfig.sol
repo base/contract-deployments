@@ -50,7 +50,7 @@ contract RollbackGasConfig is MultisigBuilder {
     function _getNonce(IGnosisSafe safe) internal view override returns (uint256 nonce) {
         uint256 _nonce = safe.nonce();
         console.log("Safe current nonce:", _nonce);
-        console.log("Incrememnting by 1 to account for planned `Update` tx");
+        console.log("Incrementing by 1 to account for planned `Update` tx");
         return _nonce + 1;
     }
 
