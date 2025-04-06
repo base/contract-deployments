@@ -22,7 +22,7 @@ contract SetupNewProposer is Script {
         console.log(oldProposer);
         console.log(NEW_PROPOSER);
 
-        // Deploy L2OutputOracle new implementation wiht the new submission interval
+        // Deploy L2OutputOracle new implementation with the new submission interval
         vm.broadcast(DEPLOYER);
         L2OutputOracle l2OutputOracleImpl = new L2OutputOracle({
             _submissionInterval: oldSubmissionInterval,
