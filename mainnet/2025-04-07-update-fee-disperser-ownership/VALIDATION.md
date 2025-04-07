@@ -60,7 +60,7 @@ For each contract listed in the state diff, please verify that no contracts or s
                      This updates the FeeDispurser admin from a multisig on Base Mainnet to the aliased address of our L1 upgrade multisig.
 
 ----- DecodedStateDiff[1] -----
-  Who:               <a href="https://basescan.org/address/0xd94E416cf2c7167608B2515B7e4102B41efff94f">0xd94E416cf2c7167608B2515B7e4102B41efff94f<a>
+  Who:               <a href="https://basescan.org/address/0xd94E416cf2c7167608B2515B7e4102B41efff94f">0xd94E416cf2c7167608B2515B7e4102B41efff94f</a>
   Contract:          SignerSafe - Base Mainnet
   Chain ID:          8453
   Raw Slot:          0x0000000000000000000000000000000000000000000000000000000000000005
