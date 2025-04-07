@@ -75,7 +75,7 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 ----- Additional Balance Changes -----
   Who:               0x420000000000000000000000000000000000001A
-  Contract:          L1FeeVaule - Base Mainnet
+  Contract:          L1FeeValue - Base Mainnet
   Chain ID:          8453
   Old Balance:       13393636391505013773
   New Balance:       13393636396528966761
