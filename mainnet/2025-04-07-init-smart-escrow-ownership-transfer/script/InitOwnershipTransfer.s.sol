@@ -7,15 +7,14 @@ import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
 import {NestedMultisigBuilder} from "@base-contracts/script/universal/NestedMultisigBuilder.sol";
 import {AccessControlDefaultAdminRules} from "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
+import {AddressAliasHelper} from "@eth-optimism-bedrock/src/vendor/AddressAliasHelper.sol";
 
 contract InitOwnershipTransfer is NestedMultisigBuilder {
+    using AddressAliasHelper for address;
+
     address public immutable OWNER_SAFE;
     address public immutable L1_SAFE;
     address public immutable TARGET;
-
-    // Using example from OP L1 Proxy Admin to confirm accuracy of `_convertToAliasAddress`
-    address public constant OP_L1_PROXY_ADMIN = 0x5a0Aae59D09fccBdDb6C6CcEB07B7279367C3d2A;
-    address public constant OP_L1_PROXY_ADMIN_ALIAS = 0x6B1BAE59D09fCcbdDB6C6cceb07B7279367C4E3b;
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
@@ -23,18 +22,11 @@ contract InitOwnershipTransfer is NestedMultisigBuilder {
         TARGET = vm.envAddress("TARGET");
     }
 
-    // Confirm the alias address conversion is correct using Optimism L1 Proxy Admin as an example
-    function setUp() public pure {
-        require(
-            _convertToAliasAddress(OP_L1_PROXY_ADMIN) == OP_L1_PROXY_ADMIN_ALIAS, "Something wrong with ConvertToAlias"
-        );
-    }
-
     // Confirm the proxy admin owner is now the pending admin of SmartEscrow
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         AccessControlDefaultAdminRules target = AccessControlDefaultAdminRules(TARGET);
         (address pendingAdmin,) = target.pendingDefaultAdmin();
-        require(pendingAdmin == _convertToAliasAddress(L1_SAFE), "Pending admin is not L1_SAFE");
+        require(pendingAdmin == L1_SAFE.applyL1ToL2Alias(), "Pending admin is not L1_SAFE");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3[] memory) {
@@ -43,9 +35,7 @@ contract InitOwnershipTransfer is NestedMultisigBuilder {
         calls[0] = IMulticall3.Call3({
             target: TARGET,
             allowFailure: false,
-            callData: abi.encodeCall(
-                AccessControlDefaultAdminRules.beginDefaultAdminTransfer, (_convertToAliasAddress(L1_SAFE))
-            )
+            callData: abi.encodeCall(AccessControlDefaultAdminRules.beginDefaultAdminTransfer, (L1_SAFE.applyL1ToL2Alias()))
         });
 
         return calls;
@@ -53,12 +43,5 @@ contract InitOwnershipTransfer is NestedMultisigBuilder {
 
     function _ownerSafe() internal view override returns (address) {
         return OWNER_SAFE;
-    }
-
-    /// @dev An alias address is the original address + 0x1111000000000000000000000000000000001111
-    function _convertToAliasAddress(address addr) private pure returns (address) {
-        uint160 enumeratedAddress = uint160(addr);
-        uint160 offset = uint160(0x1111000000000000000000000000000000001111);
-        return address(enumeratedAddress + offset);
     }
 }
