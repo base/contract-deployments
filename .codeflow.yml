@@ -1,0 +1,21 @@
+secure:
+  # Which branches to protect. Heimdall always protects the repo's default branch as well. Defaults to `[]`.
+  branches: []
+
+  # Points to an "upstream" repo on github.com. Most repos don't need this. Defaults to `null`.
+  upstream_repository: null
+
+  # Minimum number of reviewers required for *any* PR, regardless of CODEOWNERS. Defaults to `0`.
+  required_reviewers: 2
+
+  # Whether to have Heimdall enforce reviews from teams as detailed in the repo's CODEOWNERS file. Defaults to `false`.
+  codeowners_enabled: false
+
+  # Whether to prevent PRs from merging when teams don't have Slack channels configured in LDAP. Defaults to `false`.
+  codeowners_slack_channel_required: false
+
+  # Whether to allow CODEOWNERS Admin Override. Defaults to `false`.
+  codeowners_allow_admin_override: false
+
+  # Whether to automatically assign reviewers on each PR. Defaults to `false`.
+  auto_assign_reviewers: true
