@@ -1,6 +1,5 @@
 secure:
-  required_reviews: 1
+  required_reviews: 2
   requires_mfa: true
   branches:
     - main
-
