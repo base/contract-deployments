@@ -95,8 +95,7 @@ For each contract listed in the state diff, please verify that no contracts or s
   Decoded New Value: 1
 
   Summary:           Transaction approval
-  Detail:            Approves the ownership transfer initiation tranasction on behalf of the signing safe. The slot derivation depends on which safe is being signed for. This can be derived with `cast index bytes32 0xd806ab578902502aa5b3caf2d4a5d03b14a9e9522c8b9214ba4e05af1c39e2f4 $(cast index address $SIGNER_SAFE 8)`. For OP signers, the slot should be `0x8f6ea3dc592330bb5d3d2f07897e65e16fda3259be1ad4bc00d0033f29399eee`.
-
+  Detail:            Approves the ownership transfer initiation transaction on behalf of the signing safe. The slot derivation depends on which safe is being signed for. This can be derived with `cast index bytes32 0xd806ab578902502aa5b3caf2d4a5d03b14a9e9522c8b9214ba4e05af1c39e2f4 $(cast index address $SIGNER_SAFE 8)`. For OP signers, the slot should be `0x8f6ea3dc592330bb5d3d2f07897e65e16fda3259be1ad4bc00d0033f29399eee`.
 ----- DecodedStateDiff[2] -----
   Who:               0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6 or 0x2501c477D0A35545a387Aa4A3EEe4292A9a8B3F0
   Contract:          Signer Safe - OP Mainnet
