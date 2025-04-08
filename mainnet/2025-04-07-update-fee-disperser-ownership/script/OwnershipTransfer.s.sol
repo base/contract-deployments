@@ -7,15 +7,14 @@ import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
 import {MultisigBuilder} from "@base-contracts/script/universal/MultisigBuilder.sol";
 import {Proxy} from "@eth-optimism-bedrock/src/universal/Proxy.sol";
+import {AddressAliasHelper} from "@eth-optimism-bedrock/src/vendor/AddressAliasHelper.sol";
 
 contract OwnershipTransfer is MultisigBuilder {
+    using AddressAliasHelper for address;
+
     address public immutable OWNER_SAFE;
     address public immutable L1_SAFE;
     address public immutable TARGET;
-
-    // Using example from OP L1 Proxy Admin to confirm accuracy of `_convertToAliasAddress`
-    address public constant OP_L1_PROXY_ADMIN = 0x5a0Aae59D09fccBdDb6C6CcEB07B7279367C3d2A;
-    address public constant OP_L1_PROXY_ADMIN_ALIAS = 0x6B1BAE59D09fCcbdDB6C6cceb07B7279367C4E3b;
 
     bytes32 public constant ADMIN_SLOT = 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
 
@@ -23,13 +22,6 @@ contract OwnershipTransfer is MultisigBuilder {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
         L1_SAFE = vm.envAddress("L1_SAFE");
         TARGET = vm.envAddress("TARGET");
-    }
-
-    // Confirm the alias address conversion is correct using Optimism L1 Proxy Admin as an example
-    function setUp() public pure {
-        require(
-            _convertToAliasAddress(OP_L1_PROXY_ADMIN) == OP_L1_PROXY_ADMIN_ALIAS, "Something wrong with ConvertToAlias"
-        );
     }
 
     // Confirm the proxy admin owner is now the alias address of the L1 Proxy Admin Owner
@@ -47,8 +39,7 @@ contract OwnershipTransfer is MultisigBuilder {
                     storageAccess.previousValue == _addressToBytes32(OWNER_SAFE), "Previous value is not OWNER_SAFE"
                 );
                 require(
-                    storageAccess.newValue == _addressToBytes32(_convertToAliasAddress(L1_SAFE)),
-                    "New value is not L1_SAFE"
+                    storageAccess.newValue == _addressToBytes32(L1_SAFE.applyL1ToL2Alias()), "New value is not L1_SAFE"
                 );
 
                 seenTarget = true;
@@ -64,7 +55,7 @@ contract OwnershipTransfer is MultisigBuilder {
         calls[0] = IMulticall3.Call3({
             target: TARGET,
             allowFailure: false,
-            callData: abi.encodeCall(Proxy.changeAdmin, (_convertToAliasAddress(L1_SAFE)))
+            callData: abi.encodeCall(Proxy.changeAdmin, (L1_SAFE.applyL1ToL2Alias()))
         });
 
         return calls;
@@ -72,13 +63,6 @@ contract OwnershipTransfer is MultisigBuilder {
 
     function _ownerSafe() internal view override returns (address) {
         return OWNER_SAFE;
-    }
-
-    /// @dev An alias address is the original address + 0x1111000000000000000000000000000000001111
-    function _convertToAliasAddress(address addr) private pure returns (address) {
-        uint160 enumeratedAddress = uint160(addr);
-        uint160 offset = uint160(0x1111000000000000000000000000000000001111);
-        return address(enumeratedAddress + offset);
     }
 
     function _findAccountAccess(Vm.AccountAccess[] memory accesses, address target)
