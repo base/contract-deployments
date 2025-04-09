@@ -12,7 +12,7 @@ deps:
 
 .PHONY: sign
 sign:
-	export OWNER_SAFE=$(SAFE_A) && $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+	OWNER_SAFE=$(SAFE_A) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpdateSigners --sig "sign()"
 
 .PHONY: sign-b
