@@ -1,6 +1,6 @@
 # Nested Ownership Transfer
 
-Status: READY TO DEPLOY
+Status: READY TO SIGN
 
 ## Procedure
 
@@ -53,7 +53,7 @@ We will be performing 3 validations and extract the domain hash and message hash
 Make sure you are on the "Overview" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
-1. "Network": Check the network is Mainnet.
+1. "Network": Check the network is Sepolia.
 2. "Timestamp": Check the simulation is performed on a block with a
    recent timestamp (i.e. close to when you run the script).
 3. "Sender": Check the address shown is your signer account. If not see the derivation path Note above.
@@ -121,7 +121,6 @@ congrats, you are done!
 
 #### Execute the transaction
 
-1. IMPORTANT: Ensure op-challenger has been updated before executing.
 1. Collect outputs from all participating signers.
 1. Concatenate all signatures and export it as the `SIGNATURES`
    environment variable, i.e. `export

@@ -18,37 +18,26 @@ contract DeploySafes is Script {
     address[] private OWNER_SAFE_OWNERS;
     uint256 private OWNER_SAFE_THRESHOLD;
 
-    address[] private SAFE_B_OWNERS;
-    uint256 private SAFE_B_THRESHOLD;
-
     function run() public {
         Safe ownerSafe = Safe(payable(OWNER_SAFE));
         OWNER_SAFE_OWNERS = ownerSafe.getOwners();
         OWNER_SAFE_THRESHOLD = ownerSafe.getThreshold();
 
-        SAFE_B_OWNERS = abi.decode(vm.envBytes("SAFE_B_OWNERS_ENCODED"), (address[]));
-        SAFE_B_THRESHOLD = vm.envUint("SAFE_B_THRESHOLD");
-
         require(OWNER_SAFE_OWNERS.length == 14, "Owner safe owners length must be 14");
-        require(SAFE_B_OWNERS.length == 10, "Safe B owners length must be 10");
 
         require(OWNER_SAFE_THRESHOLD == 3, "Owner safe threshold must be 3");
-        require(SAFE_B_THRESHOLD == 1, "Safe B threshold must be 1");
 
         console.log("Deploying SafeA with owners:");
         _printOwners(OWNER_SAFE_OWNERS);
 
-        console.log("Deploying SafeB with owners:");
-        _printOwners(SAFE_B_OWNERS);
-
         console.log("Threshold of SafeA:", OWNER_SAFE_THRESHOLD);
-        console.log("Threshold of SafeB:", SAFE_B_THRESHOLD);
 
         vm.startBroadcast();
         // First safe maintains the same owners + threshold as the current owner safe
         address safeA = _createAndInitProxy(OWNER_SAFE_OWNERS, OWNER_SAFE_THRESHOLD);
         // Second safe specifies its own owners + threshold
-        address safeB = _createAndInitProxy(SAFE_B_OWNERS, SAFE_B_THRESHOLD);
+        // address safeB = _createAndInitProxy(SAFE_B_OWNERS, SAFE_B_THRESHOLD);
+        address safeB = 0x6AF0674791925f767060Dd52f7fB20984E8639d8;
         vm.stopBroadcast();
         _postCheck(safeA, safeB);
 
@@ -74,14 +63,14 @@ contract DeploySafes is Script {
         require(safeBThreshold == 1, "PostCheck 2");
 
         require(safeAOwners.length == 14, "PostCheck 3");
-        require(safeBOwners.length == 10, "PostCheck 4");
+        require(safeBOwners.length == 14, "PostCheck 4");
 
         for (uint256 i; i < safeAOwners.length; i++) {
             require(safeAOwners[i] == OWNER_SAFE_OWNERS[i], "PostCheck 5");
         }
 
         for (uint256 i; i < safeBOwners.length; i++) {
-            require(safeBOwners[i] == SAFE_B_OWNERS[i], "PostCheck 6");
+            require(safeBOwners[i] == OWNER_SAFE_OWNERS[i], "PostCheck 6");
         }
 
         console.log("PostCheck passed");

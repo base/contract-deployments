@@ -60,6 +60,11 @@ contract UpdateSigners is MultisigBuilder {
         for (uint256 i; i < ownerSafeOwners.length; i++) {
             require(ownerSafeOwners[i] == A_OWNERS[i], "Precheck owner mismatch - A");
         }
+
+        // Special check for testnet
+        for (uint256 i; i < ownerSafeOwners.length; i++) {
+            require(ownerSafeOwners[i] == B_OWNERS[i], "Precheck owner mismatch - B");
+        }
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
