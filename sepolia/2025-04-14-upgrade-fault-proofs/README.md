@@ -1,10 +1,10 @@
 # Upgrade Fault Proofs
 
-Status: READY TO DEPLOY
+Status: READY TO SIGN
 
 ## Description
 
-This task contains two scripts. One for deploying new versions of the `FaultDisputeGame` and `PermissionedDisputeGame` contracts, and one for updating the `DisputeGameFactory` contract to reference the new dispute game contracts.
+This task contains two scripts for our required onchain updates for the OP Stack's [Upgrade 15](https://docs.optimism.io/notices/upgrade-15). One for deploying new versions of the `FaultDisputeGame` and `PermissionedDisputeGame` contracts, and one for updating the `DisputeGameFactory` contract to reference the new dispute game contracts.
 
 ## Procedure
 
@@ -64,7 +64,7 @@ validate integrity of the simulation, we need to check the following:
 
 ##### 3.2.2. Validate correctness of the state diff.
 
-Now click on the "State" tab, and refer to the [State Validations](./VALIDATION.md) instructions for the transaction you are signing.
+Now click on the "State" tab, and refer to the [State Validations](./validations/SafeA.md) instructions for the transaction you are signing.
 Once complete return to this document to complete the signing.
 
 ##### 3.2.3. Extract the domain hash and the message hash to approve.
@@ -123,14 +123,13 @@ congrats, you are done!
 
 ### [For Facilitator ONLY] How to execute
 
-#### Execute the transaction
+#### Approve the transaction
 
-1. IMPORTANT: Ensure op-challenger has been updated before executing.
 1. Collect outputs from all participating signers.
 1. Concatenate all signatures and export it as the `SIGNATURES`
    environment variable, i.e. `export
 SIGNATURES="[SIGNATURE1][SIGNATURE2]..."`.
-1. Run the `make execute` or `make approve` command as described below to execute the transaction.
+1. Run the `make approve` command as described below to approve the transaction.
 
 For example, if the quorum is 2 and you get the following outputs:
 
@@ -146,29 +145,35 @@ Signer: 0xC0FFEE02
 Signature: BBBB
 ```
 
-If on mainnet, then you should run:
+```bash
+SIGNATURES=AAAABBBB make approve
+```
 
-Coinbase facilitator:
+As the facilitator, you are then expected to sign / approve on behalf of the rest of our testnet multisigs that mirror our mainnet hierarchy.
 
 ```bash
-SIGNATURES=AAAABBBB make approve-cb
+make sign-b
 ```
 
 ```bash
-SIGNATURES=AAAABBBB make approve-op-a
-```
-
-Optimism facilitator:
-
-```bash
-SIGNATURES=AAAABBBB make approve-op
+SIGNATURES=AAAA make approve-b
 ```
 
 ```bash
-SIGNATURES=AAAABBBB make approve-coordinator
+make sign-nested-b
+```
+
+```bash
+SIGNATURES=AAAA make approve-nested-b
+```
+
+```bash
+make approve-coordinator
 ```
 
 #### Execute the transaction
+
+IMPORTANT: Ensure op-challenger has been updated before executing.
 
 Once the signatures have been submitted approving the transaction for all nested Safes run:
 

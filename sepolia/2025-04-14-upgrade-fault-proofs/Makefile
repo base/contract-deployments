@@ -9,58 +9,47 @@ endif
 .PHONY: deploy
 deploy:
 	forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+	--account testnet-admin --broadcast -vvvv
 
-.PHONY: sign-op
-sign-op:
+.PHONY: sign-b
+sign-b:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address)" $(OP_SIGNER_SAFE_ADDR)
+	--sig "sign(address)" $(SAFE_B)
 
-.PHONY: approve-op
-approve-op:
+.PHONY: approve-b
+approve-b:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "approve(address,bytes)" $(OP_SIGNER_SAFE_ADDR) $(SIGNATURES) \
+	--sig "approve(address,bytes)" $(SAFE_B) $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
 
-# This step is run once after all children safes have approved and can be run by anyone (doesn't have to be a signer)
 .PHONY: execute
 execute:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
 	--sig "run()" --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
 
-##
-# DoubleNestedMultisigBuilder commands
-# The following commands can be used for tasks that utilize the DoubleNestedMultisigBuilder.
-# Note that --ledger --hd-paths <PATH> can be replaced with --private-key $(PRIVATE_KEY)
-# in any command when using a local key.
-# See more documentation on the various steps in DoubleNestedMultisigBuilder.sol.
-# Note: All NestedMultisigBuilder commands above can also be used with the DoubleNestedMultisigBuilder.
-# In this case, we have an `ADMIN_SAFE` owned by `PARENT_SAFE`s. The `PARENT_SAFE`s are owned by `CHILD_SAFE`s.
-##
-
 .PHONY: sign
 sign:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address,address)" $(CB_SIGNER_SAFE_ADDR) $(COORDINATOR_SAFE_ADDR)
+	--sig "sign(address,address)" $(SAFE_A) $(COORDINATOR_SAFE_ADDR)
 
-.PHONY: sign-op-a
-sign-op-a:
+.PHONY: sign-nested-b
+sign-nested-b:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address,address)" $(OP_SIGNER_SAFE_ADDR) $(COORDINATOR_SAFE_ADDR)
+	--sig "sign(address,address)" $(SAFE_B) $(COORDINATOR_SAFE_ADDR)
 
-.PHONY: approve-cb
-approve-cb:
+.PHONY: approve
+approve:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "approveOnBehalfOfSignerSafe(address,address,bytes)" $(CB_SIGNER_SAFE_ADDR) $(COORDINATOR_SAFE_ADDR) $(SIGNATURES) \
+	--sig "approveOnBehalfOfSignerSafe(address,address,bytes)" $(SAFE_A) $(COORDINATOR_SAFE_ADDR) $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-.PHONY: approve-op-a
-approve-op-a:
+.PHONY: approve-nested-b
+approve-nested-b:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "approveOnBehalfOfSignerSafe(address,address,bytes)" $(OP_SIGNER_SAFE_ADDR) $(COORDINATOR_SAFE_ADDR) $(SIGNATURES) \
+	--sig "approveOnBehalfOfSignerSafe(address,address,bytes)" $(SAFE_B) $(COORDINATOR_SAFE_ADDR) $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: approve-coordinator
