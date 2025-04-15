@@ -94,7 +94,7 @@ For each contract listed in the state diff, please verify that no contracts or s
   Raw New Value:     0x0000000000000000000000005dfeb066334b67355a15dc9b67317fd2a2e1f77f
   Decoded Kind:      address
   Decoded Old Value: 0x0000000000000000000000000000000000000000
-  Decoded New Value: 0x5873D69cd7Cd6f1040AA87E6107eB6516E9F5359
+  Decoded New Value: 0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f
 
   Summary:           Adds 0x6af0674791925f767060dd52f7fb20984e8639d8 to owners linked list. 
                      Confirm slot key with `cast index address 0x6af0674791925f767060dd52f7fb20984e8639d8 2`.
