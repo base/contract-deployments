@@ -20,7 +20,7 @@ the values printed to the terminal when you run the task.
 > ### Sepolia Safe A: `0x646132a1667ca7ad00d36616afba1a28116c770a`
 >
 > - Domain Hash: `0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e`
-> - Message Hash: `0xe485ebdeb2360706937022bc7a486811e3b20c27475c928c62e0426a5d8f8ca5`
+> - Message Hash: `0xbd6dbdbc796e78642497d9f5a0d57bbc4a82ecda60dc03ecf9e0211b29c262ba`
 
 # State Validations
 
@@ -91,7 +91,7 @@ For each contract listed in the state diff, please verify that no contracts or s
   Chain ID:          11155111
   Raw Slot:          0x2146980ccf4a7741c01fd860f90d2fab597ba25316f4b73d17092ab48b2eb5ce
   Raw Old Value:     0x0000000000000000000000000000000000000000000000000000000000000000
-  Raw New Value:     0x0000000000000000000000005873d69cd7cd6f1040aa87e6107eb6516e9f5359
+  Raw New Value:     0x0000000000000000000000005dfeb066334b67355a15dc9b67317fd2a2e1f77f
   Decoded Kind:      address
   Decoded Old Value: 0x0000000000000000000000000000000000000000
   Decoded New Value: 0x5873D69cd7Cd6f1040AA87E6107eB6516E9F5359
@@ -173,15 +173,15 @@ For each contract listed in the state diff, please verify that no contracts or s
   Who:               0x646132A1667ca7aD00d36616AFBA1A28116C770A
   Contract:          Signer Safe - Sepolia
   Chain ID:          11155111
-  Raw Slot:          0x8d1e6c38207a609037ad3ee71a31b908f6b75e96f6028eb1e861c6ad08467369
+  Raw Slot:          0x917c3b0ca176e18dc93b76b7fcfca717fb0dcb74c9b02c1a4ef75f3b382fd6c9
   Raw Old Value:     0x0000000000000000000000000000000000000000000000000000000000000000
   Raw New Value:     0x0000000000000000000000000000000000000000000000000000000000000001
   Decoded Kind:      address
   Decoded Old Value: 0x0000000000000000000000000000000000000000
   Decoded New Value: 0x0000000000000000000000000000000000000001
 
-  Summary:           Sets 0x5873d69cd7cd6f1040aa87e6107eb6516e9f5359 as tail of owners linked list.
-                     Confirm slot key with `cast index address 0x5873d69cd7cd6f1040aa87e6107eb6516e9f5359 2`.
+  Summary:           Sets 0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f as tail of owners linked list.
+                     Confirm slot key with `cast index address 0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f 2`.
 
 ----- DecodedStateDiff[10] -----
   Who:               0x646132A1667ca7aD00d36616AFBA1A28116C770A
