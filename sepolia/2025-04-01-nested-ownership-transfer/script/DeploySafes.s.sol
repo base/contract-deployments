@@ -3,20 +3,28 @@ pragma solidity 0.8.24;
 
 import {Script} from "forge-std/Script.sol";
 import {Safe} from "safe-smart-account/contracts/Safe.sol";
-import {SafeProxy} from "safe-smart-account/contracts/proxies/SafeProxy.sol";
+import {SafeProxyFactory} from "safe-smart-account/contracts/proxies/SafeProxyFactory.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {console} from "forge-std/console.sol";
 
 contract DeploySafes is Script {
     using Strings for address;
 
-    address private SAFE_IMPLEMENTATION = vm.envAddress("L1_GNOSIS_SAFE_IMPLEMENTATION");
-    address private FALLBACK_HANDLER = vm.envAddress("L1_GNOSIS_COMPATIBILITY_FALLBACK_HANDLER");
-    address private OWNER_SAFE = vm.envAddress("OWNER_SAFE");
-    address private zAddr;
+    address public immutable SAFE_IMPLEMENTATION;
+    address public immutable FALLBACK_HANDLER;
+    address public immutable SAFE_PROXY_FACTORY;
+    address public immutable OWNER_SAFE;
+    address public zAddr;
 
-    address[] private OWNER_SAFE_OWNERS;
-    uint256 private OWNER_SAFE_THRESHOLD;
+    address[] public OWNER_SAFE_OWNERS;
+    uint256 public OWNER_SAFE_THRESHOLD;
+
+    constructor() {
+        SAFE_IMPLEMENTATION = vm.envAddress("L1_GNOSIS_SAFE_IMPLEMENTATION");
+        FALLBACK_HANDLER = vm.envAddress("L1_GNOSIS_COMPATIBILITY_FALLBACK_HANDLER");
+        SAFE_PROXY_FACTORY = vm.envAddress("SAFE_PROXY_FACTORY");
+        OWNER_SAFE = vm.envAddress("OWNER_SAFE");
+    }
 
     function run() public {
         Safe ownerSafe = Safe(payable(OWNER_SAFE));
@@ -77,9 +85,9 @@ contract DeploySafes is Script {
     }
 
     function _createAndInitProxy(address[] memory owners, uint256 threshold) private returns (address) {
-        Safe proxy = Safe(payable(address(new SafeProxy(SAFE_IMPLEMENTATION))));
-        proxy.setup(owners, threshold, zAddr, "", FALLBACK_HANDLER, zAddr, 0, payable(zAddr));
-        return address(proxy);
+        bytes memory initializer =
+            abi.encodeCall(Safe.setup, (owners, threshold, zAddr, "", FALLBACK_HANDLER, zAddr, 0, payable(zAddr)));
+        return address(SafeProxyFactory(SAFE_PROXY_FACTORY).createProxyWithNonce(SAFE_IMPLEMENTATION, initializer, 0));
     }
 
     function _printOwners(address[] memory owners) private pure {
