@@ -1,39 +1,68 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.24;
 
+import {stdJson} from "forge-std/StdJson.sol";
 import {Script} from "forge-std/Script.sol";
 import {Safe} from "safe-smart-account/contracts/Safe.sol";
-import {SafeProxy} from "safe-smart-account/contracts/proxies/SafeProxy.sol";
+import {SafeProxyFactory} from "safe-smart-account/contracts/proxies/SafeProxyFactory.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {console} from "forge-std/console.sol";
 
 contract DeploySafes is Script {
     using Strings for address;
+    using stdJson for string;
 
-    address private SAFE_IMPLEMENTATION = vm.envAddress("L1_GNOSIS_SAFE_IMPLEMENTATION");
-    address private FALLBACK_HANDLER = vm.envAddress("L1_GNOSIS_COMPATIBILITY_FALLBACK_HANDLER");
-    address private OWNER_SAFE = vm.envAddress("OWNER_SAFE");
-    address private zAddr;
+    address public constant Z_ADDR = address(0);
 
-    address[] private OWNER_SAFE_OWNERS;
-    uint256 private OWNER_SAFE_THRESHOLD;
+    address public immutable SAFE_IMPLEMENTATION;
+    address public immutable FALLBACK_HANDLER;
+    address public immutable SAFE_PROXY_FACTORY;
+    address public immutable OWNER_SAFE;
 
-    address[] private SAFE_B_OWNERS;
-    uint256 private SAFE_B_THRESHOLD;
+    uint256 public immutable EXPECTED_OWNER_SAFE_THRESHOLD;
+    uint256 public immutable EXPECTED_OWNER_SAFE_OWNER_COUNT;
+    uint256 public immutable OWNER_SAFE_THRESHOLD;
 
-    function run() public {
+    uint256 public immutable SAFE_B_THRESHOLD;
+    uint256 public immutable EXPECTED_SAFE_B_OWNER_COUNT;
+
+    address[] public OWNER_SAFE_OWNERS;
+    address[] public SAFE_B_OWNERS;
+
+    constructor() {
+        SAFE_IMPLEMENTATION = vm.envAddress("L1_GNOSIS_SAFE_IMPLEMENTATION");
+        FALLBACK_HANDLER = vm.envAddress("L1_GNOSIS_COMPATIBILITY_FALLBACK_HANDLER");
+        SAFE_PROXY_FACTORY = vm.envAddress("SAFE_PROXY_FACTORY");
+        OWNER_SAFE = vm.envAddress("OWNER_SAFE");
+
+        EXPECTED_OWNER_SAFE_THRESHOLD = vm.envUint("EXPECTED_OWNER_SAFE_THRESHOLD");
+        EXPECTED_OWNER_SAFE_OWNER_COUNT = vm.envUint("EXPECTED_OWNER_SAFE_OWNER_COUNT");
+
+        string memory rootPath = vm.projectRoot();
+        string memory path = string.concat(rootPath, "/signers.json");
+        string memory jsonData = vm.readFile(path);
+
+        SAFE_B_OWNERS = abi.decode(jsonData.parseRaw(".signers"), (address[]));
+
         Safe ownerSafe = Safe(payable(OWNER_SAFE));
         OWNER_SAFE_OWNERS = ownerSafe.getOwners();
         OWNER_SAFE_THRESHOLD = ownerSafe.getThreshold();
 
-        SAFE_B_OWNERS = abi.decode(vm.envBytes("SAFE_B_OWNERS_ENCODED"), (address[]));
         SAFE_B_THRESHOLD = vm.envUint("SAFE_B_THRESHOLD");
+        EXPECTED_SAFE_B_OWNER_COUNT = vm.envUint("EXPECTED_SAFE_B_OWNER_COUNT");
+    }
 
-        require(OWNER_SAFE_OWNERS.length == 6, "Owner safe owners length must be 6");
-        require(SAFE_B_OWNERS.length == 10, "Safe B owners length must be 10");
+    function run() public {
+        require(EXPECTED_OWNER_SAFE_THRESHOLD == 3, "Expected owner safe threshold must be 3");
+        require(EXPECTED_OWNER_SAFE_OWNER_COUNT == 6, "Expected owner safe owner count must be 6");
 
-        require(OWNER_SAFE_THRESHOLD == 3, "Owner safe threshold must be 3");
-        require(SAFE_B_THRESHOLD == 7, "Safe B threshold must be 7");
+        require(SAFE_B_THRESHOLD == 7, "Expected safe B threshold must be 7");
+        require(EXPECTED_SAFE_B_OWNER_COUNT == 10, "Expected safe B owner count must be 10");
+
+        require(OWNER_SAFE_THRESHOLD == EXPECTED_OWNER_SAFE_THRESHOLD, "Owner safe threshold must be 3");
+        require(OWNER_SAFE_OWNERS.length == EXPECTED_OWNER_SAFE_OWNER_COUNT, "Owner safe owners length must be 6");
+
+        require(SAFE_B_OWNERS.length == EXPECTED_SAFE_B_OWNER_COUNT, "Safe B owners length must be 10");
 
         console.log("Deploying SafeA with owners:");
         _printOwners(OWNER_SAFE_OWNERS);
@@ -70,11 +99,11 @@ contract DeploySafes is Script {
         address[] memory safeBOwners = safeB.getOwners();
         uint256 safeBThreshold = safeB.getThreshold();
 
-        require(safeAThreshold == 3, "PostCheck 1");
-        require(safeBThreshold == 7, "PostCheck 2");
+        require(safeAThreshold == EXPECTED_OWNER_SAFE_THRESHOLD, "PostCheck 1");
+        require(safeAOwners.length == EXPECTED_OWNER_SAFE_OWNER_COUNT, "PostCheck 2");
 
-        require(safeAOwners.length == 6, "PostCheck 3");
-        require(safeBOwners.length == 10, "PostCheck 4");
+        require(safeBThreshold == SAFE_B_THRESHOLD, "PostCheck 3");
+        require(safeBOwners.length == EXPECTED_SAFE_B_OWNER_COUNT, "PostCheck 4");
 
         for (uint256 i; i < safeAOwners.length; i++) {
             require(safeAOwners[i] == OWNER_SAFE_OWNERS[i], "PostCheck 5");
@@ -88,9 +117,9 @@ contract DeploySafes is Script {
     }
 
     function _createAndInitProxy(address[] memory owners, uint256 threshold) private returns (address) {
-        Safe proxy = Safe(payable(address(new SafeProxy(SAFE_IMPLEMENTATION))));
-        proxy.setup(owners, threshold, zAddr, "", FALLBACK_HANDLER, zAddr, 0, payable(zAddr));
-        return address(proxy);
+        bytes memory initializer =
+            abi.encodeCall(Safe.setup, (owners, threshold, Z_ADDR, "", FALLBACK_HANDLER, Z_ADDR, 0, payable(Z_ADDR)));
+        return address(SafeProxyFactory(SAFE_PROXY_FACTORY).createProxyWithNonce(SAFE_IMPLEMENTATION, initializer, 0));
     }
 
     function _printOwners(address[] memory owners) private pure {
