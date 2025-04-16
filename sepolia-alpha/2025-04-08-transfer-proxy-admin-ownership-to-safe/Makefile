@@ -8,4 +8,4 @@ simulate:
 
 .PHONY: execute
 execute:
-	forge script --rpc-url $(L1_RPC_URL) TransferOwnership --sender $(SENDER) --broadcast -vvvv
+	forge script --rpc-url $(L1_RPC_URL) TransferOwnership --account sepolia-alpha-admin --broadcast -vvvv

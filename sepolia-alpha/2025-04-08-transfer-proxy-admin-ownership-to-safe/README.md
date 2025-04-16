@@ -1,6 +1,6 @@
 # Transfer Proxy Admin Ownership to Gnosis Safe
 
-Status: READY TO EXECUTE
+Status: EXECUTED (https://sepolia.etherscan.io/tx/0x35ea2479c054639acd2547f53c47fe166caf1c6c7b5cfebfff5178532135c122)
 
 ## Description
 
