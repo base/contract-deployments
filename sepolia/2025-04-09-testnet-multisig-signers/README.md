@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-We wish to update the owners of our [SafeA](https://sepolia.etherscan.io/address/0x646132a1667ca7ad00d36616afba1a28116c770a) and [SafeB](https://sepolia.etherscan.io/address/0x6af0674791925f767060dd52f7fb20984e8639d8) multisigs on Sepolia to be consistent with the current state of our Base Chain Eng team. These safes make up the two signers for our `ProxyAdminOwner` contract for Sepolia.
+We wish to update the owners of our [SafeA](https://sepolia.etherscan.io/address/0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f) and [SafeB](https://sepolia.etherscan.io/address/0x6af0674791925f767060dd52f7fb20984e8639d8) multisigs on Sepolia to be consistent with the current state of our Base Chain Eng team. These safes make up the two signers for our `ProxyAdminOwner` contract for Sepolia.
 
 ## Procedure
 
@@ -56,7 +56,7 @@ validate integrity of the simulation, we need to check the following:
 
 ##### 3.2. Validate correctness of the state diff.
 
-Now click on the "State" tab, and refer to the [State Validations](./VALIDATION.md) instructions for the transaction you are signing.
+Now click on the "State" tab, and refer to the [State Validations](./validations/SafeA.md) instructions for the transaction you are signing.
 Once complete return to this document to complete the signing.
 
 ##### 3.3. Extract the domain hash and the message hash to approve.
