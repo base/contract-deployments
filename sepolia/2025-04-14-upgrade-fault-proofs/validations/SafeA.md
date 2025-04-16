@@ -30,17 +30,13 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 ## State Overrides
 
-### Proxy Admin Owner
-
-`0x0fe884546476dDd290eC46318785046ef68a0BA9`
+### Proxy Admin Owner (`0x0fe884546476dDd290eC46318785046ef68a0BA9`)
 
 - **Key**: `0x0000000000000000000000000000000000000000000000000000000000000004` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
   **Meaning**: Override the threshold to 1 so the transaction simulation can occur.
 
-### Nested Safe
-
-`0x646132a1667ca7ad00d36616afba1a28116c770a` (`Coordinator`)
+### Safe A (`0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f`)
 
 - **Key**: `0x0000000000000000000000000000000000000000000000000000000000000003` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
@@ -57,6 +53,12 @@ For each contract listed in the state diff, please verify that no contracts or s
 - **Key**: `0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0` <br/>
   **Override**: `0x000000000000000000000000ca11bde05977b3631167028862be2a173976ca11` <br/>
   **Meaning**: This is owners[1] -> 0xca11bde05977b3631167028862be2a173976ca11, so the key can be derived from cast index address 0x0000000000000000000000000000000000000001 2.
+
+### Coordinator Safe (`0x646132A1667ca7aD00d36616AFBA1A28116C770A`)
+
+- **Key**: `0x0000000000000000000000000000000000000000000000000000000000000004` <br/>
+  **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
+  **Meaning**: Override the threshold to 1 so the transaction simulation can occur.
 
 ## Task State Changes
 
@@ -89,6 +91,19 @@ For each contract listed in the state diff, please verify that no contracts or s
   Summary:           Sets an approval for this transaction from the signer. Compute the expected raw slot key with `cast index bytes32 $NESTED_HASH $(cast index address $NESTED_SAFE 8)` where `NESTED_HASH` is `0x1e4a76bbefb5005f1739856d035c83fd7ee77e73d3b38babc4c5847998ce6a1e` (you should see this in your terminal after the transaction simulation) and `NESTED_SAFE` is `0x646132a1667ca7ad00d36616afba1a28116c770a` (the safe linked above).
 
 ----- DecodedStateDiff[2] -----
+  Who:               0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f
+  Contract:          Safe A - Sepolia
+  Chain ID:          11155111
+  Raw Slot:          0x0000000000000000000000000000000000000000000000000000000000000005
+  Raw Old Value:     0x0000000000000000000000000000000000000000000000000000000000000000
+  Raw New Value:     0x0000000000000000000000000000000000000000000000000000000000000001
+  Decoded Kind:      uint256
+  Decoded Old Value: 0
+  Decoded New Value: 1
+
+  Summary:           Nonce increment.
+
+----- DecodedStateDiff[3] -----
   Who:               0x646132A1667ca7aD00d36616AFBA1A28116C770A
   Contract:          Coordinator Safe - Sepolia
   Chain ID:          11155111
@@ -101,7 +116,20 @@ For each contract listed in the state diff, please verify that no contracts or s
 
   Summary:           Nonce increment.
 
------ DecodedStateDiff[3] -----
+----- DecodedStateDiff[4] -----
+  Who:               0x646132A1667ca7aD00d36616AFBA1A28116C770A
+  Contract:          Coordinator Safe - Sepolia
+  Chain ID:          11155111
+  Raw Slot:          0xdc2a8b21796295f338f397c162b212b221d214b9394fbe9a571cb58f3ad7c979
+  Raw Old Value:     0x0000000000000000000000000000000000000000000000000000000000000000
+  Raw New Value:     0x0000000000000000000000000000000000000000000000000000000000000001
+  Decoded Kind:      uint256
+  Decoded Old Value: 0
+  Decoded New Value: 1
+
+  Summary:           Sets an approval for this transaction from the signer. Compute the expected raw slot key with `cast index bytes32 $NESTED_HASH $(cast index address $NESTED_SAFE 8)` where `NESTED_HASH` is `0xab570f85b64f6cdd9c0676ea0628f2ec677f43261b11766d7ee85e6e9cac3e24` (you should see this in your terminal after the transaction simulation) and `NESTED_SAFE` is `0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f` (the safe linked above).
+
+----- DecodedStateDiff[5] -----
   Who:               0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1
   Contract:          Dispute Game Factory - Sepolia
   Chain ID:          11155111
@@ -114,7 +142,7 @@ For each contract listed in the state diff, please verify that no contracts or s
 
   Summary:           Updates the `PermissionedDisputeGame` implementation address. You can verify the key derivation by running `cast index uint32 1 101` in your terminal.
 
------ DecodedStateDiff[4] -----
+----- DecodedStateDiff[6] -----
   Who:               0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1
   Contract:          Dispute Game Factory - Sepolia
   Chain ID:          11155111
