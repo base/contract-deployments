@@ -1,6 +1,9 @@
 # Update Sepolia Multisig Signers
 
-Status: READY TO SIGN
+Status: EXECUTED
+
+Safe A: https://sepolia.etherscan.io/tx/0x6bc215bc3c7e609ebfcda87b3b74d433e45f685101733982b8a910331acd609b
+Safe B: https://sepolia.etherscan.io/tx/0x5a3e78badcccd6e586c541c15cc2b2517dfd54ea156bf50b662b21fedf5e3a81
 
 ## Description
 
