@@ -86,11 +86,9 @@ contract Utils is Script {
         vm.serializeAddress(json, "L1StandardBridgeImpl", cfg.L1StandardBridgeImpl);
         vm.serializeAddress(json, "L2OutputOracleImpl", cfg.L2OutputOracleImpl);
         vm.serializeAddress(json, "OptimismPortalImpl", cfg.OptimismPortalImpl);
-        vm.serializeAddress(json, "L1ERC721BridgeImpl", cfg.L1ERC721BridgeImpl);
         vm.serializeAddress(json, "PortalSenderImpl", cfg.PortalSenderImpl);
         vm.serializeAddress(json, "L1ERC721BridgeImpl", cfg.L1ERC721BridgeImpl);
         vm.serializeAddress(json, "SystemConfigImpl", cfg.SystemConfigImpl);
-        vm.serializeAddress(json, "SystemDictatorImpl", cfg.SystemDictatorImpl);
         vm.serializeAddress(json, "SystemDictatorImpl", cfg.SystemDictatorImpl);
         vm.serializeAddress(json, "OptimismMintableERC20FactoryImpl", cfg.OptimismMintableERC20FactoryImpl);
 
