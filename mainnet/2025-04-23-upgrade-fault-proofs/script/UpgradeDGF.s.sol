@@ -86,7 +86,7 @@ contract UpgradeDGF is DoubleNestedMultisigBuilder {
             return;
         }
         IFaultDisputeGame faultDisputeGame = IFaultDisputeGame(newImpl);
-        require(Strings.equal(currentImpl.version(), EXPECTED_VERSION), "00");
+        require(Strings.equal(faultDisputeGame.version(), EXPECTED_VERSION), "00");
         require(currentImpl.vm() == faultDisputeGame.vm(), "10");
         require(currentImpl.weth() == faultDisputeGame.weth(), "20");
         require(currentImpl.anchorStateRegistry() == faultDisputeGame.anchorStateRegistry(), "30");
