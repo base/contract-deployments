@@ -5,18 +5,6 @@ ifndef LEDGER_ACCOUNT
 override LEDGER_ACCOUNT = 0
 endif
 
-.PHONY: sign-disbursement1
-sign-disbursement1: 
-	./parser.sh disbursement1.csv; $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L2_RPC_URL) DisburseBasenames \
-	--sig "sign()"
-
-.PHONY: sign-disbursement2
-sign-disbursement2: 
-	./parser.sh disbursement2.csv; $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L2_RPC_URL) DisburseBasenames \
-	--sig "sign()"
-
 ifeq (sign,$(firstword $(MAKECMDGOALS)))
   RUN_ARG := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(RUN_ARG):;@:)

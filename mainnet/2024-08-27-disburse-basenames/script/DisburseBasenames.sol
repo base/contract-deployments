@@ -21,17 +21,18 @@ interface IERC721 {
 }
 
 interface AddrResolver {
-    function setAddr(bytes32 node, address addr) external;
+    function setAddr(bytes32 node, uint256 cointype, bytes memory addr) external;
 }
 
-// This script will be signed ahead of our gas limit increase but isn't expected to be
-// executed. It will be available to us in the event we need to quickly rollback the gas limit.
+
 contract DisburseBasenames is MultisigBuilder {
     address internal ECOSYSTEM_MULTISIG = vm.envAddress("ECOSYSTEM_MULTISIG");
     address internal BASE_REGISTRAR_ADDR = vm.envAddress("BASE_REGISTRAR_ADDR");
     address internal REGISTRY_ADDR = vm.envAddress("REGISTRY_ADDR");
     address internal L2_RESOLVER_ADDR = vm.envAddress("L2_RESOLVER_ADDR");
     uint256 NONCE;
+    uint256 constant ETH_COINTYPE = 60;
+    uint256 constant BASE_COINTYPE = 0x80000000 | 0x00002105;
 
     function signWithNonce(uint256 nonce_) public {
         NONCE = nonce_;
@@ -130,9 +131,10 @@ contract DisburseBasenames is MultisigBuilder {
     }
 
     function _buildResolverData(bytes32 node, address addr, string memory name) internal pure returns (bytes memory data) {
-        bytes[] memory multicallData = new bytes[](2);
-        multicallData[0] = abi.encodeWithSelector(AddrResolver.setAddr.selector, node, addr);
-        multicallData[1] = abi.encodeWithSelector(NameResolver.setName.selector, node, string.concat(name,".base.eth"));
+        bytes[] memory multicallData = new bytes[](3);
+        multicallData[0] = abi.encodeWithSelector(AddrResolver.setAddr.selector, node, ETH_COINTYPE, _addressToBytes(addr));
+        multicallData[1] = abi.encodeWithSelector(AddrResolver.setAddr.selector, node, BASE_COINTYPE, _addressToBytes(addr));
+        multicallData[2] = abi.encodeWithSelector(NameResolver.setName.selector, node, string.concat(name,".base.eth"));
         return abi.encodeWithSelector(Multicallable.multicallWithNodeCheck.selector, node, multicallData);
     }
 
@@ -161,6 +163,13 @@ contract DisburseBasenames is MultisigBuilder {
             assert(BaseRegistrar(BASE_REGISTRAR_ADDR).ownerOf(_getIdFromName(s.name)) == s.addr);
             assert(L2Resolver(L2_RESOLVER_ADDR).addr(node) == s.addr);
             assert(keccak256(bytes(L2Resolver(L2_RESOLVER_ADDR).name(node))) == keccak256(bytes(string.concat(s.name,".base.eth"))));
+        }
+    }
+
+    function _addressToBytes(address a) internal pure returns (bytes memory b) {
+        b = new bytes(20);
+        assembly {
+            mstore(add(b, 32), mul(a, exp(256, 12)))
         }
     }
 }
