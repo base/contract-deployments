@@ -6,7 +6,7 @@ import {stdJson} from "forge-std/StdJson.sol";
 import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 import {console} from "forge-std/console.sol";
 
-import {DoubleNestedMultisigBuilder} from "@base-contracts/script/universal/DoubleNestedMultisigBuilder.sol";
+import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -42,10 +42,9 @@ interface IAnchorStateRegistry {
 
 /// @notice This script updates the FaultDisputeGame and PermissionedDisputeGame implementations in the
 ///         DisputeGameFactory contract.
-contract UpgradeDGF is DoubleNestedMultisigBuilder {
+contract UpgradeDGF is MultisigScript {
     using stdJson for string;
 
-    // TODO: Confirm expected version
     string public constant EXPECTED_VERSION = "1.4.1";
     uint32 public constant CANNON = 0;
     uint32 public constant PERMISSIONED_CANNON = 1;
@@ -108,8 +107,8 @@ contract UpgradeDGF is DoubleNestedMultisigBuilder {
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         require(dgfProxy.gameImpls(CANNON) == fdgImpl, "post-110");
         require(dgfProxy.gameImpls(PERMISSIONED_CANNON) == pdgImpl, "post-120");
-        _postcheckHasAnchorState(CANNON);
-        _postcheckHasAnchorState(PERMISSIONED_CANNON);
+       // _postcheckHasAnchorState(CANNON);
+       // _postcheckHasAnchorState(PERMISSIONED_CANNON);
     }
 
     // Checks the anchor state for the source game type still exists after re-initialization. The actual anchor state

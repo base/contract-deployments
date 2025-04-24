@@ -22,7 +22,7 @@ contract DeployDisputeGames is Script {
     using LibGameType for GameType;
 
     // TODO: Confirm expected version
-    string public constant EXPECTED_VERSION = "1.5.0";
+    string public constant EXPECTED_VERSION = "1.4.1";
 
     SystemConfig internal _SYSTEM_CONFIG = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
     Claim immutable absolutePrestate;
