@@ -1,6 +1,6 @@
 # Nested Ownership Transfer
 
-Status: READY TO DEPLOY
+Status: READY TO SIGN
 
 ## Procedure
 
