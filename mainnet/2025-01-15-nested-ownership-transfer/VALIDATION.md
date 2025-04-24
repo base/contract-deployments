@@ -28,6 +28,14 @@ For each contract listed in the state diff, please verify that no contracts or s
 - All addresses (in section headers and storage values) match the provided name, using the Etherscan and Superchain Registry links provided. This validates the bytecode deployed at the addresses contains the correct logic.
 - All key values match the semantic meaning provided, which can be validated using the storage layout links provided.
 
+## Task State Overrides
+
+### CB Signer Safe (`0x9855054731540A48b28990B63DcF4f33d8AE46A1`)
+
+- **Raw Slot**: `0x0000000000000000000000000000000000000000000000000000000000000004`
+  **Value**: `0x0000000000000000000000000000000000000000000000000000000000000001`
+  **Meaning**: Overrides the threshold to 1 so the simulation can occur.
+
 ## Task State Changes
 
 ### CB Signer Safe (`0x9855054731540A48b28990B63DcF4f33d8AE46A1`)
@@ -46,7 +54,7 @@ For each contract listed in the state diff, please verify that no contracts or s
   **Value Type**: uint256 \
   **Decoded Old Value**: 1 \
   **Decoded New Value**: 2 \
-  **Meaning**: Updates the safe's signing threshold.
+  **Meaning**: Updates the safe's signing threshold. The previous value is actually 3, but the state diff presents this way because of the state override above.
 
 - **Raw Slot**: `0x0000000000000000000000000000000000000000000000000000000000000005` \
   **Raw Old Value**: `0x0000000000000000000000000000000000000000000000000000000000000014` \
