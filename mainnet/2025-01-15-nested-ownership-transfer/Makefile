@@ -12,7 +12,7 @@ deps:
 
 .PHONY: deploy
 deploy:
-	forge script --rpc-url $(L1_RPC_URL) DeploySafes --account testnet-admin --broadcast -vvvv
+	forge script --rpc-url $(L1_RPC_URL) DeploySafes --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: sign
 sign:
