@@ -154,16 +154,6 @@ Signer: 0xC0FFEE02
 Signature: BBBB
 ```
 
-If on testnet, then you should run:
-
-Coinbase facilitator:
-
-```bash
-SIGNATURES=AAAABBBB make execute
-```
-
-If on mainnet, then you should run:
-
 Coinbase facilitator:
 
 ```bash
@@ -176,7 +166,7 @@ Optimism facilitator:
 SIGNATURES=AAAABBBB make approve-op
 ```
 
-#### If on mainnet, execute the transaction
+#### Execute the transaction
 
 Once the signatures have been submitted approving the transaction for all nested Safes run:
 
