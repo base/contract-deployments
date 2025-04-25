@@ -2,11 +2,6 @@ include ../../Makefile
 include ../.env
 include .env
 
-# DRY RUN OVERRIDES
-LEDGER_ACCOUNT = 1
-L1_RPC_URL=https://base-sepolia.cbhq.net
-# END OF OVERRIDES
-
 ifndef LEDGER_ACCOUNT
 override LEDGER_ACCOUNT = 0
 endif
@@ -34,8 +29,8 @@ sign-cb:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
 	--sig "sign(address[])" [$(SAFE_A),$(COORDINATOR_SAFE_ADDR)]
 
-.PHONY: sign-kjf
-sign-kjf:
+.PHONY: sign-b
+sign-b:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
 	--sig "sign(address[])" [$(SAFE_B),$(COORDINATOR_SAFE_ADDR)]
@@ -46,8 +41,8 @@ approve-cb:
 	--sig "approve(address[],bytes)" [$(SAFE_A),$(COORDINATOR_SAFE_ADDR)] $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-.PHONY: approve-kjf
-approve-kjf:
+.PHONY: approve-b
+approve-b:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
 	--sig "approve(address[],bytes)" [$(SAFE_B),$(COORDINATOR_SAFE_ADDR)] $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
@@ -61,4 +56,4 @@ approve-coordinator:
 .PHONY: execute
 execute:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "run(bytes)" 0x --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+	--sig "run(bytes)" 0x --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
