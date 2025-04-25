@@ -138,7 +138,7 @@ congrats, you are done!
 1. Concatenate all signatures and export it as the `SIGNATURES`
    environment variable, i.e. `export
 SIGNATURES="[SIGNATURE1][SIGNATURE2]..."`.
-1. Run the `make execute` or `make approve` command as described below to execute the transaction.
+1. Run the `make approve` command as described below to execute the transaction.
 
 For example, if the quorum is 2 and you get the following outputs:
 
