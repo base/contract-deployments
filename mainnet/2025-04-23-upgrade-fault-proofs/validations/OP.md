@@ -14,7 +14,7 @@ For each contract listed in the state diff, please verify that no contracts or s
 >
 > Before signing, ensure the below hashes match what is on your ledger.
 >
-> ### OP Signers
+> ### OP Signer Safe: `0x9BA6e03D8B90dE867373Db8cF1A58d2F7F006b3A`
 >
 > - Domain Hash: `0x4e6a6554de0308f5ece8ff736beed8a1b876d16f5c27cac8e466d7de0c703890`
 > - Message Hash: `0x46fe3f9cbb360cab153b001412c217c0399bc13e3c0c70a894bfbcbb9758aeaf`
