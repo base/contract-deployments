@@ -21,10 +21,8 @@ contract DeployDisputeGames is Script {
     using LibDuration for Duration;
     using LibGameType for GameType;
 
-    // TODO: Confirm expected version
     string public constant EXPECTED_VERSION = "1.4.1";
 
-    SystemConfig internal _SYSTEM_CONFIG = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
     Claim immutable absolutePrestate;
 
     FaultDisputeGame.GameConstructorParams fdgParams;
@@ -37,7 +35,8 @@ contract DeployDisputeGames is Script {
     }
 
     function setUp() public {
-        DisputeGameFactory dgfProxy = DisputeGameFactory(_SYSTEM_CONFIG.disputeGameFactory());
+        SystemConfig systemConfig = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
+        DisputeGameFactory dgfProxy = DisputeGameFactory(systemConfig.disputeGameFactory());
         FaultDisputeGame currentFdg = FaultDisputeGame(address(dgfProxy.gameImpls(GameTypes.CANNON)));
         PermissionedDisputeGame currentPdg =
             PermissionedDisputeGame(address(dgfProxy.gameImpls(GameTypes.PERMISSIONED_CANNON)));
