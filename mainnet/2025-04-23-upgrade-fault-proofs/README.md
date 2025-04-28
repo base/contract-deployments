@@ -6,6 +6,33 @@ Status: READY TO DEPLOY
 
 This task contains two scripts. One for deploying new versions of the `FaultDisputeGame` and `PermissionedDisputeGame` contracts, and one for updating the `DisputeGameFactory` contract to reference the new dispute game contracts.
 
+## Initial Setup
+
+These instructions are for initial setup of your development environment to install basic tools (e.g Go, Git etc.) needed for the rest of the README. If you already
+have these tools or have used this repo before, feel free to skip this section.
+
+### 1. Install Xcode
+ - Download Xcode from the Mac App Store
+
+### 2. Install Xcode Command Line Tools
+ - Open the Terminal Application
+     - The Terminal Application can be found using LaunchPad and typing in "Terminal"
+ - Run the command:
+ ```bash
+ xcode-select --install
+ ```
+
+### 3. Install Golang
+ - Naviate to [https://go.dev/doc/install](https://go.dev/doc/install)
+ - Click the download button to install the latest version of Golang
+ - Follow the installation prompts
+
+### 4. Install Forge
+ - Inside Terminal run:
+ ```bash
+ curl -L https://foundry.paradigm.xyz | bash
+ ```
+
 ## Procedure
 
 ### 1. Update repo:
