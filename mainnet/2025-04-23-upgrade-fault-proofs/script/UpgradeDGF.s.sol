@@ -107,8 +107,8 @@ contract UpgradeDGF is MultisigScript {
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         require(dgfProxy.gameImpls(CANNON) == fdgImpl, "post-110");
         require(dgfProxy.gameImpls(PERMISSIONED_CANNON) == pdgImpl, "post-120");
-       // _postcheckHasAnchorState(CANNON);
-       // _postcheckHasAnchorState(PERMISSIONED_CANNON);
+        _postcheckHasAnchorState(CANNON);
+        _postcheckHasAnchorState(PERMISSIONED_CANNON);
     }
 
     // Checks the anchor state for the source game type still exists after re-initialization. The actual anchor state
