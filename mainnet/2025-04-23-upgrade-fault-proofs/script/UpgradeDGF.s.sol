@@ -50,6 +50,7 @@ contract UpgradeDGF is MultisigScript {
     uint32 public constant PERMISSIONED_CANNON = 1;
 
     address public immutable OWNER_SAFE;
+    address public immutable SYSTEM_CONFIG;
 
     IDisputeGameFactory public dgfProxy;
     address public fdgImpl;
@@ -57,6 +58,7 @@ contract UpgradeDGF is MultisigScript {
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
+        SYSTEM_CONFIG = vm.envAddress("SYSTEM_CONFIG");
     }
 
     function setUp() public {
@@ -64,7 +66,7 @@ contract UpgradeDGF is MultisigScript {
         string memory path = string.concat(rootPath, "/addresses.json");
         string memory addresses = vm.readFile(path);
 
-        dgfProxy = IDisputeGameFactory(ISystemConfig(vm.envAddress("SYSTEM_CONFIG")).disputeGameFactory());
+        dgfProxy = IDisputeGameFactory(ISystemConfig(SYSTEM_CONFIG).disputeGameFactory());
         fdgImpl = addresses.readAddress(".faultDisputeGame");
         pdgImpl = addresses.readAddress(".permissionedDisputeGame");
 
