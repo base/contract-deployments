@@ -104,13 +104,13 @@ validate integrity of the simulation, we need to check the following:
 Now click on the "State" tab.
 
 - If **CB Signer**
-refer to the [State Validations](./validations/CB.md) instructions for the transaction you are signing.
+refer to the [CB State Validations](./validations/CB.md) instructions for the transaction you are signing.
 
 - If **OP Signer**
-refer to the [State Validations](./validations/OP.md) instructions for the transaction you are signing.
+refer to the [OP State Validations](./validations/OP.md) instructions for the transaction you are signing.
 
 - If **B Signer**
-refer to the [State Validations](./validations/B.md) instructions for the transaction you are signing.
+refer to the [B State Validations](./validations/B.md) instructions for the transaction you are signing.
 
 Once complete return to this document to complete the signing.
 
