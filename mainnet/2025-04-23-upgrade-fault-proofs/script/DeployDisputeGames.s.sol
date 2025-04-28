@@ -24,6 +24,7 @@ contract DeployDisputeGames is Script {
     string public constant EXPECTED_VERSION = "1.4.1";
 
     Claim immutable absolutePrestate;
+    SystemConfig immutable systemConfig;
 
     FaultDisputeGame.GameConstructorParams fdgParams;
     FaultDisputeGame.GameConstructorParams pdgParams;
@@ -32,10 +33,10 @@ contract DeployDisputeGames is Script {
 
     constructor() {
         absolutePrestate = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
+        systemConfig = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
     }
 
     function setUp() public {
-        SystemConfig systemConfig = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
         DisputeGameFactory dgfProxy = DisputeGameFactory(systemConfig.disputeGameFactory());
         FaultDisputeGame currentFdg = FaultDisputeGame(address(dgfProxy.gameImpls(GameTypes.CANNON)));
         PermissionedDisputeGame currentPdg =
