@@ -33,6 +33,8 @@ have these tools or have used this repo before, feel free to skip this section.
  curl -L https://foundry.paradigm.xyz | bash
  ```
 
+### 4. Install Forge
+
 ## Procedure
 
 ### 1. Update repo:
@@ -99,7 +101,17 @@ validate integrity of the simulation, we need to check the following:
 
 ##### 3.2.2. Validate correctness of the state diff.
 
-Now click on the "State" tab, and refer to the [State Validations](./VALIDATION.md) instructions for the transaction you are signing.
+Now click on the "State" tab.
+
+- If **CB Signer**
+refer to the [State Validations](./validations/CB.md) instructions for the transaction you are signing.
+
+- If **OP Signer**
+refer to the [State Validations](./validations/OP.md) instructions for the transaction you are signing.
+
+- If **B Signer**
+refer to the [State Validations](./validations/B.md) instructions for the transaction you are signing.
+
 Once complete return to this document to complete the signing.
 
 ##### 3.2.3. Extract the domain hash and the message hash to approve.
