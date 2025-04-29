@@ -41,8 +41,8 @@ approve-cb:
 	--sig "approve(address[],bytes)" [$(SAFE_A),$(COORDINATOR_SAFE_ADDR)] $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-.PHONY: approve-b
-approve-b:
+.PHONY: approve-sc
+approve-sc:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
 	--sig "approve(address[],bytes)" [$(SAFE_B),$(COORDINATOR_SAFE_ADDR)] $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
