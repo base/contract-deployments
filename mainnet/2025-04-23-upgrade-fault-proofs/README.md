@@ -33,7 +33,7 @@ have these tools or have used this repo before, feel free to skip this section.
  curl -L https://foundry.paradigm.xyz | bash
  ```
 
-### 4. Clone Repo
+### 5. Clone Repo
  - Inside Terminal run:
  ```bash
  git clone git@github.com:base/contract-deployments.git
@@ -58,7 +58,7 @@ is ready".
 
 ### 3. Run relevant script(s)
 
-#### 3.1 [Base Engineer] Deploy new Dispute Game Implementations
+#### 3.1 [ONLY for a Base Engineer to run] Deploy new Dispute Game Implementations
 
 ```bash
 make deploy
@@ -120,7 +120,7 @@ refer to the [CB State Validations](./validations/CB.md) instructions for the tr
 refer to the [OP State Validations](./validations/OP.md) instructions for the transaction you are signing.
 
 - If **Security Council Signer**
-refer to the [B State Validations](./validations/SC.md) instructions for the transaction you are signing.
+refer to the [Security Council State Validations](./validations/SC.md) instructions for the transaction you are signing.
 
 Once complete return to this document to complete the signing.
 
@@ -180,7 +180,7 @@ congrats, you are done!
 
 ### [For Facilitator ONLY] How to execute
 
-#### Execute the transaction
+#### Execute the transaction approvals
 
 1. IMPORTANT: Ensure op-challenger has been updated before executing.
 1. Collect outputs from all participating signers.
@@ -221,13 +221,14 @@ Security Council facilitator:
 SIGNATURES=AAAABBBB make approve-sc
 ```
 
-#### Execute the transaction
-
-Once the signatures have been submitted approving the transaction for all nested Safes run:
-
+Once `approve-cb` and `approve-sc` have been executed, run:
 ```bash
 make approve-coordinator
 ```
+
+#### Execute the transaction
+
+Once the signatures have been submitted approving the transaction for all nested Safes run:
 
 ```bash
 make execute
