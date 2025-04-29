@@ -54,11 +54,11 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 - **Raw Slot**: `0x316a0aac0d94f5824f0b66f5bbe94a8c360a17699a1d3a233aafcf7146e9f11c` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
-  **Meaning**: This is owners[1] -> 0xca11bde05977b3631167028862be2a173976ca11, so the key can be derived from `cast index address 0x0000000000000000000000000000000000000001 2`.
+  **Meaning**: This is owners[0xca11bde05977b3631167028862be2a173976ca11] -> 1, so the key can be derived from `cast index address 0xca11bde05977b3631167028862be2a173976ca11 2`.
 
 - **Raw Slot**: `0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0` <br/>
   **Override**: `0x000000000000000000000000ca11bde05977b3631167028862be2a173976ca11` <br/>
-  **Meaning**: This is owners[0xca11bde05977b3631167028862be2a173976ca11] -> 1, so the key can be derived from `cast index address 0xca11bde05977b3631167028862be2a173976ca11 2`.
+  **Meaning**: This is owners[1] -> 0xca11bde05977b3631167028862be2a173976ca11, so the key can be derived from `cast index address 0x0000000000000000000000000000000000000001 2`.
 
 ## Task State Changes
 
@@ -70,7 +70,7 @@ For each contract listed in the state diff, please verify that no contracts or s
    **Value Type**: address <br/>
    **Decoded Old Value**: `0xE749aA49c3eDAF1DCb997eA3DAC23dff72bcb826` <br/>
    **Decoded New Value**: `0x7344Da3A618b86cdA67f8260C0cc2027D99F5B49` <br/>
-   **Meaning**: Updates the `PermissionedDisputeGame` implementation address. <br/>
+   **Meaning**: Updates the `PermissionedDisputeGame` implementation address. You can verify the key derivation by running `cast index uint32 1 101` in your terminal. <br/>
 
 1. **Raw Slot**: `0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b` <br/>
    **Raw Old Value**: `0x000000000000000000000000e17d670043c3cdd705a3223b3d89a228a1f07f0f` <br/>
@@ -78,7 +78,7 @@ For each contract listed in the state diff, please verify that no contracts or s
    **Value Type**: address <br/>
    **Decoded Old Value**: `0xE17d670043c3cDd705a3223B3D89A228A1f07F0f` <br/>
    **Decoded New Value**: `0xAB91FB6cef84199145133f75cBD96B8a31F184ED` <br/>
-   **Meaning**: Updates the `FaultDisputeGame` implementation address. <br/>
+   **Meaning**: Updates the `FaultDisputeGame` implementation address. You can verify the key derivation by running `cast index uint32 0 101` in your terminal. <br/>
 
 ### Proxy Admin Owner - Mainnet (`0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c`)
 
@@ -96,7 +96,7 @@ For each contract listed in the state diff, please verify that no contracts or s
    **Value Type**: uint256 <br/>
    **Decoded Old Value**: `0` <br/>
    **Decoded New Value**: `1` <br/>
-   **Meaning**: Sets an approval for this transaction from the signer. Compute the expected raw slot key with `cast index bytes32 $NESTED_HASH $(cast index address $NESTED_SAFE 8)` where `NESTED_HASH` is `0x378644b143fa5f6becf1f80e7c66ebb76369df458d06f1d2a82ec1cae4124806` (you should see this in your terminal as the Nested has for safe 0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c) and `NESTED_SAFE` is `0x9855054731540A48b28990B63DcF4f33d8AE46A1`. <br/>
+   **Meaning**: Sets an approval for this transaction from the signer. Compute the expected raw slot key with `cast index bytes32 $NESTED_HASH $(cast index address $NESTED_SAFE 8)` where `NESTED_HASH` is `0x378644b143fa5f6becf1f80e7c66ebb76369df458d06f1d2a82ec1cae4124806` (you should see this in your terminal as the Nested hash for safe 0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c) and `NESTED_SAFE` is `0x9855054731540A48b28990B63DcF4f33d8AE46A1`. <br/>
 
 ### CB Coordinator Safe - Mainnet (`0x9855054731540A48b28990B63DcF4f33d8AE46A1`)
 
@@ -114,7 +114,7 @@ For each contract listed in the state diff, please verify that no contracts or s
    **Value Type**: uint256 <br/>
    **Decoded Old Value**: `0` <br/>
    **Decoded New Value**: `1` <br/>
-   **Meaning**: Sets an approval for this transaction from the signer. Compute the expected raw slot key with `cast index bytes32 $NESTED_HASH $(cast index address $NESTED_SAFE 8)` where `NESTED_HASH` is `0xbb32860528d49e6103c942c2d7ffeb7d2ff304e1c86cec7c2bc445c3a3921335` (you should see this in your terminal as the Nested has for safe 0x9855054731540A48b28990B63DcF4f33d8AE46A1) and `NESTED_SAFE` is `0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110`. <br/>
+   **Meaning**: Sets an approval for this transaction from the signer. Compute the expected raw slot key with `cast index bytes32 $NESTED_HASH $(cast index address $NESTED_SAFE 8)` where `NESTED_HASH` is `0xbb32860528d49e6103c942c2d7ffeb7d2ff304e1c86cec7c2bc445c3a3921335` (you should see this in your terminal as the Nested hash for safe 0x9855054731540A48b28990B63DcF4f33d8AE46A1) and `NESTED_SAFE` is `0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110`. <br/>
 
 ### CB Signer Safe - Mainnet (`0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110`)
 

@@ -33,7 +33,11 @@ have these tools or have used this repo before, feel free to skip this section.
  curl -L https://foundry.paradigm.xyz | bash
  ```
 
-### 4. Install Forge
+### 4. Clone Repo
+ - Inside Terminal run:
+ ```bash
+ git clone git@github.com:base/contract-deployments.git
+ ```
 
 ## Procedure
 
@@ -54,7 +58,7 @@ is ready".
 
 ### 3. Run relevant script(s)
 
-#### 3.1 Deploy new Dispute Game Implementations
+#### 3.1 [Base Engineer] Deploy new Dispute Game Implementations
 
 ```bash
 make deploy
@@ -74,6 +78,12 @@ Op signer:
 
 ```bash
 make sign-op
+```
+
+Security Council signer:
+
+```bash
+make sign-sc
 ```
 
 You will see a "Simulation link" from the output.
@@ -109,8 +119,8 @@ refer to the [CB State Validations](./validations/CB.md) instructions for the tr
 - If **OP Signer**
 refer to the [OP State Validations](./validations/OP.md) instructions for the transaction you are signing.
 
-- If **B Signer**
-refer to the [B State Validations](./validations/B.md) instructions for the transaction you are signing.
+- If **Security Council Signer**
+refer to the [B State Validations](./validations/SC.md) instructions for the transaction you are signing.
 
 Once complete return to this document to complete the signing.
 
@@ -205,9 +215,19 @@ Optimism facilitator:
 SIGNATURES=AAAABBBB make approve-op
 ```
 
+Security Council facilitator:
+
+```bash
+SIGNATURES=AAAABBBB make approve-sc
+```
+
 #### Execute the transaction
 
 Once the signatures have been submitted approving the transaction for all nested Safes run:
+
+```bash
+make approve-coordinator
+```
 
 ```bash
 make execute

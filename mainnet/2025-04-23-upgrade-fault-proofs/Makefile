@@ -27,24 +27,24 @@ approve-op:
 sign-cb:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address[])" [$(SAFE_A),$(COORDINATOR_SAFE_ADDR)]
+	--sig "sign(address[])" [$(CB_SIGNER_SAFE),$(COORDINATOR_SAFE_ADDR)]
 
 .PHONY: sign-sc
 sign-sc:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address[])" [$(SAFE_B),$(COORDINATOR_SAFE_ADDR)]
+	--sig "sign(address[])" [$(SECURITY_COUNCIL_SAFE),$(COORDINATOR_SAFE_ADDR)]
 
 .PHONY: approve-cb
 approve-cb:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "approve(address[],bytes)" [$(SAFE_A),$(COORDINATOR_SAFE_ADDR)] $(SIGNATURES) \
+	--sig "approve(address[],bytes)" [$(CB_SIGNER_SAFE),$(COORDINATOR_SAFE_ADDR)] $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: approve-sc
 approve-sc:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "approve(address[],bytes)" [$(SAFE_B),$(COORDINATOR_SAFE_ADDR)] $(SIGNATURES) \
+	--sig "approve(address[],bytes)" [$(SECURITY_COUNCIL_SAFE),$(COORDINATOR_SAFE_ADDR)] $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: approve-coordinator
@@ -70,11 +70,11 @@ gen-validation-cb:
 	if [ ! -d validations ]; then mkdir validations; fi
 	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o validations/cb_test.md \
 	-- forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address[])" [$(SAFE_A),$(COORDINATOR_SAFE_ADDR)] --sender 0x9986ccaf9e3de0ffef82a0f7fa3a06d5afe07252
+	--sig "sign(address[])" [$(CB_SIGNER_SAFE),$(COORDINATOR_SAFE_ADDR)] --sender 0x9986ccaf9e3de0ffef82a0f7fa3a06d5afe07252
 
 .PHONY: gen-validation-sc
 gen-validation-sc:
 	if [ ! -d validations ]; then mkdir validations; fi
 	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o validations/sc_test.md \
 	-- forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address[])" [$(SAFE_B),$(COORDINATOR_SAFE_ADDR)] --sender 0x9986ccaf9e3de0ffef82a0f7fa3a06d5afe07252
+	--sig "sign(address[])" [$(SECURITY_COUNCIL_SAFE),$(COORDINATOR_SAFE_ADDR)] --sender 0x9986ccaf9e3de0ffef82a0f7fa3a06d5afe07252
