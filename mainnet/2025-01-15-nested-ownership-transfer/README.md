@@ -1,6 +1,6 @@
 # Nested Ownership Transfer
 
-Status: READY TO SIGN
+Status: EXECUTED (https://etherscan.io/tx/0xfeff9bf53acee54f6f54a90140b893e07ab5e7e2b250b884b1caf2d2d3ea0b0f)
 
 ## Procedure
 
