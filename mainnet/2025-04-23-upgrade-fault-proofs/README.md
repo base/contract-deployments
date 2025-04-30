@@ -155,14 +155,14 @@ validate integrity of the simulation, we need to check the following:
 
 Now click on the "State" tab.
 
+- If **Security Council Signer**
+  refer to the [Security Council State Validations](./validations/SC.md) instructions for the transaction you are signing.
+
 - If **CB Signer**
   refer to the [CB State Validations](./validations/CB.md) instructions for the transaction you are signing.
 
 - If **OP Signer**
   refer to the [OP State Validations](./validations/OP.md) instructions for the transaction you are signing.
-
-- If **Security Council Signer**
-  refer to the [Security Council State Validations](./validations/SC.md) instructions for the transaction you are signing.
 
 Once complete return to this document to complete the signing.
 
