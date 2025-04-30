@@ -47,8 +47,8 @@ Next, `cd` into the directory that was created for you and follow the steps list
 
 Each task will have a directory structure similar to the following:
 
-- **[inputs/](/inputs)** any input JSON files
-- **[records/](/records)** Foundry will autogenerate files here from running commands
+- **[inputs/](https://github.com/base/contract-deployments/tree/main/internal-devnet/2023-05-25-deploy/inputs)** any input JSON files
+- **[records/](https://github.com/base/contract-deployments/tree/main/internal-devnet/2023-05-25-deploy/records)** Foundry will autogenerate files here from running commands
 - **[script/](/script)** place to store any one-off Foundry scripts
 - **[src/](/src)** place to store any one-off smart contracts (long-lived contracts should go in [base-org/contracts](https://github.com/base-org/contracts))
 - **.env** place to store environment variables specific to this task
