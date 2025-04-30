@@ -1,6 +1,6 @@
 # Upgrade Fault Proofs
 
-Status: READY TO SIGN
+Status: PENDING APPROVAL
 
 ## Description
 
