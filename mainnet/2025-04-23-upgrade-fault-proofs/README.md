@@ -1,6 +1,6 @@
 # Upgrade Fault Proofs
 
-Status: PENDING APPROVAL
+Status: DRAFT
 
 ## Description
 
