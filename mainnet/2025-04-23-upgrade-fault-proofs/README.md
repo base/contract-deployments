@@ -6,10 +6,11 @@ Status: READY TO SIGN
 
 This task contains two scripts. One for deploying new versions of the `FaultDisputeGame` and `PermissionedDisputeGame` contracts, and one for updating the `DisputeGameFactory` contract to reference the new dispute game contracts.
 
+If this is your first signing task, follow the initial setup instructions below. If you are not new, you can skip directly to the [Procedure](#procedure).
+
 ## Initial Setup
 
-These instructions are for initial setup of your development environment to install basic tools (e.g Go, Git etc.) needed for the rest of the README. If you already
-have these tools or have used this repo before, feel free to skip this section.
+These instructions are for initial setup of your development environment to install basic tools (e.g Go, Git etc.) needed for the rest of the README.
 
 ### 1. Install Homebrew
 
@@ -29,15 +30,13 @@ echo >> /Users/yourname/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-### 3. Quit your terminal and re-open
-
-### 4. Install Golang
+### 3. Install Golang
 
 ```bash
 brew install go
 ```
 
-### 5. Install Foundry if Needed
+### 4. Install Foundry if Needed
 
 - Inside Terminal run:
 
@@ -45,14 +44,7 @@ brew install go
 forge --version
 ```
 
-If you see an output that looks like the following, you have foundry installed and can proceed to the next step:
-
-```bash
-forge Version: 1.0.0-stable
-Commit SHA: e144b82070619b6e10485c38734b4d4d45aebe04
-Build Timestamp: 2025-02-13T20:02:34.979686000Z (1739476954)
-Build Profile: maxperf
-```
+If you see an output that starts with `forge Version`, you have foundry installed and can proceed to the next step.
 
 If you do not get an output from `forge --version`, you need to install foundry with:
 
@@ -60,15 +52,17 @@ If you do not get an output from `forge --version`, you need to install foundry 
 curl -L https://foundry.paradigm.xyz | bash
 ```
 
-After installation completes, quit / re-open your terminal again and run:
+After installation completes, quit / re-open your terminal and run:
 
 ```bash
 foundryup
 ```
 
-### 6. Make a free [Tenderly](https://tenderly.co/) account if you don't already have one.
+### 5. Make a free [Tenderly](https://tenderly.co/) account if you don't already have one.
 
-### 7. Clone Repo
+We will use this later on for simulating and validating the task transaction.
+
+### 6. Clone Repo
 
 - Inside Terminal run:
 
@@ -89,11 +83,9 @@ make deps
 
 ### 2. Setup Ledger
 
-Your Ledger needs to be connected and unlocked. The Ethereum
-application needs to be opened on Ledger with the message "Application
-is ready".
+Your Ledger needs to be connected and unlocked. The Ethereum application needs to be opened on Ledger with the message "Application is ready".
 
-### 3. Sign the transaction
+### 3. Produce Simulation
 
 Choose one of the following commands to run in your terminal based on which signer you are.
 
@@ -121,8 +113,7 @@ You will see a "Simulation link" from the output (yes, it's a big link). Example
 https://dashboard.tenderly.co/TENDERLY_USERNAME/TENDERLY_PROJECT/simulator/new?network=1&contractAddress=0xcA11bde05977b3631167028862bE2a173976CA11&from=0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38&stateOverrides=%5B%7B"contractAddress":"0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd","storage":%5B%7B"key":"0x0000000000000000000000000000000000000000000000000000000000000004","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D,%7B"key":"0x0000000000000000000000000000000000000000000000000000000000000003","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D,%7B"key":"0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0","value":"0x000000000000000000000000ca11bde05977b3631167028862be2a173976ca11"%7D,%7B"key":"0x316a0aac0d94f5824f0b66f5bbe94a8c360a17699a1d3a233aafcf7146e9f11c","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D%5D%7D,%7B"contractAddress":"0x9855054731540A48b28990B63DcF4f33d8AE46A1","storage":%5B%7B"key":"0x0000000000000000000000000000000000000000000000000000000000000004","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D%5D%7D,%7B"contractAddress":"0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c","storage":%5B%7B"key":"0x0000000000000000000000000000000000000000000000000000000000000004","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D%5D%7D%5D
 ```
 
-The link above is just an example. Paste the URL from your terminal in your browser. A prompt may ask you to choose a
-project, any project will do. You can create one if necessary.
+The link above is just an example. Paste the URL from your terminal in your browser. A prompt may ask you to choose a project, any project will do. You can create one if necessary.
 
 If the link is large enough, it's possible the transaction data field needs to be manually entered after pasting the URL in your browser. If you see the following text after the link in your terminal, "Insert the following hex into the 'Raw input data' field:", this extra step is required.
 
@@ -141,50 +132,41 @@ We will be performing 3 validations and extract the domain hash and message hash
 
 In order for these validations to occur, ensure you have "Dev Mode" turned on - this is a switch you can click towards the top right of the screen in the Tenderly UI.
 
-##### 3.1 Validate integrity of the simulation.
+### 4 Validate Simulation
 
-Make sure you are on the "Summary" tab of the tenderly simulation, to
-validate integrity of the simulation, we need to check the following:
+#### 4.1 Validate integrity of the simulation.
+
+Make sure you are on the "Summary" tab of the tenderly simulation, to validate integrity of the simulation, we need to check the following:
 
 1. "Network": Check the network is Mainnet.
-2. "Timestamp": Check the simulation is performed on a block with a
-   recent timestamp (i.e. close to when you run the script).
+2. "Timestamp": Check the simulation is performed on a block with a recent timestamp (i.e. close to when you run the script).
 3. "Sender": Check the address shown is your signer account. If not see the derivation path Note above.
 
-##### 3.2. Validate correctness of the state diff.
+#### 4.2. Validate correctness of the state diff.
 
 Now click on the "State" tab.
 
-- If **Security Council Signer**
-  refer to the [Security Council State Validations](./validations/SC.md) instructions for the transaction you are signing.
+- If **Security Council Signer** refer to the [Security Council State Validations](./validations/SC.md) instructions for the transaction you are signing.
 
-- If **CB Signer**
-  refer to the [CB State Validations](./validations/CB.md) instructions for the transaction you are signing.
+- If **CB Signer** refer to the [CB State Validations](./validations/CB.md) instructions for the transaction you are signing.
 
-- If **OP Signer**
-  refer to the [OP State Validations](./validations/OP.md) instructions for the transaction you are signing.
+- If **OP Signer** refer to the [OP State Validations](./validations/OP.md) instructions for the transaction you are signing.
 
 Once complete return to this document to complete the signing.
 
-##### 3.3. Extract the domain hash and the message hash to approve.
+#### 4.3. Extract the domain hash and the message hash to approve.
 
-Now that we have verified the transaction performs the right
-operation, we need to extract the domain hash and the message hash to
-approve.
+Now that we have verified the transaction performs the right operation, we need to extract the domain hash and the message hash to approve.
 
-Go back to the "Overview" tab, and find the
-`GnosisSafe.checkSignatures` call. This call's `data` parameter
-contains both the domain hash and the message hash that will show up
-in your Ledger.
+Go back to the "Summary" tab in the Tenderly UI, and find the `GnosisSafe.checkSignatures` call. This call's `data` parameter contains both the domain hash and the message hash that will show up in your Ledger.
 
-It will be a concatenation of `0x1901`, the domain hash, and the
-message hash: `0x1901[domain hash][message hash]`.
+It will be a concatenation of `0x1901`, the domain hash, and the message hash: `0x1901[domain hash][message hash]`.
 
-Note down this value. You will need to compare it with the ones
-displayed on the Ledger screen at signing.
+Note down this value. You will need to compare it with the ones displayed on the Ledger screen at signing.
 
-Once the validations are done, it's time to actually sign the
-transaction.
+### 5. Sign the Transaction
+
+Once the validations are done, it's time to actually sign the transaction. NOTE: you may need to unlock your Ledger again before running the sign command.
 
 > [!WARNING]
 > This is the most security critical part of the playbook: make sure the
@@ -198,9 +180,7 @@ transaction.
 > There is no need to verify anything printed in the console. There is
 > no need to open the new Tenderly simulation link either.
 
-After verification, sign the transaction. You will see the `Data`,
-`Signer` and `Signature` printed in the console. Format should be
-something like this:
+After verification, sign the transaction. You will see the `Data`, `Signer` and `Signature` printed in the console. Format should be something like this:
 
 ```shell
 Data:  <DATA>
@@ -208,14 +188,10 @@ Signer: <ADDRESS>
 Signature: <SIGNATURE>
 ```
 
-Double check the signer address is the right one.
+Double check the signer address is your ledger address.
 
-##### 3.4 Send the output to Facilitator(s)
+### 6 Send the output to Facilitator(s)
 
-Nothing has occurred onchain - these are offchain signatures which
-will be collected by Facilitators for execution. Execution can occur
-by anyone once a threshold of signatures are collected, so a
-Facilitator will do the final execution for convenience.
+Nothing has occurred onchain - these are offchain signatures which will be collected by Facilitators for execution. Execution can occur by anyone once a threshold of signatures are collected, so a Facilitator will do the final execution for convenience.
 
-Share the `Data`, `Signer` and `Signature` with the Facilitator, and
-congrats, you are done!
+Share the `Data`, `Signer` and `Signature` with the Facilitator, and congrats, you are done!
