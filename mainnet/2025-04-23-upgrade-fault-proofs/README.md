@@ -93,22 +93,24 @@ is ready".
 
 ### 3. Sign the transaction
 
+Choose one of the following commands to run in your terminal based on which signer you are.
+
+Security Council signer:
+
+```bash
+make sign-sc
+```
+
 Coinbase signer:
 
 ```bash
 make sign-cb
 ```
 
-Op signer:
+Optimism signer:
 
 ```bash
 make sign-op
-```
-
-Security Council signer:
-
-```bash
-make sign-sc
 ```
 
 You will see a "Simulation link" from the output.
