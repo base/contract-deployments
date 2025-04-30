@@ -1,12 +1,14 @@
-# Upgrade Fault Proofs
+# Upgrade 15 - Fault Proof Upgrades for Isthmus
 
-Status: DRAFT
+Status: READY TO SIGN
 
 ## Description
 
+This task upgrades the smart contracts as part of [Upgrade 15](https://docs.optimism.io/notices/upgrade-15) (governance approval [here](https://vote.optimism.io/proposals/8705916809146420472067303211131851783087744913535435360574720946039078686841)). Several contract changes needed for Isthmus were already included in Upgrade 14, so this upgrade mostly updates the fault proof contracts to be compatible with other changes in Isthmus.
+
 This task contains two scripts. One for deploying new versions of the `FaultDisputeGame` and `PermissionedDisputeGame` contracts, and one for updating the `DisputeGameFactory` contract to reference the new dispute game contracts.
 
-If this is your first signing task, follow the initial setup instructions below. If you are not new, you can skip directly to the [Procedure](#procedure).
+If this is your first signing task, follow the initial setup instructions below. If you have previously signed tasks in this repo, you can skip directly to the [Procedure](#procedure).
 
 ## Initial Setup
 
@@ -38,7 +40,7 @@ brew install go
 
 ### 4. Install Foundry if Needed
 
-- Inside Terminal run:
+Inside Terminal run:
 
 ```bash
 forge --version
@@ -64,7 +66,7 @@ We will use this later on for simulating and validating the task transaction.
 
 ### 6. Clone Repo
 
-- Inside Terminal run:
+Inside Terminal run:
 
 ```bash
 git clone https://github.com/base/contract-deployments.git
@@ -83,11 +85,11 @@ make deps
 
 ### 2. Setup Ledger
 
-Your Ledger needs to be connected and unlocked. The Ethereum application needs to be opened on Ledger with the message "Application is ready".
+Connect and unlock your Ledger with your 8-digit pin. Open the Ethereum application on Ledger so it displays the message "Application is ready".
 
 ### 3. Produce Simulation
 
-Choose one of the following commands to run in your terminal based on which signer you are.
+Run one of the following commands in your terminal based on which signer you are.
 
 Security Council signer:
 
@@ -115,24 +117,21 @@ https://dashboard.tenderly.co/TENDERLY_USERNAME/TENDERLY_PROJECT/simulator/new?n
 
 The link above is just an example. Paste the URL from your terminal in your browser. A prompt may ask you to choose a project, any project will do. You can create one if necessary.
 
-If the link is large enough, it's possible the transaction data field needs to be manually entered after pasting the URL in your browser. If you see the following text after the link in your terminal, "Insert the following hex into the 'Raw input data' field:", this extra step is required.
+> #### Extra step:
+> If you see the following text after the link in your terminal, "Insert the following hex into the 'Raw input data' field:", the following 2 steps are required.
+> 1. Click the "Enter raw input data" option towards the bottom of the `Contract` component on the left side of your screen in Tenderly.
+> 2. Paste the data string below "Insert the following hex into the 'Raw input data' field:" in your terminal into the "Raw input data" field.
 
-Extra step:
+Now, finish generating the simulation by clicking "Simulate Transaction".
 
-1. Click the "Enter raw input data" option towards the bottom of the `Contract` component on the left side of your screen in Tenderly.
-2. Paste the data string below "Insert the following hex into the 'Raw input data' field:" in your terminal into the "Raw input data" field.
-
-Click "Simulate Transaction".
-
+### 4 Validate Simulation
 We will be performing 3 validations and extract the domain hash and message hash to approve on your Ledger:
 
 1. Validate integrity of the simulation.
 2. Validate correctness of the state diff.
 3. Validate and extract domain hash and message hash to approve.
 
-In order for these validations to occur, ensure you have "Dev Mode" turned on - this is a switch you can click towards the top right of the screen in the Tenderly UI.
-
-### 4 Validate Simulation
+**Note: in order for these validations to occur, ensure you have "Dev Mode" turned on - this is a switch you can click towards the top right of the screen in the Tenderly UI.**
 
 #### 4.1 Validate integrity of the simulation.
 
@@ -166,7 +165,9 @@ Note down this value. You will need to compare it with the ones displayed on the
 
 ### 5. Sign the Transaction
 
-Once the validations are done, it's time to actually sign the transaction. NOTE: you may need to unlock your Ledger again before running the sign command.
+Once the validations are done, it's time to actually sign the transaction.
+
+**Note: if your ledger is displaying the lock screen, you will need to unlock your Ledger again before running the sign command.**
 
 > [!WARNING]
 > This is the most security critical part of the playbook: make sure the
