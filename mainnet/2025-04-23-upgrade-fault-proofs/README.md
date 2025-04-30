@@ -139,6 +139,8 @@ We will be performing 3 validations and extract the domain hash and message hash
 2. Validate correctness of the state diff.
 3. Validate and extract domain hash and message hash to approve.
 
+In order for these validations to occur, ensure you have "Dev Mode" turned on - this is a switch you can click towards the top right of the screen in the Tenderly UI.
+
 ##### 3.1 Validate integrity of the simulation.
 
 Make sure you are on the "Overview" tab of the tenderly simulation, to
