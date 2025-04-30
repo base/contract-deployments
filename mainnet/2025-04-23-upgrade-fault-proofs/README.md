@@ -143,7 +143,7 @@ In order for these validations to occur, ensure you have "Dev Mode" turned on - 
 
 ##### 3.1 Validate integrity of the simulation.
 
-Make sure you are on the "Overview" tab of the tenderly simulation, to
+Make sure you are on the "Summary" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
 1. "Network": Check the network is Mainnet.
