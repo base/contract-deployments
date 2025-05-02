@@ -60,7 +60,7 @@ After installation completes, quit / re-open your terminal and run:
 foundryup
 ```
 
-Note: If you see warning that says `warning: libusb not found. You may need to install it manually on MacOS via Homebrew (brew install libsub)` you can safely ignore this and continue to the next step.
+If you see a `libusb` warning (`warning: libusb not found...`), you can safely ignore it and continue to the next step.
 
 ### 5. Make a free [Tenderly](https://tenderly.co/) account if you don't already have one.
 
@@ -128,7 +128,7 @@ The link above is just an example. Paste the URL from your terminal in your brow
 
 Now, finish generating the simulation by clicking "Simulate Transaction".
 
-### 4 Validate Simulation
+### 4. Validate Simulation
 
 We will be performing 3 validations and extract the domain hash and message hash to approve on your Ledger:
 
@@ -136,9 +136,10 @@ We will be performing 3 validations and extract the domain hash and message hash
 2. Validate correctness of the state diff.
 3. Validate and extract domain hash and message hash to approve.
 
-**Note: in order for these validations to occur, ensure you have "Dev Mode" turned on - this is a switch you can click towards the top right of the screen in the Tenderly UI.**
+> [!NOTE]
+> Ensure you have "Dev Mode" turned on in Tenderly for these validations. This switch is usually located towards the top right of the Tenderly UI.
 
-#### 4.1 Validate integrity of the simulation.
+#### 4.1. Validate integrity of the simulation.
 
 Make sure you are on the "Summary" tab of the tenderly simulation, to validate integrity of the simulation, we need to check the following:
 
@@ -164,7 +165,7 @@ Now that we have verified the transaction performs the right operation, we need 
 
 Go back to the "Summary" tab in the Tenderly UI, and find the `Safe.checkSignatures` call. This call's `data` parameter contains both the domain hash and the message hash that will show up in your Ledger.
 
-It will be a concatenation of `0x1901`, the domain hash, and the message hash: `0x1901[domain hash][message hash]`.
+It will be a concatenation of `0x1901`, the domain hash, and the message hash, in the format: **`0x1901[domain hash][message hash]`**.
 
 Note down this value. You will need to compare it with the ones displayed on the Ledger screen at signing.
 
@@ -196,7 +197,7 @@ Signature: <SIGNATURE>
 
 Double check the signer address is your ledger address.
 
-### 6 Send the output to Facilitator(s)
+### 6. Send the output to Facilitator(s)
 
 Nothing has occurred onchain - these are offchain signatures which will be collected by Facilitators for execution. Execution can occur by anyone once a threshold of signatures are collected, so a Facilitator will do the final execution for convenience.
 
