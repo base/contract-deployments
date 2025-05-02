@@ -1,18 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
 
-import "@base-contracts/script/universal/MultisigScript.sol";
+import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 
-contract Fund is MultisigScript {
-    address internal SAFE = vm.envAddress("SAFE");
+contract FundScript is MultisigScript {
+    address internal immutable SAFE;
+
+    uint256 internal immutable SAFE_BALANCE_BEFORE;
+    uint256 internal immutable TOTAL_FUNDS;
 
     address[] internal RECIPIENTS;
     uint256[] internal FUNDS;
     uint256[] internal RECIPIENT_BALANCES_BEFORE;
-    uint256 internal immutable SAFE_BALANCE_BEFORE;
-    uint256 internal immutable TOTAL_FUNDS;
 
     constructor() {
+        SAFE = vm.envAddress("SAFE");
+
         string memory funding = vm.readFile("./funding.json");
         RECIPIENTS = vm.parseJsonAddressArray(funding, ".recipients");
         FUNDS = vm.parseJsonUintArray(funding, ".funds");
