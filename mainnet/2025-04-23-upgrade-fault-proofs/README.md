@@ -111,22 +111,20 @@ Optimism signer:
 make sign-op
 ```
 
-You will see a "Simulation link" from the output (yes, it's a big link). Example link below:
+You will see a "Simulation link" from the output (yes, it's a big link). Paste the URL from your terminal in your browser. A prompt may ask you to choose a project, any project will do. You can create one if necessary.
+
+If you see the following text after the link in your terminal, "Insert the following hex into the 'Raw input data' field:", the following 2 steps are required.
+
+1. Click the "Enter raw input data" option towards the bottom of the `Contract` component on the left side of your screen in Tenderly.
+2. Paste the data string below "Insert the following hex into the 'Raw input data' field:" in your terminal into the "Raw input data" field.
+
+Click "Simulate Transaction".
+
+Example link below (just for reference):
 
 ```txt
 https://dashboard.tenderly.co/TENDERLY_USERNAME/TENDERLY_PROJECT/simulator/new?network=1&contractAddress=0xcA11bde05977b3631167028862bE2a173976CA11&from=0x1804c8AB1F12E6bbf3894d4083f33e07309d1f38&stateOverrides=%5B%7B"contractAddress":"0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd","storage":%5B%7B"key":"0x0000000000000000000000000000000000000000000000000000000000000004","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D,%7B"key":"0x0000000000000000000000000000000000000000000000000000000000000003","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D,%7B"key":"0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0","value":"0x000000000000000000000000ca11bde05977b3631167028862be2a173976ca11"%7D,%7B"key":"0x316a0aac0d94f5824f0b66f5bbe94a8c360a17699a1d3a233aafcf7146e9f11c","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D%5D%7D,%7B"contractAddress":"0x9855054731540A48b28990B63DcF4f33d8AE46A1","storage":%5B%7B"key":"0x0000000000000000000000000000000000000000000000000000000000000004","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D%5D%7D,%7B"contractAddress":"0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c","storage":%5B%7B"key":"0x0000000000000000000000000000000000000000000000000000000000000004","value":"0x0000000000000000000000000000000000000000000000000000000000000001"%7D%5D%7D%5D
 ```
-
-The link above is just an example. Paste the URL from your terminal in your browser. A prompt may ask you to choose a project, any project will do. You can create one if necessary.
-
-> #### Extra step:
->
-> If you see the following text after the link in your terminal, "Insert the following hex into the 'Raw input data' field:", the following 2 steps are required.
->
-> 1. Click the "Enter raw input data" option towards the bottom of the `Contract` component on the left side of your screen in Tenderly.
-> 2. Paste the data string below "Insert the following hex into the 'Raw input data' field:" in your terminal into the "Raw input data" field.
-
-Now, finish generating the simulation by clicking "Simulate Transaction".
 
 ### 4. Validate Simulation
 
