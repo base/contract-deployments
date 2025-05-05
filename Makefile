@@ -56,8 +56,8 @@ setup-safe-management:
 	rm -rf $(TEMPLATE_SAFE_MANAGEMENT)/cache $(TEMPLATE_SAFE_MANAGEMENT)/lib $(TEMPLATE_SAFE_MANAGEMENT)/out
 	cp -r $(TEMPLATE_SAFE_MANAGEMENT) $(SAFE_MANAGEMENT_DIR)
 
-# Run `make setup-template-funding network=<network>`
-setup-template-funding:
+# Run `make setup-funding network=<network>`
+setup-funding:
 	rm -rf $(TEMPLATE_FUNDING)/cache $(TEMPLATE_FUNDING)/lib $(TEMPLATE_FUNDING)/out
 	cp -r $(TEMPLATE_FUNDING) $(FUNDING_DIR)
 
