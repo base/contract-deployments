@@ -1,6 +1,6 @@
 # Funding
 
-Status: PENDING
+Status: READY TO SIGN
 
 ## Description
 

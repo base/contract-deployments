@@ -52,8 +52,6 @@ contract FundBaseScript is MultisigScript {
                 IMulticall3.Call3Value({target: RECIPIENTS[i], allowFailure: false, callData: "", value: FUNDS[i]});
         }
 
-        console.log("--------------------------------");
-
         return calls;
     }
 
