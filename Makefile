@@ -87,18 +87,14 @@ forge-deps:
 
 .PHONY: checkout-op-commit
 checkout-op-commit:
-	@if grep -q "^OP_COMMIT=" .env 2>/dev/null; then \
-		[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1); \
-		rm -rf lib/optimism; \
-		mkdir -p lib/optimism; \
-		cd lib/optimism; \
-		git init; \
-		git remote add origin https://github.com/ethereum-optimism/optimism.git; \
-		git fetch --depth=1 origin $(OP_COMMIT); \
-		git reset --hard FETCH_HEAD; \
-	else \
-		echo "Skipping checkout-op-commit as OP_COMMIT is not defined in .env"; \
-	fi
+	[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1)
+	rm -rf lib/optimism
+	mkdir -p lib/optimism
+	cd lib/optimism; \
+	git init; \
+	git remote add origin https://github.com/ethereum-optimism/optimism.git; \
+	git fetch --depth=1 origin $(OP_COMMIT); \
+	git reset --hard FETCH_HEAD
 
 .PHONY: checkout-base-contracts-commit
 checkout-base-contracts-commit:
