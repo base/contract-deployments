@@ -8,7 +8,7 @@ import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 
-contract FundEthereumScript is MultisigScript {
+contract FundScript is MultisigScript {
     address internal immutable SAFE;
 
     uint256 internal immutable SAFE_BALANCE_BEFORE;
@@ -19,8 +19,20 @@ contract FundEthereumScript is MultisigScript {
     uint256[] internal RECIPIENT_BALANCES_BEFORE;
 
     constructor() {
+        Chain memory chain = getChain(block.chainid);
+        console.log("Deploying on chain: %s", chain.name);
+
         SAFE = vm.envAddress("SAFE");
-        string memory funding = vm.readFile("./funding-ethereum.json");
+
+        string memory funding;
+        if (chain.chainId == 1) {
+            funding = vm.readFile("./funding-ethereum.json");
+        } else if (chain.chainId == 8453) {
+            funding = vm.readFile("./funding-base.json");
+        } else {
+            revert(string.concat("Unsupported chain: ", chain.name, " (", vm.toString(block.chainid), ")"));
+        }
+
         RECIPIENTS = vm.parseJsonAddressArray(funding, ".recipients");
         FUNDS = vm.parseJsonUintArray(funding, ".funds");
 
