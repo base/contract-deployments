@@ -16,7 +16,6 @@ contract OwnershipTransfer is Script {
     Proxy proxy;
     address L1_SAFE_ALIASED;
 
-    // Precheck assertion to make sure original admin is OWNER_EOA
     function setUp() external {
         OWNER_EOA = vm.envAddress("OWNER_EOA");
         L1_SAFE = vm.envAddress("L1_SAFE");
@@ -40,6 +39,7 @@ contract OwnershipTransfer is Script {
         _postChecks();
     }
 
+    // Precheck assertion to make sure original admin is OWNER_EOA
     function _preChecks() private {
         vm.prank(address(0));
         address expectedOriginalAdmin = proxy.admin();

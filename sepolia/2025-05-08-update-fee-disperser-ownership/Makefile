@@ -3,7 +3,7 @@ include ../.env
 include .env
 
 ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 0
+override LEDGER_ACCOUNT = 1
 endif
 
 .PHONY: sim-transfer
