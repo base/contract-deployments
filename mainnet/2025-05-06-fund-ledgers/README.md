@@ -13,7 +13,7 @@ This task contains a single script that can be used to fund addresses from a Gno
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<date>safe-swap-owner
+cd mainnet/2025-05-06-fund-ledgers
 make deps
 ```
 
@@ -27,13 +27,17 @@ is ready".
 
 #### 3.1. Simulate and validate the transaction
 
-Make sure your ledger is still unlocked and run the following.
+Make sure your ledger is still unlocked and run the following commands for both Ethereum and Base:
 
 ```bash
-make sign
+make sign-ethereum
 ```
 
-You will see a "Simulation link" from the output.
+```bash
+make sign-base
+```
+
+For each run, you will see a "Simulation link" from the output.
 
 Paste this URL in your browser. A prompt may ask you to choose a
 project, any project will do. You can create one if necessary.
@@ -52,10 +56,9 @@ message hash to approve on your Ledger:
 Make sure you are on the "Overview" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
-1. "Network": Check the network is `<network>`.
+1. "Network": Check the network is `Mainnet` (when running `make sign-ethereum`) or `Base` (when running `make sign-base`).
 2. "Timestamp": Check the simulation is performed on a block with a
    recent timestamp (i.e. close to when you run the script).
-3. "Sender": Check the address shown is your signer account.
 
 ##### 3.1.2. Validate correctness of the state diff.
 
@@ -122,7 +125,7 @@ congrats, you are done!
 1. Concatenate all signatures and export it as the `SIGNATURES`
    environment variable, i.e. `export
 SIGNATURES="[SIGNATURE1][SIGNATURE2]..."`.
-1. Run the `make execute` command as described below to execute the transaction.
+1. Run the `make execute-ethereum` or `make execute-base` command as described below to execute the transaction.
 
 For example, if the quorum is 2 and you get the following outputs:
 

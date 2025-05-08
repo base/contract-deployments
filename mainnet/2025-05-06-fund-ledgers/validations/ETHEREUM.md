@@ -20,7 +20,7 @@ First, we need to validate the domain and message hashes. These values should ma
 > Before signing, ensure the below hashes match what is on your ledger.
 >
 > - Domain Hash: `0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289`
-> - Message Hash: `0x0725457fa435c69da1afe64955d36c42439879b7a3311d5f204fd7337f0ab6fa`
+> - Message Hash: `0x006e270985d13c3ee735ee87e4cac32a64928adbb6d1438fb4270f570611c467`
 
 # State Validations
 
@@ -54,11 +54,11 @@ For each contract listed in the state diff, please verify that no contracts or s
 ### Multisig - Mainnet (`0x14536667Cd30e52C0b458BaACcB9faDA7046E056`)
 
 0. **Key**: `0x0000000000000000000000000000000000000000000000000000000000000005` <br/>
-   **Before**: `0x000000000000000000000000000000000000000000000000000000000000003c` <br/>
-   **After**: `0x000000000000000000000000000000000000000000000000000000000000003d` <br/>
+   **Before**: `0x000000000000000000000000000000000000000000000000000000000000003d` <br/>
+   **After**: `0x000000000000000000000000000000000000000000000000000000000000003e` <br/>
    **Value Type**: uint256 <br/>
-   **Decoded Old Value**: `60` <br/>
-   **Decoded New Value**: `61` <br/>
+   **Decoded Old Value**: `61` <br/>
+   **Decoded New Value**: `62` <br/>
    **Meaning**: Increments the nonce <br/>
 
 1. **Balance**: <br/>
@@ -71,10 +71,10 @@ For each contract listed in the state diff, please verify that no contracts or s
 ### Ledger - Mainnet (`0x24c3AE1AeDB8142D32BB6d3B988f5910F272D53b`)
 
 2. **Balance**: <br/>
-   **Before**: `73906797423061746` <br/>
-   **After**: `1073906797423061746` <br/>
-   **Decoded Old Value**: `0.073906797423061746 ETH` <br/>
-   **Decoded New Value**: `1.073906797423061746 ETH` <br/>
+   **Before**: `73257648092217326` <br/>
+   **After**: `1073257648092217326` <br/>
+   **Decoded Old Value**: `0.73257648092217326 ETH` <br/>
+   **Decoded New Value**: `1.073257648092217326 ETH` <br/>
    **Meaning**: Increases the balance of the Ledger by 1.0 ETH. <br/>
 
 ### Ledger - Mainnet (`0x644e3DedB0e4F83Bfcf8F9992964d240224B74dc`)
@@ -108,4 +108,4 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 - Nonce increment for the sender of the simulated transaction.
 
-You can now navigate back to the [README](../README.md#43-extract-the-domain-hash-and-the-message-hash-to-approve) to continue the signing process.
+You can now navigate back to the [README](../README.md#4-extract-the-domain-hash-and-the-message-hash-to-approve) to continue the signing process.
