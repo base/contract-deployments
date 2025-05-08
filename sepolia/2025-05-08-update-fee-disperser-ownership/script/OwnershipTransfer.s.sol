@@ -5,18 +5,19 @@ import {console} from "forge-std/console.sol";
 import {Script} from "forge-std/Script.sol";
 import {Proxy} from "@eth-optimism-bedrock/src/universal/Proxy.sol";
 import {AddressAliasHelper} from "@eth-optimism-bedrock/src/vendor/AddressAliasHelper.sol";
+import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 
 contract OwnershipTransfer is Script {
     using AddressAliasHelper for address;
 
-    address OWNER_EOA;
-    address L1_SAFE;
-    address TARGET;
+    address immutable OWNER_EOA;
+    address immutable L1_SAFE;
+    address immutable TARGET;
 
-    Proxy proxy;
-    address L1_SAFE_ALIASED;
+    Proxy immutable proxy;
+    address immutable L1_SAFE_ALIASED;
 
-    function setUp() external {
+    constructor() {
         OWNER_EOA = vm.envAddress("OWNER_EOA");
         L1_SAFE = vm.envAddress("L1_SAFE");
         TARGET = vm.envAddress("TARGET");
@@ -28,13 +29,25 @@ contract OwnershipTransfer is Script {
         console.log("L1_SAFE: %s", L1_SAFE);
         console.log("TARGET: %s", TARGET);
         console.log("L1_SAFE_ALIASED: %s", L1_SAFE_ALIASED);
-
-        _preChecks();
     }
 
     function run() public {
-        vm.broadcast(OWNER_EOA);
-        proxy.changeAdmin(L1_SAFE_ALIASED);
+        _preChecks();
+
+        Simulation.StateOverride[] memory overrides;
+        bytes memory data = abi.encodeCall(Proxy.changeAdmin, (L1_SAFE_ALIASED));
+        Simulation.logSimulationLink(
+            TARGET,
+            data,
+            OWNER_EOA,
+            overrides
+        );
+
+        vm.startBroadcast(OWNER_EOA);
+        (bool success, ) = TARGET.call(data);
+        vm.stopBroadcast();
+
+        require(success, "changeAdmin() call failed");
 
         _postChecks();
     }
