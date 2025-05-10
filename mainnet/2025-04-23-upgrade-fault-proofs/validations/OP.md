@@ -22,7 +22,7 @@ First, we need to validate the domain and message hashes. These values should ma
 > ### OP Signer Safe - Mainnet: `0x9BA6e03D8B90dE867373Db8cF1A58d2F7F006b3A`
 >
 > - Domain Hash: `0x4e6a6554de0308f5ece8ff736beed8a1b876d16f5c27cac8e466d7de0c703890`
-> - Message Hash: `0x46fe3f9cbb360cab153b001412c217c0399bc13e3c0c70a894bfbcbb9758aeaf`
+> - Message Hash: `0x622b6fc8b2a90dd7a4bf039496c1cbbb1ca0dd703f55c2ae407692080c054a9e`
 
 # State Validations
 
@@ -98,11 +98,11 @@ For each contract listed in the state diff, please verify that no contracts or s
 ### OP Signer Safe - Mainnet (`0x9BA6e03D8B90dE867373Db8cF1A58d2F7F006b3A`)
 
 4. **Key**: `0x0000000000000000000000000000000000000000000000000000000000000005` <br/>
-   **Before**: `0x0000000000000000000000000000000000000000000000000000000000000068` <br/>
-   **After**: `0x0000000000000000000000000000000000000000000000000000000000000069` <br/>
+   **Before**: `0x0000000000000000000000000000000000000000000000000000000000000069` <br/>
+   **After**: `0x000000000000000000000000000000000000000000000000000000000000006a` <br/>
    **Value Type**: uint256 <br/>
-   **Decoded Old Value**: `104` <br/>
-   **Decoded New Value**: `105` <br/>
+   **Decoded Old Value**: `105` <br/>
+   **Decoded New Value**: `106` <br/>
    **Meaning**: Increments the nonce <br/>
 
 ### Your Signer Address

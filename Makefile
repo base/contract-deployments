@@ -4,12 +4,15 @@ INCIDENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(incident)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
 SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-swap-owner
+FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
+
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_DEPLOY = setup-templates/template-deploy
 TEMPLATE_INCIDENT = setup-templates/template-incident
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
 TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
 TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
+TEMPLATE_FUNDING = setup-templates/template-funding
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
@@ -52,6 +55,11 @@ setup-upgrade-fault-proofs:
 setup-safe-management:
 	rm -rf $(TEMPLATE_SAFE_MANAGEMENT)/cache $(TEMPLATE_SAFE_MANAGEMENT)/lib $(TEMPLATE_SAFE_MANAGEMENT)/out
 	cp -r $(TEMPLATE_SAFE_MANAGEMENT) $(SAFE_MANAGEMENT_DIR)
+
+# Run `make setup-funding network=<network>`
+setup-funding:
+	rm -rf $(TEMPLATE_FUNDING)/cache $(TEMPLATE_FUNDING)/lib $(TEMPLATE_FUNDING)/out
+	cp -r $(TEMPLATE_FUNDING) $(FUNDING_DIR)
 
 ##
 # Solidity Setup

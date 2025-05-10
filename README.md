@@ -125,6 +125,21 @@ This template is used to perform ownership management on a Gnosis Safe multisig,
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `DONE` in the README.
 
+## Using the funding template
+
+This template is used to fund addresses from a Gnosis Safe.
+
+1. Ensure you have followed the instructions above in `setup`.
+1. Run `make setup-funding network=<network>` and go to the folder that was created by this command.
+1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Run `make deps`.
+1. Specify the `SAFE`, which is the safe that will fund the addresses in the `.env` file.
+1. Specify the `recipients` and `funds` arrays (in 1e18 units) in the `funding.json` file.
+1. Build the contracts with `forge build`.
+1. Simulate the task with `make sign` and update the generic validations in `VALIDATION.md` with the real values.
+1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
+1. Once executed, check in the records files and mark the task `DONE` in the README.
+
 ## Using the generic template
 
 This template can be used to do contract calls, upgrades, or one-off deployments.
