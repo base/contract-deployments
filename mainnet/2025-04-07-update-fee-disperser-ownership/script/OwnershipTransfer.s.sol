@@ -5,11 +5,11 @@ import {Vm} from "forge-std/Vm.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
-import {MultisigBuilder} from "@base-contracts/script/universal/MultisigBuilder.sol";
+import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Proxy} from "@eth-optimism-bedrock/src/universal/Proxy.sol";
 import {AddressAliasHelper} from "@eth-optimism-bedrock/src/vendor/AddressAliasHelper.sol";
 
-contract OwnershipTransfer is MultisigBuilder {
+contract OwnershipTransfer is MultisigScript {
     using AddressAliasHelper for address;
 
     address public immutable OWNER_SAFE;
@@ -34,13 +34,14 @@ contract OwnershipTransfer is MultisigBuilder {
         require(admin == expectedAdmin, "Admin is not L1_SAFE");
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3[] memory) {
-        IMulticall3.Call3[] memory calls = new IMulticall3.Call3[](1);
+    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
+        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](1);
 
-        calls[0] = IMulticall3.Call3({
+        calls[0] = IMulticall3.Call3Value({
             target: TARGET,
             allowFailure: false,
-            callData: abi.encodeCall(Proxy.changeAdmin, (L1_SAFE.applyL1ToL2Alias()))
+            callData: abi.encodeCall(Proxy.changeAdmin, (L1_SAFE.applyL1ToL2Alias())),
+            value: 0
         });
 
         return calls;

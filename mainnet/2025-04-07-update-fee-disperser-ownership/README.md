@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-This task updates the owner of our [FeeDispurser](https://basescan.org/address/0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA) contract on Base to be the aliased address of our [L1 upgrade multisig](https://etherscan.io/address/0x9855054731540A48b28990B63DcF4f33d8AE46A1).
+This task updates the owner of our [FeeDispurser](https://basescan.org/address/0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA) contract on Base to be the aliased address of our [L1 upgrade multisig](https://etherscan.io/address/0x9c4a57feb77e294fd7bf5ebe9ab01caa0a90a110).
 
 ## Procedure
 
