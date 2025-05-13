@@ -1,6 +1,6 @@
 # Funding
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x022d62e853dfc9e8778181f6e8400f508d1a03fe99e9cbbf5076a7f669371903)
 
 ## Description
 
