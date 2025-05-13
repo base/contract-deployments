@@ -27,14 +27,10 @@ is ready".
 
 #### 3.1. Simulate and validate the transaction
 
-Make sure your ledger is still unlocked and run the following commands for both Ethereum and Base:
+Make sure your ledger is still unlocked and run the following command:
 
 ```bash
-make sign-ethereum
-```
-
-```bash
-make sign-base
+make sign
 ```
 
 For each run, you will see a "Simulation link" from the output.
@@ -56,13 +52,13 @@ message hash to approve on your Ledger:
 Make sure you are on the "Overview" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
-1. "Network": Check the network is `Mainnet` (when running `make sign-ethereum`) or `Base` (when running `make sign-base`).
+1. "Network": Check the network is `Mainnet`.
 2. "Timestamp": Check the simulation is performed on a block with a
    recent timestamp (i.e. close to when you run the script).
 
 ##### 3.1.2. Validate correctness of the state diff.
 
-Now click on the "State" tab, and refer to the [Ethereum State](./validations/ethereum.md) or [Base State](./validations/base.md) validations instructions for the transaction you are signing. Once complete return to this document to complete the signing.
+Now click on the "State" tab, and refer to the [Ethereum State](./VALIDATION.md) validation instructions for the transaction you are signing. Once complete return to this document to complete the signing.
 
 ### 4. Extract the domain hash and the message hash to approve.
 
@@ -125,7 +121,7 @@ congrats, you are done!
 1. Concatenate all signatures and export it as the `SIGNATURES`
    environment variable, i.e. `export
 SIGNATURES="[SIGNATURE1][SIGNATURE2]..."`.
-1. Run the `make execute-ethereum` or `make execute-base` command as described below to execute the transaction.
+1. Run the `make execute` command as described below to execute the transaction.
 
 For example, if the quorum is 2 and you get the following outputs:
 

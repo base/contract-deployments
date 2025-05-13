@@ -24,15 +24,7 @@ contract FundScript is MultisigScript {
 
         SAFE = vm.envAddress("SAFE");
 
-        string memory funding;
-        if (chain.chainId == 1) {
-            funding = vm.readFile("./funding-ethereum.json");
-        } else if (chain.chainId == 8453) {
-            funding = vm.readFile("./funding-base.json");
-        } else {
-            revert(string.concat("Unsupported chain: ", chain.name, " (", vm.toString(block.chainid), ")"));
-        }
-
+        string memory funding = vm.readFile("./funding.json");
         RECIPIENTS = vm.parseJsonAddressArray(funding, ".recipients");
         FUNDS = vm.parseJsonUintArray(funding, ".funds");
 
