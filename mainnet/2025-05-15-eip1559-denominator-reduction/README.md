@@ -13,7 +13,7 @@ This task contains a single script that reduces the EIP-1559 denominator from 25
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2025-05-15-reduce-eip1559-denominators
+cd mainnet/2025-05-15-EIP1559-denominator-reduction
 make deps
 ```
 
