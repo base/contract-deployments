@@ -47,11 +47,24 @@ sign-mock-op-nested:
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
 	--sig "sign(address[])" "[$(MOCK_OP_NESTED)]"
 
-.PHONY: sign-cb-nested-coordinator
-sign-cb-nested-coordinator:
+.PHONY: approve-mock-op-nested
+approve-mock-op-nested:
+	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
+	--sig "approve(address[],bytes)" [$(MOCK_OP_NESTED)] $(SIGNATURES) \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+
+
+.PHONY: sign # sign-cb-nested-coordinator
+sign:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
 	--sig "sign(address[])" "[$(CB_NESTED), $(CB_COORDINATOR)]"
+
+.PHONY: approve-cb-nested-coordinator
+approve-cb-nested-coordinator:
+	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
+	--sig "approve(address[],bytes)" [$(CB_NESTED), $(CB_COORDINATOR)] $(SIGNATURES) \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: sign-mock-op-nested-coordinator
 sign-mock-op-nested-coordinator:
@@ -59,7 +72,19 @@ sign-mock-op-nested-coordinator:
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
 	--sig "sign(address[])" "[$(MOCK_OP_NESTED), $(CB_COORDINATOR)]"
 
+.PHONY: approve-mock-op-nested-coordinator
+approve-mock-op-nested-coordinator:
+	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
+	--sig "approve(address[],bytes)" [$(MOCK_OP_NESTED), $(CB_COORDINATOR)] $(SIGNATURES) \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+
+.PHONY: approve-cb-coordinator
+approve-cb-coordinator:
+	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
+	--sig "approve(address[],bytes)" [$(CB_COORDINATOR)] $(SIGNATURES) \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+
 .PHONY: execute
 execute:
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
-	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+	--sig "run(bytes)" 0x --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv

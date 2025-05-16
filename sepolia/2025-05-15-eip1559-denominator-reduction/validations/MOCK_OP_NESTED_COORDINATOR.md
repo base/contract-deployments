@@ -49,8 +49,8 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 - **Key**: `0x553f24f5da896cd48edd08523bced82431a0c53b0bb8cacc0743ce10948d338b` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
-  **Meaning**: Simulates an approval from msg.sender in order for the task simulation to succeed.
-
+  **Meaning**: Simulates an approval from msg.sender in order for the task simulation to succeed. Note: The `Key` might be different as it corresponds to the slot associated [with your signer address](https://github.com/safe-global/safe-smart-account/blob/main/contracts/Safe.sol#L69).
+  
 ## Task State Changes
 
 ### System Config Owner - Sepolia (`0x0fe884546476dDd290eC46318785046ef68a0BA9`)

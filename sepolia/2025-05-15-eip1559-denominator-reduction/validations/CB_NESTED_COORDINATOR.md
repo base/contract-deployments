@@ -47,7 +47,7 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 - **Key**: `0x15da65abea640207b3ada02d3004196783015f1090bb5158ea37ea41b7d1d1ff` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
-  **Meaning**: Simulates an approval from msg.sender in order for the task simulation to succeed.
+  **Meaning**: Simulates an approval from msg.sender in order for the task simulation to succeed. Note: The `Key` might be different as it corresponds to the slot associated [with your signer address](https://github.com/safe-global/safe-smart-account/blob/main/contracts/Safe.sol#L69).
 
 ### CB Coordinator - Sepolia (`0x646132A1667ca7aD00d36616AFBA1A28116C770A`)
 

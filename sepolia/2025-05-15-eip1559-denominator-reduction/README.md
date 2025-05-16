@@ -13,7 +13,7 @@ This task contains a single script that reduces the EIP-1559 denominator from 25
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2025-05-15-EIP1559-denominator-reduction
+cd sepolia/2025-05-15-EIP1559-denominator-reduction
 make deps
 ```
 
@@ -52,13 +52,13 @@ message hash to approve on your Ledger:
 Make sure you are on the "Overview" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
-1. "Network": Check the network is `Mainnet`.
+1. "Network": Check the network is `Sepolia`.
 2. "Timestamp": Check the simulation is performed on a block with a
    recent timestamp (i.e. close to when you run the script).
 
 ##### 3.1.2. Validate correctness of the state diff.
 
-Now click on the "State" tab, and refer to the [validations instructions](./VALIDATION.md) for the transaction you are signing. Once complete return to this document to complete the signing.
+Now click on the "State" tab, and refer to the [validations instructions](./validations/CB_NESTED_COORDINATOR.md) for the transaction you are signing. Once complete return to this document to complete the signing.
 
 ### 4. Extract the domain hash and the message hash to approve.
 
@@ -112,35 +112,3 @@ Facilitator will do the final execution for convenience.
 
 Share the `Data`, `Signer` and `Signature` with the Facilitator, and
 congrats, you are done!
-
-### [For Facilitator ONLY] How to execute
-
-#### Execute the transaction
-
-1. Collect outputs from all participating signers.
-1. Concatenate all signatures and export it as the `SIGNATURES`
-   environment variable, i.e. `export
-SIGNATURES="[SIGNATURE1][SIGNATURE2]..."`.
-1. Run the `make execute` command as described below to execute the transaction.
-
-For example, if the quorum is 2 and you get the following outputs:
-
-```shell
-Data:  0xDEADBEEF
-Signer: 0xC0FFEE01
-Signature: AAAA
-```
-
-```shell
-Data:  0xDEADBEEF
-Signer: 0xC0FFEE02
-Signature: BBBB
-```
-
-Then you should run:
-
-Coinbase facilitator:
-
-```bash
-SIGNATURES=AAAABBBB make execute
-```
