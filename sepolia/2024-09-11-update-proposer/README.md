@@ -51,7 +51,7 @@ message hash to approve on your Ledger then verify completion:
 3. Validate and extract domain hash and message hash to approve.
 
 
-#### 3.1. Validate integrity of the simulation.
+#### 3.1 Validate integrity of the simulation.
 
 Make sure you are on the "Overview" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
@@ -65,11 +65,11 @@ validate integrity of the simulation, we need to check the following:
 4. "Success" with a green check mark 
 
 
-#### 3.2. Validate correctness of the state diff.
+#### 3.2 Validate correctness of the state diff.
 
 Now click on the "State" tab. Verify that:
 
-1. Verify that the nonce is incremented for the Incident Multisig under the "GnosisSafeProxy" at address `0x0fe884546476dDd290eC46318785046ef68a0BA9`. We should see the nonce increment from 5 to 6:
+1. Verify that the nonce is incremented for the Incident Multisig under the "SafeProxy" at address `0x0fe884546476dDd290eC46318785046ef68a0BA9`. We should see the nonce increment from 5 to 6:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000005
@@ -85,7 +85,7 @@ Before: 0x000000000000000000000000ccefe451048eaa7df8d0d709be3aa30d565694d2
 After: 0x000000000000000000000000<NEW PERMISSIONED GAME ADDRESS>
 ```
 
-#### 3.3. Extract the domain hash and the message hash to approve.
+#### 3.3 Extract the domain hash and the message hash to approve.
 
 Now that we have verified the transaction performs the right
 operation, we need to extract the domain hash and the message hash to
@@ -172,7 +172,7 @@ message hash to approve on your Ledger then verify completion:
 4. Validate that the transaction completed successfully
 
 
-#### 3.1. Validate integrity of the simulation.
+#### 3.1 Validate integrity of the simulation.
 
 Make sure you are on the "Overview" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
@@ -186,11 +186,11 @@ validate integrity of the simulation, we need to check the following:
 4. "Success" with a green check mark 
 
 
-#### 3.2. Validate correctness of the state diff.
+#### 3.2 Validate correctness of the state diff.
 
 Now click on the "State" tab. Verify that:
 
-1. Verify that the nonce is incremented for the Incident Multisig under the "GnosisSafeProxy" at address `0x0fe884546476dDd290eC46318785046ef68a0BA9`:
+1. Verify that the nonce is incremented for the Incident Multisig under the "SafeProxy" at address `0x0fe884546476dDd290eC46318785046ef68a0BA9`:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000005
@@ -206,14 +206,14 @@ Before: 0x000000000000000000000000<NEW PERMISSIONED GAME ADDRESS>
 After: 0x000000000000000000000000ccefe451048eaa7df8d0d709be3aa30d565694d2
 ```
 
-#### 3.3. Extract the domain hash and the message hash to approve.
+#### 3.3 Extract the domain hash and the message hash to approve.
 
 Now that we have verified the transaction performs the right
 operation, we need to extract the domain hash and the message hash to
 approve.
 
 Go back to the "Overview" tab, and find the
-`GnosisSafe.checkSignatures` call. This call's `data` parameter
+`Safe.checkSignatures` call. This call's `data` parameter
 contains both the domain hash and the message hash that will show up
 in your Ledger.
 
