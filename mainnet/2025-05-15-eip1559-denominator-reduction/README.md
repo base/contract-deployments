@@ -1,6 +1,6 @@
-# Funding
+# EIP-1559 Denominator 250 -> 50 Reduction
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x7841cdb1fc6b4e28866c17e2d440f6c672cd24af4c4629b778ae019d0dc619e3)
 
 ## Description
 
