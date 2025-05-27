@@ -50,7 +50,7 @@ sign-mock-op-nested:
 .PHONY: approve-mock-op-nested
 approve-mock-op-nested:
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
-	--sig "approve(address[],bytes)" [$(MOCK_OP_NESTED)] $(SIGNATURES) \
+	--sig "approve(address[],bytes)" "[$(MOCK_OP_NESTED)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 
@@ -63,7 +63,7 @@ sign:
 .PHONY: approve-cb-nested-coordinator
 approve-cb-nested-coordinator:
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
-	--sig "approve(address[],bytes)" [$(CB_NESTED), $(CB_COORDINATOR)] $(SIGNATURES) \
+	--sig "approve(address[],bytes)" "[$(CB_NESTED), $(CB_COORDINATOR)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: sign-mock-op-nested-coordinator
@@ -75,13 +75,13 @@ sign-mock-op-nested-coordinator:
 .PHONY: approve-mock-op-nested-coordinator
 approve-mock-op-nested-coordinator:
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
-	--sig "approve(address[],bytes)" [$(MOCK_OP_NESTED), $(CB_COORDINATOR)] $(SIGNATURES) \
+	--sig "approve(address[],bytes)" "[$(MOCK_OP_NESTED), $(CB_COORDINATOR)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: approve-cb-coordinator
 approve-cb-coordinator:
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
-	--sig "approve(address[],bytes)" [$(CB_COORDINATOR)] 0x \
+	--sig "approve(address[],bytes)" "[$(CB_COORDINATOR)]" 0x \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: execute
