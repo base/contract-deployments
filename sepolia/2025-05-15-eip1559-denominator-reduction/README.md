@@ -1,4 +1,4 @@
-# Funding
+# EIP-1559 Denominator 250 -> 50 Reduction
 
 Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x49d78a837ade5176b75bc7d53e3f2c391140180d4db86d1d37103bdb0aa8bb39)
 
