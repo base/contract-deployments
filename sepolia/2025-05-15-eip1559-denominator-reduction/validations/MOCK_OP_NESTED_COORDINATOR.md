@@ -58,10 +58,10 @@ For each contract listed in the state diff, please verify that no contracts or s
 0. **Key**: `0x0000000000000000000000000000000000000000000000000000000000000005` <br/>
    **Before**: `0x0000000000000000000000000000000000000000000000000000000000000016` <br/>
    **After**: `0x0000000000000000000000000000000000000000000000000000000000000017` <br/>
-   **Value Type**: (uint32,uint32,uint32,uint32) <br/>
-   **Decoded Old Value**: operatorFeeConstant: `0`, operatorFeeScalar: `0`, eip1559Elasticity: `4`, eip1559Denominator: `250` <br/>
-   **Decoded New Value**: operatorFeeConstant: `0`, operatorFeeScalar: `0`, eip1559Elasticity: `4`, eip1559Denominator: `50` <br/>
-   **Meaning**: Sets the eip1559Denominator to 50 <br/>
+   **Value Type**: uint256 <br/>
+   **Decoded Old Value**: `22` <br/>
+   **Decoded New Value**: `23` <br/>
+   **Meaning**: Increments the nonce <br/>
 
 1. **Key**: `0xb8617d913ec0184dd931b7d503813c9c8463303c5537bbf5c834bd7267c0f86c` <br/>
    **Before**: `0x0000000000000000000000000000000000000000000000000000000000000000` <br/>
