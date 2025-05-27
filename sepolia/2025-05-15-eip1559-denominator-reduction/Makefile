@@ -81,7 +81,7 @@ approve-mock-op-nested-coordinator:
 .PHONY: approve-cb-coordinator
 approve-cb-coordinator:
 	forge script --rpc-url $(L1_RPC_URL) ReduceEip1559DenominatorScript \
-	--sig "approve(address[],bytes)" [$(CB_COORDINATOR)] $(SIGNATURES) \
+	--sig "approve(address[],bytes)" [$(CB_COORDINATOR)] 0x \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 .PHONY: execute
