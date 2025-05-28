@@ -1,6 +1,6 @@
 # Transfer Fee Disperser Ownership to Base Sepolia Eng Multisig
 
-Status: READY TO EXECUTE
+Status: [EXECUTED](https://sepolia.basescan.org/tx/0x7c724ca80756c64c93967be6eee37f6a0ee74e59ebed5773374a7d0da3eb5a68)
 
 ## Description
 
@@ -19,7 +19,6 @@ cd sepolia/2025-05-08-update-fee-disperser-ownership
 make deps
 ```
 
-
 ### 2. Run relevant script(s)
 
 #### Simulate the transaction
@@ -37,7 +36,6 @@ Click "Simulate Transaction".
 
 1. Validate integrity of the simulation.
 2. Validate correctness of the state diff.
-
 
 ##### 2.1 Validate integrity of the simulation.
 
