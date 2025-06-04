@@ -19,7 +19,7 @@ First, we need to validate the domain and message hashes. These values should ma
 >
 > Before signing, ensure the below hashes match what is on your ledger.
 >
-> ### Base Security Council - Mainnet: `0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd`
+> ### Base Security Council Multisig - Mainnet: `0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd`
 >
 > - Domain Hash: `0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3`
 > - Message Hash: `0x0693f70caf333f60a20ad8e44b451bd4cea3d2703016c277d5b0d09ecd3c3638`
@@ -33,7 +33,7 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 ## State Overrides
 
-### Base Security Council - Mainnet (`0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd`)
+### Base Security Council Multisig - Mainnet (`0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd`)
 
 - **Key**: `0x0000000000000000000000000000000000000000000000000000000000000004` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
@@ -57,7 +57,7 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 ## Task State Changes
 
-### Base Security Council - Mainnet (`0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd`)
+### Base Security Council Multisig - Mainnet (`0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd`)
 
 0. **Key**: `0x0000000000000000000000000000000000000000000000000000000000000005` <br/>
    **Before**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
@@ -111,7 +111,7 @@ For each contract listed in the state diff, please verify that no contracts or s
    **Value Type**: uint256 <br/>
    **Decoded Old Value**: `0` <br/>
    **Decoded New Value**: `1` <br/>
-   **Meaning**: Sets approvedHashes[0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd][0x2c6c1586b686483d280098fc0fa445fdf2c4d1d3dfad1a2aa17aac81d10cef9f] to 1 (approved by the Base Security Council Multisig).
+   **Meaning**: Sets approvedHashes[0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd][0x2c6c1586b686483d280098fc0fa445fdf2c4d1d3dfad1a2aa17aac81d10cef9f] to 1 (approved by the Base Security Council Multisig Multisig).
 
 ### Your Signer Address
 

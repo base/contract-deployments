@@ -5,11 +5,11 @@ Status: Ready to deploy
 ## Description
 
 This task contains two scripts:
-1. `DeploySystemConfig` - This script deploys the new system config implementation.
-2. `UpgradeSystemConfig` - This script performs the upgrade to the new implementation deployed in the previous step.
+1. `DeploySystemConfigScript` - This script deploys the new system config implementation.
+2. `UpgradeSystemConfigScript` - This script performs the upgrade to the new implementation deployed in the previous step.
 
-NOTE: Signers should not care about the `DeploySystemConfig` script as it will be ran before hand by the facilitator.
-The rest of this document will focus on using the `UpgradeSystemConfig` script.
+NOTE: Signers should not care about the `DeploySystemConfigScript` script as it will be ran before hand by the facilitator.
+The rest of this document will focus on using the `UpgradeSystemConfigScript` script.
 
 ## Procedure
 

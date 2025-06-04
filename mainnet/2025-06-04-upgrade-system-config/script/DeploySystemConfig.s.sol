@@ -5,7 +5,7 @@ import {Script, console} from "forge-std/Script.sol";
 
 import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
 
-contract DeploySystemConfig is Script {
+contract DeploySystemConfigScript is Script {
     function run() public {
         vm.startBroadcast();
         SystemConfig systemConfigImpl = new SystemConfig();

@@ -18,7 +18,7 @@ interface IProxy {
     function implementation() external view returns (address);
 }
 
-contract UpgradeSystemConfig is MultisigScript {
+contract UpgradeSystemConfigScript is MultisigScript {
     address internal immutable OWNER_SAFE;
     address internal immutable PROXY_ADMIN;
     address internal immutable SYSTEM_CONFIG;
