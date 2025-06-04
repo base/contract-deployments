@@ -6,6 +6,13 @@ ifndef LEDGER_ACCOUNT
 override LEDGER_ACCOUNT = 0
 endif
 
+.PHONY: deps
+deps: new-go-deps
+
+.PHONY: new-go-deps
+new-go-deps:
+	go install github.com/jackchuma/state-diff@v0.0.3
+
 L1_RPC_URL=http://127.0.0.1:8545
 
 .PHONY: deploy
@@ -44,7 +51,14 @@ BASE=0x9855054731540A48b28990B63DcF4f33d8AE46A1
 sign-op:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfig \
-	--sig  "sign(address[])" "[$(OP)]" --sender 0x42d27eEA1AD6e22Af6284F609847CB3Cd56B9c64
+	--sig  "sign(address[])" "[$(OP)]" 
+
+.PHONY: gen-validation-op
+gen-validation-op:
+	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o OP_VALIDATION.md \
+	-- forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfig \
+	--sig "sign(address[])" "[$(OP)]" \
+	--sender 0x42d27eEA1AD6e22Af6284F609847CB3Cd56B9c64
 
 .PHONY: approve-op
 approve-op:
@@ -52,14 +66,20 @@ approve-op:
 	--sig "approve(address[],bytes)" "[$(OP)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-
 # BASE NESTED
 
 .PHONY: sign-base-nested
 sign-base-nested:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfig \
-	--sig "sign(address[])" "[$(BASE_NESTED), $(BASE)]" --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50
+	--sig "sign(address[])" "[$(BASE_NESTED), $(BASE)]"
+
+.PHONY: gen-validation-base-nested
+gen-validation-base-nested:
+	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o BASE_NESTED_VALIDATION.md \
+	-- forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfig \
+	--sig "sign(address[])" "[$(BASE_NESTED), $(BASE)]" \
+	--sender 0x6CD3850756b7894774Ab715D136F9dD02837De50
 
 .PHONY: approve-base-nested
 approve-base-nested:
@@ -67,22 +87,26 @@ approve-base-nested:
 	--sig "approve(address[],bytes)" "[$(BASE_NESTED), $(BASE)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-
 # BASE SC NESTED
 
 .PHONY: sign-base-sc-nested
 sign-base-sc-nested:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfig \
+	--sig "sign(address[])" "[$(BASE_SC_NESTED), $(BASE)]"
+
+.PHONY: gen-validation-base-sc-nested
+gen-validation-base-sc-nested:
+	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o BASE_SC_NESTED_VALIDATION.md \
+	-- forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfig \
 	--sig "sign(address[])" "[$(BASE_SC_NESTED), $(BASE)]" \
 	--sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6
 
-.PHONY: approve-base-nested
-approve-base-nested:
+.PHONY: approve-base-sc-nested
+approve-base-sc-nested:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfig \
 	--sig "approve(address[],bytes)" "[$(BASE_SC_NESTED), $(BASE)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
-
 
 # BASE
 

@@ -8,6 +8,8 @@ This task contains two scripts:
 1. `DeploySystemConfig` - This script deploys the new system config implementation.
 2. `UpgradeSystemConfig` - This script performs the upgrade to the new implementation deployed in the previous step.
 
+NOTE: Signers should not care about the `DeploySystemConfig` script as it will be ran before hand by the facilitator.
+The rest of this document will focus on using the `UpgradeSystemConfig` script.
 
 ## Procedure
 
@@ -16,7 +18,7 @@ This task contains two scripts:
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2025-05-15-EIP1559-denominator-reduction
+cd mainnet/2025-06-04-upgrade-system-config
 make deps
 ```
 
@@ -32,8 +34,19 @@ is ready".
 
 Make sure your ledger is still unlocked and run the following command:
 
+For Optimism signers:
 ```bash
-make sign
+make sign-op
+```
+
+For Base signers:
+```bash
+make sign-base-nested
+```
+
+For Base Security Council signers:
+```bash
+make sign-base-sc-nested
 ```
 
 For each run, you will see a "Simulation link" from the output.
@@ -61,7 +74,13 @@ validate integrity of the simulation, we need to check the following:
 
 ##### 3.1.2. Validate correctness of the state diff.
 
-Now click on the "State" tab, and refer to the [validations instructions](./VALIDATION.md) for the transaction you are signing. Once complete return to this document to complete the signing.
+Now click on the "State" tab, and refer to the validations instructions for the transaction you are signing:
+
+- For Optimism signers: [validations instructions](./validations/OP_VALIDATION.md)
+- For Base signers: [validations instructions](./validations/BASE_NESTED_VALIDATION.md)
+- For Base Security Council signers: [validations instructions](./validations/BASE_SC_NESTED_VALIDATION.md)
+
+Once complete return to this document to complete the signing.
 
 ### 4. Extract the domain hash and the message hash to approve.
 
