@@ -15,5 +15,14 @@ contract DeploySystemConfigScript is Script {
         string memory obj = "root";
         string memory json = vm.serializeAddress(obj, "systemConfig", address(systemConfigImpl));
         vm.writeJson(json, "addresses.json");
+
+        _postCheck();
+    }
+
+    function _postCheck() internal view {
+        require(
+            keccak256(bytes(SystemConfig(systemConfigImpl).version())) == keccak256("3.4.0"),
+            "SystemConfig version mismatch"
+        );
     }
 }
