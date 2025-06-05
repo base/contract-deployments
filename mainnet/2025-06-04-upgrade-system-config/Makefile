@@ -13,8 +13,6 @@ deps: new-go-deps
 new-go-deps:
 	go install github.com/jackchuma/state-diff@v0.0.3
 
-L1_RPC_URL=http://127.0.0.1:8545
-
 .PHONY: deploy
 deploy:
 	forge script --rpc-url $(L1_RPC_URL) DeploySystemConfigScript --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --verify --broadcast
