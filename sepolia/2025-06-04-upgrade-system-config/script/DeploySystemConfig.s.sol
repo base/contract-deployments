@@ -23,8 +23,10 @@ contract DeploySystemConfigScript is Script {
 
     function _postCheck() internal view {
         require(
-            keccak256(bytes(SystemConfig(systemConfigImpl).version())) == keccak256("3.4.0"),
+            keccak256(bytes(SystemConfig(systemConfigImpl).version())) == keccak256("2.5.0+max-gas-limit-500M"),
             "SystemConfig version mismatch"
         );
+
+        require(SystemConfig(systemConfigImpl).maximumGasLimit() == 500_000_000, "Maximum gas limit mismatch");
     }
 }

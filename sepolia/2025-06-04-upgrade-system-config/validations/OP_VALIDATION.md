@@ -21,7 +21,7 @@ First, we need to validate the domain and message hashes. These values should ma
 > ### OP Multisig - Sepolia: `0x6AF0674791925f767060Dd52f7fB20984E8639d8`
 >
 > - Domain Hash: `0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa`
-> - Message Hash: `0x5fc50133f0cf8970339976ae0ea062cc31fb588de3fe517b4e6e39feb00fa337`
+> - Message Hash: `0x10fd7c9b221dcd2911cfb8982a1b74145d4b2e662bc37d5ab163ab632838f20c`
 # State Validations
 
 For each contract listed in the state diff, please verify that no contracts or state changes shown in the Tenderly diff are missing from this document. Additionally, please verify that for each contract:
@@ -39,7 +39,7 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 ### OP Multisig - Sepolia (`0x6AF0674791925f767060Dd52f7fB20984E8639d8`)
 
-- **Key**: `0xafedef66cba8c4c1b5df9c4f772b029036f08a7a11dccb49b567715ed721b064` <br/>
+- **Key**: `0x102a573576f9ca72f69161a2750669103d95f6700cf832b4dd6fb8765e71b793` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
   **Meaning**: Simulates an approval from `msg.sender` in order for the task simulation to succeed. Note: The Key might be different as it corresponds to the slot associated with [your signer address](https://github.com/safe-global/safe-smart-account/blob/main/contracts/Safe.sol#L69).
 
@@ -55,13 +55,13 @@ For each contract listed in the state diff, please verify that no contracts or s
    **Decoded New Value**: `24` <br/>
    **Meaning**: Increments the nonce <br/>
 
-1. **Key**: `0x83f8c0ca1383e155c4a3c7f13f33633166e6338441eaf61876128048589792fc` <br/>
+1. **Key**: `0xb2a3e1d0267998cb7e736c5b9108ef896858967092076634b2d792c0b44ded4b` <br/>
    **Before**: `0x0000000000000000000000000000000000000000000000000000000000000000` <br/>
    **After**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
    **Value Type**: uint256 <br/>
    **Decoded Old Value**: `0` <br/>
    **Decoded New Value**: `1` <br/>
-   **Meaning**: Sets approvedHashes[0x6AF0674791925f767060Dd52f7fB20984E8639d8][0x412d22568533ff5b64eb78c97759492f85d19dafb473c62590b07c8f9e31a14e] to 1 (approved by the OP Multisig).
+   **Meaning**: Sets approvedHashes[0x6AF0674791925f767060Dd52f7fB20984E8639d8][0x896f60a7707d589d89416c9f44b99b54bdfcfd52b9f505f241b5dc0e110d9b7b] to 1 (approved by the OP Multisig).
 
 ### OP Multisig - Sepolia (`0x6AF0674791925f767060Dd52f7fB20984E8639d8`)
 
@@ -77,10 +77,10 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 3. **Key**: `0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc` <br/>
    **Before**: `0x000000000000000000000000340f923e5c7cbb2171146f64169ec9d5a9ffe647` <br/>
-   **After**: `0x000000000000000000000000a12ae047125247baa97ed67e30513a7f95102919` <br/>
+   **After**: `0x000000000000000000000000fda350e8038728b689976d4a9e8a318400a150c5` <br/>
    **Value Type**: address <br/>
    **Decoded Old Value**: `0x340f923e5c7cbb2171146f64169ec9d5a9ffe647` <br/>
-   **Decoded New Value**: `0xa12ae047125247baa97ed67e30513a7f95102919` <br/>
+   **Decoded New Value**: `0xfdA350e8038728B689976D4A9E8A318400A150C5` <br/>
    **Meaning**: Updates the System Config implementation address <br/>
 
 ### Your Signer Address
