@@ -40,7 +40,7 @@ deploy:
 
 OP=0x9BA6e03D8B90dE867373Db8cF1A58d2F7F006b3A
 BASE_NESTED=0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110
-BASE_SC_NESTED=0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd
+BASE_SC=0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd
 BASE=0x9855054731540A48b28990B63DcF4f33d8AE46A1
 
 # OPTIMISM
@@ -85,25 +85,25 @@ approve-base-nested:
 	--sig "approve(address[],bytes)" "[$(BASE_NESTED), $(BASE)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-# BASE SC NESTED
+# BASE SC
 
-.PHONY: sign-base-sc-nested
-sign-base-sc-nested:
+.PHONY: sign-base-sc
+sign-base-sc:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
-	--sig "sign(address[])" "[$(BASE_SC_NESTED), $(BASE)]"
+	--sig "sign(address[])" "[$(BASE_SC), $(BASE)]"
 
-.PHONY: gen-validation-base-sc-nested
-gen-validation-base-sc-nested:
-	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o BASE_SC_NESTED_VALIDATION.md \
+.PHONY: gen-validation-base-sc
+gen-validation-base-sc:
+	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o BASE_SC_VALIDATION.md \
 	-- forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
-	--sig "sign(address[])" "[$(BASE_SC_NESTED), $(BASE)]" \
+	--sig "sign(address[])" "[$(BASE_SC), $(BASE)]" \
 	--sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6
 
-.PHONY: approve-base-sc-nested
-approve-base-sc-nested:
+.PHONY: approve-base-sc
+approve-base-sc:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
-	--sig "approve(address[],bytes)" "[$(BASE_SC_NESTED), $(BASE)]" $(SIGNATURES) \
+	--sig "approve(address[],bytes)" "[$(BASE_SC), $(BASE)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 # BASE

@@ -46,7 +46,7 @@ make sign-base-nested
 
 For Base Security Council signers:
 ```bash
-make sign-base-sc-nested
+make sign-base-sc
 ```
 
 For each run, you will see a "Simulation link" from the output.
@@ -78,7 +78,7 @@ Now click on the "State" tab, and refer to the validations instructions for the 
 
 - For Optimism signers: [validations instructions](./validations/OP_VALIDATION.md)
 - For Base signers: [validations instructions](./validations/BASE_NESTED_VALIDATION.md)
-- For Base Security Council signers: [validations instructions](./validations/BASE_SC_NESTED_VALIDATION.md)
+- For Base Security Council signers: [validations instructions](./validations/BASE_SC_VALIDATION.md)
 
 Once complete return to this document to complete the signing.
 
