@@ -1,6 +1,6 @@
 # Upgrade System Config
 
-Status: Ready to deploy
+Status: Ready to sign
 
 ## Description
 

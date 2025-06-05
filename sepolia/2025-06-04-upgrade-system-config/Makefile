@@ -27,7 +27,7 @@ new-go-deps:
 
 .PHONY: deploy
 deploy:
-	forge script --rpc-url $(L1_RPC_URL) DeploySystemConfigScript --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --verify --broadcast --etherscan-api-key F7VG4CGVMXJBM9BT2B787DFD9MGTY276YW
+	forge script --rpc-url $(L1_RPC_URL) DeploySystemConfigScript --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --verify --broadcast
 
 #
 #    ┌─────────────────────────────────────────────┐       ┌─────────────────────────────────────────────┐       ┌─────────────────────────────────────────────┐

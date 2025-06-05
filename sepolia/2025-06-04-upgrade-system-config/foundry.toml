@@ -17,6 +17,9 @@ remappings = [
     '@base-contracts/=lib/base-contracts',
     'solady/=lib/solady/src/',
     '@lib-keccak/=lib/lib-keccak/contracts/lib',
+    'src/libraries/=lib/optimism/packages/contracts-bedrock/src/libraries',
+    'interfaces/universal/=lib/optimism/packages/contracts-bedrock/interfaces/universal',
+    'interfaces/L1/=lib/optimism/packages/contracts-bedrock/interfaces/L1',
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
