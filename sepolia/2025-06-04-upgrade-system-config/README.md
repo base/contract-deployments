@@ -1,6 +1,6 @@
 # Upgrade System Config
 
-Status: Ready to sign
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x2aa195db4b41a6051db275bd80160c9c361caf0ee617a7c695398789182dc850)
 
 ## Description
 
