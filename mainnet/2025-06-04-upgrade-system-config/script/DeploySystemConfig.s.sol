@@ -6,9 +6,11 @@ import {Script, console} from "forge-std/Script.sol";
 import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
 
 contract DeploySystemConfigScript is Script {
+    SystemConfig systemConfigImpl;
+
     function run() public {
         vm.startBroadcast();
-        SystemConfig systemConfigImpl = new SystemConfig();
+        systemConfigImpl = new SystemConfig();
         console.log("SystemConfig implementation deployed at: ", address(systemConfigImpl));
         vm.stopBroadcast();
 
@@ -21,8 +23,10 @@ contract DeploySystemConfigScript is Script {
 
     function _postCheck() internal view {
         require(
-            keccak256(bytes(SystemConfig(systemConfigImpl).version())) == keccak256("3.4.0"),
+            keccak256(bytes(SystemConfig(systemConfigImpl).version())) == keccak256("2.5.0+max-gas-limit-500M"),
             "SystemConfig version mismatch"
         );
+
+        require(SystemConfig(systemConfigImpl).maximumGasLimit() == 500_000_000, "Maximum gas limit mismatch");
     }
 }

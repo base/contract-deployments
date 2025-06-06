@@ -134,35 +134,3 @@ Facilitator will do the final execution for convenience.
 
 Share the `Data`, `Signer` and `Signature` with the Facilitator, and
 congrats, you are done!
-
-### [For Facilitator ONLY] How to execute
-
-#### Execute the transaction
-
-1. Collect outputs from all participating signers.
-1. Concatenate all signatures and export it as the `SIGNATURES`
-   environment variable, i.e. `export
-SIGNATURES="[SIGNATURE1][SIGNATURE2]..."`.
-1. Run the `make execute` command as described below to execute the transaction.
-
-For example, if the quorum is 2 and you get the following outputs:
-
-```shell
-Data:  0xDEADBEEF
-Signer: 0xC0FFEE01
-Signature: AAAA
-```
-
-```shell
-Data:  0xDEADBEEF
-Signer: 0xC0FFEE02
-Signature: BBBB
-```
-
-Then you should run:
-
-Coinbase facilitator:
-
-```bash
-SIGNATURES=AAAABBBB make execute
-```
