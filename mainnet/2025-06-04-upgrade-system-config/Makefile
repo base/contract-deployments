@@ -6,8 +6,6 @@ ifndef LEDGER_ACCOUNT
 override LEDGER_ACCOUNT = 0
 endif
 
-L1_RPC_URL=http://127.0.0.1:8545
-
 # Overwriting this from top level makefile to change the branch
 .PHONY: checkout-op-commit
 checkout-op-commit:
