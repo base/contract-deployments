@@ -11,6 +11,8 @@ This task contains two scripts:
 NOTE: Signers should not care about the `DeploySystemConfigScript` script as it will be ran before hand by the facilitator.
 The rest of this document will focus on using the `UpgradeSystemConfigScript` script.
 
+We are performing this upgrade as part of the larger [Upgrade 16](https://docs.optimism.io/notices/upgrade-16), which is scheduled to take place in the near future. This minimal code change allows us to avoid being blocked in our scaling plan while we wait for the broader upgrade.
+
 ## Procedure
 
 ### 1. Update repo:
