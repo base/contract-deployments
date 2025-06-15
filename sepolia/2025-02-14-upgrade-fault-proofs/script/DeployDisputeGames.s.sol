@@ -70,7 +70,7 @@ contract DeployDisputeGames is Script {
                 "\",",
                 "\"permissionedDisputeGame\": \"",
                 pdg.toHexString(),
-                "\"" "}"
+                "\"}"
             )
         );
     }
