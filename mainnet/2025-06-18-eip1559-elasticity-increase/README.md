@@ -1,10 +1,10 @@
-# EIP-1559 Denominator 250 -> 50 Reduction
+# EIP-1559 Elasticity 2 -> 3 Increase
 
-Status: [EXECUTED](https://etherscan.io/tx/0x7841cdb1fc6b4e28866c17e2d440f6c672cd24af4c4629b778ae019d0dc619e3)
+Status: [READY TO SIGN]
 
 ## Description
 
-This task contains a single script that reduces the EIP-1559 denominator from 250 to 50.
+This task contains a single script that increases the EIP-1559 elasticity from 2 to 3.
 
 ## Procedure
 
@@ -13,7 +13,7 @@ This task contains a single script that reduces the EIP-1559 denominator from 25
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2025-05-15-EIP1559-denominator-reduction
+cd mainnet/2025-06-18-eip1559-elasticity-increase
 make deps
 ```
 

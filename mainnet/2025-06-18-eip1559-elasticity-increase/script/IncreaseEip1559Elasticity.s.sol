@@ -13,7 +13,7 @@ interface ISystemConfig {
     function setEIP1559Params(uint32 _denominator, uint32 _elasticity) external;
 }
 
-contract IncreaseEip1559DenominatorScript is MultisigScript {
+contract IncreaseEip1559ElasticityScript is MultisigScript {
     address internal immutable OWNER_SAFE;
     address internal immutable SYSTEM_CONFIG;
 
