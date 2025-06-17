@@ -1,6 +1,6 @@
 # Upgrade System Config
 
-Status: Ready to deploy
+Status: Ready to sign
 
 ## Description
 
@@ -11,7 +11,7 @@ This task contains two scripts:
 NOTE: Signers should not care about the `DeploySystemConfigScript` script as it will be ran before hand by the facilitator.
 The rest of this document will focus on using the `UpgradeSystemConfigScript` script.
 
-We are performing this upgrade as part of the larger [Upgrade 16](https://docs.optimism.io/notices/upgrade-16), which is scheduled to take place in the near future. This minimal code change allows us to avoid being blocked in our scaling plan while we wait for the broader upgrade.
+We are performing this upgrade as part of the larger [Upgrade 16](https://docs.optimism.io/notices/upgrade-16), which is scheduled to take place in the near future. This minimal code change is being done only on Base, to avoid Base from being blocked on scaling plan efforts prior to landing Upgrade 16.
 
 ## Procedure
 
