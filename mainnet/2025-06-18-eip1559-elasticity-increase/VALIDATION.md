@@ -1,6 +1,6 @@
 # Validation for Coinbase Signers
 
-This document can be used to validate the inputs and result of the execution of the EIP-1559 denominator reduction script which you are signing.
+This document can be used to validate the inputs and result of the execution of the EIP-1559 elasticity increase script which you are signing.
 
 > [!NOTE]
 >
