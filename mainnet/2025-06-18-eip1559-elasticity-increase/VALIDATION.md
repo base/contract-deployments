@@ -22,7 +22,7 @@ First, we need to validate the domain and message hashes. These values should ma
 > ### Incident Multisig - Mainnet: `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`
 >
 > - Domain Hash: `0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289`
-> - Message Hash: `0xec8524022c8c43daf2a8ec1ed0990e9f9870f2b420278190ac079782c7bd3241`
+> - Message Hash: `0xd6092a7a5eb72f816644ed2370a80f1cbd3444d19bc8740f6a3d09569cf232b8`
 
 # State Validations
 
@@ -41,7 +41,7 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 - **Key**: `0x99c2f50f6a751a69c274e81d4229970386359373bce316c9bcda5716db157a13` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
-  **Meaning**: Simulates an approval from msg.sender in order for the task simulation to succeed.
+  **Meaning**: Simulates an approval from `msg.sender` in order for the task simulation to succeed. Note: The Key might be different as it corresponds to the slot associated with [your signer address](https://github.com/safe-global/safe-smart-account/blob/main/contracts/Safe.sol#L69)
 
 ## Task State Changes
 
