@@ -1,10 +1,11 @@
 # EIP-1559 Elasticity 2 -> 3 Increase and GasLimit 140000000 -> 150000000
 
-Status: [READY TO SIGN]
+Status: [EXECUTED](https://etherscan.io/tx/0xcc7c7eaf09ef2bee959aea547bef4cbb152c4921d97b0c56482c8696d49b05e6)
 
 ## Description
 
-This task contains a single script that increases the EIP-1559 elasticity from 2 to 3 and decreases the gas limit from 35Mgas/s to 25Mgas/s.
+This task contains a single script that increases the EIP-1559 elasticity from 2 to 3 and increases the gas limit from 140000000 to 15000000.
+Because, our elasticity is being increased, this results in a per second gas target of 25Mgas/s (which is a decrease from our current 35Mgas/s).
 
 ## Procedure
 
