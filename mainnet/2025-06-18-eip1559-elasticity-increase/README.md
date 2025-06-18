@@ -1,10 +1,10 @@
-# EIP-1559 Elasticity 2 -> 3 Increase
+# EIP-1559 Elasticity 2 -> 3 Increase and GasLimit 140000000 -> 150000000
 
 Status: [READY TO SIGN]
 
 ## Description
 
-This task contains a single script that increases the EIP-1559 elasticity from 2 to 3.
+This task contains a single script that increases the EIP-1559 elasticity from 2 to 3 and decreases the gas limit from 35Mgas/s to 25Mgas/s.
 
 ## Procedure
 

@@ -22,7 +22,7 @@ First, we need to validate the domain and message hashes. These values should ma
 > ### Incident Multisig - Mainnet: `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`
 >
 > - Domain Hash: `0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289`
-> - Message Hash: `0xd6092a7a5eb72f816644ed2370a80f1cbd3444d19bc8740f6a3d09569cf232b8`
+> - Message Hash: `0xa7fc708fdbaa8af29e5c1137193cf5d59c45d4634b587ff9e227b0cec8c5cdda`
 
 # State Validations
 
@@ -39,7 +39,7 @@ For each contract listed in the state diff, please verify that no contracts or s
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
   **Meaning**: Override the threshold to 1 so the transaction simulation can occur.
 
-- **Key**: `0x99c2f50f6a751a69c274e81d4229970386359373bce316c9bcda5716db157a13` <br/>
+- **Key**: `0xf1be6768d6f798cc122f889ccdbd55074910d6f15fb6c82e2473ee7a9a461239` <br/>
   **Override**: `0x0000000000000000000000000000000000000000000000000000000000000001` <br/>
   **Meaning**: Simulates an approval from `msg.sender` in order for the task simulation to succeed. Note: The Key might be different as it corresponds to the slot associated with [your signer address](https://github.com/safe-global/safe-smart-account/blob/main/contracts/Safe.sol#L69)
 
@@ -57,7 +57,15 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 ### SystemConfig - Mainnet (`0x73a79Fab69143498Ed3712e519A88a918e1f4072`)
 
-1. **Key**: `0x000000000000000000000000000000000000000000000000000000000000006a` <br/>
+-  **Key**: `0x0000000000000000000000000000000000000000000000000000000000000068` <br/>
+   **Before**: `0x0000000000000000000000000000000000101c12000008dd0000000008583b00` <br/>
+   **After**: `0x0000000000000000000000000000000000101c12000008dd0000000008f0d180` <br/>
+   **Value Type**: (uint32,uint32,uint64) <br/>
+   **Decoded Old Value**: blobbasefeeScalar: `1055762`, operatorFeeScalar: `2269`, gasLimit: `140000000` <br/>
+   **Decoded New Value**: blobbasefeeScalar: `1055762`, operatorFeeScalar: `2269`, gasLimit: `150000000` <br/>
+   **Meaning**: Sets the gasLimit to 150000000 <br/>
+
+-  **Key**: `0x000000000000000000000000000000000000000000000000000000000000006a` <br/>
    **Before**: `0x0000000000000000000000000000000000000000000000000000000200000032` <br/>
    **After**: `0x0000000000000000000000000000000000000000000000000000000300000032` <br/>
    **Value Type**: (uint32,uint32,uint32,uint32) <br/>

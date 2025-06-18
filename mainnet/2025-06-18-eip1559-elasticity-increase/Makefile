@@ -9,10 +9,10 @@ endif
 .PHONY: sign
 sign:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) IncreaseEip1559ElasticityScript \
+	forge script --rpc-url $(L1_RPC_URL) IncreaseEip1559ElasticityAndDecreaseGasLimitScript \
 	--sig "sign(address[])" "[]"
 
 .PHONY: execute
 execute:
-	forge script --rpc-url $(L1_RPC_URL) IncreaseEip1559ElasticityScript \
+	forge script --rpc-url $(L1_RPC_URL) IncreaseEip1559ElasticityAndDecreaseGasLimitScript \
 	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
