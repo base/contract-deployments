@@ -15,7 +15,7 @@ interface ISystemConfig {
     function setGasLimit(uint64 _gasLimit) external;
 }
 
-contract IncreaseEip1559ElasticityAndDecreaseGasLimitScript is MultisigScript {
+contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
     address internal immutable OWNER_SAFE;
     address internal immutable SYSTEM_CONFIG;
 
