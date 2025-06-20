@@ -74,21 +74,21 @@ approve-op:
 
 # BASE NESTED
 
-.PHONY: gen-validation-base-nested
-gen-validation-base-nested:
+.PHONY: gen-validation-cb
+gen-validation-cb:
 	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o BASE_NESTED_VALIDATION.md \
 	-- forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
 	--sig "sign(address[])" "[$(BASE_NESTED_MULTISIG), $(BASE_MULTISIG)]" \
 	--sender 0x6CD3850756b7894774Ab715D136F9dD02837De50
 
-.PHONY: sign-base-nested
-sign-base-nested:
+.PHONY: sign-cb
+sign-cb:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
 	--sig "sign(address[])" "[$(BASE_NESTED_MULTISIG), $(BASE_MULTISIG)]"
 
-.PHONY: approve-base-nested
-approve-base-nested:
+.PHONY: approve-cb
+approve-cb:
 	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
 	--sig "approve(address[],bytes)" "[$(BASE_NESTED_MULTISIG), $(BASE_MULTISIG)]" $(SIGNATURES) \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv

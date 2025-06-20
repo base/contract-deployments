@@ -43,12 +43,12 @@ make sign-op
 
 For Base signers:
 ```bash
-make sign-base-nested
+make sign-cb
 ```
 
 For Base Security Council signers:
 ```bash
-make sign-base-sc
+make sign-cb
 ```
 
 For each run, you will see a "Simulation link" from the output.
