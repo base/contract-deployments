@@ -48,7 +48,7 @@ make sign-cb
 
 For Base Security Council signers:
 ```bash
-make sign-cb
+make sign-sc
 ```
 
 For each run, you will see a "Simulation link" from the output.
