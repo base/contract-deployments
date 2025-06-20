@@ -1,6 +1,6 @@
 # Update FeeDispurser Ownership
 
-Status: READY TO SIGN
+Status: EXECUTED (https://basescan.org/tx/0x3e6e5afba12c7f16b52e0ca4c6ef3d7e069d39d91dda86672d7f8231cf79a351)
 
 ## Description
 
