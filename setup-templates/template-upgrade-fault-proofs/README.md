@@ -70,7 +70,7 @@ We will be performing 3 validations and extract the domain hash and message hash
 
 ##### 3.2.1 Validate integrity of the simulation.
 
-Make sure you are on the "Overview" tab of the tenderly simulation, to
+Make sure you are on the "Summary" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
 1. "Network": Check the network is Sepolia or Mainnet.
@@ -89,10 +89,10 @@ Now that we have verified the transaction performs the right
 operation, we need to extract the domain hash and the message hash to
 approve.
 
-Go back to the "Overview" tab, and find the
-`GnosisSafe.checkSignatures` call. This call's `data` parameter
-contains both the domain hash and the message hash that will show up
-in your Ledger.
+Go back to the "Summary" tab, and find the
+`GnosisSafe.checkSignatures` (for OP signers) or `Safe.checkSignatures` (for Coinbase signers) call.
+This call's `data` parameter contains both the domain hash and the 
+message hash that will show up in your Ledger.
 
 It will be a concatenation of `0x1901`, the domain hash, and the
 message hash: `0x1901[domain hash][message hash]`.

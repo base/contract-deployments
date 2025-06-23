@@ -58,7 +58,7 @@ message hash to approve on your Ledger then verify completion:
 
 #### 3.1. Validate integrity of the simulation.
 
-Make sure you are on the "Overview" tab of the tenderly simulation, to
+Make sure you are on the "Summary" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
 1. "Network": Check the network is Ethereum Mainnet.
@@ -95,8 +95,8 @@ Now that we have verified the transaction performs the right
 operation, we need to extract the domain hash and the message hash to
 approve.
 
-Go back to the "Overview" tab, and find the
-`GnosisSafe.checkSignatures` call. This call's `data` parameter
+Go back to the "Summary" tab, and find the
+`Safe.checkSignatures` call. This call's `data` parameter
 contains both the domain hash and the message hash that will show up
 in your Ledger.
 
@@ -179,7 +179,7 @@ message hash to approve on your Ledger then verify completion:
 
 #### 3.1. Validate integrity of the simulation.
 
-Make sure you are on the "Overview" tab of the tenderly simulation, to
+Make sure you are on the "Summary" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
 1. "Network": Check the network is Ethereum Mainnet.
@@ -216,8 +216,8 @@ Now that we have verified the transaction performs the right
 operation, we need to extract the domain hash and the message hash to
 approve.
 
-Go back to the "Overview" tab, and find the
-`GnosisSafe.checkSignatures` call. This call's `data` parameter
+Go back to the "Summary" tab, and find the
+`Safe.checkSignatures` call. This call's `data` parameter
 contains both the domain hash and the message hash that will show up
 in your Ledger.
 
