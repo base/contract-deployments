@@ -59,7 +59,7 @@ validate integrity of the simulation, we need to check the following:
 
 ##### 3.1.2. Validate correctness of the state diff.
 
-Now click on the "State" tab, and refer to the [State Validations](./VALIDATION.md) instructions for the transaction you are signing.
+Now click on the "State" tab, and refer to the [State Validations](../template-safe-management/VALIDATION.md) instructions for the transaction you are signing.
 Once complete return to this document to complete the signing.
 
 ### 4. Extract the domain hash and the message hash to approve.
