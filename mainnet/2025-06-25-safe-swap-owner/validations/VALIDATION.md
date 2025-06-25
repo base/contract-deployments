@@ -44,29 +44,41 @@ First, we need to validate the domain and message hashes. These values should ma
 
 ### `0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110` (Base `GnosisSafeProxy`)
 
+- **Key**: `0x0000000000000000000000000000000000000000000000000000000000000005` <br/>
+  **Before**: `0x0000000000000000000000000000000000000000000000000000000000000002` <br/>
+  **After**: `0x0000000000000000000000000000000000000000000000000000000000000003` <br/>
+  **Value Type**: uint256 <br/>
+  **Decoded Old Value**: `2` <br/>
+  **Decoded New Value**: `3` <br/>
+  **Meaning**: Increments the `nonce` value of the Gnosis Safe. <br/>
+  **Verify**: You can verify the value by running `cast storage <safe_address> 5 -r <rpc_url>` in your terminal. This value represents the _current_ nonce value.
+
 - **Key**: `0x41ed7d57be3aeb16e937147407ec4fe9778850776e44a977f984860d4294c66f` <br/>
   **Before**: `0x0000000000000000000000000000000000000000000000000000000000000000` <br/>
   **After**: `0x0000000000000000000000003dad2200849925bb46d9bf05afa5f7f213f4c18e` <br/>
+  **Value Type**: address <br/>
+  **Decoded Old Value**: `0x0000000000000000000000000000000000000000` <br/>
+  **Decoded New Value**: `0x3Dad2200849925Bb46d9bF05aFa5f7F213F4c18E` <br/>
   **Meaning**: Sets the address value at the mapping key `owners[newOwner]` to the next address in the list returned by `getOwners()`. This is the first step required to replace the `oldOwner` address in the linked list data structure of owners.  <br/>
   **Verify**: You can verify the key derivation by running `cast index address <newOwner> 2` in your terminal. See the following section for an explanation of the storage and value calculations.
-
-- **Key**: `0xf50027dc233102bb13bb30a38326315505fe2452eaf2e2f78f1c0da0084d86c4` <br/>
-  **Before**: `0x0000000000000000000000005fbefa105bbd53b43bf537cbc5cd30804dd0c993` <br/>
-  **After**: `0x0000000000000000000000001c870776b168a9ffae80c51f050c611edd246741` <br/>
-  **Meaning**: Points the address value at mapping key `owners[prevOwner]` to the `newOwner` address. This is the second step required to replace the `oldOwner` address in the linked list data structure of owners.  <br/>
-  **Verify**: You can verify the key derivation by running `cast index address <prevOwner> 2` in your terminal. See the following section for an explanation of the storage and value calculations.
 
 - **Key**: `0x46b3491a8cd829af805c1f7fb76736ca5fd88e02a78fcec356aaa2b41bf599db` <br/>
   **Before**: `0x0000000000000000000000003dad2200849925bb46d9bf05afa5f7f213f4c18e` <br/>
   **After**: `0x0000000000000000000000000000000000000000000000000000000000000000` <br/>
+  **Value Type**: address <br/>
+  **Decoded Old Value**: `0x3Dad2200849925Bb46d9bF05aFa5f7F213F4c18E` <br/>
+  **Decoded New Value**: `0x0000000000000000000000000000000000000000` <br/>
   **Meaning**: Clears the address value at the mapping key `owners[oldOwner]`. This removes the final reference to the `oldOwner` from the `owners` linked list.  <br/>
   **Verify**: You can verify the key derivation by running `cast index address <oldOwner> 2` in your terminal. See the following section for an explanation of the storage and value calculations.
 
-- **Key**: `0x0000000000000000000000000000000000000000000000000000000000000005` <br/>
-  **Before**: `0x0000000000000000000000000000000000000000000000000000000000000002` <br/>
-  **After**: `0x0000000000000000000000000000000000000000000000000000000000000003` <br/>
-  **Meaning**: Increments the `nonce` value of the Gnosis Safe. <br/>
-  **Verify**: You can verify the value by running `cast storage <safe_address> 5 -r <rpc_url>` in your terminal. This value represents the _current_ nonce value.
+- **Key**: `0xf50027dc233102bb13bb30a38326315505fe2452eaf2e2f78f1c0da0084d86c4` <br/>
+  **Before**: `0x0000000000000000000000005fbefa105bbd53b43bf537cbc5cd30804dd0c993` <br/>
+  **After**: `0x0000000000000000000000001c870776b168a9ffae80c51f050c611edd246741` <br/>
+  **Value Type**: address <br/>
+  **Decoded Old Value**: `0x5FbEFA105bbd53b43bf537Cbc5cD30804Dd0c993` <br/>
+  **Decoded New Value**: `0x1c870776B168A9ffAE80c51f050C611eDd246741` <br/>
+  **Meaning**: Points the address value at mapping key `owners[prevOwner]` to the `newOwner` address. This is the second step required to replace the `oldOwner` address in the linked list data structure of owners.  <br/>
+  **Verify**: You can verify the key derivation by running `cast index address <prevOwner> 2` in your terminal. See the following section for an explanation of the storage and value calculations.
 
 ### Your Signer Address
 
