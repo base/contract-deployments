@@ -1,6 +1,6 @@
 # Upgrade System Config
 
-Status: Ready to sign
+Status: [EXECUTED](https://etherscan.io/tx/0x289aeed24a156bbb3b03cbbe0ef4e5fc873436d41cf50c746cdd380ff26be89b)
 
 ## Description
 
