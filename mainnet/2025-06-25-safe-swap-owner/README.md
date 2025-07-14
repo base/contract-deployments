@@ -1,10 +1,10 @@
 # Swap Owner on Gnosis Safe
 
-Status: PENDING
+Status: EXECUTED (https://etherscan.io/tx/0x47794b079d496a815d90eeaa17050f91aa6cd589dcd07da5a2f9e5f607c0baf2)
 
 ## Description
 
-This task contains a single script that can be used to swap an owner in a Gnosis Safe. 
+This task contains a single script that can be used to swap an owner in a Gnosis Safe.
 
 ## Procedure
 
@@ -91,7 +91,6 @@ transaction.
 > 3. In the Tenderly simulation. You should use the same Tenderly
 >    simulation as the one you used to verify the state diffs, instead
 >    of opening the new one printed in the console.
->
 
 After verification, sign the transaction. You will see the `Data`,
 `Signer` and `Signature` printed in the console. Format should be
