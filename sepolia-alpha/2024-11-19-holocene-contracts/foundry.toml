@@ -1,0 +1,19 @@
+[profile.default]
+src = 'src'
+out = 'out'
+libs = ['lib']
+broadcast = 'records'
+fs_permissions = [ {access = "read-write", path = "./"} ]
+optimizer = true
+optimizer_runs = 999999
+via-ir = true
+remappings = [
+    '@eth-optimism-bedrock/contracts/=lib/optimism/packages/contracts-bedrock/src/',
+    '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts',
+    '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts',
+    '@rari-capital/solmate/=lib/solmate/',
+    '@solady/=lib/solady/src',
+    '@cwia/=lib/clones-with-immutable-args/src'
+]
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config

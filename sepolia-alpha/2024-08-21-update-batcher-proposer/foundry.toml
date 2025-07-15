@@ -7,7 +7,8 @@ fs_permissions = [ {access = "read-write", path = "./"} ]
 optimizer = true
 optimizer_runs = 999999
 solc_version = "0.8.15"
-via-ir = true
+# via-ir = true
+ignored_error_codes = ["transient-storage", "code-size", "init-code-size", 5159]
 remappings = [
     '@eth-optimism-bedrock/=lib/optimism/packages/contracts-bedrock/',
     '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts',

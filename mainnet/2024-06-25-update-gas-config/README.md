@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Objective
 
-Because of the recently blob market fee dynamics, we had to pay extra priority fees in order for the blobs to be included in L1, which resulted in a net loss. Because of this, we wanted to tweak the gas scalar to see to do some L1 fee recovery.
+Because of the recently blob market fee dynamics, we had to pay extra priority fees in order for the blobs to be included in L1, which resulted in a net loss. Because of this, we wanted to tweak the gas scalar to do some L1 fee recovery.
 
 We need to make changes to the Gas Config in the L1 `SystemConfig` contract. Specifically, we need to set the `_overhead` and `_scalar` values by calling `setGasConfig`. This is an access-controlled method that only the Incident Multisig can call.
 
