@@ -101,7 +101,7 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 1. Go to the folder that was created using the `make setup-upgrade-fault-proofs network=<network>` step
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file
 1. Run `make deps`
-1. Add the new absolute prestate to the `.env` file. This can be found in the op-program prestates [releases.json](https://docs.optimism.io/operators/chain-operators/tutorials/absolute-prestate) file.
+1. Add the new absolute prestate to the `.env` file. This can be found in the op-program prestates [releases.json](https://github.com/ethereum-optimism/superchain-registry/blob/main/validation/standard/standard-prestates.toml) file.
 1. NOTE: If this task is for mainnet, the directory should work as-is. If this task is for testnet, you will need to follow the following steps:
    1. Update the `UpgradeDGF` script to inherit `MultisigBuilder` instead of `NestedMultisigBuilder`
    1. Comment out the mainnet environment variables and uncomment the testnet vars in `.env`
