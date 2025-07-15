@@ -8,11 +8,11 @@ This repo is structured with each network having a high-level directory which co
 
 <!-- Badge row 1 - status -->
 
-[![GitHub contributors](https://img.shields.io/github/contributors/base-org/contract-deployments)](https://github.com/base-org/contract-deployments/graphs/contributors)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/w/base-org/contract-deployments)](https://github.com/base/contract-deployments/commits/main)
-[![GitHub Stars](https://img.shields.io/github/stars/base-org/contract-deployments.svg)](https://github.com/base-org/contract-deployments/stargazers)
-![GitHub repo size](https://img.shields.io/github/repo-size/base-org/contract-deployments)
-[![GitHub](https://img.shields.io/github/license/base-org/contract-deployments?color=blue)](https://github.com/base-org/contract-deployments/blob/main/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/base-org/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/w/base-org/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
+[![GitHub Stars](https://img.shields.io/github/stars/base-org/contract-deployments.svg)](https://github.com/base/contract-deployments/stargazers)
+![GitHub repo size](https://img.shields.io/github/repo-size/base/contract-deployments)
+[![GitHub](https://img.shields.io/github/license/base-org/contract-deployments?color=blue)](https://github.com/base/contract-deployments/blob/main/LICENSE)
 
 <!-- Badge row 2 - links and profiles -->
 
@@ -20,12 +20,12 @@ This repo is structured with each network having a high-level directory which co
 [![Blog](https://img.shields.io/badge/blog-up-green)](https://base.mirror.xyz/)
 [![Docs](https://img.shields.io/badge/docs-up-green)](https://docs.base.org/)
 [![Discord](https://img.shields.io/discord/1067165013397213286?label=discord)](https://base.org/discord)
-[![Twitter BuildOnBase](https://img.shields.io/twitter/follow/BuildOnBase?style=social)](https://twitter.com/BuildOnBase)
+[![Twitter BuildOnBase](https://img.shields.io/twitter/follow/BuildOnBase?style=social)](https://x.com/BuildOnBase)
 
 <!-- Badge row 3 - detailed status -->
 
-[![GitHub pull requests by-label](https://img.shields.io/github/issues-pr-raw/base-org/contract-deployments)](https://github.com/base-org/contract-deployments/pulls)
-[![GitHub Issues](https://img.shields.io/github/issues-raw/base-org/contract-deployments.svg)](https://github.com/base-org/contract-deployments/issues)
+[![GitHub pull requests by-label](https://img.shields.io/github/issues-pr-raw/base-org/contract-deployments)](https://github.com/base/contract-deployments/pulls)
+[![GitHub Issues](https://img.shields.io/github/issues-raw/base-org/contract-deployments.svg)](https://github.com/base/contract-deployments/issues)
 
 ## Setup
 
