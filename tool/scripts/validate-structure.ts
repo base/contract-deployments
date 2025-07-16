@@ -15,9 +15,6 @@ const REQUIRED_CONFIG_FILES = [
   'op.json'
 ] as const;
 
-// Upgrade folder pattern: YYYY-MM-DD-description
-const UPGRADE_FOLDER_PATTERN = /^\d{4}-\d{2}-\d{2}-/;
-
 interface ValidationError {
   folder: string;
   message: string;
