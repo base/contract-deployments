@@ -65,7 +65,7 @@ setup-funding:
 # Solidity Setup
 ##
 .PHONY: deps
-deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit
+deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit install-git-submodules
 
 .PHONY: install-eip712sign
 install-eip712sign:
@@ -84,6 +84,25 @@ forge-deps:
 		github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \
 		github.com/Vectorized/solady@796d4676c7683aa801e8e224ea51e944e3153e6d \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
+
+.PHONY: install-git-submodules
+install-git-submodules:
+	git submodule update --init --recursive
+
+.PHONY: sign
+sign:
+	cd tool && npm run build
+	@echo "Killing any existing processes on port 1234..."
+	@-pkill -f "next start" 2>/dev/null || true
+	@-lsof -ti :1234 | xargs kill -9 2>/dev/null || true
+	@sleep 1
+	@echo "Starting server on port 1234 and opening browser..."
+	@cd tool && npm run start -- -p 1234 & \
+	SERVER_PID=$$!; \
+	sleep 3; \
+	open http://localhost:1234; \
+	echo "Browser opened. Server running on port 1234 with PID $$SERVER_PID. Press Ctrl+C to stop."; \
+	wait $$SERVER_PID
 
 .PHONY: checkout-op-commit
 checkout-op-commit:
