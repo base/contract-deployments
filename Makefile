@@ -65,7 +65,7 @@ setup-funding:
 # Solidity Setup
 ##
 .PHONY: deps
-deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit install-git-submodules
+deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit install-state-diff
 
 .PHONY: install-eip712sign
 install-eip712sign:
@@ -85,9 +85,13 @@ forge-deps:
 		github.com/Vectorized/solady@796d4676c7683aa801e8e224ea51e944e3153e6d \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
-.PHONY: install-git-submodules
-install-git-submodules:
-	git submodule update --init --recursive
+.PHONY: install-state-diff
+install-state-diff:
+	rm -rf go-simulator
+	git clone https://github.com/jackchuma/state-diff.git go-simulator
+	cd go-simulator && git checkout 5c5bae2d54fd9ef55880d87e9b648c4cbd4cb42a
+	cd go-simulator && go mod download
+	cd go-simulator && go build -o state-diff .
 
 .PHONY: sign
 sign:
