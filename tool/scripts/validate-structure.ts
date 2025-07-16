@@ -74,7 +74,8 @@ export class StructureValidator {
 
     for (const input of inputs) {
       // Check if input is a direct folder path (e.g., "mainnet/2025-06-25-safe-swap-owner")
-      const directFolderMatch = input.match(/^(mainnet|sepolia)\/(\d{4}-\d{2}-\d{2}-.+?)$/);
+      // This should NOT contain any slashes after the upgrade folder name
+      const directFolderMatch = input.match(/^(mainnet|sepolia)\/(\d{4}-\d{2}-\d{2}-[^/]+)$/);
       if (directFolderMatch) {
         folders.add(input);
         continue;
