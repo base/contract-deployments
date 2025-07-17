@@ -34,7 +34,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Construct the path to the upgrade folder and lib subdirectory
     const contractDeploymentsPath = path.join(process.cwd(), '..');
-    const upgradePath = path.join(contractDeploymentsPath, actualNetwork, upgradeId);
+    
+    // Handle test network specially - load from tool/test-upgrade instead of root/test
+    const upgradePath = actualNetwork === 'test'
+      ? path.join(process.cwd(), 'test-upgrade', upgradeId)
+      : path.join(contractDeploymentsPath, actualNetwork, upgradeId);
     const libPath = path.join(upgradePath, 'lib');
 
     // Check if the upgrade folder exists

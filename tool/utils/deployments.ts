@@ -169,7 +169,11 @@ function parseExecutionStatus(content: string): {
 
 export function getUpgradeOptions(network: 'mainnet' | 'sepolia' | 'test'): DeploymentInfo[] {
   const contractDeploymentsPath = path.join(process.cwd(), '..');
-  const networkPath = path.join(contractDeploymentsPath, network);
+  
+  // Handle test network specially - load from tool/test-upgrade instead of root/test
+  const networkPath = network === 'test' 
+    ? path.join(process.cwd(), 'test-upgrade')
+    : path.join(contractDeploymentsPath, network);
 
   try {
     // Check if the path exists

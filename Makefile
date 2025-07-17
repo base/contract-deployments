@@ -65,7 +65,7 @@ setup-funding:
 # Solidity Setup
 ##
 .PHONY: deps
-deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit install-state-diff
+deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit
 
 .PHONY: install-eip712sign
 install-eip712sign:
