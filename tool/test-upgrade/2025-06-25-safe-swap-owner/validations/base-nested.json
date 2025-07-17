@@ -1,0 +1,62 @@
+{
+  "task_name": "mainnet-safe-swap-owner",
+  "script_name": "SwapOwner",
+  "signature": "sign()",
+  "args": "",
+  "expected_domain_and_message_hashes": {
+    "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+    "domain_hash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
+    "message_hash": "0xf1160d2510c49ad09ba91899c9584a87bf4292a5272a2751796281a91cb8b9b4"
+  },
+  "expected_nested_hash": "",
+  "state_overrides": [
+    {
+      "name": "Base Nested Multisig",
+      "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur"
+        },
+        {
+          "key": "0x941b9cdcb5979673e06ce272a4b3851457b1a7a92c5034b46f0cdf4d3ffbf36d",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Difference is expected: different signer generate a different approval hash."
+        }
+      ]
+    }
+  ],
+  "state_changes": [
+    {
+      "name": "Base GnosisSafeProxy",
+      "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Increments the nonce value of the Gnosis Safe"
+        },
+        {
+          "key": "0x41ed7d57be3aeb16e937147407ec4fe9778850776e44a977f984860d4294c66f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000003dad2200849925bb46d9bf05afa5f7f213f4c18e",
+          "description": "Sets the address value at the mapping key owners[newOwner] to the next address in the list"
+        },
+        {
+          "key": "0x46b3491a8cd829af805c1f7fb76736ca5fd88e02a78fcec356aaa2b41bf599db",
+          "before": "0x0000000000000000000000003dad2200849925bb46d9bf05afa5f7f213f4c18e",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears the address value at the mapping key owners[oldOwner]"
+        },
+        {
+          "key": "0xf50027dc233102bb13bb30a38326315505fe2452eaf2e2f78f1c0da0084d86c4",
+          "before": "0x0000000000000000000000005fbefa105bbd53b43bf537cbc5cd30804dd0c993",
+          "after": "0x0000000000000000000000001c870776b168a9ffae80c51f050c611edd246741",
+          "description": "Points the address value at mapping key owners[prevOwner] to the newOwner address"
+        }
+      ]
+    }
+  ]
+}

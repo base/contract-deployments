@@ -85,6 +85,29 @@ forge-deps:
 		github.com/Vectorized/solady@796d4676c7683aa801e8e224ea51e944e3153e6d \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
+.PHONY: install-state-diff
+install-state-diff:
+	rm -rf go-simulator
+	git clone https://github.com/jackchuma/state-diff.git go-simulator
+	cd go-simulator && git checkout 5c5bae2d54fd9ef55880d87e9b648c4cbd4cb42a
+	cd go-simulator && go mod download
+	cd go-simulator && go build -o state-diff .
+
+.PHONY: sign
+sign:
+	cd tool && npm run build
+	@echo "Killing any existing processes on port 1234..."
+	@-pkill -f "next start" 2>/dev/null || true
+	@-lsof -ti :1234 | xargs kill -9 2>/dev/null || true
+	@sleep 1
+	@echo "Starting server on port 1234 and opening browser..."
+	@cd tool && npm run start -- -p 1234 & \
+	SERVER_PID=$$!; \
+	sleep 3; \
+	open http://localhost:1234; \
+	echo "Browser opened. Server running on port 1234 with PID $$SERVER_PID. Press Ctrl+C to stop."; \
+	wait $$SERVER_PID
+
 .PHONY: checkout-op-commit
 checkout-op-commit:
 	[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1)

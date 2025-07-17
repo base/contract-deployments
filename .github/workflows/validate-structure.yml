@@ -1,0 +1,76 @@
+name: Validate Upgrade Structure
+
+on:
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'mainnet/**'
+      - 'sepolia/**'
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'mainnet/**'
+      - 'sepolia/**'
+
+jobs:
+  validate-structure:
+    name: Validate Upgrade Folder Structure
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Need full history to detect changed files
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'tool/package-lock.json'
+
+    - name: Install dependencies
+      working-directory: ./tool
+      run: npm ci
+
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v44
+      with:
+        files: |
+          mainnet/**
+          sepolia/**
+
+    - name: Run structure validation
+      if: steps.changed-files.outputs.any_changed == 'true'
+      working-directory: ./tool
+      run: |
+        echo "Changed files:"
+        echo "${{ steps.changed-files.outputs.all_changed_files }}"
+        npx tsx scripts/validate-structure.ts "${{ steps.changed-files.outputs.all_changed_files }}"
+
+    - name: Comment PR on validation failure
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+                        body: `## ❌ Upgrade Structure Validation Failed
+
+            The validation check found issues with your upgrade folder structure. Please ensure:
+
+            1. **All upgrade folders have a \`validations/\` subdirectory**
+            2. **Each \`validations/\` folder contains at least one config file:**
+               - \`base-nested.json\` (for Coinbase validation)
+               - \`base-sc.json\` (for Base SC validation)
+               - \`op.json\` (for OP validation)
+            3. **All JSON files are valid and follow the correct schema**
+
+            Please check the CI logs above for specific error details and fix the issues before merging.
+
+            📖 See the [validation documentation](docs/folder-format.md) for more details.`
+          })
