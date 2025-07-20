@@ -14,7 +14,7 @@ Welcome everyone to our streamlined signing process. This guide will walk you th
 ## Step 1: Install Dependencies
 
 ```bash
-make install-state-diff
+make install
 ```
 
 This will install all necessary dependencies for the signing process.
