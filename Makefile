@@ -85,6 +85,13 @@ forge-deps:
 		github.com/Vectorized/solady@796d4676c7683aa801e8e224ea51e944e3153e6d \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
+.PHONY: install
+install: install-tool-deps install-state-diff
+
+.PHONY: install-tool-deps
+install-tool-deps:
+	cd tool && npm install
+
 .PHONY: install-state-diff
 install-state-diff:
 	rm -rf go-simulator
