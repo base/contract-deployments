@@ -17,7 +17,7 @@ export type { ValidationData };
 
 export interface ValidationOptions {
   upgradeId: string; // e.g., "2025-06-04-upgrade-system-config"
-  network: 'mainnet' | 'sepolia';
+  network: 'mainnet' | 'sepolia' | 'test';
   userType: 'Base SC' | 'Coinbase' | 'OP';
   rpcUrl?: string;
   tenderlyApiKey?: string;
@@ -149,7 +149,11 @@ export class ValidationService {
     };
   }> {
     const contractDeploymentsPath = path.join(process.cwd(), '..');
-    const upgradePath = path.join(contractDeploymentsPath, options.network, options.upgradeId);
+    
+    // Handle test network specially - load from tool/test-upgrade instead of root/test
+    const upgradePath = options.network === 'test'
+      ? path.join(process.cwd(), 'test-upgrade', options.upgradeId)
+      : path.join(contractDeploymentsPath, options.network, options.upgradeId);
 
     // Look for validation config files based on user type in validations subdirectory
     const configFileName = this.getConfigFileName(options.userType);
@@ -361,7 +365,7 @@ export class ValidationService {
   /**
    * Get RPC URL with fallbacks
    */
-  private getRpcUrl(network: 'mainnet' | 'sepolia'): string {
+  private getRpcUrl(network: 'mainnet' | 'sepolia' | 'test'): string {
     const contractDeploymentsPath = path.join(process.cwd(), '..');
     const networkPath = path.join(contractDeploymentsPath, network);
     const envPath = path.join(networkPath, '.env');
@@ -384,6 +388,7 @@ export class ValidationService {
     const defaultRpcUrls = {
       mainnet: 'https://mainnet.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul',
       sepolia: 'https://sepolia.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul',
+      test: 'https://virtual.mainnet.rpc.tenderly.co/3a94c397-9711-4592-aadf-a66a31c6747f',
     };
 
     const rpcUrl = defaultRpcUrls[network];
@@ -431,6 +436,7 @@ export class ValidationService {
       const defaultRpcUrls = {
         mainnet: 'https://mainnet.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul',
         sepolia: 'https://sepolia.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul',
+        test: 'https://virtual.mainnet.rpc.tenderly.co/3a94c397-9711-4592-aadf-a66a31c6747f',
       };
       rpcUrl = defaultRpcUrls[options.network];
       console.log(`📡 Using default RPC URL: ${rpcUrl}`);
