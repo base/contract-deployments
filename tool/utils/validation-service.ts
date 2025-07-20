@@ -408,7 +408,11 @@ export class ValidationService {
     }
   ): Promise<ExtractedData> {
     const contractDeploymentsPath = path.join(process.cwd(), '..');
-    const scriptPath = path.join(contractDeploymentsPath, options.network, options.upgradeId);
+    
+    // Handle test network specially - load from tool/test-upgrade instead of root/test
+    const scriptPath = options.network === 'test'
+      ? path.join(process.cwd(), 'test-upgrade', options.upgradeId)
+      : path.join(contractDeploymentsPath, options.network, options.upgradeId);
 
     // Try to read RPC URL from .env file in the network folder
     let rpcUrl = options.rpcUrl;
@@ -508,7 +512,11 @@ export class ValidationService {
    */
   async cleanup(options: ValidationOptions): Promise<void> {
     const contractDeploymentsPath = path.join(process.cwd(), '..');
-    const scriptPath = path.join(contractDeploymentsPath, options.network, options.upgradeId);
+    
+    // Handle test network specially - load from tool/test-upgrade instead of root/test
+    const scriptPath = options.network === 'test'
+      ? path.join(process.cwd(), 'test-upgrade', options.upgradeId)
+      : path.join(contractDeploymentsPath, options.network, options.upgradeId);
     const tempFile = path.join(scriptPath, 'temp-script-output.txt');
     const extractedFile = path.join(scriptPath, 'temp-script-output-extracted.json');
 
