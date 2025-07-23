@@ -1,8 +1,0 @@
-{
-    "L2OutputOracleUpgrade": {
-        "newImplementationAddr": "0x73A5aE576C53Cf49d9dD6E70d895460b826B2557",
-        "proxyAddr": "0x2a35891ff30313ccfa6ce88dcf3858bb075a2298",
-        "proxyAdmin": "0xbc0fc544736b7d610d9b05f31b182c8154bef336",
-        "proxyAdminOwner": "0x4C35Ca57616E0d5fD808574772f632D8dA4eadCa"
-    }
-}
