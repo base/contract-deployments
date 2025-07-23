@@ -34,7 +34,7 @@ Create validation JSON files for each signer role using the `validation-format.j
     "state_changes": [...]
 }
 ```
-These file can be generated using a tool called `state-diff`, can be installed [here]((https://github.com/jackchuma/state-diff)).
+These files can be generated using our [`state-diff`](https://github.com/jackchuma/state-diff) tool.
 
 Developer can call the tool directly on the Foundry script and valid config file will be outputed. The script will includes 
 
