@@ -1,5 +1,5 @@
 {
-  "name": "multisig-validation-tool",
+  "name": "task-validation-tool",
   "private": true,
   "version": "0.0.0",
   "scripts": {
