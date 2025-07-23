@@ -12,31 +12,14 @@ export default function handler(
   try {
     const { network } = req.query;
 
-    if (
-      !network ||
-      (network !== 'mainnet' &&
-        network !== 'Mainnet' &&
-        network !== 'sepolia' &&
-        network !== 'Sepolia' &&
-        network !== 'test' &&
-        network !== 'Test')
-    ) {
+    const actualNetwork = (network as string).toLowerCase() as 'mainnet' | 'sepolia' | 'test';
+    const ACCEPTED_NETWORKS = ['mainnet', 'sepolia', 'test'];
+
+    if (!ACCEPTED_NETWORKS.includes(actualNetwork)) {
       return res
         .status(400)
         .json({ error: 'Invalid network parameter. Must be "mainnet", "sepolia", or "test"' });
     }
-
-    // Map frontend network names to directory names
-    const networkMapping: Record<string, 'mainnet' | 'sepolia' | 'test'> = {
-      mainnet: 'mainnet',
-      Mainnet: 'mainnet',
-      sepolia: 'sepolia',
-      Sepolia: 'sepolia',
-      test: 'test',
-      Test: 'test',
-    };
-
-    const actualNetwork = networkMapping[network as string];
     const upgrades = getUpgradeOptions(actualNetwork);
     res.status(200).json(upgrades);
   } catch (error) {

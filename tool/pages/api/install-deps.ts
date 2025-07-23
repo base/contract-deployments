@@ -20,17 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    // Map frontend network names to directory names
-    const networkMapping: Record<string, string> = {
-      mainnet: 'mainnet',
-      Mainnet: 'mainnet',
-      sepolia: 'sepolia',
-      Sepolia: 'sepolia',
-      test: 'test',
-      Test: 'test',
-    };
-
-    const actualNetwork = networkMapping[network] || network;
+    const actualNetwork = network.toLowerCase();
 
     // Construct the path to the upgrade folder and lib subdirectory
     const contractDeploymentsPath = path.join(process.cwd(), '..');

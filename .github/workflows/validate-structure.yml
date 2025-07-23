@@ -2,12 +2,12 @@ name: Validate Upgrade Structure
 
 on:
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
       - 'mainnet/**'
       - 'sepolia/**'
   push:
-    branches: [ main, master ]
+    branches: [ main ]
     paths:
       - 'mainnet/**'
       - 'sepolia/**'

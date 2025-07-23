@@ -1,4 +1,4 @@
-![Base](logo.png)
+![Base](logo.webp)
 
 # contract-deployments
 
@@ -43,7 +43,7 @@ To execute a new task, run one of the following commands (depending on the type 
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
-> **👥 For Signers:** If you are a signer looking to sign transactions, please read the [Signer Guide](setup-templates/SIGNER.md) for step-by-step instructions on using the validation UI.
+> **👥 For Signers:** If you are a signer looking to sign transactions, please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
 
 
 ## Directory structure
@@ -54,10 +54,9 @@ Each task will have a directory structure similar to the following:
 - **[records/](/records)** Foundry will autogenerate files here from running commands
 - **[script/](/script)** place to store any one-off Foundry scripts
 - **[src/](/src)** place to store any one-off smart contracts (long-lived contracts should go in [base-org/contracts](https://github.com/base-org/contracts))
-- **[tool/](/tool)** place to the validation tools interface
 - **.env** place to store environment variables specific to this task
 
-> **📝 Note:** Before continuing with the templates below, please review the [setup guide for valid upgrade folders](setup-templates/DEVELOPER.md) to ensure your deployment is compatible with the new validation tool.
+> **📝 Note:** Before continuing with the templates below, please review the [setup guide for valid upgrade folders](DEVELOPER.md) to ensure your deployment is compatible with the new validation tool.
 
 ## Using the incident response template
 
