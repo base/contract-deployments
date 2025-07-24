@@ -1,4 +1,4 @@
-![Base](logo.webp)
+![Base](logo.png)
 
 # contract-deployments
 
