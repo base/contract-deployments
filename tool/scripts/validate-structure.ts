@@ -8,12 +8,8 @@ import { ConfigParser } from '../utils/parser';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Available config files for each upgrade (at least one required)
-const REQUIRED_CONFIG_FILES = [
-  'base-nested.json',
-  'base-sc.json',
-  'op.json'
-] as const;
+// At least one JSON config file is required in the validations folder
+// Each file must contain a valid JSON config with required "ledger-id" field
 
 interface ValidationError {
   folder: string;
@@ -122,32 +118,23 @@ export class StructureValidator {
    * Validate that at least one config file exists and all existing files are valid JSON
    */
   private validateConfigFiles(folderPath: string, validationsPath: string): void {
-    const existingFiles: string[] = [];
-    const missingFiles: string[] = [];
     const invalidFiles: InvalidFile[] = [];
 
-    // Check which files exist
-    for (const configFile of REQUIRED_CONFIG_FILES) {
-      const filePath = path.join(validationsPath, configFile);
+    // Find all JSON files in the validations directory
+    const allFiles = fs.readdirSync(validationsPath);
+    const jsonFiles = allFiles.filter(file => file.endsWith('.json'));
 
-      if (fs.existsSync(filePath)) {
-        existingFiles.push(configFile);
-      } else {
-        missingFiles.push(configFile);
-      }
-    }
-
-    // Require at least one config file
-    if (existingFiles.length === 0) {
+    // Require at least one JSON config file
+    if (jsonFiles.length === 0) {
       this.addError(
         folderPath,
-        `No validation config files found. At least one of these files is required: ${REQUIRED_CONFIG_FILES.join(', ')}`
+        `No validation config files found. At least one .json file is required in the validations/ directory.`
       );
       return;
     }
 
-    // Validate existing files
-    for (const configFile of existingFiles) {
+    // Validate all JSON files
+    for (const configFile of jsonFiles) {
       const filePath = path.join(validationsPath, configFile);
 
       try {
@@ -173,11 +160,6 @@ export class StructureValidator {
           errors: [{ message: `Failed to read file: ${errorMessage}` }]
         });
       }
-    }
-
-    // Show info about missing files (as info, not error)
-    if (missingFiles.length > 0) {
-      console.log(`   ℹ️  Optional files not present: ${missingFiles.join(', ')}`);
     }
 
     // Report invalid files

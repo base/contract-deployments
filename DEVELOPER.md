@@ -24,6 +24,7 @@ Create validation JSON files for each signer role using the `validation-format.j
   "script_name": "script-name",
   "signature": "script-signature()",
   "args": "[script-args]",
+  "ledger-id": 0,
   "expected_domain_and_message_hashes": {
     "address": "address-of-the-contract",
     "domain_hash": "domain-hash",

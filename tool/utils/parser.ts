@@ -47,6 +47,7 @@ const TaskConfigSchema = z.object({
   script_name: z.string().min(1),
   signature: z.string().min(1),
   args: z.string(), // Allow empty string for scripts with no arguments
+  "ledger-id": z.number().int().nonnegative(), // Required ledger account index
   expected_domain_and_message_hashes: ExpectedHashesSchema,
   expected_nested_hash: z
     .string()
@@ -148,6 +149,7 @@ export class ConfigParser {
       script_name: '',
       signature: '',
       args: '',
+      "ledger-id": 0,
       expected_domain_and_message_hashes: { address: '', domain_hash: '', message_hash: '' },
       expected_nested_hash: '',
       state_overrides: [],

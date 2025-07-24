@@ -3,6 +3,7 @@
   "script_name": "SwapOwner",
   "signature": "sign()",
   "args": "",
+  "ledger-id": 0,
   "expected_domain_and_message_hashes": {
     "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
     "domain_hash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",

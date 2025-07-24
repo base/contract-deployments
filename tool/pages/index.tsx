@@ -7,17 +7,18 @@ import {
   NetworkSelection,
   SelectionSummary,
   SigningConfirmation,
+  SimulationMethodSelection,
   StepIndicator,
   UpgradeSelection,
   UserSelection,
   ValidationResults,
 } from '../components';
 
-type UserType = 'Base SC' | 'Coinbase' | 'OP' | null;
+type UserType = string | null; // Changed to string to handle dynamic user types
 type NetworkType = 'Sepolia' | 'Mainnet' | 'Test' | null;
 type UpgradeType = string | null;
 type SimulationMethod = 'tenderly' | 'state-diff';
-type Step = 'user' | 'network' | 'upgrade' | 'validation' | 'ledger' | 'signing';
+type Step = 'network' | 'upgrade' | 'user' | 'simulation' | 'validation' | 'ledger' | 'signing'; // Added 'simulation' step
 
 interface StateChange {
   key: string;
@@ -95,7 +96,7 @@ const mockActualData: ValidationData = {
 };
 
 export default function Home() {
-  const [currentStep, setCurrentStep] = useState<Step>('user');
+  const [currentStep, setCurrentStep] = useState<Step>('network'); // Start with network instead of user
   const [selectedUser, setSelectedUser] = useState<UserType>(null);
   const [selectedNetwork, setSelectedNetwork] = useState<NetworkType>(null);
   const [selectedUpgrade, setSelectedUpgrade] = useState<UpgradeType>(null);
@@ -108,6 +109,17 @@ export default function Home() {
   const [userLedgerAddress, setUserLedgerAddress] = useState<string>('');
   const [userLedgerAccount, setUserLedgerAccount] = useState<number>(0);
 
+  // Updated flow: Network → Upgrade → User → Simulation
+  const handleNetworkSelection = (network: NetworkType) => {
+    setSelectedNetwork(network);
+    setCurrentStep('upgrade');
+  };
+
+  const handleUpgradeSelection = (upgradeId: string) => {
+    setSelectedUpgrade(upgradeId);
+    setCurrentStep('user');
+  };
+
   const handleUserSelection = (
     userType: UserType,
     ledgerAddress: string,
@@ -116,32 +128,19 @@ export default function Home() {
     setSelectedUser(userType);
     setUserLedgerAddress(ledgerAddress);
     setUserLedgerAccount(ledgerAccount);
-    setCurrentStep('network');
+    setCurrentStep('simulation');
   };
 
-  const handleNetworkSelection = (network: NetworkType) => {
-    setSelectedNetwork(network);
-    setCurrentStep('upgrade');
-  };
-
-  const handleWalletSelection = (upgradeId: string) => {
-    setSelectedUpgrade(upgradeId);
-  };
-
-  const handleStartValidation = async (simulationMethod: SimulationMethod) => {
-    if (!selectedNetwork || !selectedUpgrade) {
-      console.error('❌ Missing network or upgrade selection');
-      return;
-    }
-
+  const handleSimulationMethodSelection = (simulationMethod: SimulationMethod) => {
     setSelectedSimulationMethod(simulationMethod);
     setCurrentStep('validation');
   };
 
+  // Remove the old handleWalletSelection and handleStartValidation methods
+  // as they're no longer needed with the new flow
+
   const handleBackToSetup = () => {
-    setCurrentStep('upgrade');
-    // Keep user selections but reset upgrade-specific data
-    setSelectedUpgrade(null);
+    setCurrentStep('simulation'); // Go back to simulation method selection
     setSelectedSimulationMethod(null);
     setValidationData(null);
     setSigningData(null);
@@ -175,8 +174,8 @@ export default function Home() {
     setCurrentStep('ledger');
   };
 
-  const handleGoToUserSelection = () => {
-    setCurrentStep('user');
+  const handleGoToNetworkSelection = () => {
+    setCurrentStep('network');
     setSelectedUser(null);
     setSelectedNetwork(null);
     setSelectedUpgrade(null);
@@ -187,18 +186,29 @@ export default function Home() {
     setUserLedgerAccount(0);
   };
 
-  const handleGoToNetworkSelection = () => {
-    setCurrentStep('network');
-    setSelectedNetwork(null);
-    setSelectedUpgrade(null);
-    setSelectedSimulationMethod(null);
-    setValidationData(null);
-    setSigningData(null);
-  };
-
   const handleGoToUpgradeSelection = () => {
     setCurrentStep('upgrade');
     setSelectedUpgrade(null);
+    setSelectedUser(null);
+    setSelectedSimulationMethod(null);
+    setValidationData(null);
+    setSigningData(null);
+    setUserLedgerAddress('');
+    setUserLedgerAccount(0);
+  };
+
+  const handleGoToUserSelection = () => {
+    setCurrentStep('user');
+    setSelectedUser(null);
+    setSelectedSimulationMethod(null);
+    setValidationData(null);
+    setSigningData(null);
+    setUserLedgerAddress('');
+    setUserLedgerAccount(0);
+  };
+
+  const handleGoToSimulationSelection = () => {
+    setCurrentStep('simulation');
     setSelectedSimulationMethod(null);
     setValidationData(null);
     setSigningData(null);
@@ -236,6 +246,8 @@ export default function Home() {
             ? '800px'
             : currentStep === 'upgrade'
             ? '900px'
+            : currentStep === 'simulation'
+            ? '900px'
             : '600px'
         }
       >
@@ -243,29 +255,28 @@ export default function Home() {
 
         <StepIndicator
           currentStep={currentStep}
-          hasUser={!!selectedUser}
           hasNetwork={!!selectedNetwork}
           hasWallet={!!selectedUpgrade}
+          hasUser={!!selectedUser}
+          hasSimulation={!!selectedSimulationMethod}
         />
 
         <SelectionSummary
           selectedUser={selectedUser}
           selectedNetwork={selectedNetwork}
           selectedWallet={selectedUpgrade}
-          onUserClick={currentStep !== 'user' ? handleGoToUserSelection : undefined}
-          onNetworkClick={
-            currentStep !== 'user' && currentStep !== 'network'
-              ? handleGoToNetworkSelection
-              : undefined
-          }
+          onNetworkClick={currentStep !== 'network' ? handleGoToNetworkSelection : undefined}
           onWalletClick={
-            currentStep === 'validation' || currentStep === 'ledger' || currentStep === 'signing'
+            currentStep === 'user' || currentStep === 'simulation' || currentStep === 'validation' || currentStep === 'ledger' || currentStep === 'signing'
               ? handleGoToUpgradeSelection
               : undefined
           }
+          onUserClick={
+            currentStep === 'simulation' || currentStep === 'validation' || currentStep === 'ledger' || currentStep === 'signing'
+              ? handleGoToUserSelection
+              : undefined
+          }
         />
-
-        {currentStep === 'user' && <UserSelection onSelect={handleUserSelection} />}
 
         {currentStep === 'network' && <NetworkSelection onSelect={handleNetworkSelection} />}
 
@@ -273,8 +284,21 @@ export default function Home() {
           <UpgradeSelection
             selectedWallet={selectedUpgrade}
             selectedNetwork={selectedNetwork}
-            onSelect={handleWalletSelection}
-            onStartValidation={handleStartValidation}
+            onSelect={handleUpgradeSelection}
+          />
+        )}
+
+        {currentStep === 'user' && selectedNetwork && selectedUpgrade && (
+          <UserSelection
+            network={selectedNetwork}
+            upgradeId={selectedUpgrade}
+            onSelect={handleUserSelection}
+          />
+        )}
+
+        {currentStep === 'simulation' && (
+          <SimulationMethodSelection
+            onSelect={handleSimulationMethodSelection}
           />
         )}
 

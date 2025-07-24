@@ -1,31 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+interface ConfigOption {
+  fileName: string;
+  displayName: string;
+  configFile: string;
+  ledgerId: number;
+}
 
 interface UserSelectionProps {
+  network: string;
+  upgradeId: string;
   onSelect: (
-    user: 'Base SC' | 'Coinbase' | 'OP',
+    user: string,
     ledgerAddress: string,
     ledgerAccount: number
   ) => void;
 }
 
-export const UserSelection: React.FC<UserSelectionProps> = ({ onSelect }) => {
-  const [selectedUser, setSelectedUser] = useState<'Base SC' | 'Coinbase' | 'OP' | null>(null);
+export const UserSelection: React.FC<UserSelectionProps> = ({ 
+  network, 
+  upgradeId, 
+  onSelect 
+}) => {
+  const [availableUsers, setAvailableUsers] = useState<ConfigOption[]>([]);
+  const [selectedUser, setSelectedUser] = useState<ConfigOption | null>(null);
   const [ledgerAddress, setLedgerAddress] = useState<string>('');
   const [ledgerAccount, setLedgerAccount] = useState<number>(0);
   const [loading, setLoading] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
   const [error, setError] = useState<string>('');
   const [addressInputMethod, setAddressInputMethod] = useState<'ledger' | 'manual'>('ledger');
   const [manualAddress, setManualAddress] = useState<string>('');
   const [showAdvancedLedger, setShowAdvancedLedger] = useState<boolean>(false);
 
-  const options = ['Base SC', 'Coinbase', 'OP'] as const;
+  // Fetch available users when network and upgradeId change
+  useEffect(() => {
+    const fetchAvailableUsers = async () => {
+      if (!network || !upgradeId) return;
+      
+      setLoadingUsers(true);
+      try {
+        const response = await fetch(`/api/upgrade-config?network=${network.toLowerCase()}&upgradeId=${upgradeId}`);
+        const { configOptions, error: apiError } = await response.json();
+        
+        if (apiError) {
+          setError(`Failed to load config options: ${apiError}`);
+          setAvailableUsers([]);
+        } else {
+          setAvailableUsers(configOptions);
+          setError('');
+        }
+      } catch (err) {
+        console.error('Failed to fetch upgrade config:', err);
+        setError('Failed to load config options');
+        setAvailableUsers([]);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
 
-  const handleUserSelect = (user: 'Base SC' | 'Coinbase' | 'OP') => {
-    setSelectedUser(user);
+    fetchAvailableUsers();
+  }, [network, upgradeId]);
+
+  const handleUserSelect = (userOption: ConfigOption) => {
+    setSelectedUser(userOption);
     setError('');
     // Reset address states when user changes
     setLedgerAddress('');
     setManualAddress('');
+    
+    // Set ledger account to the value from validation file
+    setLedgerAccount(userOption.ledgerId);
+    console.log(`Set default ledger account to: ${userOption.ledgerId} for user: ${userOption.displayName}`);
   };
 
   const handleGetLedgerAddress = async () => {
@@ -75,7 +121,7 @@ export const UserSelection: React.FC<UserSelectionProps> = ({ onSelect }) => {
 
   const handleProceed = () => {
     if (selectedUser && ledgerAddress) {
-      onSelect(selectedUser, ledgerAddress, ledgerAccount);
+      onSelect(selectedUser.fileName, ledgerAddress, ledgerAccount);
     }
   };
 
@@ -113,48 +159,54 @@ export const UserSelection: React.FC<UserSelectionProps> = ({ onSelect }) => {
             gap: '12px',
           }}
         >
-          {options.map(option => (
-            <button
-              key={option}
-              onClick={() => handleUserSelect(option)}
-              style={{
-                width: '100%',
-                background: selectedUser === option ? '#EBF8FF' : 'white',
-                border: selectedUser === option ? '2px solid #3B82F6' : '1px solid #E5E7EB',
-                borderRadius: '12px',
-                padding: '20px',
-                color: selectedUser === option ? '#1E40AF' : '#374151',
-                fontWeight: selectedUser === option ? '600' : '500',
-                fontSize: '16px',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                fontFamily: 'inherit',
-                boxShadow:
-                  selectedUser === option
-                    ? '0 4px 6px rgba(59, 130, 246, 0.15)'
-                    : '0 1px 3px rgba(0, 0, 0, 0.1)',
-              }}
-              onMouseEnter={e => {
-                if (selectedUser !== option) {
-                  e.currentTarget.style.background = '#F9FAFB';
-                  e.currentTarget.style.borderColor = '#D1D5DB';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                  e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-                }
-              }}
-              onMouseLeave={e => {
-                if (selectedUser !== option) {
-                  e.currentTarget.style.background = 'white';
-                  e.currentTarget.style.borderColor = '#E5E7EB';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-                }
-              }}
-            >
-              {selectedUser === option && <span style={{ marginRight: '8px' }}>✓</span>}
-              {option}
-            </button>
-          ))}
+          {loadingUsers ? (
+            <p>Loading user options...</p>
+          ) : availableUsers.length === 0 ? (
+            <p>No user options available for this network and upgrade ID.</p>
+          ) : (
+            availableUsers.map(option => (
+              <button
+                key={option.fileName}
+                onClick={() => handleUserSelect(option)}
+                style={{
+                  width: '100%',
+                  background: selectedUser?.fileName === option.fileName ? '#EBF8FF' : 'white',
+                  border: selectedUser?.fileName === option.fileName ? '2px solid #3B82F6' : '1px solid #E5E7EB',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  color: selectedUser?.fileName === option.fileName ? '#1E40AF' : '#374151',
+                  fontWeight: selectedUser?.fileName === option.fileName ? '600' : '500',
+                  fontSize: '16px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  fontFamily: 'inherit',
+                  boxShadow:
+                    selectedUser?.fileName === option.fileName
+                      ? '0 4px 6px rgba(59, 130, 246, 0.15)'
+                      : '0 1px 3px rgba(0, 0, 0, 0.1)',
+                }}
+                onMouseEnter={e => {
+                  if (selectedUser?.fileName !== option.fileName) {
+                    e.currentTarget.style.background = '#F9FAFB';
+                    e.currentTarget.style.borderColor = '#D1D5DB';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (selectedUser?.fileName !== option.fileName) {
+                    e.currentTarget.style.background = 'white';
+                    e.currentTarget.style.borderColor = '#E5E7EB';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                  }
+                }}
+              >
+                {selectedUser?.fileName === option.fileName && <span style={{ marginRight: '8px' }}>✓</span>}
+                {option.displayName}
+              </button>
+            ))
+          )}
         </div>
       </div>
 

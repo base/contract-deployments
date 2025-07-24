@@ -19,6 +19,14 @@ export const SelectionSummary: React.FC<SelectionSummaryProps> = ({
 }) => {
   if (!selectedUser && !selectedNetwork && !selectedWallet) return null;
 
+  // Format user display name from filename (base-nested -> Base Nested)
+  const formatUserDisplayName = (fileName: string) => {
+    return fileName
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   const badgeBaseStyle = {
     color: 'white',
     padding: '6px 14px',
@@ -67,30 +75,8 @@ export const SelectionSummary: React.FC<SelectionSummaryProps> = ({
         flexWrap: 'wrap',
         gap: '8px'
       }}>
-        {selectedUser && (
-          onUserClick ? (
-            <button
-              onClick={onUserClick}
-              style={clickableBadgeStyle}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%)';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-              title="Click to change user selection"
-            >
-              {selectedUser}
-            </button>
-          ) : (
-            <span style={nonClickableBadgeStyle}>
-              {selectedUser}
-            </span>
-          )
-        )}
-
+        {/* NEW ORDER: Network, Upgrade, User */}
+        
         {selectedNetwork && (
           onNetworkClick ? (
             <button
@@ -145,6 +131,30 @@ export const SelectionSummary: React.FC<SelectionSummaryProps> = ({
           ) : (
             <span style={nonClickableBadgeStyle}>
               {selectedWallet}
+            </span>
+          )
+        )}
+
+        {selectedUser && (
+          onUserClick ? (
+            <button
+              onClick={onUserClick}
+              style={clickableBadgeStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+              title="Click to change user selection"
+            >
+              {formatUserDisplayName(selectedUser)}
+            </button>
+          ) : (
+            <span style={nonClickableBadgeStyle}>
+              {formatUserDisplayName(selectedUser)}
             </span>
           )
         )}

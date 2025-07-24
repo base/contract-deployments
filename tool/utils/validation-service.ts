@@ -142,6 +142,7 @@ export class ValidationService {
       domain_hash: string;
       message_hash: string;
     };
+    ledgerId: number; // Required field (no longer optional)
     scriptParams: {
       scriptName: string;
       signature: string;
@@ -181,6 +182,7 @@ export class ValidationService {
         stateOverrides: parsedConfig.config.state_overrides,
         stateChanges: parsedConfig.config.state_changes,
         domainAndMessageHashes: parsedConfig.config.expected_domain_and_message_hashes,
+        ledgerId: parsedConfig.config["ledger-id"], // Required field
         scriptParams: {
           scriptName: parsedConfig.config.script_name,
           signature: parsedConfig.config.signature,
@@ -466,19 +468,16 @@ export class ValidationService {
   }
 
   /**
-   * Get config file name based on user type
+   * Get config file name based on user type (now supports dynamic user types)
    */
   private getConfigFileName(userType: string): string {
-    switch (userType) {
-      case 'Base SC':
-        return 'base-sc.json';
-      case 'Coinbase':
-        return 'base-nested.json'; // Based on the test file pattern
-      case 'OP':
-        return 'op.json';
-      default:
-        return 'base-nested.json';
-    }
+    // Convert display name back to filename
+    // "Base Sc" → "base-sc.json"
+    // "Op" → "op.json"
+    // "Coinbase" → "coinbase.json"
+    const fileName = userType.toLowerCase().replace(/\s+/g, '-') + '.json';
+    console.log(`🗂️ Mapping user type "${userType}" to config file: ${fileName}`);
+    return fileName;
   }
 
   /**

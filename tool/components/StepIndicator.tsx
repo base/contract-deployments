@@ -2,18 +2,27 @@ import React from 'react';
 
 interface StepIndicatorProps {
   currentStep: string;
-  hasUser: boolean;
   hasNetwork: boolean;
   hasWallet: boolean;
+  hasUser: boolean;
+  hasSimulation?: boolean;
 }
 
 export const StepIndicator: React.FC<StepIndicatorProps> = ({
   currentStep,
-  hasUser,
   hasNetwork,
-  hasWallet
+  hasWallet,
+  hasUser,
+  hasSimulation = false
 }) => {
-  if (currentStep === 'validation' || currentStep === 'signing') return null;
+  if (currentStep === 'validation' || currentStep === 'ledger' || currentStep === 'signing') return null;
+
+  const steps = [
+    { key: 'network', completed: hasNetwork },
+    { key: 'upgrade', completed: hasWallet },
+    { key: 'user', completed: hasUser },
+    { key: 'simulation', completed: hasSimulation }
+  ];
 
   return (
     <div style={{
@@ -27,34 +36,23 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
         alignItems: 'center',
         gap: '16px'
       }}>
-        <div style={{
-          width: '12px',
-          height: '12px',
-          borderRadius: '50%',
-          background: currentStep === 'user' || hasUser ? '#6366F1' : '#D1D5DB'
-        }}></div>
-        <div style={{
-          width: '48px',
-          height: '2px',
-          background: hasUser ? '#6366F1' : '#D1D5DB'
-        }}></div>
-        <div style={{
-          width: '12px',
-          height: '12px',
-          borderRadius: '50%',
-          background: currentStep === 'network' || hasNetwork ? '#6366F1' : '#D1D5DB'
-        }}></div>
-        <div style={{
-          width: '48px',
-          height: '2px',
-          background: hasNetwork ? '#6366F1' : '#D1D5DB'
-        }}></div>
-        <div style={{
-          width: '12px',
-          height: '12px',
-          borderRadius: '50%',
-          background: currentStep === 'upgrade' || hasWallet ? '#6366F1' : '#D1D5DB'
-        }}></div>
+        {steps.map((step, index) => (
+          <React.Fragment key={step.key}>
+            <div style={{
+              width: '12px',
+              height: '12px',
+              borderRadius: '50%',
+              background: currentStep === step.key || step.completed ? '#6366F1' : '#D1D5DB'
+            }}></div>
+            {index < steps.length - 1 && (
+              <div style={{
+                width: '48px',
+                height: '2px',
+                background: step.completed ? '#6366F1' : '#D1D5DB'
+              }}></div>
+            )}
+          </React.Fragment>
+        ))}
       </div>
     </div>
   );
