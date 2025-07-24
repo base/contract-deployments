@@ -114,19 +114,18 @@ clean-state-diff:
 	@echo "Cleaning state-diff installation..."
 	rm -rf go-simulator
 
+# Default port (can be overridden with PORT=xxxx make sign)
+PORT ?= 1234
+
 .PHONY: sign
 sign: install
 	cd tool && npm run build
-	@echo "Killing any existing processes on port 1234..."
-	@-pkill -f "next start" 2>/dev/null || true
-	@-lsof -ti :1234 | xargs kill -9 2>/dev/null || true
-	@sleep 1
-	@echo "Starting server on port 1234 and opening browser..."
-	@cd tool && npm run start -- -p 1234 & \
+	@echo "Starting server on port $(PORT) and opening browser..."
+	@cd tool && npm run start -- -p $(PORT) & \
 	SERVER_PID=$$!; \
 	sleep 3; \
-	open http://localhost:1234; \
-	echo "Browser opened. Server running on port 1234 with PID $$SERVER_PID. Press Ctrl+C to stop."; \
+	open http://localhost:$(PORT); \
+	echo "Browser opened. Server running on port $(PORT) with PID $$SERVER_PID. Press Ctrl+C to stop."; \
 	wait $$SERVER_PID
 
 .PHONY: checkout-op-commit

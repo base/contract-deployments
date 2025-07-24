@@ -15,9 +15,19 @@ Welcome everyone to our streamlined signing process. This guide will walk you th
 make sign
 ```
 
-This command will reinstall all dependencies and automatically open a UI in your browser at **http://localhost:1234/**
+This command will reinstall all dependencies and automatically open a UI in your browser at **http://localhost:1234/** (default port).
 
 > 💡 **Note:** If the tool doesn't automatically open, manually navigate to `http://localhost:1234/` in your browser.
+
+### Custom Port (Optional)
+If port 1234 is already in use, you can specify a different port:
+
+```bash
+PORT=3000 make sign  # Uses port 3000
+PORT=8080 make sign  # Uses port 8080
+```
+
+Then navigate to the corresponding URL (e.g., `http://localhost:3000/`)
 
 ## Step 3: Follow the Validation UI
 
@@ -69,8 +79,8 @@ After successful signing:
 
 **UI doesn't load?**
 - Check that `make sign` completed successfully
-- Try refreshing your browser or manually visiting `http://localhost:1234/`
-- Ensure no other applications are using port 1234
+- Try refreshing your browser or manually visiting the correct URL (default: `http://localhost:1234/`)
+- If you see a "port already in use" error, try a different port: `PORT=3000 make sign` and navigate to `http://localhost:3000/`
 
 **Ledger not responding?**
 - Ensure Ledger is unlocked and Ethereum app is open
