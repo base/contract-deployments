@@ -11,21 +11,11 @@ Welcome everyone to our streamlined signing process. This guide will walk you th
 
 ---
 
-## Step 1: Install Dependencies
-
-```bash
-make install
-```
-
-This will install all necessary dependencies for the signing process.
-
-## Step 2: Start the Validation Tool
-
 ```bash
 make sign
 ```
 
-This command will automatically open a UI in your browser at **http://localhost:1234/**
+This command will reinstall all dependencies and automatically open a UI in your browser at **http://localhost:1234/**
 
 > 💡 **Note:** If the tool doesn't automatically open, manually navigate to `http://localhost:1234/` in your browser.
 

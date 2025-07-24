@@ -100,8 +100,22 @@ install-state-diff:
 	cd go-simulator && go mod download
 	cd go-simulator && go build -o state-diff .
 
+.PHONY: clean-install
+clean-install: clean-tool-deps clean-state-diff install
+
+.PHONY: clean-tool-deps
+clean-tool-deps:
+	@echo "Cleaning tool dependencies..."
+	rm -rf tool/node_modules
+	rm -rf tool/.next
+
+.PHONY: clean-state-diff
+clean-state-diff:
+	@echo "Cleaning state-diff installation..."
+	rm -rf go-simulator
+
 .PHONY: sign
-sign:
+sign: install
 	cd tool && npm run build
 	@echo "Killing any existing processes on port 1234..."
 	@-pkill -f "next start" 2>/dev/null || true
