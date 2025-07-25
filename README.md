@@ -2,7 +2,7 @@
 
 # contract-deployments
 
-This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base-org/contracts](https://github.com/base-org/contracts).
+This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. It also includes validation tools and a signing interface that helps signers easily perform transaction signing through a user-friendly web interface. For actual contract implementations, see [base-org/contracts](https://github.com/base-org/contracts).
 
 This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network.
 
@@ -43,6 +43,9 @@ To execute a new task, run one of the following commands (depending on the type 
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
+> **👥 For Signers:** If you are a signer looking to sign transactions, please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
+
+
 ## Directory structure
 
 Each task will have a directory structure similar to the following:
@@ -52,6 +55,8 @@ Each task will have a directory structure similar to the following:
 - **[script/](/script)** place to store any one-off Foundry scripts
 - **[src/](/src)** place to store any one-off smart contracts (long-lived contracts should go in [base-org/contracts](https://github.com/base-org/contracts))
 - **.env** place to store environment variables specific to this task
+
+> **📝 Note:** Before continuing with the templates below, please review the [setup guide for valid upgrade folders](DEVELOPER.md) to ensure your deployment is compatible with the new validation tool.
 
 ## Using the incident response template
 
