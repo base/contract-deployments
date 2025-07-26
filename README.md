@@ -95,7 +95,7 @@ This template is increasing the throughput on Base Chain.
 
 ## Using the fault proof upgrade template
 
-This template is used to upgrade the fault proof contracts. This is commonly done in conjunction with a hardfork.
+This template is used to upgrade the fault proof contracts. This is commonly done in conjunction with a hard fork.
 
 1. Ensure you have followed the instructions above in `setup`
 1. Go to the folder that was created using the `make setup-upgrade-fault-proofs network=<network>` step
