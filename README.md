@@ -56,7 +56,7 @@ Each task will have a directory structure similar to the following:
 - **[src/](/src)** place to store any one-off smart contracts (long-lived contracts should go in [base-org/contracts](https://github.com/base-org/contracts))
 - **.env** place to store environment variables specific to this task
 
-> **📝 Note:** Before continuing with the templates below, please review the [setup guide for valid upgrade folders](DEVELOPER.md) to ensure your deployment is compatible with the new validation tool.
+> **📝 Note:** Before continuing with the templates below, please review the [setup guide for valid upgrade folders](DEVELOPER.md) to ensure your task is compatible with the new validation tool.
 
 ## Using the incident response template
 
