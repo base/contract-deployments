@@ -43,7 +43,7 @@ To execute a new task, run one of the following commands (depending on the type 
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
-> **👥 For Signers:** If you are a signer looking to sign transactions, please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
+> **👥 For Signers:** Please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
 
 
 ## Directory structure
