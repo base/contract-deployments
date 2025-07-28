@@ -151,7 +151,7 @@ export class ValidationService {
   }> {
     const contractDeploymentsPath = path.join(process.cwd(), '..');
     
-    // Handle test network specially - load from tool/test-upgrade instead of root/test
+    // Handle test network specially - load from validation-tool-interface/test-upgrade instead of root/test
     const upgradePath = options.network === 'test'
       ? path.join(process.cwd(), 'test-upgrade', options.upgradeId)
       : path.join(contractDeploymentsPath, options.network, options.upgradeId);
@@ -411,7 +411,7 @@ export class ValidationService {
   ): Promise<ExtractedData> {
     const contractDeploymentsPath = path.join(process.cwd(), '..');
     
-    // Handle test network specially - load from tool/test-upgrade instead of root/test
+    // Handle test network specially - load from validation-tool-interface/test-upgrade instead of root/test
     const scriptPath = options.network === 'test'
       ? path.join(process.cwd(), 'test-upgrade', options.upgradeId)
       : path.join(contractDeploymentsPath, options.network, options.upgradeId);
@@ -512,7 +512,7 @@ export class ValidationService {
   async cleanup(options: ValidationOptions): Promise<void> {
     const contractDeploymentsPath = path.join(process.cwd(), '..');
     
-    // Handle test network specially - load from tool/test-upgrade instead of root/test
+    // Handle test network specially - load from validation-tool-interface/test-upgrade instead of root/test
     const scriptPath = options.network === 'test'
       ? path.join(process.cwd(), 'test-upgrade', options.upgradeId)
       : path.join(contractDeploymentsPath, options.network, options.upgradeId);

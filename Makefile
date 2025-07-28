@@ -90,7 +90,7 @@ install: install-tool-deps install-state-diff
 
 .PHONY: install-tool-deps
 install-tool-deps:
-	cd tool && npm install
+	cd validation-tool-interface && npm install
 
 .PHONY: install-state-diff
 install-state-diff:
@@ -106,8 +106,8 @@ clean-install: clean-tool-deps clean-state-diff install
 .PHONY: clean-tool-deps
 clean-tool-deps:
 	@echo "Cleaning tool dependencies..."
-	rm -rf tool/node_modules
-	rm -rf tool/.next
+	rm -rf validation-tool-interface/node_modules
+	rm -rf validation-tool-interface/.next
 
 .PHONY: clean-state-diff
 clean-state-diff:
@@ -119,9 +119,9 @@ PORT ?= 1234
 
 .PHONY: sign
 sign: install
-	cd tool && npm run build
+	cd validation-tool-interface && npm run build
 	@echo "Starting server on port $(PORT) and opening browser..."
-	@cd tool && npm run start -- -p $(PORT) & \
+	@cd validation-tool-interface && npm run start -- -p $(PORT) & \
 	SERVER_PID=$$!; \
 	sleep 3; \
 	open http://localhost:$(PORT); \

@@ -28,10 +28,10 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: 'tool/package-lock.json'
+        cache-dependency-path: 'validation-tool-interface/package-lock.json'
 
     - name: Install dependencies
-      working-directory: ./tool
+      working-directory: ./validation-tool-interface
       run: npm ci
 
     - name: Get changed files
@@ -44,7 +44,7 @@ jobs:
 
     - name: Run structure validation
       if: steps.changed-files.outputs.any_changed == 'true'
-      working-directory: ./tool
+      working-directory: ./validation-tool-interface
       run: |
         echo "Changed files:"
         echo "${{ steps.changed-files.outputs.all_changed_files }}"
