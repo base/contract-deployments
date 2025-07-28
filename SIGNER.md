@@ -1,6 +1,6 @@
 # Welcome to the New Signers Tool! 🎉
 
-Welcome everyone to our streamlined signing process. This guide will walk you through the 4 simple steps to safely sign transactions using our new validation UI.
+Welcome everyone to our streamlined signing process. This guide will walk you through the 4 simple steps to safely sign transactions using our validation UI.
 
 ## Quick Start Guide for Signers
 
