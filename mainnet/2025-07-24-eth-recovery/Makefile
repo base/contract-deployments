@@ -58,8 +58,8 @@ clean-analysis:
 
 .PHONY: execute-arbitrum-recovery
 execute-arbitrum-recovery:
-	@if [ -z "$(ARBITRUM_RPC_URL)" ]; then \
-		echo "Error: ARBITRUM_RPC_URL is required. Usage: make execute-arbitrum-recovery ARBITRUM_RPC_URL=<url>"; \
+	@if [ -z "$(L1_RPC_URL)" ]; then \
+		echo "Error: L1_RPC_URL is required. Usage: make execute-arbitrum-recovery L1_RPC_URL=<url>"; \
 		exit 1; \
 	fi
 	@if [ ! -f "output/arbitrum/recovery_addresses.json" ]; then \
@@ -68,7 +68,7 @@ execute-arbitrum-recovery:
 	fi
 	@echo "🚀 Executing Arbitrum ETH Recovery..."
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(ARBITRUM_RPC_URL) ArbitrumExecuteRecovery \
+	forge script --rpc-url $(L1_RPC_URL) ArbitrumExecuteRecovery \
 	--sig "run()" \
 	--broadcast
 
@@ -90,8 +90,8 @@ execute-base-recovery:
 
 .PHONY: execute-optimism-recovery
 execute-optimism-recovery:
-	@if [ -z "$(OP_RPC_URL)" ]; then \
-		echo "Error: OP_RPC_URL is required. Usage: make execute-optimism-recovery OP_RPC_URL=<url>"; \
+	@if [ -z "$(L1_RPC_URL)" ]; then \
+		echo "Error: L1_RPC_URL is required. Usage: make execute-optimism-recovery L1_RPC_URL=<url>"; \
 		exit 1; \
 	fi
 	@if [ ! -f "output/optimism/recovery_addresses.json" ]; then \
@@ -100,7 +100,7 @@ execute-optimism-recovery:
 	fi
 	@echo "🚀 Executing Optimism ETH Recovery..."
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(OP_RPC_URL) OptimismExecuteRecovery \
+	forge script --rpc-url $(L1_RPC_URL) OptimismExecuteRecovery \
 	--sig "run()" \
 	--broadcast
 
@@ -142,9 +142,9 @@ help:
 	@echo "  clean-analysis           - Remove all analysis results"
 	@echo ""
 	@echo "Recovery Execution Commands:"
-	@echo "  execute-arbitrum-recovery ARBITRUM_RPC_URL=<url>  - Execute Arbitrum recovery"
+	@echo "  execute-arbitrum-recovery L1_RPC_URL=<url>        - Execute Arbitrum recovery"
 	@echo "  execute-base-recovery L2_RPC_URL=<url>            - Execute Base recovery"
-	@echo "  execute-optimism-recovery OP_RPC_URL=<url>        - Execute Optimism recovery"
+	@echo "  execute-optimism-recovery L1_RPC_URL=<url>        - Execute Optimism recovery"
 	@echo ""
 	@echo "Dry Run Commands:"
 	@echo "  dry-run-arbitrum-recovery ARBITRUM_RPC_URL=<url>  - Dry run Arbitrum recovery"
@@ -156,6 +156,5 @@ help:
 	@echo "  dry-run-deployments RPC_URL=<url>        - Dry run deployments"
 	@echo ""
 	@echo "Environment Variables:"
-	@echo "  ARBITRUM_RPC_URL  - Arbitrum One RPC endpoint"
-	@echo "  OP_RPC_URL        - Optimism RPC endpoint"
+	@echo "  L1_RPC_URL        - Mainnet RPC endpoint (for Arbitrum and Optimism)"
 	@echo "  L2_RPC_URL        - Base RPC endpoint"
