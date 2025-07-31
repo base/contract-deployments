@@ -22,7 +22,6 @@ export interface Transaction {
 }
 
 export interface ChainConfig {
-  chainId: number;
   name: string;
   startBlock: number;
   endBlock: number;

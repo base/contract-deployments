@@ -26,19 +26,16 @@ export const NAUGHTY_LIST_API = {
 // ========== SUPPORTED BLOCKCHAIN NETWORKS ==========
 export const SUPPORTED_CHAINS: Record<number, ChainConfig> = {
   42161: {
-    chainId: 42161,
     name: 'Arbitrum One',
     startBlock: 111048844,
     endBlock: 337674580
   },
   10: {
-    chainId: 10,
     name: 'Optimism',
     startBlock: 106836897,
     endBlock: 134080874
   },
   8453: {
-    chainId: 8453,
     name: 'Base',
     startBlock: 1261624, 
     endBlock: 32988909
@@ -60,17 +57,7 @@ export function getChainConfig(chainId: number): ChainConfig {
   return config;
 }
 
-export function getSupportedChainIds(): number[] {
-  return Object.keys(SUPPORTED_CHAINS).map(Number);
-}
 
-export function getChainDefaults(chainId: number): { startBlock: number; endBlock: number } {
-  const config = getChainConfig(chainId);
-  return {
-    startBlock: config.startBlock,
-    endBlock: config.endBlock
-  };
-}
 
 // Helper function to get chain directory name for output
 export function getChainDirName(chainId: number): string {
