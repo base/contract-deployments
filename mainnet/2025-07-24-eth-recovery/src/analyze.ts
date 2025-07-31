@@ -264,43 +264,115 @@ async function processTransactions(transactions: Transaction[], targetAddress: s
   return sortedResults;
 }
 
-async function saveResults(results: AddressResult[], chainId: number) {
+async function saveResults(results: AddressResult[], chainId: number, targetAddress: string) {
   const chainDirName = getChainDirName(chainId);
   const chain = getChainConfig(chainId);
   
-  // Filter to only include NORMAL addresses (exclude CEX and NAUGHTY)
-  const normalAddresses = results.filter(r => r.category === 'NORMAL');
+  // Calculate totals for all results
+  const totalWeiAll = results.reduce((sum, r) => sum + BigInt(r.totalWei), BigInt(0));
+  const totalEthAll = (Number(totalWeiAll) / 1e18).toFixed(6);
   
-  // Convert to Solidity format
-  const solidityAddresses: SolidityAddressInfo[] = normalAddresses.map(addr => ({
-    refund_address: addr.address,
+  // Filter results by category
+  const cex = results.filter(r => r.category === 'CEX');
+  const notCex = results.filter(r => r.category === 'NOT_CEX' || r.category === 'NORMAL' || r.category === 'NAUGHTY');
+  const normal = results.filter(r => r.category === 'NORMAL');
+  const naughty = results.filter(r => r.category === 'NAUGHTY');
+  
+  // Calculate totals for each category
+  const totalWeiCex = cex.reduce((sum, r) => sum + BigInt(r.totalWei), BigInt(0));
+  const totalEthCex = (Number(totalWeiCex) / 1e18).toFixed(6);
+  const totalWeiNotCex = notCex.reduce((sum, r) => sum + BigInt(r.totalWei), BigInt(0));
+  const totalEthNotCex = (Number(totalWeiNotCex) / 1e18).toFixed(6);
+  const totalWeiNormal = normal.reduce((sum, r) => sum + BigInt(r.totalWei), BigInt(0));
+  const totalEthNormal = (Number(totalWeiNormal) / 1e18).toFixed(6);
+  const totalWeiNaughty = naughty.reduce((sum, r) => sum + BigInt(r.totalWei), BigInt(0));
+  const totalEthNaughty = (Number(totalWeiNaughty) / 1e18).toFixed(6);
+  
+  // Calculate address type statistics
+  const getAddressTypeStats = (addresses: AddressResult[]) => {
+    const eoaCount = addresses.filter(r => r.addressType === 'EOA').length;
+    const contractCount = addresses.filter(r => r.addressType === 'CONTRACT').length;
+    const eoaWei = addresses.filter(r => r.addressType === 'EOA').reduce((sum, r) => sum + BigInt(r.totalWei), BigInt(0));
+    const contractWei = addresses.filter(r => r.addressType === 'CONTRACT').reduce((sum, r) => sum + BigInt(r.totalWei), BigInt(0));
+    return { eoaCount, contractCount, eoaWei, contractWei };
+  };
+  
+  // Create output with summary including address type stats
+  const createOutput = (category: string, addresses: AddressResult[], totalEth: string) => {
+    const typeStats = getAddressTypeStats(addresses);
+    return {
+      summary: {
+        targetAddress,
+        chain: chain.name,
+        chainId,
+        category,
+        totalWallets: addresses.length,
+        totalEthReceived: totalEth,
+        addressTypes: {
+          eoa: {
+            count: typeStats.eoaCount,
+            totalEth: (Number(typeStats.eoaWei) / 1e18).toFixed(6)
+          },
+          contract: {
+            count: typeStats.contractCount,
+            totalEth: (Number(typeStats.contractWei) / 1e18).toFixed(6)
+          }
+        },
+        generatedAt: new Date().toISOString()
+      },
+      addresses
+    };
+  };
+  
+  // Save main category results
+  fs.writeFileSync(`${chainDirName}/cex.json`, 
+    JSON.stringify(createOutput('CEX', cex, totalEthCex), null, 2));
+    
+  fs.writeFileSync(`${chainDirName}/not-cex.json`, 
+    JSON.stringify(createOutput('Not CEX', notCex, totalEthNotCex), null, 2));
+  
+  // Save filtered results
+  fs.writeFileSync(`${chainDirName}/normal.json`, 
+    JSON.stringify(createOutput('Normal', normal, totalEthNormal), null, 2));
+    
+  fs.writeFileSync(`${chainDirName}/naughty.json`, 
+    JSON.stringify(createOutput('Naughty', naughty, totalEthNaughty), null, 2));
+  
+  // Create Solidity-compatible recovery file (only normal addresses)
+  const solidityAddresses: SolidityAddressInfo[] = normal.map(addr => ({
+    address: addr.address,
+    totalWei: addr.totalWei, // Keep as wei string
     category: addr.category,
-    total_eth: addr.totalWei // Keep as wei string
+    addressType: addr.addressType
   }));
   
   const recoveryFile: SolidityRecoveryFile = {
     addresses: solidityAddresses
   };
   
-  // Save to chain-specific directory
-  const outputPath = `${chainDirName}/recovery_addresses.json`;
-  fs.writeFileSync(outputPath, JSON.stringify(recoveryFile, null, 2));
+  fs.writeFileSync(`${chainDirName}/recovery_addresses.json`, 
+    JSON.stringify(recoveryFile, null, 2));
   
-  // Calculate totals
-  const totalWeiNormal = normalAddresses.reduce((sum, r) => sum + BigInt(r.totalWei), BigInt(0));
-  const totalEthNormal = (Number(totalWeiNormal) / 1e18).toFixed(6);
-  
-  const cexCount = results.filter(r => r.category === 'CEX').length;
-  const naughtyCount = results.filter(r => r.category === 'NAUGHTY').length;
+  // Enhanced console output with address type breakdown
+  const allStats = getAddressTypeStats(results);
+  const cexStats = getAddressTypeStats(cex);
+  const normalStats = getAddressTypeStats(normal);
+  const naughtyStats = getAddressTypeStats(naughty);
   
   console.log(`\n💾 RESULTS SAVED`);
-  console.log(`   📁 Location: ${outputPath}`);
+  console.log(`   📁 Location: ${chainDirName}/`);
   console.log(`   📊 Summary for ${chain.name}:`);
-  console.log(`      • Total analyzed: ${results.length} addresses`);
-  console.log(`      • 🏛️  CEX (excluded): ${cexCount} addresses`);
-  console.log(`      • ⚠️  Naughty (excluded): ${naughtyCount} addresses`);
-  console.log(`      • ✅ Normal (included): ${normalAddresses.length} addresses`);
-  console.log(`      • 💰 ETH to recover: ${totalEthNormal} ETH`);
+  console.log(`      • Total: ${results.length} addresses (${allStats.eoaCount} EOAs, ${allStats.contractCount} Contracts)`);
+  console.log(`      • Total ETH: ${totalEthAll} ETH`);
+  console.log(`      • 🏛️  CEX: ${cex.length} addresses (${totalEthCex} ETH)`);
+  console.log(`      • 👥 Normal: ${normal.length} addresses (${totalEthNormal} ETH)`);
+  console.log(`      • ⚠️  Naughty: ${naughty.length} addresses (${totalEthNaughty} ETH)`);
+  console.log(`   📁 Files created:`);
+  console.log(`      • cex.json - CEX addresses (excluded from recovery)`);
+  console.log(`      • not-cex.json - All non-CEX addresses`);
+  console.log(`      • normal.json - Normal addresses (analysis format)`);
+  console.log(`      • naughty.json - Flagged addresses (excluded from recovery)`);
+  console.log(`      • recovery_addresses.json - Solidity-compatible format for execution`);
 }
 
 async function main() {
@@ -351,7 +423,7 @@ async function main() {
     }
     
     const results = await processTransactions(transactions, targetAddress, chainId);
-    await saveResults(results, chainId);
+    await saveResults(results, chainId, targetAddress);
     
     console.log(`\n✅ ANALYSIS COMPLETE`);
     

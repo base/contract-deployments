@@ -10,9 +10,10 @@ import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 import {IInbox} from "@aribtrum-classic/packages/arb-bridge-eth/contracts/bridge/interfaces/IInbox.sol";
 
 struct AddressJsonRecoveryInfo {
-    address refund_address;
+    address address;
     string category;
-    string total_eth;
+    string totalWei;
+    string addressType;
 }
 
 struct AddressRecoveryInfo {
@@ -36,20 +37,20 @@ contract ArbitrumExecuteRecovery is MultisigScript {
     function setUp() public {
         AddressJsonRecoveryInfo[] memory jsonAddressesToRefund;
         string memory root = vm.projectRoot();
-        string memory path = string.concat(root, "/arbitrum/recovery_addresses.json");
+        string memory path = string.concat(root, "/output/arbitrum/recovery_addresses.json");
         string memory json = vm.readFile(path);
         bytes memory data = vm.parseJson(json, ".addresses");
         jsonAddressesToRefund = abi.decode(data, (AddressJsonRecoveryInfo[]));
 
         for (uint256 i = 0; i < jsonAddressesToRefund.length; i = i + 1) {
             AddressRecoveryInfo memory refundInfo = AddressRecoveryInfo(
-                jsonAddressesToRefund[i].refund_address,
+                jsonAddressesToRefund[i].address,
                 jsonAddressesToRefund[i].category,
-                vm.parseUint(jsonAddressesToRefund[i].total_eth)
+                vm.parseUint(jsonAddressesToRefund[i].totalWei)
             );
             addressesToRefund.push(refundInfo);
 
-            originalBalances[jsonAddressesToRefund[i].refund_address] = jsonAddressesToRefund[i].refund_address.balance;
+            originalBalances[jsonAddressesToRefund[i].address] = jsonAddressesToRefund[i].address.balance;
         }
     }
 

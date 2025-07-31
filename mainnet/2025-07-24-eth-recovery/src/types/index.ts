@@ -36,11 +36,12 @@ export interface AddressResult {
   name?: string;
 }
 
-// Format expected by Solidity scripts
+// Format expected by Solidity scripts (matches normal.json format)
 export interface SolidityAddressInfo {
-  refund_address: string;
+  address: string;
+  totalWei: string;
   category: string;
-  total_eth: string;
+  addressType: string;
 }
 
 export interface SolidityRecoveryFile {

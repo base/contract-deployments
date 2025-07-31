@@ -50,9 +50,9 @@ analyze-all: analyze-arbitrum analyze-base analyze-optimism
 .PHONY: clean-analysis
 clean-analysis:
 	@echo "🧹 Cleaning analysis results..."
-	rm -f output/arbitrum/recovery_addresses.json
-	rm -f output/base/recovery_addresses.json
-	rm -f output/optimism/recovery_addresses.json
+	rm -f output/arbitrum/*.json
+	rm -f output/base/*.json
+	rm -f output/optimism/*.json
 
 # ========== RECOVERY EXECUTION COMMANDS ==========
 
