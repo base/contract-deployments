@@ -57,9 +57,9 @@ clean-analysis:
 # ========== RECOVERY EXECUTION COMMANDS ==========
 
 .PHONY: execute-arbitrum-recovery
-execute-arbitrum-recovery: analyze-arbitrum
-	@if [ -z "$(RPC_URL)" ]; then \
-		echo "Error: RPC_URL is required. Usage: make execute-arbitrum-recovery RPC_URL=<url>"; \
+execute-arbitrum-recovery:
+	@if [ -z "$(ARBITRUM_RPC_URL)" ]; then \
+		echo "Error: ARBITRUM_RPC_URL is required. Usage: make execute-arbitrum-recovery ARBITRUM_RPC_URL=<url>"; \
 		exit 1; \
 	fi
 	@if [ ! -f "output/arbitrum/recovery_addresses.json" ]; then \
@@ -68,14 +68,14 @@ execute-arbitrum-recovery: analyze-arbitrum
 	fi
 	@echo "🚀 Executing Arbitrum ETH Recovery..."
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(RPC_URL) ArbitrumExecuteRecovery \
+	forge script --rpc-url $(ARBITRUM_RPC_URL) ArbitrumExecuteRecovery \
 	--sig "run()" \
 	--broadcast
 
 .PHONY: execute-base-recovery
-execute-base-recovery: analyze-base
-	@if [ -z "$(RPC_URL)" ]; then \
-		echo "Error: RPC_URL is required. Usage: make execute-base-recovery RPC_URL=<url>"; \
+execute-base-recovery:
+	@if [ -z "$(L2_RPC_URL)" ]; then \
+		echo "Error: L2_RPC_URL is required. Usage: make execute-base-recovery L2_RPC_URL=<url>"; \
 		exit 1; \
 	fi
 	@if [ ! -f "output/base/recovery_addresses.json" ]; then \
@@ -84,14 +84,14 @@ execute-base-recovery: analyze-base
 	fi
 	@echo "🚀 Executing Base ETH Recovery..."
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(RPC_URL) BaseExecuteRecovery \
+	forge script --rpc-url $(L2_RPC_URL) BaseExecuteRecovery \
 	--sig "run()" \
 	--broadcast
 
 .PHONY: execute-optimism-recovery
-execute-optimism-recovery: analyze-optimism
-	@if [ -z "$(RPC_URL)" ]; then \
-		echo "Error: RPC_URL is required. Usage: make execute-optimism-recovery RPC_URL=<url>"; \
+execute-optimism-recovery:
+	@if [ -z "$(OP_RPC_URL)" ]; then \
+		echo "Error: OP_RPC_URL is required. Usage: make execute-optimism-recovery OP_RPC_URL=<url>"; \
 		exit 1; \
 	fi
 	@if [ ! -f "output/optimism/recovery_addresses.json" ]; then \
@@ -100,58 +100,11 @@ execute-optimism-recovery: analyze-optimism
 	fi
 	@echo "🚀 Executing Optimism ETH Recovery..."
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(RPC_URL) OptimismExecuteRecovery \
+	forge script --rpc-url $(OP_RPC_URL) OptimismExecuteRecovery \
 	--sig "run()" \
 	--broadcast
 
-# ========== DRY RUN COMMANDS ==========
-
-.PHONY: dry-run-arbitrum-recovery
-dry-run-arbitrum-recovery: analyze-arbitrum
-	@if [ -z "$(RPC_URL)" ]; then \
-		echo "Error: RPC_URL is required. Usage: make dry-run-arbitrum-recovery RPC_URL=<url>"; \
-		exit 1; \
-	fi
-	@if [ ! -f "output/arbitrum/recovery_addresses.json" ]; then \
-		echo "Error: Arbitrum recovery addresses not found. Run 'make analyze-arbitrum' first."; \
-		exit 1; \
-	fi
-	@echo "🔍 Dry run: Arbitrum ETH Recovery..."
-	forge script --rpc-url $(RPC_URL) ArbitrumExecuteRecovery \
-	--sig "run()" \
-	--sender $(DEPLOYER)
-
-.PHONY: dry-run-base-recovery
-dry-run-base-recovery: analyze-base
-	@if [ -z "$(RPC_URL)" ]; then \
-		echo "Error: RPC_URL is required. Usage: make dry-run-base-recovery RPC_URL=<url>"; \
-		exit 1; \
-	fi
-	@if [ ! -f "output/base/recovery_addresses.json" ]; then \
-		echo "Error: Base recovery addresses not found. Run 'make analyze-base' first."; \
-		exit 1; \
-	fi
-	@echo "🔍 Dry run: Base ETH Recovery..."
-	forge script --rpc-url $(RPC_URL) BaseExecuteRecovery \
-	--sig "run()" \
-	--sender $(DEPLOYER)
-
-.PHONY: dry-run-optimism-recovery
-dry-run-optimism-recovery: analyze-optimism
-	@if [ -z "$(RPC_URL)" ]; then \
-		echo "Error: RPC_URL is required. Usage: make dry-run-optimism-recovery RPC_URL=<url>"; \
-		exit 1; \
-	fi
-	@if [ ! -f "output/optimism/recovery_addresses.json" ]; then \
-		echo "Error: Optimism recovery addresses not found. Run 'make analyze-optimism' first."; \
-		exit 1; \
-	fi
-	@echo "🔍 Dry run: Optimism ETH Recovery..."
-	forge script --rpc-url $(RPC_URL) OptimismExecuteRecovery \
-	--sig "run()" \
-	--sender $(DEPLOYER)
-
-# ========== LEGACY COMMANDS ==========
+# ========== DEPLOYMENTS COMMANDS ==========
 
 .PHONY: deploy-implementation
 deploy-implementation:
@@ -189,15 +142,20 @@ help:
 	@echo "  clean-analysis           - Remove all analysis results"
 	@echo ""
 	@echo "Recovery Execution Commands:"
-	@echo "  execute-arbitrum-recovery RPC_URL=<url>  - Execute Arbitrum recovery"
-	@echo "  execute-base-recovery RPC_URL=<url>      - Execute Base recovery"
-	@echo "  execute-optimism-recovery RPC_URL=<url>  - Execute Optimism recovery"
+	@echo "  execute-arbitrum-recovery ARBITRUM_RPC_URL=<url>  - Execute Arbitrum recovery"
+	@echo "  execute-base-recovery L2_RPC_URL=<url>            - Execute Base recovery"
+	@echo "  execute-optimism-recovery OP_RPC_URL=<url>        - Execute Optimism recovery"
 	@echo ""
 	@echo "Dry Run Commands:"
-	@echo "  dry-run-arbitrum-recovery RPC_URL=<url>  - Dry run Arbitrum recovery"
-	@echo "  dry-run-base-recovery RPC_URL=<url>      - Dry run Base recovery"
-	@echo "  dry-run-optimism-recovery RPC_URL=<url>  - Dry run Optimism recovery"
+	@echo "  dry-run-arbitrum-recovery ARBITRUM_RPC_URL=<url>  - Dry run Arbitrum recovery"
+	@echo "  dry-run-base-recovery L2_RPC_URL=<url>            - Dry run Base recovery"
+	@echo "  dry-run-optimism-recovery OP_RPC_URL=<url>        - Dry run Optimism recovery"
 	@echo ""
 	@echo "Legacy Commands:"
 	@echo "  deploy-implementation RPC_URL=<url>      - Deploy recovery implementation"
 	@echo "  dry-run-deployments RPC_URL=<url>        - Dry run deployments"
+	@echo ""
+	@echo "Environment Variables:"
+	@echo "  ARBITRUM_RPC_URL  - Arbitrum One RPC endpoint"
+	@echo "  OP_RPC_URL        - Optimism RPC endpoint"
+	@echo "  L2_RPC_URL        - Base RPC endpoint"
