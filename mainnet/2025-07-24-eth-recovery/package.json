@@ -1,0 +1,23 @@
+{
+  "name": "eth-recovery-analysis",
+  "version": "1.0.0",
+  "description": "ETH recovery analysis for contract deployments",
+  "type": "module",
+  "scripts": {
+    "analyze": "tsx src/analyze.ts",
+    "clean": "rm -rf output/*",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+} 
