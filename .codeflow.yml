@@ -1,0 +1,3 @@
+secure:
+  required_reviews: 2
+  requires_mfa: true

@@ -75,9 +75,7 @@ dry-run-deployments:
 		echo "Error: RPC_URL is required. Usage: make dry-run-deployments RPC_URL=<url>"; \
 		exit 1; \
 	fi
-	forge script --rpc-url $(RPC_URL) DeployRecoveryProxies \
-	--sig "run()" \
-	--sender $(DEPLOYER)
+	forge script --rpc-url $(RPC_URL) DeployRecoveryProxies --sig "run()" --sender $(DEPLOYER)
 
 ###################################################################################################
 #                                  Execute Recovery Commands

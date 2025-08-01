@@ -1,5 +1,0 @@
-@eth-optimism-bedrock/=lib/optimism/packages/contracts-bedrock/
-@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts
-@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts
-@rari-capital/solmate/=lib/solmate/
-@base-contracts/=lib/base-contracts
