@@ -1,4 +1,4 @@
-# ETH Recovery Contract Deployment Optimism
+# Optimism ETH Recovery
 
 ## Approving the Recovery transaction
 

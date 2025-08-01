@@ -1,4 +1,4 @@
-# ETH Recovery Contract Deployment Arbitrum
+# Arbitrum ETH Recovery
 
 ## Approving the Recovery transaction
 
