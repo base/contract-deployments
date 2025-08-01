@@ -15,7 +15,6 @@ remappings = [
     '@rari-capital/solmate/=lib/solmate/',
     '@base-contracts/=lib/base-contracts',
     '@solady/=lib/solady/src/',
-    '@aribtrum-classic=lib/arbitrum-classic',
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

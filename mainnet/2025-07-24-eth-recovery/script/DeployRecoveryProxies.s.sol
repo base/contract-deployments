@@ -5,18 +5,20 @@ import {Script, console} from "forge-std/Script.sol";
 
 import {ERC1967Proxy} from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-
 import {Recovery} from "@base-contracts/src/recovery/Recovery.sol";
+import {AddressAliasHelper} from "@eth-optimism-bedrock/src/vendor/AddressAliasHelper.sol";
 
 contract DeployRecoveryProxies is Script {
-    address internal INCIDENT_MULTISIG;
+    using AddressAliasHelper for address;
+
+    address internal ALIASED_INCIDENT_MULTISIG;
     address internal RECOVERY_IMPLEMENTATION;
     address[6] internal EXPECTED_PROXY_ADDRESSES;
 
     address[6] internal actualProxyAddresses;
 
     function setUp() public {
-        INCIDENT_MULTISIG = vm.envAddress("INCIDENT_MULTISIG");
+        ALIASED_INCIDENT_MULTISIG = vm.envAddress("INCIDENT_MULTISIG").applyL1ToL2Alias();
         RECOVERY_IMPLEMENTATION = vm.envAddress("RECOVERY_IMPLEMENTATION");
 
         string memory proxyAddressList = vm.envString("EXPECTED_PROXY_ADDRESSES");
@@ -40,20 +42,16 @@ contract DeployRecoveryProxies is Script {
     }
 
     function _postCheck() internal {
-        // Check that the proxies are deployed to the expected addresses
         for (uint256 i; i < EXPECTED_PROXY_ADDRESSES.length; i++) {
+            // Check that the proxies are deployed to the expected addresses
             require(actualProxyAddresses[i] == EXPECTED_PROXY_ADDRESSES[i], "Incorrect proxy address");
-        }
 
-        // Check that the proxies owners are the expected addresses
-        for (uint256 i; i < EXPECTED_PROXY_ADDRESSES.length; i++) {
+            // Check that the proxies owners are the expected addresses
             Recovery proxy = Recovery(actualProxyAddresses[i]);
-            require(proxy.OWNER() == INCIDENT_MULTISIG, "Incorrect proxy owner");
-        }
+            require(proxy.OWNER() == ALIASED_INCIDENT_MULTISIG, "Incorrect proxy owner");
 
-        // Check that the proxies are upgradable
-        for (uint256 i; i < EXPECTED_PROXY_ADDRESSES.length; i++) {
-            vm.prank(INCIDENT_MULTISIG);
+            // Check that the proxies are upgradable
+            vm.prank(ALIASED_INCIDENT_MULTISIG);
             UUPSUpgradeable(actualProxyAddresses[i]).upgradeTo(RECOVERY_IMPLEMENTATION);
         }
     }

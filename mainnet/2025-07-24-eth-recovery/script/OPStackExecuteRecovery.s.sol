@@ -7,7 +7,7 @@ import {Vm} from "forge-std/Vm.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Recovery} from "@base-contracts/src/recovery/Recovery.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {IInbox} from "nitro-contracts/bridge/IInbox.sol";
+import {IOptimismPortal2} from "@eth-optimism-bedrock/interfaces/L1/IOptimismPortal2.sol";
 
 struct AddressJsonRecoveryInfo {
     address refund_address;
@@ -16,9 +16,9 @@ struct AddressJsonRecoveryInfo {
     string totalWei;
 }
 
-contract ArbitrumExecuteRecovery is MultisigScript {
+contract OPStackExecuteRecovery is MultisigScript {
     address internal immutable OWNER_SAFE = vm.envAddress("INCIDENT_MULTISIG");
-    address internal ARBITRUM_INBOX = vm.envAddress("ARBITRUM_INBOX");
+    address internal PORTAL = vm.envAddress("PORTAL");
     address internal immutable L2_RECOVERY_PROXY = vm.envAddress("RECOVERY_PROXY");
 
     address[] public addresses;
@@ -27,7 +27,7 @@ contract ArbitrumExecuteRecovery is MultisigScript {
     function setUp() public {
         AddressJsonRecoveryInfo[] memory jsonAddressesToRefund;
         string memory root = vm.projectRoot();
-        string memory path = string.concat(root, "/output/arbitrum/recovery_addresses.json");
+        string memory path = string.concat(root, string.concat("/recoveryAddresses/", vm.envString("CHAIN"), "/recovery_addresses.json"));
         string memory json = vm.readFile(path);
         bytes memory data = vm.parseJson(json, ".addresses");
         jsonAddressesToRefund = abi.decode(data, (AddressJsonRecoveryInfo[]));
@@ -41,31 +41,16 @@ contract ArbitrumExecuteRecovery is MultisigScript {
     function _buildCalls() internal view virtual override returns (IMulticall3.Call3Value[] memory) {
         IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](1);
 
+        address to = L2_RECOVERY_PROXY;
+        uint256 value = 0;
+        uint64 gasLimit = 1_000_000;
+        bool isCreation = false;
         bytes memory data = abi.encodeCall(Recovery.withdrawETH, (addresses, amounts));
 
-        uint256 l2CallValue = 0;
-        uint256 maxSubmissionCost = IInbox(ARBITRUM_INBOX).calculateRetryableSubmissionFee(data.length, 0);
-        uint256 gasLimit = 1_000_000;
-        uint256 maxFeePerGas = 1 gwei;
-
-        uint256 value = maxSubmissionCost + l2CallValue + (gasLimit * maxFeePerGas);
-
         calls[0] = IMulticall3.Call3Value({
-            target: ARBITRUM_INBOX,
+            target: PORTAL,
             allowFailure: false,
-            callData: abi.encodeCall(
-                IInbox.createRetryableTicket,
-                (
-                    L2_RECOVERY_PROXY, // to
-                    l2CallValue,
-                    maxSubmissionCost,
-                    OWNER_SAFE, // excessFeeRefundAddress
-                    OWNER_SAFE, // callValueRefundAddress
-                    gasLimit,
-                    maxFeePerGas,
-                    data
-                )
-            ),
+            callData: abi.encodeCall(IOptimismPortal2.depositTransaction, (to, value, gasLimit, isCreation, data)),
             value: value
         });
 
