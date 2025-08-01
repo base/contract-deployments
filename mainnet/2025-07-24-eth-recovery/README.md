@@ -19,3 +19,15 @@ The deployment consists of two separate phases:
 - The 6th deployment will reach the target portal address (0x49048044D57e1C92A77f79988d21Fa8fAF74E97e) where the funds are located
 
 The Recovery contract enables the incident multisig to rescue ETH from any deployed contract address.
+
+## Description
+We need to sign recoveries for 3 different chains. Please follow the instructions for each respective chain:
+- [Arbitrum](./ARBITRUM_VALIDATION.md)
+- [OPTIMISM](./OPTIMISM_VALIDATION.md)
+
+Due to the large number of recoveries for the Base chain, they are split into 5 seperate transactions
+- [BASE1](./BASE_VALIDATION.md)
+- [BASE2](./BASE_VALIDATION.md)
+- [BASE3](./BASE_VALIDATION.md)
+- [BASE4](./BASE_VALIDATION.md)
+- [BASE5](./BASE_VALIDATION.md)
