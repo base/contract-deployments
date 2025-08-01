@@ -23,7 +23,7 @@ The Recovery contract enables the incident multisig to rescue ETH from any deplo
 ## Description
 We need to sign recoveries for 3 different chains. Please follow the instructions for each respective chain:
 - [Arbitrum](./ARBITRUM_VALIDATION.md)
-- [OPTIMISM](./OPTIMISM_VALIDATION.md)
+- [Optimism](./OPTIMISM_VALIDATION.md)
 
 Due to the large number of recoveries for the Base chain, they are split into 5 seperate transactions
 - [BASE1](./BASE_VALIDATION.md)
