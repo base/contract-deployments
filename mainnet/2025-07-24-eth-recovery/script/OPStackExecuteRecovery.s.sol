@@ -29,19 +29,21 @@ contract OPStackExecuteRecovery is MultisigScript {
     function setUp() public {
         AddressJsonRecoveryInfo[] memory jsonAddressesToRefund;
         string memory root = vm.projectRoot();
-        string memory path = string.concat(root, string.concat("/output/", vm.envString("CHAIN"), "/recovery_addresses.json"));
+        string memory path =
+            string.concat(root, string.concat("/output/", vm.envString("CHAIN"), "/recovery_addresses.json"));
         string memory json = vm.readFile(path);
         bytes memory data = vm.parseJson(json, ".addresses");
         jsonAddressesToRefund = abi.decode(data, (AddressJsonRecoveryInfo[]));
 
         uint256 numAddressesToProcess = 100;
-        if ((jsonAddressesToRefund.length - (ADDRESS_INDEX*100)) < numAddressesToProcess) {
-            numAddressesToProcess = (jsonAddressesToRefund.length - (ADDRESS_INDEX*100));
+        uint256 startingIndex = ADDRESS_INDEX * numAddressesToProcess;
+        if (jsonAddressesToRefund.length - startingIndex < numAddressesToProcess) {
+            numAddressesToProcess = jsonAddressesToRefund.length - startingIndex;
         }
 
         for (uint256 i; i < numAddressesToProcess; i++) {
-            addresses.push(jsonAddressesToRefund[i + (ADDRESS_INDEX*100)].refund_address);
-            amounts.push(vm.parseUint(jsonAddressesToRefund[i + (ADDRESS_INDEX*100)].totalWei));
+            addresses.push(jsonAddressesToRefund[i + startingIndex].refund_address);
+            amounts.push(vm.parseUint(jsonAddressesToRefund[i + startingIndex].totalWei));
         }
     }
 

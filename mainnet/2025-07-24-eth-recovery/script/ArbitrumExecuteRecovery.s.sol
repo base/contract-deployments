@@ -22,6 +22,7 @@ contract ArbitrumExecuteRecovery is MultisigScript {
     address internal immutable L2_RECOVERY_PROXY = vm.envAddress("RECOVERY_PROXY");
 
     uint256 internal immutable ADDRESS_INDEX = vm.envUint("ADDRESS_INDEX");
+    uint256 internal immutable SAFE_NONCE = vm.envUint("SAFE_NONCE");
 
     address[] public addresses;
     uint256[] public amounts;
@@ -35,13 +36,14 @@ contract ArbitrumExecuteRecovery is MultisigScript {
         jsonAddressesToRefund = abi.decode(data, (AddressJsonRecoveryInfo[]));
 
         uint256 numAddressesToProcess = 100;
-        if ((jsonAddressesToRefund.length - (ADDRESS_INDEX*100)) < numAddressesToProcess) {
-            numAddressesToProcess = (jsonAddressesToRefund.length - (ADDRESS_INDEX*100));
+        uint256 startingIndex = ADDRESS_INDEX * numAddressesToProcess;
+        if (jsonAddressesToRefund.length - startingIndex < numAddressesToProcess) {
+            numAddressesToProcess = jsonAddressesToRefund.length - startingIndex;
         }
 
         for (uint256 i; i < numAddressesToProcess; i++) {
-            addresses.push(jsonAddressesToRefund[i + (ADDRESS_INDEX*100)].refund_address);
-            amounts.push(vm.parseUint(jsonAddressesToRefund[i + (ADDRESS_INDEX*100)].totalWei));
+            addresses.push(jsonAddressesToRefund[i + startingIndex].refund_address);
+            amounts.push(vm.parseUint(jsonAddressesToRefund[i + startingIndex].totalWei));
         }
     }
 

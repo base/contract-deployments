@@ -38,11 +38,13 @@ OPTIMISM_BATCHES = 4 # batch size is 100 and there are 349 total addresses
 BASE_BATCHES = 15 # batch size is 100 and there are 1407 total addresses
 BASE = base
 OPTIMISM = optimism
+STARTING_SAFE_NONCE_ARBITRUM=65
+STARTING_SAFE_NONCE_OPTIMISM=65
 
 .PHONY: sign-arb
 sign-arb:
 	for i in $$(seq 0 $$(( $(ARBITRUM_BATCHES) - 1 ))); do \
-		ADDRESS_INDEX=$$i $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+		SAFE_NONCE=$$(( $(STARTING_SAFE_NONCE) + $$i )) ADDRESS_INDEX=$$i $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 			forge script --rpc-url $(L1_RPC_URL) ArbitrumExecuteRecovery --sig "sign(address[])" [] || exit 1; \
 		echo "Batch: $$((i + 1)) / $(ARBITRUM_BATCHES) completed\n"; \
 	done
