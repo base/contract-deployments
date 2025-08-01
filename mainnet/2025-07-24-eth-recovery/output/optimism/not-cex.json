@@ -9,14 +9,14 @@
     "addressTypes": {
       "eoa": {
         "count": 322,
-        "totalEth": "3.668034"
+        "totalEth": "3.665364"
       },
       "contract": {
         "count": 27,
-        "totalEth": "0.055702"
+        "totalEth": "0.058372"
       }
     },
-    "generatedAt": "2025-08-01T07:37:58.177Z"
+    "generatedAt": "2025-08-01T14:12:57.547Z"
   },
   "addresses": [
     {
@@ -401,7 +401,7 @@
       "address": "0xe7869b527c806d414597e814ce579be727e5610c",
       "totalWei": "3000000000000000",
       "category": "NORMAL",
-      "addressType": "EOA"
+      "addressType": "CONTRACT"
     },
     {
       "address": "0x9e8d819703c20d73690ae7584ae60c2318beb7cd",
@@ -1751,7 +1751,7 @@
       "address": "0xcc1f79f92ae827c66ef8a80ca1f2a05f75d01086",
       "totalWei": "330000000000000",
       "category": "NORMAL",
-      "addressType": "CONTRACT"
+      "addressType": "EOA"
     },
     {
       "address": "0xad0a0b434204ba0a2ad0e02e0d7627fa00c271cd",
