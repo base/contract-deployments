@@ -21,6 +21,8 @@ contract OPStackExecuteRecovery is MultisigScript {
     address internal PORTAL = vm.envAddress("PORTAL");
     address internal immutable L2_RECOVERY_PROXY = vm.envAddress("RECOVERY_PROXY");
 
+    uint256 internal immutable ADDRESS_INDEX = vm.envUint("ADDRESS_INDEX");
+
     address[] public addresses;
     uint256[] public amounts;
 
@@ -32,9 +34,14 @@ contract OPStackExecuteRecovery is MultisigScript {
         bytes memory data = vm.parseJson(json, ".addresses");
         jsonAddressesToRefund = abi.decode(data, (AddressJsonRecoveryInfo[]));
 
-        for (uint256 i; i < jsonAddressesToRefund.length; i++) {
-            addresses.push(jsonAddressesToRefund[i].refund_address);
-            amounts.push(vm.parseUint(jsonAddressesToRefund[i].totalWei));
+        uint256 numAddressesToProcess = 100;
+        if ((jsonAddressesToRefund.length - (ADDRESS_INDEX*100)) < numAddressesToProcess) {
+            numAddressesToProcess = (jsonAddressesToRefund.length - (ADDRESS_INDEX*100));
+        }
+
+        for (uint256 i; i < numAddressesToProcess; i++) {
+            addresses.push(jsonAddressesToRefund[i + (ADDRESS_INDEX*100)].refund_address);
+            amounts.push(vm.parseUint(jsonAddressesToRefund[i + (ADDRESS_INDEX*100)].totalWei));
         }
     }
 

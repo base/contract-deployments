@@ -33,18 +33,19 @@ dry-run-deployments:
 #                                  Execute Recovery Commands
 ###################################################################################################
 
+ARBITRUM_BATCHES = 6 # batch size is 100 and there are 593 total addresses
+OPTIMISM_BATCHES = 4 # batch size is 100 and there are 349 total addresses
+BASE_BATCHES = 15 # batch size is 100 and there are 1407 total addresses
 BASE = base
-BASE1 = base1
-BASE2 = base2
-BASE3 = base3
-BASE4 = base4
-BASE5 = base5
 OPTIMISM = optimism
 
 .PHONY: sign-arb
 sign-arb:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) ArbitrumExecuteRecovery --sig "sign(address[])" []
+	for i in $$(seq 0 $$(( $(ARBITRUM_BATCHES) - 1 ))); do \
+		ADDRESS_INDEX=$$i $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+			forge script --rpc-url $(L1_RPC_URL) ArbitrumExecuteRecovery --sig "sign(address[])" [] || exit 1; \
+		echo "Batch: $$((i + 1)) / $(ARBITRUM_BATCHES) completed\n"; \
+	done
 
 .PHONY: execute-arb
 execute-arb:
@@ -52,61 +53,26 @@ execute-arb:
 		--sig "run(bytes)" $(SIGNATURES) --broadcast
 
 
-.PHONY: sign-base1
-sign-base1:
-	CHAIN=$(BASE1) PORTAL=$(BASE_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" []
+.PHONY: sign-base
+sign-base:
+	for i in $$(seq 0 $$(( $(BASE_BATCHES) - 1 ))); do \
+		ADDRESS_INDEX=$$i CHAIN=$(BASE) PORTAL=$(BASE_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+			forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" [] || exit 1; \
+		echo "Batch: $$((i + 1)) / $(BASE_BATCHES) completed\n"; \
+	done
 
-.PHONY: execute-base1
-execute-base1:
+.PHONY: execute-base
+execute-base:
 	CHAIN=$(BASE1) PORTAL=$(BASE_L1_PORTAL) forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery \
 		--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --sig "run(bytes)" $(SIGNATURES) --broadcast
 
-.PHONY: sign-base2
-sign-base2:
-	CHAIN=$(BASE2) PORTAL=$(BASE_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" []
-
-.PHONY: execute-base2
-execute-base2:
-	CHAIN=$(BASE2) PORTAL=$(BASE_L1_PORTAL) forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery \
-		--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --sig "run(bytes)" $(SIGNATURES) --broadcast
-
-.PHONY: sign-base3
-sign-base3:
-	CHAIN=$(BASE3) PORTAL=$(BASE_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" []
-
-.PHONY: execute-base3
-execute-base3:
-	CHAIN=$(BASE3) PORTAL=$(BASE_L1_PORTAL) forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery \
-		--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --sig "run(bytes)" $(SIGNATURES) --broadcast
-
-.PHONY: sign-base4
-sign-base4:
-	CHAIN=$(BASE4) PORTAL=$(BASE_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" []
-
-.PHONY: execute-base4
-execute-base4:
-	CHAIN=$(BASE4) PORTAL=$(BASE_L1_PORTAL) forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery \
-		--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --sig "run(bytes)" $(SIGNATURES) --broadcast
-
-.PHONY: sign-base5
-sign-base5:
-	CHAIN=$(BASE5) PORTAL=$(BASE_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" []
-
-.PHONY: execute-base5
-execute-base5:
-	CHAIN=$(BASE5) PORTAL=$(BASE_L1_PORTAL) forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery \
-		--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --sig "run(bytes)" $(SIGNATURES) --broadcast
-
-
 .PHONY: sign-op
 sign-op:
-	CHAIN=$(OPTIMISM) PORTAL=$(OPTIMISM_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" []
+	for i in $$(seq 0 $$(( $(OPTIMISM_BATCHES) - 1 ))); do \
+		ADDRESS_INDEX=$$i CHAIN=$(OPTIMISM) PORTAL=$(OPTIMISM_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+			forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" [] || exit 1; \
+		echo "Batch: $$((i + 1)) / $(OPTIMISM_BATCHES) completed\n"; \
+	done
 	
 .PHONY: execute-op
 execute-op:
