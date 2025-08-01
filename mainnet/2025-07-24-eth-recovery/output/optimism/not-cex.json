@@ -1,4 +1,23 @@
 {
+  "summary": {
+    "targetAddress": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+    "chain": "Optimism",
+    "chainId": 10,
+    "category": "Not CEX",
+    "totalWallets": 349,
+    "totalEthReceived": "3.723735",
+    "addressTypes": {
+      "eoa": {
+        "count": 322,
+        "totalEth": "3.668034"
+      },
+      "contract": {
+        "count": 27,
+        "totalEth": "0.055702"
+      }
+    },
+    "generatedAt": "2025-08-01T07:37:58.177Z"
+  },
   "addresses": [
     {
       "address": "0x88f5d29b88664371401b6786a01db137fc5fca61",

@@ -27,7 +27,7 @@ contract OPStackExecuteRecovery is MultisigScript {
     function setUp() public {
         AddressJsonRecoveryInfo[] memory jsonAddressesToRefund;
         string memory root = vm.projectRoot();
-        string memory path = string.concat(root, string.concat("/recoveryAddresses/", vm.envString("CHAIN"), "/recovery_addresses.json"));
+        string memory path = string.concat(root, string.concat("/output/", vm.envString("CHAIN"), "/recovery_addresses.json"));
         string memory json = vm.readFile(path);
         bytes memory data = vm.parseJson(json, ".addresses");
         jsonAddressesToRefund = abi.decode(data, (AddressJsonRecoveryInfo[]));

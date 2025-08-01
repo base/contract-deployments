@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "targetAddress": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+    "chain": "Optimism",
+    "chainId": 10,
+    "category": "Naughty",
+    "totalWallets": 0,
+    "totalEthReceived": "0.000000",
+    "addressTypes": {
+      "eoa": {
+        "count": 0,
+        "totalEth": "0.000000"
+      },
+      "contract": {
+        "count": 0,
+        "totalEth": "0.000000"
+      }
+    },
+    "generatedAt": "2025-08-01T07:37:58.181Z"
+  },
+  "addresses": []
+}

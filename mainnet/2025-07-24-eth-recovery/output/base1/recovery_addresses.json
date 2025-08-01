@@ -1,0 +1,2002 @@
+{
+  "addresses": [
+    {
+      "address": "0x1696a911cb799608b1ccbfd84b21803dd615be6a",
+      "totalWei": "12057684490000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb000524c5de61cb27c01567cf82e6cdcd252d809",
+      "totalWei": "6000000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x201b5abfd44a8f9b75f0fe1bae74cdac7675e54b",
+      "totalWei": "4800000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xfa89ec40699bbfd749c4eb6643dc2b22ff0e2aa6",
+      "totalWei": "2000000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x15ba3fca21f8b20f145e1536a433a65bfcda7ad6",
+      "totalWei": "1099888210000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x455405eaff9d4391bdb1ffd3cdd09953109a2aca",
+      "totalWei": "1000000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x329c8bec2e66633caf5289daf6a08a53e55308f9",
+      "totalWei": "1000000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x05b5f0f2c0107ee203132903a5dac30e587e7ad2",
+      "totalWei": "1000000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xdcd4d39c93990f366e601c3a083e90146d5d13d8",
+      "totalWei": "970000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x07cbc5bffee7b95cf72526df4da2e32ac9fd242e",
+      "totalWei": "960000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x366b6be122c14591010810cb5539410e076924a5",
+      "totalWei": "900000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xeada0167a1e12f43f53a39af051932e73ded6868",
+      "totalWei": "895760000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa40fed6138769b66de011ff72d9c9de53e6572f1",
+      "totalWei": "800000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x97fa3a7c5caedb67ad4bf5f233c34b28f9ac590d",
+      "totalWei": "697018000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5709577f162ea5b815104961ff955d9549ba5047",
+      "totalWei": "690000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xfb4e07d3bb212a873816bc894f6c24ce84465a54",
+      "totalWei": "660000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xee4d973a7972935b0d613dc70f9e666a5e45a7ba",
+      "totalWei": "600000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8a82d146b24d224858f930566cba1b108589f94e",
+      "totalWei": "569696000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x16ea94d9e9bc03960355c57be2b68a5dc0a4b27f",
+      "totalWei": "542120014528816390",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4e1df28e4473673854d90fa847af1c90ea6606a9",
+      "totalWei": "535000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3c31e46acb52f230457c379249a04b1879e86f85",
+      "totalWei": "500000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xaf7ad8c63072c848d48abd44a3301b631ddfefcc",
+      "totalWei": "499900000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf66913fb65b77fb22cbad5864be4b56ea4f8c693",
+      "totalWei": "489976779361325916",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa654b921e43662422f86745dd2b14df8e9e4d595",
+      "totalWei": "443000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xdef28f5c5d71e0a0dbf34652d637762cdbc5d79e",
+      "totalWei": "420000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5e518d06bdf9d0ff04baef4448996b583e13e9fe",
+      "totalWei": "360000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x107308d558f116f83299d895c78e3de69fc6e809",
+      "totalWei": "330000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x6f63e5830a3d72636f2aa35e6cc95c84c4240f82",
+      "totalWei": "307801441659709379",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3af0f1966186e9613d348b8eec103bbb5d271f4a",
+      "totalWei": "300000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x519fa95765135191a7ebcb83062c55454d7f4104",
+      "totalWei": "290000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5011739d37ef1939374a012573ab85b6bcea1cff",
+      "totalWei": "274691460000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4068c1fdeb99be166f4d43b14819b437344230f6",
+      "totalWei": "258000000000000000",
+      "category": "NORMAL",
+      "addressType": "CONTRACT"
+    },
+    {
+      "address": "0xe3dc66bf249ed8b6dec7a7a8c6f49fd78dcaf16e",
+      "totalWei": "229000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x86c24fbeb07b96392ad88daee44f98c2d4c590c3",
+      "totalWei": "222152410000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xbefc15f65274bbb680976513b6e74bf0181e46e4",
+      "totalWei": "220000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb283572bb0c56e1252c5acce6ee4686da9689b2c",
+      "totalWei": "200000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x21d83329ddb737e39ec7eb710eec84b3e0ff39c0",
+      "totalWei": "200000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7b284ead6f87c4084f7a91bfde4138ec72f354cf",
+      "totalWei": "200000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x005b41103d59ec8f966ea98229ba9409479e4ea0",
+      "totalWei": "200000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3a2ed3fcb00814e325eadbaba88bb903047c3fed",
+      "totalWei": "200000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x52652cdd2a98030bae46c8ac782150b2436c51e9",
+      "totalWei": "180000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd56de73036ca986fabbc144da080896ef274de1a",
+      "totalWei": "168548292501350902",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4657c4f5073c1ec77f52ae2671bb238fd21404a3",
+      "totalWei": "159729524671559990",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x438aba433d029f8576078f26d543037daf222222",
+      "totalWei": "137043588205698000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1a7e2ca67acc18cfd1ef492671bb5303a2c01266",
+      "totalWei": "134500000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7f1be0566712941985b71d5fa625f5a5ea2add49",
+      "totalWei": "133000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd728489711d19410320617cbbd97da8f10831ddd",
+      "totalWei": "130000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x17254d13fb3bd85009b1b83426efeb7ff39249fa",
+      "totalWei": "120000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x47782f8494c090bf5faf0e79d8b6cc0b8e774352",
+      "totalWei": "110441409899806368",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf68d7facf1e78ae371480547da465c5a0a42fd2b",
+      "totalWei": "110000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3724cf4018a20c6fe227f7c710f97b5999aa1f6b",
+      "totalWei": "108662221447807990",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0e67ade795cd2a6918d273b3f59487aa180ad63d",
+      "totalWei": "107000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x09a09c3d229175859ec3a75e919767df04612354",
+      "totalWei": "101950579290138154",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xffa0a4e79f7297c99085a0c33224f3ad92c62f5d",
+      "totalWei": "101200000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x73999ec31f59499fd442e74380612bc376940abd",
+      "totalWei": "100000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x18b0a909c5fb8034822e0867431cdc957dc1cc1f",
+      "totalWei": "100000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3dd86905fd5e25f3c20338ccefeaafa94611124e",
+      "totalWei": "100000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x236ddcbec59db65e1641c11adab444bf159ae3b5",
+      "totalWei": "100000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x107e0c10f250824fb83380c65bc8e87baa0e4790",
+      "totalWei": "100000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x96440ab4988dfe0dcb4c288ac10bf1ead6fe1d1d",
+      "totalWei": "100000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1eb8f93282e7bf3b312e0a325a2d920697dbb68f",
+      "totalWei": "98844150000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x670d42465567ae7e449145cbc4f5de9d82dff827",
+      "totalWei": "98741000000000000",
+      "category": "NORMAL",
+      "addressType": "CONTRACT"
+    },
+    {
+      "address": "0x18eb2a28acb2170cb2f95d904889ef8d255e8d89",
+      "totalWei": "96278000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8fc8f5ee2e09eb75c8786bec8e4bb505c3d98b30",
+      "totalWei": "90000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5b16daa1f7d5c52994f46cc0cb2f8fe240cf093b",
+      "totalWei": "90000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb0c07fc40fda8a7cdf8a7683f66347ff5d6efe17",
+      "totalWei": "90000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf6af03657d52a0df99d588aec0d25400ceee9329",
+      "totalWei": "82000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x42fb1432fce71c7ad74bdfa362661d3502407e8f",
+      "totalWei": "76836920000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4658a8e637a7401f25b489fa27c96cde239d134c",
+      "totalWei": "76000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf2f9a2738a2f5340cca5fab5c2fdeba69e0d437c",
+      "totalWei": "72000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb8db687237cf16325758382431299f272072737e",
+      "totalWei": "70800000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x599a7c81ab278a329c20c1919b4d6f519ceb053a",
+      "totalWei": "70000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xfdd80311e3bba62cc0999d7f3a9d39dcfb9527bb",
+      "totalWei": "67000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb66f681b57349ac241a97924f9f00cdf66512165",
+      "totalWei": "61500000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x427a2f81ff4a400175e74925b166d49312fb9261",
+      "totalWei": "60730000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd24b891825af7a1c4ae730db222a6d6ada9ec275",
+      "totalWei": "59500000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa7a90d5a67095a52073e3a71097ecb7d8d2af009",
+      "totalWei": "58000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xdceef88c8fe72fc73fd21924606f878c1a9e4c81",
+      "totalWei": "56335371090489785",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa7b7f1976dc6889c454e24bb7ee41c5c41b34764",
+      "totalWei": "55870000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1aa2b709e2f6308b4822a2e46f82f0bde2879bcf",
+      "totalWei": "55000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x93b9830e92e8e84e84f9bfb8f33a70af37b47854",
+      "totalWei": "50105373507752880",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0510b337b4b8f96dd0ac7423a8fe3eabaac6573e",
+      "totalWei": "50000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x310e8c519b3d8f2e48df16dd5eff5a0eb4070bed",
+      "totalWei": "50000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x98c251693513cb5e0d435c49f71a23094dcc6a6a",
+      "totalWei": "50000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xeb8b8e35faf85e53ed98f2271874b191f6296737",
+      "totalWei": "50000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2143ced53f12b1a244e6665769e0d3a063767479",
+      "totalWei": "50000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8ab9829ccc7704d8d453642a9928bdb4d98fddd4",
+      "totalWei": "50000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4e28f2bae5b7cab93836049e092419db1b7b8116",
+      "totalWei": "50000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xac57e69a55e2f3ca34ebb079e3f4a7088f36d727",
+      "totalWei": "49000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3bda4f7dce1121210163169bdbd75dd39c5a2173",
+      "totalWei": "45670000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x65f3019a75931101189ad7399847b2821a193e98",
+      "totalWei": "45000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x9bb6000999a16c89ead0b7d1b1c08e644734597f",
+      "totalWei": "44282701407066770",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb0920b2153650c5871056b8a931ed5ba2a2e9b15",
+      "totalWei": "44000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0eb9281b7985e295a65682545ba1152a52c7d4fb",
+      "totalWei": "43100000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x77c612a12169d247dbe508a0bce17353365ab47f",
+      "totalWei": "41282670000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x31594337cf57916ea3f9ac0e9f2aabf0c687e11d",
+      "totalWei": "40629423176554564",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc60003909d9a4895c40d90acc86409e79e4c1057",
+      "totalWei": "40000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa4516aee956f1fe7e43a8f21088e72bd369d6bf9",
+      "totalWei": "40000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x29ca71a8f2192cffc5fc0ed82fb893bd2f5db5e7",
+      "totalWei": "39000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x28f4310aaf879179221e519a97960e9542881712",
+      "totalWei": "39000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7446b433ef38688c6cf29d47594ca9f5d0e75ec4",
+      "totalWei": "38700000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb977c4972a98e65c7be0f8807c3ed5e64cab8c91",
+      "totalWei": "34699354875259360",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc4e510852ddb70c716af5cb0bcde0db00ef7a280",
+      "totalWei": "30000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x681bf9b2d70b77c3d9278865af9c8da6210908c6",
+      "totalWei": "30000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc17fcf6eb176569e2751f93e65660204f8d83e13",
+      "totalWei": "29500000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4c4e2b618dc9f28dd6cbb5f1a024fead3249c2c8",
+      "totalWei": "28822154896672010",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb1833a29879ca6b0c2004833cf8ee565403566f6",
+      "totalWei": "28700000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x18f167fb09fc6e86c95e97eeb726d1de3089dfc0",
+      "totalWei": "28029363390885585",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5aea06cd79eb75df48b25837a445a8347fc2cc35",
+      "totalWei": "27523677554484075",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x914a6fb358bc0976070e44a32117218d388f6582",
+      "totalWei": "27270000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x20ffe0d07d7f7c2c21a24537538b4cde06c9048a",
+      "totalWei": "27260400000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xec65398e8f53f98b5eace635038194a85b355079",
+      "totalWei": "27000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xfffc4f59e558ce6ef09a1f2184d3e84dee1ca153",
+      "totalWei": "26637401042055129",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xdb9fb1e7ea27eb9f2481442709a9f9733633de0c",
+      "totalWei": "26216960211420581",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x6b25d98996f99cc322a404954376cb1bcb3409c4",
+      "totalWei": "26000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x58b1d79a2509f7d9efa4ec5c6122ffb08221a822",
+      "totalWei": "25000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xed9643d249293212a067bda8a851bd0a96206ea2",
+      "totalWei": "24786530000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc423809456d8aa52c2611a750e6c463368035bae",
+      "totalWei": "22304875509590646",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x62c8788f6fa08e150f930f8a8c4b62848c622a5f",
+      "totalWei": "22000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5cbe27489a35a22068c840d330681545c35896dc",
+      "totalWei": "21000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4db47230a858ae1f6461a1a8d76667c5a7378c2c",
+      "totalWei": "20960000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x514756d0c33b6f75c59067b926a6692ffe791e51",
+      "totalWei": "20552367423731588",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd3237b6c2cee115db0d4bfef4789f6b3373584c8",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x18ad1c88345cb2fd5e0963af9b7b67f09315c54a",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2adbe45964907ebeca94cac2d244ea83f67bd9e4",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7303ca4a88f866d91eb3903d285886ccf4a94993",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x787a66a377269f200e28de03cc033358a80f43ab",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "CONTRACT"
+    },
+    {
+      "address": "0xead441807624cba5b309a8dc622a33a81622b61e",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7c350e2f7a296319cfda4f83b214232e89a6a7df",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7a76c97c6eebf3af522613be02683c2f20514370",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe222913573f61acd28e55d24abf23606e3f5cb8c",
+      "totalWei": "20000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf62fe60688734155e450d0aabd2e5798f394dd61",
+      "totalWei": "19800000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc0101b80723815c7cb590cdb3c7a8a53a3ba3257",
+      "totalWei": "19259015420790445",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4daa01798d81ce18360ae3dd4d0d6d33be4d6e6c",
+      "totalWei": "19000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xae7bc08aa50ca140945bbaa944f04b1bb03e3f64",
+      "totalWei": "19000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xbbf61f09aff0fc6f0da30b390e5d7562109d8324",
+      "totalWei": "19000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5dc42fcce46d1d9d71546ad35803dd7ad6976b84",
+      "totalWei": "19000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xeff424b93f54905c5a70230665ba866f3f7fa7cc",
+      "totalWei": "18400000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8eb882bdda4b0b7134424fe7a9640fe69cc3493e",
+      "totalWei": "18326823968269693",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x90ca7878be26fd29127c6d383c48d995c8c9ce61",
+      "totalWei": "18000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe78358a49d931db2a18dbe4a85a285620a3d95e7",
+      "totalWei": "17800000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5e27d99647f01b59e8ac4467facedc37fa0bdd2b",
+      "totalWei": "17653441619000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x9664fc47ffd856ba312ab4007fce122a3afbb584",
+      "totalWei": "17543000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x74e1d68ff9b267e48126a9d2289c8598e295fdac",
+      "totalWei": "17001652709900660",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x43dbe9cb8659554a8239715561ca94eddea4b40e",
+      "totalWei": "16340000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8573e6b97084c0979ab2087efdb178b27beaf848",
+      "totalWei": "16264551829981079",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x934d697f66212c62fb1a8221c11ca7b3e7e7a17f",
+      "totalWei": "16000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa1fb9cdc9fd3dc3203044a730ce671ffbcd986a5",
+      "totalWei": "15800000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd9593cf755a011f993ae293dc935f659bebc37cd",
+      "totalWei": "15000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5854b90c3ea7b605e4bc4b34cfcec9ff0c5b05cf",
+      "totalWei": "15000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x9b2f12393217b6a0d1fa10ceb7aa49858edeffe5",
+      "totalWei": "15000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8514b324c54150ddfe6b12c7f38a4b5e01e4ab14",
+      "totalWei": "15000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xcd8e65c880d1f9fbf0ed977a69ae29bad5ecdb51",
+      "totalWei": "15000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x753ccfe3f00683b8f812985a6f4440340171ccb1",
+      "totalWei": "15000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf1e33195b419e1a1bb55cebc8d159ae5f665eb69",
+      "totalWei": "14555000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4b5883f3e0f201b0e2f453a82a97e353aa25041d",
+      "totalWei": "14000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd0b24fc5b54e9ccb3961217ce98b90dd438d692d",
+      "totalWei": "14000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x171e656419d223031c707e9db05fd94fb939bb7c",
+      "totalWei": "14000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x12912e4003bff2e71365129f7040ec9957071175",
+      "totalWei": "13970720593648001",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x01a18bd909f66d36d0dcfba103ac15f173dd28bc",
+      "totalWei": "13471170348337523",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7ece75b1b7dbb1b94439d33b5756cf3d679f8c1c",
+      "totalWei": "13000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc2d9e267554c86db22cdefc94d646346b36623bc",
+      "totalWei": "12917322564586538",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x459f3294d879530b1643c885a864e764f2b353e6",
+      "totalWei": "12900000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf1b792c5b5a70f8476ae6339a5a8ad8c670e4755",
+      "totalWei": "12740000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x53ae17210138785166858a2df8fc22e13cf153aa",
+      "totalWei": "12407067261360203",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc36c9bd0b67297d4135e176887af0c85a00ad962",
+      "totalWei": "12160000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2b66671cbcbe2f4ef0782e65fcce24ae69bf2e24",
+      "totalWei": "12000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3d1ac9f9848cdcda9b6f1765c91a13d68d74bcad",
+      "totalWei": "11900000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb85617d15ada455f6b58954f2063a12ab2ea7507",
+      "totalWei": "11787542133987838",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x47b8ad1b72d5e2700971e953a35457740b9954f9",
+      "totalWei": "11760000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xde5802130a46b2bfd4920ae43c965102f7166274",
+      "totalWei": "11100000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb6e7bc53aac865895c18a0d6ace8456cab35c4c6",
+      "totalWei": "11086500000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc351accc1e82be5294d3080cbd6182a3acd2c54c",
+      "totalWei": "11000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa542b59486a23f54646100bc30e966966ee16bcb",
+      "totalWei": "10918500000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x91f31ffca781f45454cb0f651e6d359becb9fea4",
+      "totalWei": "10904538233880000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4d5e44ac19fdad3812c64f5802747adcfa0c5544",
+      "totalWei": "10878600000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xce1aa76dbdd77c092a1efd763c0f3c6aaffa1137",
+      "totalWei": "10725672164468000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x70d5e6a746566032ae5722aa3396a854440a60a9",
+      "totalWei": "10719090163626911",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4d43b234b645972785f11c56bd5bf078aa9468cd",
+      "totalWei": "10190000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xee8311fe397e2464f78b3732e74dcd65087e7187",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2bf0410bb32cbeb1f1121435526de8716cbe662d",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x295e8c23aa5f474bece1d5e08515087d0b7309ff",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4f05008a04e8d7ca6c497ce4ce927f1bff04ebec",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x562b7690bda71cf36a1030d1ef54a0be638bd457",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc1812a4bbd0321a0487492578df3afa7d19c004b",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x699e0e3c218f0800d01e12ddd9571ec18be33c61",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb8c4f7b36e1413afa6cc0d2d7f726c61d33f4eb9",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf995efa2876e442e2f6e0224f29db627d7702f39",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc6c3d91d0e909172c2ea724716ee59519b9f6132",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x604f60e4152c1ecbf85a12d1550630da7d6c6e25",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe8a45152f9032197494b1a1a2d07c33f4aa21329",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4b05288d9cc08a869a7de4266e609ac54f817f5c",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd7c0638543f7e0f781cb9ec612d3f447c212a1a8",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x448749280160d2126053330fa7a18f893943c455",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd65bd6e079235e9c84e3806cc05d0d01840b02f2",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x92892a31a0b965c2b5022d4ecb87533cd1eb8bbb",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x9d677028e0e592d48fc8a8ddc910693301a4a450",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x833634e4add904be71635bbcec6e3a5e152683fb",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x6f1bf6628a272767df396b71f8ff6348777145f8",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x6d9bc2bbf55abb7e4fd88349df093aa5e2ed31ff",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x37ec5a0b4390516baa30206e6cf84e74dad4d989",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5d720ae0c5795ad9515310d0c53cc26541a4cc59",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe23cba3b9537ec6f55031eb3c9e619ce995769f0",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc153ad842675e853280a76e9b09cf20d4fa339cc",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd5433cf113cc4195d612b035e04aee92174ba8bf",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8c1b0096398f8f5723785f10fadde5f13f3683cd",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7d67a1bdf638da91c12d55756a802aa67cbc891c",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x488ae7ebdfd37569046199e8e72d6252bbea750a",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x23afc240f6b6ca64334cfc791d85130c8b348fb7",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf6404a6ffdfdce1b7b5b94e9dcc870165f2c35cf",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xfd8f7a51b176d6c4572e08c93ec81f279a7fe516",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc540b64c3cd08010ce8c54533f8c1c68e738bf01",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf27a6346451cc3acc22392b31474f0bdbe4ee96f",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xc4f5cc2d73025b63d170f213aa0ce42b2ef7213a",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x310f07ee4fa0c3a8a29cc3cb093899225c0b9f8a",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x9a76c3cf9eb7b4c6cf4c226cbf302a743b6bc427",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8b87d657a530cc7e5decd181218bc5a3b103c0f3",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb3ddc2a5b4ebdb7640191906bd4195e23e17142c",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5aba902c17afd30c7abbc65d71bd5714a2671155",
+      "totalWei": "10000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4303f5a2204d52a64addaae7a56c96c5a8385886",
+      "totalWei": "9900000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8b301e7b29afc9b216133536c36758bc62a2a1c2",
+      "totalWei": "9788194350036706",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2832f7bc0698a3dda01df259e32a38e871797c00",
+      "totalWei": "9600000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xec757ea51688857dcf3979ca220175512c979d63",
+      "totalWei": "9568500000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x240ee788c8bf7c57b489d0ecd4399022c9ee1149",
+      "totalWei": "9530000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe73bbf1f967a5c6ac21f519a8fbf6e9112a2568a",
+      "totalWei": "9500000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xef6ce0774e4351ee5efe2fb90f462da9a9f64c37",
+      "totalWei": "9500000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x34b64de5e1216aea807aa1ebf0b2b90d4abb17af",
+      "totalWei": "9500000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xaff1410cc2f30ab6fb775915f6eb0000834abedb",
+      "totalWei": "9427217949422976",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xef0598fc615c1f9cb440d7004ce081cc345e3bf9",
+      "totalWei": "9230000000000000",
+      "category": "NORMAL",
+      "addressType": "CONTRACT"
+    },
+    {
+      "address": "0x529a33d72423f75525d6ad387bb9d3dd813e57f2",
+      "totalWei": "9109729668398743",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb8c3596418183967305ae7bca45706867170b853",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4df39400569c9fb58d30e2437876b8490b3f9b58",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe32d2bb82d67df9fc231dfc92b77e3385d5caca6",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe44eab390d98e9a8214b3b0594f2da39d4ae1228",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1a571070f88cd0b93e56be6bc60b1a77eb53f792",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x27a48f6a22f2221cc9110194df45df7f2559de60",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x39bd08abd60ecc1ec146de981360e08b7c8fda70",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0ed02b9d3aa0cf3d9daf0f9fe2d36f74fafdd5f9",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3f83ebc905f30c9b28e4f9c62e7f9b7bc3061d8d",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x17246ac1d35229d408600dadd2032e2c8884e060",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1bc2223a70285580a85ada1002b06f2eceb3dcd9",
+      "totalWei": "9000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x92ec39c2d52102be754b8120dd061d20e3f6bbc6",
+      "totalWei": "8990000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe80d315349e6cbc79280c9d30e536c00affe6ef7",
+      "totalWei": "8968490000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x552d54e355d99de530038d36904e5a5136703285",
+      "totalWei": "8831000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xde1aabf6c30d0cdf83e286bfd9c78e7bf9006fe6",
+      "totalWei": "8700000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd60ca9fd564237dd8959da8181fe31f0473f6000",
+      "totalWei": "8565225525548244",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1f67d841728739af9409628e2782bb13339de9f5",
+      "totalWei": "8538820000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x54137aeb20563a46984faf955acfb1dfb5e1463b",
+      "totalWei": "8300000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xea62cba9a8b9059975ded734113c959570d696dc",
+      "totalWei": "8216000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7f308da0d253ff1a478bf1f21fe4ca79f5c0b4e2",
+      "totalWei": "8208181367975506",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x35317039367d6b9246441927b0645c9920eb7dfe",
+      "totalWei": "8200306144762738",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf6d64a23ce944b56edb2cb582d3715f88b1308b2",
+      "totalWei": "8200000000000000",
+      "category": "NORMAL",
+      "addressType": "CONTRACT"
+    },
+    {
+      "address": "0xe875ef3f70ed266385898672c0077567008251de",
+      "totalWei": "8048000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe5b97bde2e19eadb8ff2e76c92902827917291a4",
+      "totalWei": "8000000000000000",
+      "category": "NORMAL",
+      "addressType": "CONTRACT"
+    },
+    {
+      "address": "0xd2da3a07bf4cd039d5f36d22f22b6fe04bd56a86",
+      "totalWei": "8000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xb31fa6f0029377820c5c01216da717244b61a957",
+      "totalWei": "8000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xae10b0e2754fea510b3a4a5c9d5117150aa3d11b",
+      "totalWei": "8000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa85c4ccb4e4e2b8180411c4d5b8afa01d9076669",
+      "totalWei": "7990000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1970d2f3c90e7fc871e9561151cb80225fa747d2",
+      "totalWei": "7827000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x9cdf5cba9d49289b78cce868697a5bac558d4072",
+      "totalWei": "7100000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xaeb7aeb5c9ce73a3393daffd5e0a53246dd744a5",
+      "totalWei": "7067757163252252",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x302fdf84dda2093201c65009943224f027025421",
+      "totalWei": "7038500000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xe67700af96cde045a451889192572ef0a67366c5",
+      "totalWei": "7000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x240e2f86f720e1d879e2049efbcf5775c2fad69e",
+      "totalWei": "7000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3c7033ff8b4f2da51e69e5c97a3aa03366171df5",
+      "totalWei": "7000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3be2a617a86dd49bc8893ca04cea2e5f444f9c12",
+      "totalWei": "7000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0d094f02a5ebecb87bba32001ffa6ded671c715b",
+      "totalWei": "6750000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xdfa00af8784ebef0fe43306551821d21a0b0afd6",
+      "totalWei": "6411615464611000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x242e2d70d3adc00a9ef23ced6e88811fcefca788",
+      "totalWei": "6220000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0fb1b2afe60efb1d011e1d40c350f4308919e54a",
+      "totalWei": "6000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1566153f101ae25aac31de77444ac7f47bc3a338",
+      "totalWei": "6000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x864e77f5b2f7f064d7193fffb7da44f6b5bf095e",
+      "totalWei": "6000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x71d4287a1bbceabe03ad852e7134ee713b03113c",
+      "totalWei": "6000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3d333ab1874af29b6e23189196813e4aa1d4d0db",
+      "totalWei": "6000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x66e0753f0383de2ba96ae261c05d9cb8a98b4677",
+      "totalWei": "6000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x6d32861ac85d87d1ade24cb689d599d53735295f",
+      "totalWei": "6000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x22eed5eeb29a21a6d19acf456dc09ca3a523217a",
+      "totalWei": "6000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xee6741d501ee2117794a086b3ffad076fb3f9173",
+      "totalWei": "5994250000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2deeaed21e561889a19e72b93a99fec8d8d4935e",
+      "totalWei": "5623000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x39fbb55428c2db69759423f4c1d8035e64560755",
+      "totalWei": "5600000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa0af68e0f0b91e1339370653adfb93a646ef55a7",
+      "totalWei": "5379308489893624",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0c2e1f1759ae839899f8d33be0be7da3e6c90e1d",
+      "totalWei": "5345706862818471",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa34236de7fdedf1c62f6eef67bf0933becbae88a",
+      "totalWei": "5313355118089318",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x50f443729042913cc005f02b1436676e0acdc59a",
+      "totalWei": "5300000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0f6e57ea21728d429df5cabd15ce58d34d135d7d",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xdb5498bf2d75b813fc84ae377919dadde8b379ed",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x55d22408591f2a70af3e3a60de55d890a319bc58",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x459940714954bcfbb199de84a91b86d39e4c4f09",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x962da50223fd7e9fa35231a097ee1d95dd49bdc5",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4fd99f1154d8b0783e97fd1d21609c2556c6a2c9",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa55cab60687ed881dae236f8f4de16da8a725e3f",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x3e90c48a1544ebe8d3041410b61362ae47896f83",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x01dee68947ecb9731b69ff0259436aa1038e17ea",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5c4000c91da93ba643d206ddbbfbf3fb06d4401b",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x270e43f3249677c01dc1ec7dcbf7bf93c8e8f666",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2eb1929b2b16df71d22ddc0966fa8ac5a40fa750",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd677ec2f08f5c06c11f727b62ccfd9a4ea03f0d0",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2a8651a3eeee50d778304d046bbbd4721da0fc43",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x89511764b6543674b8a0c7c4176ead725d832127",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd79c353b974eee9d022cb4e8ed9c56c11403f781",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xd5d7c45ed25f47a5f28d764fdc0fff2c8067e7da",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xdee23022a5dfd70530e8ae177e16845e7d323899",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xcf625acb72990273fa0541ca57f6261708a6ca98",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x58e52cf0167d5ed727892f1de4b425167a0afac5",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x52dd11832fee1483c00ad75ca4c8117b3f7149f8",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x6c871284464c403e48a109f20493c3bfeb22c5a2",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa8570d0a724432ede22e66e86d0ceafea10321e5",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x014b729a2a65bd89faf38d50b84beb47007199e5",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x6e878dadd06c66aee353c5a8611f824f52afb791",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x4169be94679378422757a38e1ff39e60bc1b5666",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x1d54ee6c2e15b168f35a578ca2bcf49f6a46c473",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x436769e28fe44402b2bbbdc915fd58bae6942129",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x8e83447956385f30cd2b36ac39650ed77c57c752",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xf1a131f0f2a8d54918d82fd4cc3e33ec5b66097b",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "CONTRACT"
+    },
+    {
+      "address": "0x1763cc485fc8c89d65ab3bf122dab7751c4de135",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xac13db99c028363e9d4bd2051665bc8d51505823",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x051d595e667731d1d5d34ec2a8e9a2af548d5b25",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xcb1a64cd6fe0c93267c6639e9f469ea0e0af5c17",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x9873b4bdefc0843a79f804de15640861d7886740",
+      "totalWei": "5000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x2d83238e1b3b6ce8768de722ae841c7c30218a08",
+      "totalWei": "4995619897000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x9409ee260479649d6229c974748bbc4b82733283",
+      "totalWei": "4900000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xdd8dad42c815eecf44b56e456fd10ef7cb2bf8d1",
+      "totalWei": "4847361047636078",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x0634f86d3e8902f69fef5b72c73609b01ea3dad8",
+      "totalWei": "4843510000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa430bd6ac5e2523690861c7b5fdf37642f6e089e",
+      "totalWei": "4805394856625700",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x87043db9c9dd96be4ff7f31c82f7d0c94e4b6209",
+      "totalWei": "4800000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x7eaf7e62fa4573a171be59cb6ccc4f2f5e2dfc19",
+      "totalWei": "4713000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x54f68f074631baf6cc3cfce882ed184199a46bbe",
+      "totalWei": "4700000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x72e0b63d8a1c2c5e034b78991fb9c5d4577b3d25",
+      "totalWei": "4500000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x641c976a5e0ca47bc53011117db351ab111ae694",
+      "totalWei": "4265813503965874",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x00e2e53e62713c859e787ebea7421e4b5103a4b6",
+      "totalWei": "4000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x761bce9ff53a2654c4ffca9865f1ea1b1469891a",
+      "totalWei": "4000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0xa959a8d9f4388dffc6c0c6e978995fda5c388ee0",
+      "totalWei": "4000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    },
+    {
+      "address": "0x5e7426339fb7dba498b414a2baac31edd5afaa96",
+      "totalWei": "4000000000000000",
+      "category": "NORMAL",
+      "addressType": "EOA"
+    }
+  ]
+}
