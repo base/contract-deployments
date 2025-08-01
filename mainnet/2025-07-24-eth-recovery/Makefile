@@ -38,8 +38,7 @@ OPTIMISM_BATCHES = 4 # batch size is 100 and there are 349 total addresses
 BASE_BATCHES = 15 # batch size is 100 and there are 1407 total addresses
 BASE = base
 OPTIMISM = optimism
-STARTING_SAFE_NONCE_ARBITRUM=65
-STARTING_SAFE_NONCE_OPTIMISM=65
+STARTING_SAFE_NONCE=65
 
 .PHONY: sign-arb
 sign-arb:
@@ -58,7 +57,7 @@ execute-arb:
 .PHONY: sign-base
 sign-base:
 	for i in $$(seq 0 $$(( $(BASE_BATCHES) - 1 ))); do \
-		ADDRESS_INDEX=$$i CHAIN=$(BASE) PORTAL=$(BASE_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+		SAFE_NONCE=$$(( $(STARTING_SAFE_NONCE) + $$i )) ADDRESS_INDEX=$$i CHAIN=$(BASE) PORTAL=$(BASE_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 			forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" [] || exit 1; \
 		echo "Batch: $$((i + 1)) / $(BASE_BATCHES) completed\n"; \
 	done
@@ -71,7 +70,7 @@ execute-base:
 .PHONY: sign-op
 sign-op:
 	for i in $$(seq 0 $$(( $(OPTIMISM_BATCHES) - 1 ))); do \
-		ADDRESS_INDEX=$$i CHAIN=$(OPTIMISM) PORTAL=$(OPTIMISM_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+		SAFE_NONCE=$$(( $(STARTING_SAFE_NONCE) + $$i )) ADDRESS_INDEX=$$i CHAIN=$(OPTIMISM) PORTAL=$(OPTIMISM_L1_PORTAL) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 			forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery --sig "sign(address[])" [] || exit 1; \
 		echo "Batch: $$((i + 1)) / $(OPTIMISM_BATCHES) completed\n"; \
 	done
