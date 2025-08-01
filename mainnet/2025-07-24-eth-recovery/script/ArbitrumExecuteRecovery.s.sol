@@ -52,8 +52,8 @@ contract ArbitrumExecuteRecovery is MultisigScript {
 
         uint256 l2CallValue = 0;
         uint256 maxSubmissionCost = IInbox(ARBITRUM_INBOX).calculateRetryableSubmissionFee(data.length, 0);
-        uint256 gasLimit = 1_000_000;
-        uint256 maxFeePerGas = 1 gwei;
+        uint256 gasLimit = 2_000_000;
+        uint256 maxFeePerGas = 2 gwei;
 
         uint256 value = maxSubmissionCost + l2CallValue + (gasLimit * maxFeePerGas);
 

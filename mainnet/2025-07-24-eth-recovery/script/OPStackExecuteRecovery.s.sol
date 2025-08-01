@@ -50,7 +50,7 @@ contract OPStackExecuteRecovery is MultisigScript {
 
         address to = L2_RECOVERY_PROXY;
         uint256 value = 0;
-        uint64 gasLimit = 1_000_000;
+        uint64 gasLimit = 2_000_000;
         bool isCreation = false;
         bytes memory data = abi.encodeCall(Recovery.withdrawETH, (addresses, amounts));
 
