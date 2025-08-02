@@ -22,6 +22,7 @@ is ready".
 Make sure your ledger is still unlocked and run the following.
 
 #### Arbitrum
+
 ```shell
 make sign-arb
 ```
@@ -66,11 +67,12 @@ After: 0x0000000000000000000000000000000000000000000000000000000000000042
 ```
 
 2. Verify that the delayed message count incremented and delayed inbox account was added in the "TransparentUpgradeableProxy" at address`0x8315177aB297bA92A06054cE80a67Ed4DBd7ed3a`. Because this is the arbitrum bridge contract that is in public use
-the exact changes may be different depending on when you run the script.
-Typically Key `0x0000000000000000000000000000000000000000000000000000000000000006` should be incremented by one and a new
-entry should be added to the delayed inbox (Key is a random hash and the change should be from `0` to some hash).
+   the exact changes may be different depending on when you run the script.
+   Typically Key `0x0000000000000000000000000000000000000000000000000000000000000006` should be incremented by one and a new
+   entry should be added to the delayed inbox (Key is a random hash and the change should be from `0` to some hash).
 
 Example delayed message count increment
+
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000006
 Before: 0x00000000000000000000000000000000000000000000000000000000001f7896
@@ -78,6 +80,7 @@ After: 0x00000000000000000000000000000000000000000000000000000000001f7897
 ```
 
 Example entry
+
 ```
 Key: 0xf652222313e28459528d920b65115c16c04f3efc82aaedc97be59f3f379b85d5
 Before: 0x0000000000000000000000000000000000000000000000000000000000000000
@@ -85,7 +88,6 @@ After: 0xa75a3a7db6a5b6a4458a86058d0baeb45ca7bf04255214eb0bc849ce37d14627
 ```
 
 3. Verify that the signer address nonce incremented by 1
-
 
 #### 3.3. Extract the domain hash and the message hash to approve.
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
 
-import {Script} from "forge-std/Script.sol";
+import {Script, console} from "forge-std/Script.sol";
 import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
@@ -22,7 +22,6 @@ contract ArbitrumExecuteRecovery is MultisigScript {
     address internal immutable L2_RECOVERY_PROXY = vm.envAddress("RECOVERY_PROXY");
 
     uint256 internal immutable ADDRESS_INDEX = vm.envUint("ADDRESS_INDEX");
-    uint256 internal immutable SAFE_NONCE = vm.envUint("SAFE_NONCE");
 
     address[] public addresses;
     uint256[] public amounts;
@@ -53,7 +52,7 @@ contract ArbitrumExecuteRecovery is MultisigScript {
         bytes memory data = abi.encodeCall(Recovery.withdrawETH, (addresses, amounts));
 
         uint256 l2CallValue = 0;
-        uint256 maxSubmissionCost = IInbox(ARBITRUM_INBOX).calculateRetryableSubmissionFee(data.length, 0);
+        uint256 maxSubmissionCost = 0.001 ether; // Estimated value
         uint256 gasLimit = 2_000_000;
         uint256 maxFeePerGas = 2 gwei;
 

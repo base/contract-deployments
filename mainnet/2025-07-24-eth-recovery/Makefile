@@ -64,7 +64,7 @@ sign-base:
 
 .PHONY: execute-base
 execute-base:
-	CHAIN=$(BASE1) PORTAL=$(BASE_L1_PORTAL) forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery \
+	CHAIN=$(BASE) PORTAL=$(BASE_L1_PORTAL) forge script --rpc-url $(L1_RPC_URL) OPStackExecuteRecovery \
 		--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --sig "run(bytes)" $(SIGNATURES) --broadcast
 
 .PHONY: sign-op

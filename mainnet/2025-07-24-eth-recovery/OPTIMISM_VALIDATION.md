@@ -22,6 +22,7 @@ is ready".
 Make sure your ledger is still unlocked and run the following.
 
 #### Optimism
+
 ```shell
 make sign-op
 ```
@@ -66,7 +67,6 @@ After: 0x0000000000000000000000000000000000000000000000000000000000000043
 ```
 
 3. Verify that the signer address nonce incremented by 1
-
 
 #### 3.3. Extract the domain hash and the message hash to approve.
 

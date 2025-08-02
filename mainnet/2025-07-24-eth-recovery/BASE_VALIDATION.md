@@ -22,6 +22,7 @@ is ready".
 Make sure your ledger is still unlocked and run the following.
 
 #### Base
+
 ```shell
 make sign-base{n}
 ```
@@ -60,6 +61,7 @@ Now click on the "State" tab. Verify that:
 1. Verify that the nonce is incremented for the Incident Multisig under the "GnosisSafeProxy" at address `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`. We should see the nonce increment by 1:
 
 e.g
+
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000005
 Before: 0x0000000000000000000000000000000000000000000000000000000000000043
@@ -67,7 +69,8 @@ After: 0x0000000000000000000000000000000000000000000000000000000000000044
 ```
 
 2. Verify that the Proxy at address `0x49048044D57e1C92A77f79988d21Fa8fAF74E97e` `prevBoughtGas` and `prevBlockNum` have changed.
-Note: that the prevBlockNum may be different
+   Note: that the prevBlockNum may be different
+
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000001
 Before: 0x00000000015fa555000000000007e1760000000000000000000000003b9aca00
@@ -75,7 +78,6 @@ After: 0x00000000015fa55700000000000f42400000000000000000000000003b9aca00
 ```
 
 3. Verify that the signer address nonce incremented by 1
-
 
 #### 3.3. Extract the domain hash and the message hash to approve.
 
