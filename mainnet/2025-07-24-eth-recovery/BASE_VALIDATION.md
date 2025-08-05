@@ -43,7 +43,7 @@ message hash to approve on your Ledger then verify completion:
 
 #### 3.1. Validate integrity of the simulation.
 
-Make sure you are on the "Overview" tab of the tenderly simulation, to
+Make sure you are on the "Summary" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
 1. "Network": Check the network is Ethereum Mainnet.
@@ -58,7 +58,7 @@ validate integrity of the simulation, we need to check the following:
 
 Now click on the "State" tab. Verify that:
 
-1. Verify that the nonce is incremented for the Incident Multisig under the "GnosisSafeProxy" at address `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`. We should see the nonce increment by 1:
+1. Verify that the nonce is incremented for the Incident Multisig under the "SafeProxy" at address `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`. We should see the nonce increment by 1:
 
 e.g
 
@@ -86,7 +86,7 @@ operation, we need to extract the domain hash and the message hash to
 approve.
 
 Go back to the "Overview" tab, and find the
-`GnosisSafe.checkSignatures` call. This call's `data` parameter
+`Safe.checkSignatures` call. This call's `data` parameter
 contains both the domain hash and the message hash that will show up
 in your Ledger.
 
