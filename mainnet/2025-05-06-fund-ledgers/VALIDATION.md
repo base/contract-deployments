@@ -108,4 +108,4 @@ For each contract listed in the state diff, please verify that no contracts or s
 
 - Nonce increment for the sender of the simulated transaction.
 
-You can now navigate back to the [README](../README.md#4-extract-the-domain-hash-and-the-message-hash-to-approve) to continue the signing process.
+You can now navigate back to the [README](https://github.com/base/contract-deployments/blob/main/mainnet/2025-05-06-fund-ledgers/README.md#4-Extract-the-domain-hash-and-the-message-hash-to-approve) to continue the signing process.
