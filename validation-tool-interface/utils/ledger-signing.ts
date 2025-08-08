@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import * as shellQuote from 'shell-quote';
 import os from 'os';
 import path from 'path';
 
@@ -49,10 +50,13 @@ export class LedgerSigner {
     const hdPath = `m/44'/60'/${ledgerAccount}'/0/0`;
 
     try {
+      // Sanitize hdPath before using
+      const sanitizedHdPath = shellQuote.quote([hdPath])[0] || hdPath;
+      
       // Use the --address flag to get the address
       const result = await this.runEip712signCommand([
         '--ledger',
-        '--hd-paths', hdPath,
+        '--hd-paths', sanitizedHdPath,
         '--address'
       ]);
 
@@ -126,11 +130,15 @@ export class LedgerSigner {
       // Create EIP-712 formatted data to sign: 0x1901 + domain hash + message hash
       const dataToSign = `0x1901${domainHash.slice(2)}${messageHash.slice(2)}`;
 
+      // Sanitize both hdPath and dataToSign
+      const sanitizedHdPath = shellQuote.quote([hdPath])[0] || hdPath;
+      const sanitizedDataToSign = shellQuote.quote([dataToSign])[0] || dataToSign;
+
       // Use eip712sign with --data flag to sign the data directly
       const result = await this.runEip712signCommand([
         '--ledger',
-        '--hd-paths', hdPath,
-        '--data', dataToSign
+        '--hd-paths', sanitizedHdPath,
+        '--data', sanitizedDataToSign
       ]);
 
       if (result.success && result.output) {
@@ -200,7 +208,15 @@ export class LedgerSigner {
     return new Promise((resolve) => {
       console.log(`Running: ${this.eip712signPath} ${args.join(' ')}`);
 
-      const process = spawn(this.eip712signPath, args, {
+      // Sanitize arguments using shell-quote
+      const sanitizedArgs = args.map(arg => {
+        if (typeof arg === 'string') {
+          return shellQuote.quote([arg]).replace(/'/g, ''); // Remove quotes added by shell-quote since spawn doesn't need them
+        }
+        return arg;
+      });
+
+      const process = spawn(this.eip712signPath, sanitizedArgs, {
         stdio: ['inherit', 'pipe', 'pipe']
       });
 
