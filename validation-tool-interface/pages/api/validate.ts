@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ValidationService } from '../../utils/validation-service';
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -31,13 +33,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Initialize ValidationService
     const validationService = new ValidationService();
 
-    // Run validation
+    // Getting config info to get rpcType
+    const configInfo = await validationService.getConfigInfo({
+      upgradeId,
+      network: actualNetwork,
+      userType,
+    });
+
+    const rpcUrl = getRpcUrl(actualNetwork, configInfo.rpcType);
+
+    // Run validation with the RPC URL
     const validationResult = await validationService.validateUpgrade({
       upgradeId,
       network: actualNetwork,
       userType,
       simulationMethod,
       userLedgerAddress,
+      rpcUrl, // Now we pass the RPC URL
     });
 
     // Clean up temp files
@@ -47,6 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       userType,
       simulationMethod,
       userLedgerAddress,
+      rpcUrl, // Add rpcUrl to cleanup too
     });
 
     res.status(200).json({
@@ -60,6 +73,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       error: error instanceof Error ? error.message : 'Validation failed',
     });
   }
+}
+
+/**
+ * Read RPC URL from network-specific .env file
+ */
+function getRpcUrl(network: string, rpcType: string): string {
+  let envPath: string;
+  let envLocation: string;
+
+  if (network === 'test') {
+    // Handle test network specially - read from validation-tool-interface/test-upgrade/.env
+    envPath = path.join(process.cwd(), 'test-upgrade', '.env');
+    envLocation = 'test-upgrade';
+  } else {
+    // For mainnet/sepolia - read from ../network/.env
+    const contractDeploymentsPath = path.join(process.cwd(), '..');
+    envPath = path.join(contractDeploymentsPath, network, '.env');
+    envLocation = network;
+  }
+
+  if (!fs.existsSync(envPath)) {
+    throw new Error(`❌ .env file not found: ${envPath}`);
+  }
+
+  try {
+    const envContent = fs.readFileSync(envPath, 'utf-8');
+    const match = envContent.match(new RegExp(`^${rpcType}=(.*)$`, 'm'));
+    if (match && match[1]) {
+      const rpcUrl = match[1].trim().replace(/^["']|["']$/g, '');
+      console.log(`📡 Using ${rpcType} from ${envLocation}/.env file: ${rpcUrl}`);
+      return rpcUrl;
+    }
+  } catch (error) {
+    throw new Error(`❌ Failed to read .env file: ${error}`);
+  }
+
+  throw new Error(`❌ RPC URL '${rpcType}' not found in ${envLocation}/.env file`);
 }
 
 // Increase timeout for script execution and Tenderly calls

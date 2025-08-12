@@ -16,6 +16,7 @@
   "dependencies": {
     "next": "^14.2.30",
     "react": "^18.2.0",
+    "shell-quote": "^1.8.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
