@@ -50,13 +50,10 @@ export class LedgerSigner {
     const hdPath = `m/44'/60'/${ledgerAccount}'/0/0`;
 
     try {
-      // Sanitize hdPath before using
-      const sanitizedHdPath = shellQuote.quote([hdPath])[0] || hdPath;
-      
       // Use the --address flag to get the address
       const result = await this.runEip712signCommand([
         '--ledger',
-        '--hd-paths', sanitizedHdPath,
+        '--hd-paths', hdPath,
         '--address'
       ]);
 
@@ -130,15 +127,11 @@ export class LedgerSigner {
       // Create EIP-712 formatted data to sign: 0x1901 + domain hash + message hash
       const dataToSign = `0x1901${domainHash.slice(2)}${messageHash.slice(2)}`;
 
-      // Sanitize both hdPath and dataToSign
-      const sanitizedHdPath = shellQuote.quote([hdPath])[0] || hdPath;
-      const sanitizedDataToSign = shellQuote.quote([dataToSign])[0] || dataToSign;
-
       // Use eip712sign with --data flag to sign the data directly
       const result = await this.runEip712signCommand([
         '--ledger',
-        '--hd-paths', sanitizedHdPath,
-        '--data', sanitizedDataToSign
+        '--hd-paths', hdPath,
+        '--data', dataToSign
       ]);
 
       if (result.success && result.output) {
@@ -208,10 +201,23 @@ export class LedgerSigner {
     return new Promise((resolve) => {
       console.log(`Running: ${this.eip712signPath} ${args.join(' ')}`);
 
-      // Sanitize arguments using shell-quote
+      // Use shell-quote for security sanitization - validate that args are safe
       const sanitizedArgs = args.map(arg => {
         if (typeof arg === 'string') {
-          return shellQuote.quote([arg]).replace(/'/g, ''); // Remove quotes added by shell-quote since spawn doesn't need them
+          // Use shell-quote to detect potentially dangerous constructs
+          const parsed = shellQuote.parse(arg);
+          
+          // Check if parsing resulted in anything other than plain strings
+          if (parsed.some(item => typeof item !== 'string')) {
+            throw new Error(`Argument contains shell metacharacters: ${arg}`);
+          }
+          
+          // Additional validation for dangerous characters
+          if (arg.includes('\n') || arg.includes('\r') || arg.includes('\0')) {
+            throw new Error(`Invalid argument contains dangerous characters: ${arg}`);
+          }
+          
+          return arg; // Return original string, not quoted version
         }
         return arg;
       });
