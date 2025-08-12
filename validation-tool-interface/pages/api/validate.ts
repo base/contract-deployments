@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { upgradeId, network, userType, simulationMethod, tenderlyApiKey, userLedgerAddress } =
+    const { upgradeId, network, userType, simulationMethod, userLedgerAddress } =
       req.body;
 
     if (!upgradeId || !network || !userType) {
@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     // Initialize ValidationService
-    const validationService = new ValidationService(tenderlyApiKey);
+    const validationService = new ValidationService();
 
     // Getting config info to get rpcType
     const configInfo = await validationService.getConfigInfo({
@@ -48,7 +48,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       network: actualNetwork,
       userType,
       simulationMethod,
-      tenderlyApiKey,
       userLedgerAddress,
       rpcUrl, // Now we pass the RPC URL
     });
@@ -59,7 +58,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       network: actualNetwork,
       userType,
       simulationMethod,
-      tenderlyApiKey,
       userLedgerAddress,
       rpcUrl, // Add rpcUrl to cleanup too
     });
