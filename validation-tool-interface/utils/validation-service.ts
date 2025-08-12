@@ -31,7 +31,6 @@ export class ValidationService {
   private stateDiffClient?: StateDiffClient;
 
   constructor(tenderlyApiKey?: string, stateDiffBinaryPath?: string) {
-    // Check for API key: parameter first, then environment variable
     const apiKey = tenderlyApiKey || process.env.TENDERLY_ACCESS;
 
     if (apiKey) {
@@ -43,7 +42,6 @@ export class ValidationService {
       console.warn('⚠️ No Tenderly API key found in parameters or environment variables');
     }
 
-    // Initialize state-diff client
     this.stateDiffClient = new StateDiffClient(stateDiffBinaryPath);
   }
 
@@ -132,7 +130,7 @@ export class ValidationService {
   }
 
   /**
-   * Get basic config info (rpcType, etc.) without running full validation
+   * Get basic config info without running full validation
    */
   async getConfigInfo(options: {
     upgradeId: string;

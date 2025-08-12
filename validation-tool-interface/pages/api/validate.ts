@@ -33,15 +33,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Initialize ValidationService
     const validationService = new ValidationService(tenderlyApiKey);
 
-    // We need to get the rpcType first, so we need to parse the config
-    // Let's create a helper method to get config info
+    // Getting config info to get rpcType
     const configInfo = await validationService.getConfigInfo({
       upgradeId,
       network: actualNetwork,
       userType,
     });
 
-    // Now we can read the RPC URL based on the rpcType from the config
     const rpcUrl = getRpcUrl(actualNetwork, configInfo.rpcType);
 
     // Run validation with the RPC URL
