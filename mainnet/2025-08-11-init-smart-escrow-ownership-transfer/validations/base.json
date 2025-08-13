@@ -1,0 +1,97 @@
+{
+  "task_name": "op-smart-escrow-ownership-transfer",
+  "script_name": "InitOwnershipTransfer",
+  "signature": "sign(address)",
+  "args": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
+  "ledger-id": 0,
+  "rpc_type": "OP_RPC_URL",
+  "expected_domain_and_message_hashes": {
+    "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
+    "domain_hash": "0x4ac8f60706331537a33c4a4cbda024cb722855e6b160a3e8b28ab487510598b1",
+    "message_hash": "0x3a25fa618752b5d5408cef7c063ff8f08f6a833e3ac131666452d099c4cb1896"
+  },
+  "expected_nested_hash": "0xd806ab578902502aa5b3caf2d4a5d03b14a9e9522c8b9214ba4e05af1c39e2f4",
+  "state_overrides": [
+    {
+      "name": "Base's OP Multisig - Current Owner",
+      "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur"
+        }
+      ]
+    },
+    {
+      "name": "Base's OP Multisig",
+      "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur"
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur"
+        },
+        {
+          "key": "0x316a0aac0d94f5824f0b66f5bbe94a8c360a17699a1d3a233aafcf7146e9f11c",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur"
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "value": "0x000000000000000000000000ca11bde05977b3631167028862be2a173976ca11",
+          "description": "Override the threshold to 1 so the transaction simulation can occur"
+        }
+      ]
+    }
+  ],
+  "state_changes": [
+    {
+      "name": "Base's OP Multisig",
+      "address": "0x0a7361e734cf3f0394b0fc4a45c74e7a4ec70940",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Increments the nonce value of the Gnosis Safe"
+        },
+        {
+          "key": "0xe23f453082938f6d8fda616d15a8d5919aec431dff18fc69ddf7fd4cd01bd59e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Mark a signature hash as approved from the current owner"
+        }
+      ]
+    }, 
+    {
+      "name": "Base's OP Multisig",
+      "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "description": "Increments the nonce value of the Gnosis Safe"
+        }
+      ]
+    }, 
+    {
+      "name": "Base's OP Multisig",
+      "address": "0xb3c2f9fc2727078ec3a2255410e83ba5b62c5b5f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000697800000000000000000000000000000000000000000000000000000",
+          "after": "0x000000069780000068a374cf8cc51c3008b3f03fe483b28b8db90e19cf076a6d",
+          "description": "Increments the nonce value of the Gnosis Safe"
+        }
+      ]
+    }
+  ]
+}
