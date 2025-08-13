@@ -114,11 +114,11 @@ clean-state-diff:
 	@echo "Cleaning state-diff installation..."
 	rm -rf go-simulator
 
-# Default port (can be overridden with PORT=xxxx make sign)
+# Default port (can be overridden with PORT=xxxx make validation)
 PORT ?= 1234
 
-.PHONY: sign
-sign: install
+.PHONY: validation
+validation: install
 	cd validation-tool-interface && npm run build
 	@echo "Starting server on port $(PORT) and opening browser..."
 	@cd validation-tool-interface && npm run start -- -p $(PORT) & \
