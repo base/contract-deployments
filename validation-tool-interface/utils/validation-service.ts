@@ -30,7 +30,6 @@ export class ValidationService {
   private stateDiffClient?: StateDiffClient;
 
   constructor(tenderlyApiKey?: string, stateDiffBinaryPath?: string) {
-    // Check for API key: parameter first, then environment variable
     const apiKey = tenderlyApiKey || process.env.TENDERLY_ACCESS;
 
     if (apiKey) {
@@ -42,7 +41,6 @@ export class ValidationService {
       console.warn('⚠️ No Tenderly API key found in parameters or environment variables');
     }
 
-    // Initialize state-diff client
     this.stateDiffClient = new StateDiffClient(stateDiffBinaryPath);
   }
 
@@ -131,6 +129,48 @@ export class ValidationService {
   }
 
   /**
+   * Get basic config info without running full validation
+   */
+  async getConfigInfo(options: {
+    upgradeId: string;
+    network: string;
+    userType: string;
+  }): Promise<{
+    rpcType: string;
+  }> {
+    const contractDeploymentsPath = path.join(process.cwd(), '..');
+    
+    // Handle test network specially - load from validation-tool-interface/test-upgrade instead of root/test
+    const upgradePath = options.network === 'test'
+      ? path.join(process.cwd(), 'test-upgrade', options.upgradeId)
+      : path.join(contractDeploymentsPath, options.network, options.upgradeId);
+
+    // Look for validation config files based on user type in validations subdirectory
+    const configFileName = this.getConfigFileName(options.userType);
+    const configPath = path.join(upgradePath, 'validations', configFileName);
+
+    if (!fs.existsSync(configPath)) {
+      throw new Error(`Config file not found: ${configPath}`);
+    }
+
+    try {
+      const configContent = fs.readFileSync(configPath, 'utf-8');
+      const parsedConfig = ConfigParser.parseFromString(configContent);
+
+      if (!parsedConfig.result.success) {
+        throw new Error('Failed to parse config file');
+      }
+
+      return {
+        rpcType: parsedConfig.config.rpc_type,
+      };
+    } catch (error) {
+      console.error(`❌ Error reading config file: ${error}`);
+      throw error;
+    }
+  }
+
+  /**
    * Get expected state changes and overrides from validation config files
    */
   private async getExpectedData(options: ValidationOptions): Promise<{
@@ -141,7 +181,8 @@ export class ValidationService {
       domain_hash: string;
       message_hash: string;
     };
-    ledgerId: number; // Required field (no longer optional)
+    ledgerId: number;
+    rpcType: string;
     scriptParams: {
       scriptName: string;
       signature: string;
@@ -181,7 +222,8 @@ export class ValidationService {
         stateOverrides: parsedConfig.config.state_overrides,
         stateChanges: parsedConfig.config.state_changes,
         domainAndMessageHashes: parsedConfig.config.expected_domain_and_message_hashes,
-        ledgerId: parsedConfig.config["ledger-id"], // Required field
+        ledgerId: parsedConfig.config["ledger-id"],
+        rpcType: parsedConfig.config.rpc_type,
         scriptParams: {
           scriptName: parsedConfig.config.script_name,
           signature: parsedConfig.config.signature,
@@ -307,8 +349,8 @@ export class ValidationService {
     try {
       console.log('🔧 Running state-diff simulation with extracted data...');
 
-      // Get RPC URL
-      let rpcUrl = options.rpcUrl || this.getRpcUrl(options.network);
+      // Use the RPC URL provided by the API
+      const rpcUrl = options.rpcUrl;
 
       // Use the new simulateWithExtractedData method
       const stateDiffResult = await this.stateDiffClient.simulateWithExtractedData({
@@ -377,39 +419,7 @@ export class ValidationService {
     };
   }
 
-  /**
-   * Get RPC URL with fallbacks
-   */
-  private getRpcUrl(network: 'mainnet' | 'sepolia' | 'test'): string {
-    const contractDeploymentsPath = path.join(process.cwd(), '..');
-    const networkPath = path.join(contractDeploymentsPath, network);
-    const envPath = path.join(networkPath, '.env');
 
-    if (fs.existsSync(envPath)) {
-      try {
-        const envContent = fs.readFileSync(envPath, 'utf-8');
-        const match = envContent.match(/^L1_RPC_URL=(.*)$/m);
-        if (match && match[1]) {
-          const rpcUrl = match[1].trim().replace(/^["']|["']$/g, '');
-          console.log(`📡 Using RPC URL from ${network}/.env file: ${rpcUrl}`);
-          return rpcUrl;
-        }
-      } catch (error) {
-        console.warn(`⚠️ Failed to read .env file: ${error}`);
-      }
-    }
-
-    // Fall back to default RPC URLs
-    const defaultRpcUrls = {
-      mainnet: 'https://mainnet.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul',
-      sepolia: 'https://sepolia.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul',
-      test: 'https://virtual.mainnet.rpc.tenderly.co/3a94c397-9711-4592-aadf-a66a31c6747f',
-    };
-
-    const rpcUrl = defaultRpcUrls[network];
-    console.log(`📡 Using default RPC URL: ${rpcUrl}`);
-    return rpcUrl;
-  }
 
   /**
    * Run Foundry script extraction
@@ -429,37 +439,8 @@ export class ValidationService {
       ? path.join(process.cwd(), 'test-upgrade', options.upgradeId)
       : path.join(contractDeploymentsPath, options.network, options.upgradeId);
 
-    // Try to read RPC URL from .env file in the network folder
-    let rpcUrl = options.rpcUrl;
-
-    if (!rpcUrl) {
-      const networkPath = path.join(contractDeploymentsPath, options.network);
-      const envPath = path.join(networkPath, '.env');
-      if (fs.existsSync(envPath)) {
-        try {
-          const envContent = fs.readFileSync(envPath, 'utf-8');
-          const match = envContent.match(/^L1_RPC_URL=(.*)$/m);
-          if (match && match[1]) {
-            // Remove quotes if present and trim whitespace
-            rpcUrl = match[1].trim().replace(/^["']|["']$/g, '');
-            console.log(`📡 Using RPC URL from ${options.network}/.env file: ${rpcUrl}`);
-          }
-        } catch (error) {
-          console.warn(`⚠️ Failed to read .env file: ${error}`);
-        }
-      }
-    }
-
-    // Fall back to default RPC URLs if not found
-    if (!rpcUrl) {
-      const defaultRpcUrls = {
-        mainnet: 'https://mainnet.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul',
-        sepolia: 'https://sepolia.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul',
-        test: 'https://virtual.mainnet.rpc.tenderly.co/3a94c397-9711-4592-aadf-a66a31c6747f',
-      };
-      rpcUrl = defaultRpcUrls[options.network];
-      console.log(`📡 Using default RPC URL: ${rpcUrl}`);
-    }
+    // Use the RPC URL provided by the API
+    const rpcUrl = options.rpcUrl;
 
     // Use the user's Ledger address as the sender instead of default
     const senderAddress = options.userLedgerAddress;
