@@ -117,7 +117,7 @@ clean-state-diff:
 # Default port (can be overridden with PORT=xxxx make sign)
 PORT ?= 1234
 
-.PHONY: sign
+.PHONY: validation
 sign: install
 	cd validation-tool-interface && npm run build
 	@echo "Starting server on port $(PORT) and opening browser..."
