@@ -29,8 +29,6 @@ export const ValidationResults: React.FC<ValidationResultsProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentChangeIndex, setCurrentChangeIndex] = useState(0);
-  const [tenderlyApiKey, setTenderlyApiKey] = useState('');
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [validationResult, setValidationResult] = useState<ValidationData | null>(null);
   const [isInstallingDeps, setIsInstallingDeps] = useState(false);
 
@@ -273,7 +271,6 @@ export const ValidationResults: React.FC<ValidationResultsProps> = ({
           network: network.toLowerCase(),
           userType,
           simulationMethod,
-          tenderlyApiKey: tenderlyApiKey,
           userLedgerAddress,
         }),
       });
@@ -297,16 +294,43 @@ export const ValidationResults: React.FC<ValidationResultsProps> = ({
     }
   };
 
-  const handleApiKeySubmit = () => {
-    if (tenderlyApiKey.trim()) {
-      setShowApiKeyInput(false);
-      handleRunValidation();
-    }
-  };
+
 
   const allValidationItems = getAllValidationItems();
   const currentValidationItem = allValidationItems[currentChangeIndex];
   const totalValidationItems = allValidationItems.length;
+
+  // Check if there are any blocking validation errors
+  const hasBlockingErrors = () => {
+    if (!validationResult) return false;
+    
+    return allValidationItems.some(item => {
+      // Missing actual data is a blocking error
+      if (!item.actual) {
+        return true;
+      }
+      
+      // Check for mismatch that is NOT an expected difference
+      if (item.type === 'signing-data') {
+        return item.expected.dataToSign !== item.actual.dataToSign;
+      } else if (item.type === 'override') {
+        const match = item.expected.key === item.actual.key && item.expected.value === item.actual.value;
+        const isExpectedDifference = 
+          item.expected.description && 
+          item.expected.description.toLowerCase().includes('difference is expected');
+        return !match && !isExpectedDifference;
+      } else if (item.type === 'change') {
+        return !(
+          item.expected.key === item.actual.key &&
+          item.expected.before === item.actual.before &&
+          item.expected.after === item.actual.after
+        );
+      }
+      return false;
+    });
+  };
+
+  const blockingErrorsExist = hasBlockingErrors();
 
   // Get step-specific counts and current step info
   const getStepInfo = () => {
@@ -504,55 +528,7 @@ export const ValidationResults: React.FC<ValidationResultsProps> = ({
           <p style={{ margin: 0 }}>{error}</p>
         </div>
 
-        {error.includes('Tenderly') && !showApiKeyInput && (
-          <button
-            onClick={() => setShowApiKeyInput(true)}
-            style={{
-              background: '#6366F1',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '12px',
-              border: 'none',
-              fontWeight: '600',
-              cursor: 'pointer',
-              marginRight: '12px',
-            }}
-          >
-            Add Tenderly API Key
-          </button>
-        )}
 
-        {showApiKeyInput && (
-          <div style={{ marginBottom: '24px' }}>
-            <input
-              type="password"
-              placeholder="Enter Tenderly API Key"
-              value={tenderlyApiKey}
-              onChange={e => setTenderlyApiKey(e.target.value)}
-              style={{
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid #D1D5DB',
-                marginRight: '12px',
-                width: '300px',
-              }}
-            />
-            <button
-              onClick={handleApiKeySubmit}
-              style={{
-                background: '#10B981',
-                color: 'white',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                border: 'none',
-                fontWeight: '600',
-                cursor: 'pointer',
-              }}
-            >
-              Retry with API Key
-            </button>
-          </div>
-        )}
 
         <button
           onClick={() => handleRunValidation()}
@@ -1009,32 +985,7 @@ export const ValidationResults: React.FC<ValidationResultsProps> = ({
         </details>
       )}
 
-      {/* Back Button */}
-      <div style={{ textAlign: 'center' }}>
-        <button
-          onClick={onBackToSetup}
-          style={{
-            background: '#F3F4F6',
-            color: '#6B7280',
-            padding: '12px 24px',
-            borderRadius: '12px',
-            fontWeight: '500',
-            fontSize: '16px',
-            border: 'none',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = '#E5E7EB';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = '#F3F4F6';
-          }}
-        >
-          ← Back to Setup
-        </button>
-      </div>
+
 
       {/* Proceed to Signing Button */}
       {currentChangeIndex === totalValidationItems - 1 && (
@@ -1042,63 +993,95 @@ export const ValidationResults: React.FC<ValidationResultsProps> = ({
           style={{
             textAlign: 'center',
             marginTop: '48px',
-            paddingTop: '32px',
-            borderTop: '2px solid #E5E7EB',
           }}
         >
-          <p
+          {/* Status Summary */}
+          <div
             style={{
-              color: '#10B981',
-              fontSize: '18px',
-              fontWeight: '600',
+              background: blockingErrorsExist 
+                ? 'linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%)'
+                : 'linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)',
+              border: `2px solid ${blockingErrorsExist ? '#FECACA' : '#86EFAC'}`,
+              borderRadius: '16px',
+              padding: '24px',
               marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
+              maxWidth: '500px',
+              margin: '0 auto 24px',
             }}
           >
-            <span style={{ fontSize: '24px' }}>✅</span>
-            All validations reviewed!
-          </p>
-
-          {/* Ledger Signing Button */}
-          {validationResult?.expected?.domainAndMessageHashes &&
-            validationResult?.expected?.domainAndMessageHashes?.domain_hash &&
-            validationResult?.expected?.domainAndMessageHashes?.message_hash && (
-              <button
-                onClick={() => onProceedToLedgerSigning(validationResult)}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                marginBottom: blockingErrorsExist ? '12px' : '8px',
+              }}
+            >
+              <span style={{ fontSize: '28px' }}>{blockingErrorsExist ? '🚫' : '✅'}</span>
+              <h3
                 style={{
-                  background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
-                  color: 'white',
-                  padding: '16px 48px',
-                  borderRadius: '12px',
-                  fontWeight: '600',
-                  fontSize: '18px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'all 0.2s ease',
-                  boxShadow:
-                    '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow =
-                    '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow =
-                    '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+                  margin: 0,
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  color: blockingErrorsExist ? '#DC2626' : '#047857',
                 }}
               >
-                <span style={{ fontSize: '20px' }}>🔐</span>
-                Sign with Ledger →
-              </button>
+                {blockingErrorsExist ? 'Cannot Sign' : 'Ready to Sign'}
+              </h3>
+            </div>
+            {blockingErrorsExist && (
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '14px',
+                  color: '#DC2626',
+                  textAlign: 'center',
+                  lineHeight: '1.4',
+                }}
+              >
+                Found <strong>Missing</strong> or <strong>Different</strong> instances. Contact developers before continuing.
+              </p>
+            )}
+          </div>
+
+          {/* Ledger Signing Button - Only show when no blocking errors */}
+          {!blockingErrorsExist &&
+            validationResult?.expected?.domainAndMessageHashes &&
+            validationResult?.expected?.domainAndMessageHashes?.domain_hash &&
+            validationResult?.expected?.domainAndMessageHashes?.message_hash && (
+                <button
+                  onClick={() => onProceedToLedgerSigning(validationResult)}
+                  style={{
+                    background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                    color: 'white',
+                    padding: '16px 48px',
+                    borderRadius: '12px',
+                    fontWeight: '600',
+                    fontSize: '18px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow =
+                      '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow =
+                      '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+                  }}
+                >
+                  <span style={{ fontSize: '20px' }}>🔐</span>
+                  Sign with Ledger →
+                </button>
             )}
 
           {/* Show message if signing is not available */}
@@ -1140,41 +1123,95 @@ export const ValidationResults: React.FC<ValidationResultsProps> = ({
         </div>
       )}
 
-      <button
-        onClick={handleRunValidation}
-        disabled={loading}
+      {/* Bottom Navigation Buttons */}
+      <div
         style={{
-          background: loading ? '#E5E7EB' : '#6366F1',
-          color: loading ? '#9CA3AF' : 'white',
-          padding: '16px 32px',
-          borderRadius: '8px',
-          border: 'none',
-          fontWeight: '600',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          fontSize: '16px',
           display: 'flex',
+          justifyContent: 'space-between',
           alignItems: 'center',
-          gap: '8px',
+          marginTop: '48px',
         }}
       >
-        {loading ? (
-          <>
-            <div
-              style={{
-                width: '16px',
-                height: '16px',
-                border: '2px solid #9CA3AF',
-                borderTop: '2px solid transparent',
-                borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
-              }}
-            />
-            Running Validation...
-          </>
-        ) : (
-          'Run Validation'
-        )}
-      </button>
+        {/* Back to Setup - Left */}
+        <button
+          onClick={onBackToSetup}
+          style={{
+            background: '#F3F4F6',
+            color: '#6B7280',
+            padding: '12px 24px',
+            borderRadius: '12px',
+            fontWeight: '500',
+            fontSize: '16px',
+            border: 'none',
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = '#E5E7EB';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = '#F3F4F6';
+          }}
+        >
+          ← Back to Setup
+        </button>
+
+        {/* Rerun Validation - Right */}
+        <button
+          onClick={handleRunValidation}
+          disabled={loading}
+          style={{
+            background: loading ? '#E5E7EB' : '#6366F1',
+            color: loading ? '#9CA3AF' : 'white',
+            padding: '16px 32px',
+            borderRadius: '12px',
+            border: 'none',
+            fontWeight: '600',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontFamily: 'inherit',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={e => {
+            if (!loading) {
+              e.currentTarget.style.background = '#4F46E5';
+            }
+          }}
+          onMouseLeave={e => {
+            if (!loading) {
+              e.currentTarget.style.background = '#6366F1';
+            }
+          }}
+        >
+          {loading ? (
+            <>
+              <div
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  border: '2px solid #9CA3AF',
+                  borderTop: '2px solid transparent',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                }}
+              />
+              Running Validation...
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: '16px' }}>🔄</span>
+              Rerun Validation
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 };
