@@ -137,7 +137,7 @@ export class ValidationService {
     network: string;
     userType: string;
   }): Promise<{
-    rpcType: string;
+    rpcUrl: string;
   }> {
     const contractDeploymentsPath = path.join(process.cwd(), '..');
     
@@ -163,7 +163,7 @@ export class ValidationService {
       }
 
       return {
-        rpcType: parsedConfig.config.rpc_type,
+        rpcUrl: parsedConfig.config.rpc_url,
       };
     } catch (error) {
       console.error(`❌ Error reading config file: ${error}`);
@@ -183,7 +183,7 @@ export class ValidationService {
       message_hash: string;
     };
     ledgerId: number;
-    rpcType: string;
+    rpcUrl: string;
     scriptParams: {
       scriptName: string;
       signature: string;
@@ -224,7 +224,7 @@ export class ValidationService {
         stateChanges: parsedConfig.config.state_changes,
         domainAndMessageHashes: parsedConfig.config.expected_domain_and_message_hashes,
         ledgerId: parsedConfig.config["ledger-id"],
-        rpcType: parsedConfig.config.rpc_type,
+        rpcUrl: parsedConfig.config.rpc_url,
         scriptParams: {
           scriptName: parsedConfig.config.script_name,
           signature: parsedConfig.config.signature,

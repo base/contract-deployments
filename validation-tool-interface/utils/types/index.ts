@@ -5,7 +5,7 @@ export interface TaskConfig {
   signature: string;
   args: string;
   "ledger-id": number;
-  rpc_type: string;
+  rpc_url: string;
   expected_domain_and_message_hashes: ExpectedHashes;
   expected_nested_hash: string;
   state_overrides: StateOverride[];
