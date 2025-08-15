@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import * as shellQuote from 'shell-quote';
 import os from 'os';
 import path from 'path';
 
@@ -200,7 +201,28 @@ export class LedgerSigner {
     return new Promise((resolve) => {
       console.log(`Running: ${this.eip712signPath} ${args.join(' ')}`);
 
-      const process = spawn(this.eip712signPath, args, {
+      // Use shell-quote for security sanitization - validate that args are safe
+      const sanitizedArgs = args.map(arg => {
+        if (typeof arg === 'string') {
+          // Use shell-quote to detect potentially dangerous constructs
+          const parsed = shellQuote.parse(arg);
+          
+          // Check if parsing resulted in anything other than plain strings
+          if (parsed.some(item => typeof item !== 'string')) {
+            throw new Error(`Argument contains shell metacharacters: ${arg}`);
+          }
+          
+          // Additional validation for dangerous characters
+          if (arg.includes('\n') || arg.includes('\r') || arg.includes('\0')) {
+            throw new Error(`Invalid argument contains dangerous characters: ${arg}`);
+          }
+          
+          return arg; // Return original string, not quoted version
+        }
+        return arg;
+      });
+
+      const process = spawn(this.eip712signPath, sanitizedArgs, {
         stdio: ['inherit', 'pipe', 'pipe']
       });
 

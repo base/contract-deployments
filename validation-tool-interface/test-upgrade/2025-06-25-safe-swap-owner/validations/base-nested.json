@@ -4,6 +4,7 @@
   "signature": "sign()",
   "args": "",
   "ledger-id": 0,
+  "rpc_url": "https://virtual.mainnet.rpc.tenderly.co/3a94c397-9711-4592-aadf-a66a31c6747f",
   "expected_domain_and_message_hashes": {
     "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
     "domain_hash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",

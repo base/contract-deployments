@@ -4,7 +4,8 @@ export interface TaskConfig {
   script_name: string;
   signature: string;
   args: string;
-  "ledger-id": number; // Required field for ledger account index
+  "ledger-id": number;
+  rpc_url: string;
   expected_domain_and_message_hashes: ExpectedHashes;
   expected_nested_hash: string;
   state_overrides: StateOverride[];

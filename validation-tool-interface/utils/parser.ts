@@ -48,6 +48,7 @@ const TaskConfigSchema = z.object({
   signature: z.string().min(1),
   args: z.string(), // Allow empty string for scripts with no arguments
   "ledger-id": z.number().int().nonnegative(), // Required ledger account index
+  rpc_url: z.string().url().min(1), // The actual RPC URL to use
   expected_domain_and_message_hashes: ExpectedHashesSchema,
   expected_nested_hash: z
     .string()
@@ -150,6 +151,7 @@ export class ConfigParser {
       signature: '',
       args: '',
       "ledger-id": 0,
+      rpc_url: "https://eth-mainnet.public.blastapi.io",
       expected_domain_and_message_hashes: { address: '', domain_hash: '', message_hash: '' },
       expected_nested_hash: '',
       state_overrides: [],

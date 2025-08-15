@@ -45,10 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await validationService.cleanup({
       upgradeId,
       network: actualNetwork,
-      userType,
-      simulationMethod,
-      tenderlyApiKey,
-      userLedgerAddress,
     });
 
     res.status(200).json({
@@ -63,6 +59,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 }
+
+
 
 // Increase timeout for script execution and Tenderly calls
 export const config = {
