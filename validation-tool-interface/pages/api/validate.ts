@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       simulationMethod,
       tenderlyApiKey,
       userLedgerAddress,
-      rpcUrl, // Add rpcUrl to cleanup too
+      rpcUrl,
     });
 
     res.status(200).json({
