@@ -151,7 +151,7 @@ export class ConfigParser {
       signature: '',
       args: '',
       "ledger-id": 0,
-      rpc_url: "https://mainnet.gateway.tenderly.co/3e5npc9mkiZ2c2ogxNSGul",
+      rpc_url: "https://eth-mainnet.public.blastapi.io",
       expected_domain_and_message_hashes: { address: '', domain_hash: '', message_hash: '' },
       expected_nested_hash: '',
       state_overrides: [],
