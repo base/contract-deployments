@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Initialize ValidationService
     const validationService = new ValidationService(tenderlyApiKey);
 
-    // Run validation (RPC URL will be extracted from config automatically)
+    // Run validation
     const validationResult = await validationService.validateUpgrade({
       upgradeId,
       network: actualNetwork,

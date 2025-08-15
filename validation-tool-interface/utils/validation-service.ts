@@ -19,9 +19,9 @@ export interface ValidationOptions {
   upgradeId: string; // e.g., "2025-06-04-upgrade-system-config"
   network: 'mainnet' | 'sepolia' | 'test';
   userType: 'Base SC' | 'Coinbase' | 'OP';
-  rpcUrl: string; // Required - comes from validation config file
+  rpcUrl: string;
   tenderlyApiKey?: string;
-  simulationMethod?: 'tenderly' | 'state-diff'; // New option for choosing simulation method
+  simulationMethod?: 'tenderly' | 'state-diff';
   stateDiffBinaryPath?: string; // Path to state-diff binary
   userLedgerAddress: string; // User's Ledger address to use as sender
 }
