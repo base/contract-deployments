@@ -9,7 +9,7 @@ We wish to update the owner of our [SmartEscrow](https://optimistic.etherscan.io
 1. Initiate the transfer to a new owner from the existing owner
 2. Accept the transfer from the pending new owner after a configured delay
 
-This task represents the initiation step. A subsequent task will be written for ownership acceptance after a 5 day delay.
+This task represents the second finalization step.
 
 ## Procedure
 

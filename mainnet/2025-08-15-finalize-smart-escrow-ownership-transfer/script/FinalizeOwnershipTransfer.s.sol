@@ -20,22 +20,23 @@ contract InitOwnershipTransfer is NestedMultisigBuilder {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
         L1_SAFE = vm.envAddress("L1_SAFE");
         TARGET = vm.envAddress("TARGET");
-    }
-
-    // Confirm the proxy admin owner is now the pending admin of SmartEscrow
-    function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
-        AccessControlDefaultAdminRules target = AccessControlDefaultAdminRules(TARGET);
-        (address newDefaultAdmin,) = target.defaultAdmin();
-        require(newDefaultAdmin == L1_SAFE.applyL1ToL2Alias(), "New default admin is not L1_SAFE");
+        PORTAL = vm.envAddress("PORTAL");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3[] memory) {
         IMulticall3.Call3[] memory calls = new IMulticall3.Call3[](1);
 
+        address to = TARGET;
+        uint256 value = 0;
+        uint64 gasLimit = 2_000_000;
+        bool isCreation = false;
+        bytes memory data = abi.encodeCall(AccessControlDefaultAdminRules.acceptDefaultAdminTransfer);
+
         calls[0] = IMulticall3.Call3({
-            target: TARGET,
+            target: PORTAL,
             allowFailure: false,
-            callData: abi.encodeCall(AccessControlDefaultAdminRules.acceptDefaultAdminTransfer)
+            callData: abi.encodeCall(IOptimismPortal2.depositTransaction, (to, value, gasLimit, isCreation, data)),
+            value: value
         });
 
         return calls;
