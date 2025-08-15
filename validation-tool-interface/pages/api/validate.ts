@@ -48,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       simulationMethod,
       tenderlyApiKey,
       userLedgerAddress,
-      rpcUrl, // Now we pass the RPC URL
+      rpcUrl,
     });
 
     // Clean up temp files
