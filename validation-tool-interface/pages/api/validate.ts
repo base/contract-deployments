@@ -31,16 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Initialize ValidationService
     const validationService = new ValidationService(tenderlyApiKey);
 
-    // Getting config info to get rpcUrl directly
-    const configInfo = await validationService.getConfigInfo({
-      upgradeId,
-      network: actualNetwork,
-      userType,
-    });
-
-    const rpcUrl = configInfo.rpcUrl;
-
-    // Run validation with the RPC URL
+    // Run validation (RPC URL will be extracted from config automatically)
     const validationResult = await validationService.validateUpgrade({
       upgradeId,
       network: actualNetwork,
@@ -48,18 +39,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       simulationMethod,
       tenderlyApiKey,
       userLedgerAddress,
-      rpcUrl,
     });
 
     // Clean up temp files
     await validationService.cleanup({
       upgradeId,
       network: actualNetwork,
-      userType,
-      simulationMethod,
-      tenderlyApiKey,
-      userLedgerAddress,
-      rpcUrl,
     });
 
     res.status(200).json({
