@@ -1,0 +1,18 @@
+{
+  "task_name": "op-smart-escrow-ownership-transfer",
+  "script_name": "FinalizeOwnershipTransfer",
+  "signature": "sign(address)",
+  "args": "",
+  "ledger-id": 0,
+  "rpc_type": "",
+  "expected_domain_and_message_hashes": {
+    "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
+    "domain_hash": "0x4ac8f60706331537a33c4a4cbda024cb722855e6b160a3e8b28ab487510598b1",
+    "message_hash": "0x3a25fa618752b5d5408cef7c063ff8f08f6a833e3ac131666452d099c4cb1896"
+  },
+  "expected_nested_hash": "0xd806ab578902502aa5b3caf2d4a5d03b14a9e9522c8b9214ba4e05af1c39e2f4",
+  "state_overrides": [
+  ],
+  "state_changes": [
+  ]
+}
