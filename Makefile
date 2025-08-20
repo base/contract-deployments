@@ -1,14 +1,10 @@
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
-DEPLOY_DIR = $(network)/$(shell date +'%Y-%m-%d')-deploy
-INCIDENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(incident)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
 SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-swap-owner
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 
 TEMPLATE_GENERIC = setup-templates/template-generic
-TEMPLATE_DEPLOY = setup-templates/template-deploy
-TEMPLATE_INCIDENT = setup-templates/template-incident
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
 TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
 TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
@@ -31,16 +27,6 @@ install-foundry:
 setup-task:
 	rm -rf $(TEMPLATE_GENERIC)/cache $(TEMPLATE_GENERIC)/lib $(TEMPLATE_GENERIC)/out
 	cp -r $(TEMPLATE_GENERIC) $(PROJECT_DIR)
-
-# Run `make setup-deploy network=<network>`
-setup-deploy:
-	rm -rf $(TEMPLATE_DEPLOY)/cache $(TEMPLATE_DEPLOY)/lib $(TEMPLATE_DEPLOY)/out
-	mkdir -p $(network) && cp -r $(TEMPLATE_DEPLOY) $(DEPLOY_DIR)
-
-# Run `make setup-incident network=<network> incident=<incident-name>`
-setup-incident:
-	rm -rf $(TEMPLATE_INCIDENT)/cache $(TEMPLATE_INCIDENT)/lib $(TEMPLATE_INCIDENT)/out
-	mkdir -p $(network) && cp -r $(TEMPLATE_INCIDENT) $(INCIDENT_DIR)
 
 # Run `make setup-gas-increase network=<network>`
 setup-gas-increase:

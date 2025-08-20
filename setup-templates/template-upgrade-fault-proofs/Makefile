@@ -25,6 +25,9 @@ deploy:
 # └── OP_SIGNER_SAFE_ADDR/
 #     └── Signers
 
+RPC_URL = $(L1_RPC_URL)
+SCRIPT_NAME = UpgradeDGF
+
 # CB
 .PHONY: sign-cb
 sign-cb:
