@@ -8,9 +8,8 @@ ifndef LEDGER_ACCOUNT
 override LEDGER_ACCOUNT = 0
 endif
 
-#    ┌─────────────────────────────────────────────┐
-#    │                 OWNER_SAFE                  │
-#    └─────────────────────────────────────────────┘
+# OWNER_SAFE/
+# └── Signers
 
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = SwapOwner
