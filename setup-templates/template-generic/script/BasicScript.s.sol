@@ -7,6 +7,11 @@ contract BasicScript is Script {
     function setUp() public {}
 
     function run() public {
+        _preCheck();
         // Do something
+        _postCheck();
     }
+
+    function _preCheck() private {}
+    function _postCheck() private {}
 }
