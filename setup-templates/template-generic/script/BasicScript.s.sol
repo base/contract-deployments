@@ -7,7 +7,6 @@ contract BasicScript is Script {
     function setUp() public {}
 
     function run() public {
-        RunThis runThis = new RunThis();
-        runThis.run();
+        // Do something
     }
 }
