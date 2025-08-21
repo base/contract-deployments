@@ -77,5 +77,7 @@ jobs:
 
             Please check the CI logs above for specific error details and fix the issues before merging.
 
-            📖 See the [validation documentation](docs/folder-format.md) for more details.`
+            📖 See the [validation documentation](docs/folder-format.md) for more details.
+
+            To disable the validation check please add a validation.yml file to your upgrade folder with 'disabled': true`
           })
