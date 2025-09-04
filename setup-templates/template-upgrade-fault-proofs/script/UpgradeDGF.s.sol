@@ -6,9 +6,10 @@ import {stdJson} from "forge-std/StdJson.sol";
 import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 import {console} from "forge-std/console.sol";
 
-import {DoubleNestedMultisigBuilder} from "@base-contracts/script/universal/DoubleNestedMultisigBuilder.sol";
+import {LibString} from "@solady/utils/LibString.sol";
+
+import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 interface IDisputeGameFactory {
     function gameImpls(uint32) external view returns (address);
@@ -42,7 +43,7 @@ interface IAnchorStateRegistry {
 
 /// @notice This script updates the FaultDisputeGame and PermissionedDisputeGame implementations in the
 ///         DisputeGameFactory contract.
-contract UpgradeDGF is DoubleNestedMultisigBuilder {
+contract UpgradeDGF is MultisigScript {
     using stdJson for string;
 
     // TODO: Confirm expected version
@@ -86,7 +87,7 @@ contract UpgradeDGF is DoubleNestedMultisigBuilder {
             return;
         }
         IFaultDisputeGame faultDisputeGame = IFaultDisputeGame(newImpl);
-        require(Strings.equal(currentImpl.version(), EXPECTED_VERSION), "00");
+        require(LibString.eq(currentImpl.version(), EXPECTED_VERSION), "00");
         require(currentImpl.vm() == faultDisputeGame.vm(), "10");
         require(currentImpl.weth() == faultDisputeGame.weth(), "20");
         require(currentImpl.anchorStateRegistry() == faultDisputeGame.anchorStateRegistry(), "30");
@@ -124,18 +125,20 @@ contract UpgradeDGF is DoubleNestedMultisigBuilder {
         require(rootBlockNumber != 0, "check-310");
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3[] memory) {
-        IMulticall3.Call3[] memory calls = new IMulticall3.Call3[](2);
+    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
+        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](2);
 
-        calls[0] = IMulticall3.Call3({
+        calls[0] = IMulticall3.Call3Value({
             target: address(dgfProxy),
             allowFailure: false,
-            callData: abi.encodeCall(IDisputeGameFactory.setImplementation, (CANNON, fdgImpl))
+            callData: abi.encodeCall(IDisputeGameFactory.setImplementation, (CANNON, fdgImpl)),
+            value: 0
         });
-        calls[1] = IMulticall3.Call3({
+        calls[1] = IMulticall3.Call3Value({
             target: address(dgfProxy),
             allowFailure: false,
-            callData: abi.encodeCall(IDisputeGameFactory.setImplementation, (PERMISSIONED_CANNON, pdgImpl))
+            callData: abi.encodeCall(IDisputeGameFactory.setImplementation, (PERMISSIONED_CANNON, pdgImpl)),
+            value: 0
         });
 
         return calls;

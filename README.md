@@ -35,11 +35,12 @@ First, install forge if you don't have it already:
 
 To execute a new task, run one of the following commands (depending on the type of change you're making):
 
-- For incident response commands: `make setup-incident network=<network> incident=<incident-name>`
-- For gas increase commands: `make setup-gas-increase network=<network>`
-- For full new deployment (of L1 contracts related to Base): `make setup-deploy network=<network>`
+- For a generic task: `make setup-task network=<network> task=<task-name>`
+- For gas increase tasks: `make setup-gas-increase network=<network>`
+- For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
-- For contract calls, upgrades, or one-off contract deployments: `make setup-task network=<network> task=<task-name>`
+- For safe management tasks: `make setup-safe-management network=<network>`
+- For funding tasks: `make setup-funding network=<network>`
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
@@ -75,18 +76,14 @@ To add new incident response scripts:
 1. Add the relevant make commands that would need to be run for the script to the template Makefile
 1. Add relevant mainnet addresses in comments to increase efficiency responding to an incident.
 
-## Using the deploy template
+## Using the generic template
 
-This template is used for deploying the L1 contracts in the OP stack to set up a new network.
+This template can be used to do contract calls, upgrades, or one-off deployments.
 
-1. Ensure you have followed the instructions above in `setup`
-1. Rename the folder to something more descriptive
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file
 1. Run `make deps`
-1. Fill in the `inputs/deploy-config.json` and `inputs/misc-config.json` files with the input variables for the deployment.
-1. See the example `make deploy` command. Modifications may need to be made if you're using a key for deployment that you do not have the private key for (e.g. a hardware wallet)
-1. Run `make deploy` command
-1. Check in files to GitHub. The files to ignore should already have been specified in the `.gitignore`, so you should be able to check in everything.
+1. Put scripts in the `script` directory (see examples that are part of the template, for example, there is a file `BasicScript.s.sol`). See note below if running a task that requires a multisig to sign.
+1. Call scripts from the Makefile (see examples in the template Makefile that's copied over).
 
 ## Using the gas limit increase template
 
@@ -108,9 +105,7 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 1. Run `make deps`
 1. Add the new absolute prestate to the `.env` file. This can be found in the op-program prestates [releases.json](https://github.com/ethereum-optimism/superchain-registry/blob/main/validation/standard/standard-prestates.toml) file.
 1. NOTE: If this task is for mainnet, the directory should work as-is. If this task is for testnet, you will need to follow the following steps:
-   1. Update the `UpgradeDGF` script to inherit `MultisigBuilder` instead of `NestedMultisigBuilder`
    1. Comment out the mainnet environment variables and uncomment the testnet vars in `.env`
-   1. Comment out the nested multisig builder commands in the Makefile and uncomment the multisig builder commands
 1. Build the contracts with `forge build`
 1. Remove the unneeded validations from `VALIDATION.md` and update the relevant validations accordingly
 1. Check in the task when it's ready to sign and collect signatures from signers
@@ -145,13 +140,4 @@ This template is used to fund addresses from a Gnosis Safe.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `DONE` in the README.
 
-## Using the generic template
 
-This template can be used to do contract calls, upgrades, or one-off deployments.
-
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file
-1. Run `make deps`
-1. Put scripts in the `scripts` directory (see examples that are part of the template, for example, there is a file `TransferOwner.s.sol`, which can be used to set up the ownership transfer task). See note below if running a task that requires a multisig to sign.
-1. Call scripts from the Makefile (see examples in the template Makefile that's copied over).
-
-Note: If using a multisig as a signer, you can leverage the `MultisigBuilder` for standard multisigs or the `NestedMultisigBuilder` scripts in the [base contracts repo](https://github.com/base-org/contracts/tree/main/script/universal) for multisigs that contain other multisigs as signers. For these scripts, you need to implement the virtual functions that are provided, which will allow you to configure the task you'd like to run, the address of the multisig you're running it from, and any post-execution checks. See the files themselves for more details. It is recommended to add any configured addresses as constants at the top of the file and provide links to Etherscan, etc., as needed for reviewers to more accurately review the PR.
