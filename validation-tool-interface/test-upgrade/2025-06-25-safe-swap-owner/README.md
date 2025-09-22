@@ -30,7 +30,7 @@ is ready".
 Make sure your ledger is still unlocked and run the following.
 
 ```bash
-make sign
+make validation
 ```
 
 You will see a "Simulation link" from the output.

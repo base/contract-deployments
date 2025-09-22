@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { ConfigParser } from '../utils/parser';
+import { parse as yamlParse } from "yaml";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +25,10 @@ interface ValidationWarning {
 interface InvalidFile {
   file: string;
   errors: Array<{ message: string }>;
+}
+
+interface ValidationConfig {
+  disabled: bool;
 }
 
 export class StructureValidator {
@@ -99,6 +104,26 @@ export class StructureValidator {
     if (!fs.existsSync(absolutePath)) {
       this.addError(folderPath, 'Upgrade folder does not exist');
       return;
+    }
+
+    // Check if there is a validation configuration file
+    const validationsConfigFileYml = path.join(absolutePath, 'validation.yml');
+    const validationsConfigFileYaml = path.join(absolutePath, 'validation.yaml');
+    let configContent: string | undefined;
+    if (fs.existsSync(validationsConfigFileYml)) {
+      configContent = fs.readFileSync(validationsConfigFileYml, 'utf-8');
+    }
+
+    if (fs.existsSync(validationsConfigFileYaml)) {
+      configContent = fs.readFileSync(validationsConfigFileYaml, 'utf-8');
+    }
+
+    if (configContent !== undefined) {
+      const config = yamlParse(configContent) as ValidationConfig;
+      if (config.disabled) {
+        console.log('Validation check is disabled.');
+        return;
+      }
     }
 
     // Check if validations subdirectory exists

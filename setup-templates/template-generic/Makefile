@@ -1,93 +1,62 @@
 include ../../Makefile
+include ../../Multisig.mk
+
 include ../.env
 include .env
-
-##
-# Foundry commands
-##
-.PHONY: deploy-new-implementations
-deploy-new-implementations:
-	forge script --rpc-url $(L2_RPC_URL) DeployNewFeeVaultsL2 --sig "run(address)" $(DEPLOYER)
 
 ifndef LEDGER_ACCOUNT
 override LEDGER_ACCOUNT = 0
 endif
 
-.PHONY: example-ledger
-example-ledger:
-	forge script --rpc-url $(RPC_URL) $(script) --sender $(SENDER) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+# OWNER_SAFE/
+# ├── L1_0/
+# │   ├── L2_0/
+# │   │   └── Signers
+# │   └── L2_1/
+# │       └── Signers
+# └── L1_1/
+#     └── Signers
 
-##
-# MultisigBuilder commands
-# The following commands can be used for tasks that utilize the MultisigBuilder.
-# Note that --ledger --hd-paths <PATH> can be replaced with --private-key $(PRIVATE_KEY)
-# in any command when using a local key.
-##
 
-.PHONY: example-sign
-example-sign:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(RPC_URL) $(script) --sig "sign()"
+RPC_URL = $(L1_RPC_URL)
+SCRIPT_NAME = ExampleMultisigScript
 
-.PHONY: example-run
-example-run:
-	forge script --rpc-url $(RPC_URL) \
-	$(script) --sig "run(bytes)" $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" \
-	--broadcast
+# L2_0
+.PHONY: sign-l2-0
+sign-l2-0:
+	$(call MULTISIG_SIGN,$(L2_0) $(L1_0))
 
-##
-# NestedMultisigBuilder commands
-# The following commands can be used for tasks that utilize the NestedMultisigBuilder.
-# Note that --ledger --hd-paths <PATH> can be replaced with --private-key $(PRIVATE_KEY)
-# in any command when using a local key.
-# See more documentation on the various steps in NestedMultisigBuilder.sol.
-##
+.PHONY: approve-l2-0
+approve-l2-0:
+	$(call MULTISIG_APPROVE,$(L2_0) $(L1_0),$(SIGNATURES))
 
-# This step is run by signers on the "children" safes
-.PHONY: example-nested-sign
-example-nested-sign:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(RPC_URL) $(script) \
-	--sig "sign(address)" $(SIGNER_SAFE_ADDR)
 
-# This step is run once per "child" safe, and can be run by anyone (doesn't have to be a signer)
-.PHONY: example-approve
-example-approve:
-	forge script --rpc-url $(RPC_URL) $(script) \
-	--sig "approve(address,bytes)" $(SIGNER_SAFE_ADDR) $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+# L2_1
+.PHONY: sign-l2-1
+sign-l2-1:
+	$(call MULTISIG_SIGN,$(L2_0) $(L2_1))
 
-# This step is run once after all children safes have approved and can be run by anyone (doesn't have to be a signer)
-.PHONY: example-execute
-example-execute:
-	forge script --rpc-url $(RPC_URL) $(script) \
-	--sig "run()" --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+.PHONY: approve-l2-1
+approve-l2-1:
+	$(call MULTISIG_APPROVE,$(L2_0) $(L2_1),$(SIGNATURES))
 
-##
-# DoubleNestedMultisigBuilder commands
-# The following commands can be used for tasks that utilize the DoubleNestedMultisigBuilder.
-# Note that --ledger --hd-paths <PATH> can be replaced with --private-key $(PRIVATE_KEY)
-# in any command when using a local key.
-# See more documentation on the various steps in DoubleNestedMultisigBuilder.sol.
-# Note: All NestedMultisigBuilder commands above can also be used with the DoubleNestedMultisigBuilder.
-# In this case, we have an `ADMIN_SAFE` owned by `PARENT_SAFE`s. The `PARENT_SAFE`s are owned by `CHILD_SAFE`s.
-##
 
-.PHONY: example-double-nested-sign
-example-double-nested-sign:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(RPC_URL) $(script) \
-	--sig "sign(address,address)" $(CHILD_SAFE) $(PARENT_SAFE)
+# L1_0
+.PHONY: approve-l1-0
+approve-l1-0:
+	$(call MULTISIG_APPROVE,$(L1_0),0x)
 
-.PHONY: example-double-nested-child-approve
-example-double-nested-child-approve:
-	forge script --rpc-url $(RPC_URL) $(script) \
-	--sig "approveOnBehalfOfSignerSafe(address,address,bytes)" $(CHILD_SAFE) $(PARENT_SAFE) $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-.PHONY: example-double-nested-parent-approve
-example-double-nested-parent-approve:
-	forge script --rpc-url $(RPC_URL) $(script) \
-	--sig "approveOnBehalfOfIntermediateSafe(address)" $(PARENT_SAFE) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+# L1_1
+.PHONY: sign-l1-1
+sign-l1-1:
+	$(call MULTISIG_SIGN,$(L1_1))
+
+.PHONY: approve-l1-1
+approve-l1-1:
+	$(call MULTISIG_APPROVE,$(L1_1),$(SIGNATURES))
+
+# Execute
+.PHONY: execute
+execute:
+	$(call MULTISIG_EXECUTE,0x)
