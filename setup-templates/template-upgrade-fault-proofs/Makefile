@@ -1,4 +1,6 @@
 include ../../Makefile
+include ../../Multisig.mk
+
 include ../.env
 include .env
 
@@ -11,91 +13,48 @@ deploy:
 	forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
-# Sepolia Commands
-# .PHONY: sign-b
-# sign-b:
-# 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-# 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-# 	--sig "sign(address)" $(SAFE_B)
-
-# .PHONY: approve-b
-# approve-b:
-# 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-# 	--sig "approve(address,bytes)" $(SAFE_B) $(SIGNATURES) \
-# 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
-
-# .PHONY: execute
-# execute:
-# 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-# 	--sig "run()" --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
-
-# .PHONY: sign
-# sign:
-# 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-# 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-# 	--sig "sign(address,address)" $(SAFE_A) $(COORDINATOR_SAFE_ADDR)
-
-# .PHONY: sign-nested-b
-# sign-nested-b:
-# 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-# 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-# 	--sig "sign(address,address)" $(SAFE_B) $(COORDINATOR_SAFE_ADDR)
-
-# .PHONY: approve
-# approve:
-# 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-# 	--sig "approveOnBehalfOfSignerSafe(address,address,bytes)" $(SAFE_A) $(COORDINATOR_SAFE_ADDR) $(SIGNATURES) \
-# 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
-
-# .PHONY: approve-nested-b
-# approve-nested-b:
-# 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-# 	--sig "approveOnBehalfOfSignerSafe(address,address,bytes)" $(SAFE_B) $(COORDINATOR_SAFE_ADDR) $(SIGNATURES) \
-# 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
-
-# .PHONY: approve-coordinator
-# approve-coordinator:
-# 	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-# 	--sig "approveOnBehalfOfIntermediateSafe(address)" $(COORDINATOR_SAFE_ADDR) \
-# 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
-
-##
-# NestedMultisigBuilder commands
-# The following commands can be used for tasks that utilize the NestedMultisigBuilder.
-# Note that --ledger --hd-paths <PATH> can be replaced with --private-key $(PRIVATE_KEY)
-# in any command when using a local key.
-# See more documentation on the various steps in NestedMultisigBuilder.sol.
-##
 
 # Mainnet Commands
-# This step is run by signers on the "children" safes
+
+# OWNER_SAFE/
+# ├── CB_SIGNER_SAFE_ADDR/
+# │   ├── CB_NESTED_SAFE_ADDR/
+# │   │   └── Signers
+# │   └── CB_SC_SAFE_ADDR/
+# │       └── Signers
+# └── OP_SIGNER_SAFE_ADDR/
+#     └── Signers
+
+RPC_URL = $(L1_RPC_URL)
+SCRIPT_NAME = UpgradeDGF
+
+# CB
 .PHONY: sign-cb
 sign-cb:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address)" $(CB_SIGNER_SAFE_ADDR)
+	$(call MULTISIG_SIGN,$(CB_NESTED_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR))
 
-.PHONY: sign-op
-sign-op:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "sign(address)" $(OP_SIGNER_SAFE_ADDR)
-
-# This step is run once per "child" safe, and can be run by anyone (doesn't have to be a signer)
 .PHONY: approve-cb
 approve-cb:
-	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "approve(address,bytes)" $(CB_SIGNER_SAFE_ADDR) $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+	$(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
+
+.PHONY: sign-cb-sc
+sign-cb-sc:
+	$(call MULTISIG_SIGN,$(CB_SC_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR))
+
+.PHONY: approve-cb-sc
+approve-cb-sc:
+	$(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
+
+# OP
+.PHONY: sign-op
+sign-op:
+	$(call MULTISIG_SIGN,$(OP_SIGNER_SAFE_ADDR))
 
 .PHONY: approve-op
 approve-op:
-	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "approve(address,bytes)" $(OP_SIGNER_SAFE_ADDR) $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+	$(call MULTISIG_APPROVE,$(OP_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
-# This step is run once after all children safes have approved and can be run by anyone (doesn't have to be a signer)
+# Execute
 .PHONY: execute
 execute:
-	forge script --rpc-url $(L1_RPC_URL) UpgradeDGF \
-	--sig "run()" --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+	$(call MULTISIG_EXECUTE,0x)

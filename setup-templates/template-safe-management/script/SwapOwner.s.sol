@@ -1,13 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
 
-import "@base-contracts/script/universal/MultisigBuilder.sol";
-import {IGnosisSafe} from "@base-contracts/script/universal/IGnosisSafe.sol";
+import {Vm} from "forge-std/Vm.sol";
+import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
-contract SwapOwner is MultisigBuilder {
+import {IGnosisSafe} from "@base-contracts/script/universal/IGnosisSafe.sol";
+import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
+import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+
+contract SwapOwner is MultisigScript {
     address internal OWNER_SAFE = vm.envAddress("OWNER_SAFE");
     address internal OLD_SIGNER = vm.envAddress("OLD_SIGNER");
     address internal NEW_SIGNER = vm.envAddress("NEW_SIGNER");
+
     address internal constant SENTINEL_OWNERS = address(0x1);
 
     address[] internal safeOwners; // The list of all owners of the safe
@@ -37,14 +42,15 @@ contract SwapOwner is MultisigBuilder {
         require(!IGnosisSafe(OWNER_SAFE).isOwner(NEW_SIGNER), "New signer is already an owner");
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3[] memory) {
-        IMulticall3.Call3[] memory calls = new IMulticall3.Call3[](1);
+    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
+        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](1);
 
         // While more roundabout then simply calling execTransaction with a swapOwner call, this still works and lets us use our existing tooling
-        calls[0] = IMulticall3.Call3({
+        calls[0] = IMulticall3.Call3Value({
             target: OWNER_SAFE,
             allowFailure: false,
-            callData: abi.encodeCall(IGnosisSafe.swapOwner, (prevOwnerLinked, OLD_SIGNER, NEW_SIGNER))
+            callData: abi.encodeCall(IGnosisSafe.swapOwner, (prevOwnerLinked, OLD_SIGNER, NEW_SIGNER)),
+            value: 0
         });
 
         return calls;

@@ -8,9 +8,9 @@ import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.so
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 
 contract FundScript is MultisigScript {
-    address internal immutable SAFE;
+    address internal immutable OWNER_SAFE;
 
-    uint256 internal immutable SAFE_BALANCE_BEFORE;
+    uint256 internal immutable OWNER_SAFE_BALANCE_BEFORE;
     uint256 internal immutable TOTAL_FUNDS;
 
     address[] internal RECIPIENTS;
@@ -18,7 +18,7 @@ contract FundScript is MultisigScript {
     uint256[] internal RECIPIENT_BALANCES_BEFORE;
 
     constructor() {
-        SAFE = vm.envAddress("SAFE");
+        OWNER_SAFE = vm.envAddress("OWNER_SAFE");
 
         string memory funding = vm.readFile("./funding.json");
         RECIPIENTS = vm.parseJsonAddressArray(funding, ".recipients");
@@ -31,7 +31,7 @@ contract FundScript is MultisigScript {
             totalFunds += FUNDS[i];
         }
 
-        SAFE_BALANCE_BEFORE = SAFE.balance;
+        OWNER_SAFE_BALANCE_BEFORE = OWNER_SAFE.balance;
         TOTAL_FUNDS = totalFunds;
     }
 
@@ -42,7 +42,7 @@ contract FundScript is MultisigScript {
     function _precheck() internal view {
         require(RECIPIENTS.length == FUNDS.length, "RECIPIENTS and FUNDS not same length");
         require(RECIPIENTS.length > 0, "RECIPIENTS and FUNDS empty");
-        require(SAFE.balance >= TOTAL_FUNDS, "SAFE not enough balance");
+        require(OWNER_SAFE.balance >= TOTAL_FUNDS, "OWNER_SAFE not enough balance");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
@@ -63,10 +63,10 @@ contract FundScript is MultisigScript {
             );
         }
 
-        vm.assertEq(SAFE.balance, SAFE_BALANCE_BEFORE - TOTAL_FUNDS, "Owner safe balance is not correct");
+        vm.assertEq(OWNER_SAFE.balance, OWNER_SAFE_BALANCE_BEFORE - TOTAL_FUNDS, "Owner safe balance is not correct");
     }
 
     function _ownerSafe() internal view override returns (address) {
-        return SAFE;
+        return OWNER_SAFE;
     }
 }
