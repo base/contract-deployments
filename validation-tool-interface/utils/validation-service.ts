@@ -206,11 +206,7 @@ export class ValidationService {
     };
   }
 
-
-
-  /**
-   * Get expected data from already parsed config
-   */
+  
   private getExpectedData(parsedConfig: any): {
     stateOverrides: StateOverride[];
     stateChanges: StateChange[];
@@ -293,9 +289,24 @@ export class ValidationService {
   private async selectSimulationMethod(
     options: ValidationOptions
   ): Promise<'tenderly' | 'state-diff'> {
-    // If user explicitly specified a method, use it
+    // If user explicitly specified a method, validate it's available
     if (options.simulationMethod) {
       console.log(`🎯 Using user-specified simulation method: ${options.simulationMethod}`);
+      
+      if (options.simulationMethod === 'tenderly' && !this.tenderlyClient) {
+        throw new Error(
+          'Tenderly simulation method specified but no Tenderly API key available. ' +
+          'Set TENDERLY_ACCESS in .env file or provide via API request.'
+        );
+      }
+      
+      if (options.simulationMethod === 'state-diff' && !(await this.stateDiffClient?.checkAvailability())) {
+        throw new Error(
+          'State-diff simulation method specified but Go binary is not available. ' +
+          'Ensure Go is installed and the go-simulator directory exists.'
+        );
+      }
+      
       return options.simulationMethod;
     }
 
@@ -307,10 +318,12 @@ export class ValidationService {
       console.log(`🎯 Auto-detected: Using state-diff simulation (Go binary available)`);
       return 'state-diff';
     } else {
-      console.warn(
-        `⚠️ Neither Tenderly API key nor state-diff binary available, defaulting to Tenderly`
+      throw new Error(
+        'No simulation method available. Either:\n' +
+        '1. Set TENDERLY_ACCESS in .env file or provide Tenderly API key, OR\n' +
+        '2. Ensure Go is installed and the go-simulator directory exists.\n' +
+        'At least one simulation method must be available to proceed.'
       );
-      return 'tenderly';
     }
   }
 
@@ -374,31 +387,28 @@ export class ValidationService {
     extractedData?: ExtractedData;
     tenderlyResponse?: TenderlySimulationResponse;
   }> {
+    if (!this.tenderlyClient) {
+      throw new Error(
+        'Tenderly simulation requested but no Tenderly API key available. ' +
+        'Set TENDERLY_ACCESS in .env file or provide via API request.'
+      );
+    }
+
     let tenderlyResponse: TenderlySimulationResponse | undefined;
     let stateOverrides: StateOverride[] = [];
     let stateChanges: StateChange[] = [];
 
-    if (this.tenderlyClient) {
-      try {
-        tenderlyResponse = await this.tenderlyClient.simulateFromExtractedData(extractedData);
+    try {
+      tenderlyResponse = await this.tenderlyClient.simulateFromExtractedData(extractedData);
 
-        // Parse state overrides and changes from Tenderly response
-        stateOverrides = this.tenderlyClient.parseStateOverrides(extractedData.simulationLink!);
-        stateChanges = this.tenderlyClient.parseStateChanges(tenderlyResponse);
+      // Parse state overrides and changes from Tenderly response
+      stateOverrides = this.tenderlyClient.parseStateOverrides(extractedData.simulationLink!);
+      stateChanges = this.tenderlyClient.parseStateChanges(tenderlyResponse);
 
-        console.log(`✅ Tenderly simulation completed: ${stateChanges.length} state changes found`);
-      } catch (error) {
-        console.error('❌ Tenderly simulation failed:', error);
-      }
-    } else {
-      console.warn('⚠️ No Tenderly API key available, skipping simulation');
-      console.warn(
-        '💡 To enable Tenderly simulation: add TENDERLY_ACCESS to .env file or provide via UI'
-      );
-      // Still parse state overrides from the simulation link
-      if (extractedData.simulationLink) {
-        stateOverrides = this.parseStateOverridesFromLink(extractedData.simulationLink);
-      }
+      console.log(`✅ Tenderly simulation completed: ${stateChanges.length} state changes found`);
+    } catch (error) {
+      console.error('❌ Tenderly simulation failed:', error);
+      throw error;
     }
 
     return {
