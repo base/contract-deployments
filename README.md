@@ -2,7 +2,7 @@
 
 # contract-deployments
 
-This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. It also includes validation tools and a signing interface that helps signers easily perform transaction signing through a user-friendly web interface. For actual contract implementations, see [base-org/contracts](https://github.com/base-org/contracts).
+This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base-org/contracts](https://github.com/base-org/contracts).
 
 This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network.
 
@@ -46,18 +46,15 @@ Next, `cd` into the directory that was created for you and follow the steps list
 
 > **👥 For Signers:** Please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
 
-
 ## Directory structure
 
 Each task will have a directory structure similar to the following:
 
-- **[inputs/](/inputs)** any input JSON files
-- **[records/](/records)** Foundry will autogenerate files here from running commands
-- **[script/](/script)** place to store any one-off Foundry scripts
-- **[src/](/src)** place to store any one-off smart contracts (long-lived contracts should go in [base-org/contracts](https://github.com/base-org/contracts))
+- **inputs/** any input JSON files
+- **records/** Foundry will autogenerate files here from running commands
+- **script/** place to store any one-off Foundry scripts
+- **src/** place to store any one-off smart contracts (long-lived contracts should go in [base-org/contracts](https://github.com/base-org/contracts))
 - **.env** place to store environment variables specific to this task
-
-> **📝 Note:** Before continuing with the templates below, please review the [setup guide for valid upgrade folders](DEVELOPER.md) to ensure your task is compatible with the new validation tool.
 
 ## Using the incident response template
 
@@ -139,5 +136,3 @@ This template is used to fund addresses from a Gnosis Safe.
 1. Simulate the task with `make sign` and update the generic validations in `VALIDATION.md` with the real values.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `DONE` in the README.
-
-

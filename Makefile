@@ -71,49 +71,6 @@ forge-deps:
 		github.com/Vectorized/solady@796d4676c7683aa801e8e224ea51e944e3153e6d \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
-.PHONY: install
-install: install-tool-deps install-state-diff
-
-.PHONY: install-tool-deps
-install-tool-deps:
-	cd validation-tool-interface && npm install
-
-.PHONY: install-state-diff
-install-state-diff:
-	rm -rf go-simulator
-	git clone https://github.com/jackchuma/state-diff.git go-simulator
-	cd go-simulator && git checkout 5c5bae2d54fd9ef55880d87e9b648c4cbd4cb42a
-	cd go-simulator && go mod download
-	cd go-simulator && go build -o state-diff .
-
-.PHONY: clean-install
-clean-install: clean-tool-deps clean-state-diff install
-
-.PHONY: clean-tool-deps
-clean-tool-deps:
-	@echo "Cleaning tool dependencies..."
-	rm -rf validation-tool-interface/node_modules
-	rm -rf validation-tool-interface/.next
-
-.PHONY: clean-state-diff
-clean-state-diff:
-	@echo "Cleaning state-diff installation..."
-	rm -rf go-simulator
-
-# Default port (can be overridden with PORT=xxxx make validation)
-PORT ?= 1234
-
-.PHONY: validation
-validation: install
-	cd validation-tool-interface && npm run build
-	@echo "Starting server on port $(PORT) and opening browser..."
-	@cd validation-tool-interface && npm run start -- -p $(PORT) & \
-	SERVER_PID=$$!; \
-	sleep 3; \
-	open http://localhost:$(PORT); \
-	echo "Browser opened. Server running on port $(PORT) with PID $$SERVER_PID. Press Ctrl+C to stop."; \
-	wait $$SERVER_PID
-
 .PHONY: checkout-op-commit
 checkout-op-commit:
 	[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1)
