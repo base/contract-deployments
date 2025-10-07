@@ -20,54 +20,38 @@ func main() {
 		Usage: "Generate Solana BPF Loader v3 upgrade instruction",
 		Flags: []ucli.Flag{
 			&ucli.StringFlag{
-				Name:     "rpcURL",
-				Aliases:  []string{"r"},
+				Name:     "rpc-url",
 				Usage:    "RPC URL to fetch on-chain data",
 				Required: true,
 			},
 			&ucli.StringFlag{
 				Name:     "program",
-				Aliases:  []string{"p"},
 				Usage:    "Program account address",
 				Required: true,
 			},
 			&ucli.StringFlag{
 				Name:     "buffer",
-				Aliases:  []string{"b"},
 				Usage:    "Buffer account address with new program data",
 				Required: true,
 			},
 			&ucli.StringFlag{
 				Name:     "spill",
-				Aliases:  []string{"s"},
 				Usage:    "Spill account address to receive refunded lamports",
 				Required: true,
 			},
 			&ucli.StringFlag{
-				Name:    "output",
-				Aliases: []string{"o"},
-				Usage:   "Output JSON file path",
-				Value:   "upgrade_instruction.json",
+				Name:  "output",
+				Usage: "Output JSON file path",
+				Value: "upgrade_instruction.json",
 			},
 		},
 		Action: func(c *ucli.Context) error {
-			fmt.Println(" ---CLI params--- ")
-			rpcURL := c.String("rpcURL")
-			fmt.Println("rpcURL", rpcURL)
-			program := solana.MustPublicKeyFromBase58(c.String("program"))
-			fmt.Println("program", program)
-			buffer := solana.MustPublicKeyFromBase58(c.String("buffer"))
-			fmt.Println("buffer", buffer)
-			spill := solana.MustPublicKeyFromBase58(c.String("spill"))
-			fmt.Println("spill", spill)
-			output := c.String("output")
-			fmt.Println("output", output)
-			fmt.Println(" ---------------- ")
+			params := parseCliParams(c)
 
 			// Derive ProgramData PDA from program address
 			programData, _, err := solana.FindProgramAddress(
-				[][]byte{program.Bytes()},
-				solana.MustPublicKeyFromBase58("BPFLoaderUpgradeab1e11111111111111111111111"),
+				[][]byte{params.program.Bytes()},
+				solana.BPFLoaderUpgradeableProgramID,
 			)
 			if err != nil {
 				return fmt.Errorf("failed to derive program data address: %w", err)
@@ -76,10 +60,10 @@ func main() {
 
 			// Fetch program and buffer authorities from on-chain
 			ctx := context.Background()
-			client := rpc.New(rpcURL)
+			client := rpc.New(params.rpcURL)
 
 			// Fetch program account to get authority
-			programAccountInfo, err := client.GetAccountInfo(ctx, program)
+			programAccountInfo, err := client.GetAccountInfo(ctx, params.program)
 			if err != nil {
 				return fmt.Errorf("failed to fetch program account: %w", err)
 			}
@@ -115,7 +99,7 @@ func main() {
 			fmt.Println("upgrade authority", upgradeAuthority)
 
 			// Fetch buffer account to validate authority
-			bufferAccountInfo, err := client.GetAccountInfo(ctx, buffer)
+			bufferAccountInfo, err := client.GetAccountInfo(ctx, params.buffer)
 			if err != nil {
 				return fmt.Errorf("failed to fetch buffer account: %w", err)
 			}
@@ -174,16 +158,15 @@ func main() {
 
 			// Save using mcm-go SDK
 			instructions := []solana.Instruction{genericIx}
-			outputFile := c.String("output")
-			if err := mcmio.SaveInstructions(instructions, outputFile); err != nil {
+			if err := mcmio.SaveInstructions(instructions, params.output); err != nil {
 				return fmt.Errorf("failed to save instructions: %w", err)
 			}
 
-			fmt.Printf("Upgrade instruction written to %s\n", outputFile)
-			fmt.Printf("Program: %s\n", program)
+			fmt.Printf("Upgrade instruction written to %s\n", params.output)
+			fmt.Printf("Program: %s\n", params.program)
 			fmt.Printf("ProgramData (derived): %s\n", programData)
-			fmt.Printf("Buffer: %s\n", buffer)
-			fmt.Printf("Spill: %s\n", spill)
+			fmt.Printf("Buffer: %s\n", params.buffer)
+			fmt.Printf("Spill: %s\n", params.spill)
 			fmt.Printf("Authority: %s\n", upgradeAuthority)
 			return nil
 		},
@@ -191,5 +174,48 @@ func main() {
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
+	}
+}
+
+type cliParams struct {
+	rpcURL  string
+	program solana.PublicKey
+	buffer  solana.PublicKey
+	spill   solana.PublicKey
+	output  string
+}
+
+func parseCliParams(c *ucli.Context) *cliParams {
+	fmt.Println(" ---CLI params--- ")
+	rpcURLInput := c.String("rpc-url")
+
+	// Map cluster aliases to RPC URLs
+	rpcURL := rpcURLInput
+	switch rpcURLInput {
+	case "devnet":
+		rpcURL = "https://api.devnet.solana.com"
+	case "testnet":
+		rpcURL = "https://api.testnet.solana.com"
+	case "mainnet", "mainnet-beta":
+		rpcURL = "https://api.mainnet-beta.solana.com"
+	}
+
+	fmt.Println("rpc-url", rpcURL)
+	program := solana.MustPublicKeyFromBase58(c.String("program"))
+	fmt.Println("program", program)
+	buffer := solana.MustPublicKeyFromBase58(c.String("buffer"))
+	fmt.Println("buffer", buffer)
+	spill := solana.MustPublicKeyFromBase58(c.String("spill"))
+	fmt.Println("spill", spill)
+	output := c.String("output")
+	fmt.Println("output", output)
+	fmt.Println(" ---------------- ")
+
+	return &cliParams{
+		rpcURL:  rpcURL,
+		program: program,
+		buffer:  buffer,
+		spill:   spill,
+		output:  output,
 	}
 }
