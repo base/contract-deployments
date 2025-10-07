@@ -5,7 +5,7 @@ go 1.24.5
 toolchain go1.24.7
 
 require (
-	github.com/base/mcm-go v0.0.0-20251007084426-4dc6e064d3c0
+	github.com/base/mcm-go v0.0.0-20251007125843-50c846a9021d
 	github.com/gagliardetto/solana-go v1.14.0
 	github.com/urfave/cli/v2 v2.27.7
 )
