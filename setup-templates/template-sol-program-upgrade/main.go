@@ -9,8 +9,9 @@ import (
 	solana "github.com/gagliardetto/solana-go"
 	"github.com/gagliardetto/solana-go/rpc"
 	ucli "github.com/urfave/cli/v2"
+
 	// loaderV3Bindings "github.com/base/loader-v3-go-bindings/bindings"
-	// "github.com/base/mcm-go/pkg/proposal/io"
+	mcmio "github.com/base/mcm-go/pkg/proposal/io"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 		Usage: "Generate Solana BPF Loader v3 upgrade instruction",
 		Flags: []ucli.Flag{
 			&ucli.StringFlag{
-				Name:     "rpc",
+				Name:     "rpcURL",
 				Aliases:  []string{"r"},
 				Usage:    "RPC URL to fetch on-chain data",
 				Required: true,
@@ -51,12 +52,16 @@ func main() {
 		},
 		Action: func(c *ucli.Context) error {
 			fmt.Println(" ---CLI params--- ")
-			rpcUrl := c.String("rpc")
-			fmt.Println("rpcUrl", rpcUrl)
+			rpcURL := c.String("rpcURL")
+			fmt.Println("rpcURL", rpcURL)
 			program := solana.MustPublicKeyFromBase58(c.String("program"))
 			fmt.Println("program", program)
 			buffer := solana.MustPublicKeyFromBase58(c.String("buffer"))
 			fmt.Println("buffer", buffer)
+			spill := solana.MustPublicKeyFromBase58(c.String("spill"))
+			fmt.Println("spill", spill)
+			output := c.String("output")
+			fmt.Println("output", output)
 			fmt.Println(" ---------------- ")
 
 			// Derive ProgramData PDA from program address
@@ -71,7 +76,7 @@ func main() {
 
 			// Fetch program and buffer authorities from on-chain
 			ctx := context.Background()
-			client := rpc.New(rpcUrl)
+			client := rpc.New(rpcURL)
 
 			// Fetch program account to get authority
 			programAccountInfo, err := client.GetAccountInfo(ctx, program)
@@ -161,25 +166,25 @@ func main() {
 			// 	return fmt.Errorf("failed to serialize instruction data: %w", err)
 			// }
 
-			// genericIx := &solana.GenericInstruction{
-			// 	ProgID:        upgradeIx.ProgramID(),
-			// 	AccountValues: upgradeIx.AccountMetaSlice,
-			// 	DataBytes:     data,
-			// }
+			genericIx := &solana.GenericInstruction{
+				// ProgID: solana.BPFLoaderUpgradeableProgramID,
+				// AccountValues: upgradeIx.AccountMetaSlice,
+				// DataBytes:     data,
+			}
 
-			// // Save using mcm-go SDK
-			// instructions := []*solana.GenericInstruction{genericIx}
-			// outputFile := c.String("output")
-			// if err := io.SaveInstructions(instructions, outputFile); err != nil {
-			// 	return fmt.Errorf("failed to save instructions: %w", err)
-			// }
+			// Save using mcm-go SDK
+			instructions := []solana.Instruction{genericIx}
+			outputFile := c.String("output")
+			if err := mcmio.SaveInstructions(instructions, outputFile); err != nil {
+				return fmt.Errorf("failed to save instructions: %w", err)
+			}
 
-			// fmt.Printf("Upgrade instruction written to %s\n", outputFile)
-			// fmt.Printf("Program: %s\n", program)
-			// fmt.Printf("ProgramData (derived): %s\n", programData)
-			// fmt.Printf("Buffer: %s\n", buffer)
-			// fmt.Printf("Spill: %s\n", spill)
-			// fmt.Printf("Authority: %s\n", authority)
+			fmt.Printf("Upgrade instruction written to %s\n", outputFile)
+			fmt.Printf("Program: %s\n", program)
+			fmt.Printf("ProgramData (derived): %s\n", programData)
+			fmt.Printf("Buffer: %s\n", buffer)
+			fmt.Printf("Spill: %s\n", spill)
+			fmt.Printf("Authority: %s\n", upgradeAuthority)
 			return nil
 		},
 	}
