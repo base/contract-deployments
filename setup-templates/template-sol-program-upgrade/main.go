@@ -10,7 +10,6 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 	ucli "github.com/urfave/cli/v2"
 
-	// loaderV3Bindings "github.com/base/loader-v3-go-bindings/bindings"
 	mcmio "github.com/base/mcm-go/pkg/proposal/io"
 )
 
@@ -130,34 +129,22 @@ func main() {
 				return fmt.Errorf("program authority (%s) does not match buffer authority (%s)", upgradeAuthority, bufferAuthority)
 			}
 
-			// // Create upgrade instruction using bindings
-			// upgradeIx, err := loaderV3Bindings.NewUpgradeInstruction(
-			// 	programData,
-			// 	program,
-			// 	buffer,
-			// 	spill,
-			// 	solana.SysVarRentPubkey,
-			// 	solana.SysVarClockPubkey,
-			// 	authority,
-			// )
-			// if err != nil {
-			// 	return fmt.Errorf("failed to create upgrade instruction: %w", err)
-			// }
-
-			// // Convert to GenericInstruction
-			// data, err := upgradeIx.Data()
-			// if err != nil {
-			// 	return fmt.Errorf("failed to serialize instruction data: %w", err)
-			// }
-
-			genericIx := &solana.GenericInstruction{
-				// ProgID: solana.BPFLoaderUpgradeableProgramID,
-				// AccountValues: upgradeIx.AccountMetaSlice,
-				// DataBytes:     data,
+			// Create upgrade instruction using bindings
+			upgradeIx, err := NewUpgradeInstruction(
+				programData,
+				params.program,
+				params.buffer,
+				params.spill,
+				solana.SysVarRentPubkey,
+				solana.SysVarClockPubkey,
+				upgradeAuthority,
+			)
+			if err != nil {
+				return fmt.Errorf("failed to create upgrade instruction: %w", err)
 			}
 
 			// Save using mcm-go SDK
-			instructions := []solana.Instruction{genericIx}
+			instructions := []solana.Instruction{upgradeIx}
 			if err := mcmio.SaveInstructions(instructions, params.output); err != nil {
 				return fmt.Errorf("failed to save instructions: %w", err)
 			}
@@ -218,4 +205,51 @@ func parseCliParams(c *ucli.Context) *cliParams {
 		spill:   spill,
 		output:  output,
 	}
+}
+
+// Builds a "upgrade" instruction for the BPFLoaderUpgradeab1e11111111111111111111111 program.
+// Hardcoding this single instruction from the BPFLoaderUpgradeab1e11111111111111111111111 program as it's the only one needed.
+// NOTE: The implementation to set the acounts is taken from anchor-go outputs. The data (0x03000000) is the 4 bytes upgrade instruction discriminator.
+func NewUpgradeInstruction(
+	programDataAccountAccount solana.PublicKey,
+	programAccountAccount solana.PublicKey,
+	bufferAccountAccount solana.PublicKey,
+	spillAccountAccount solana.PublicKey,
+	rentSysvarAccount solana.PublicKey,
+	clockSysvarAccount solana.PublicKey,
+	authorityAccount solana.PublicKey,
+) (solana.Instruction, error) {
+	accounts__ := solana.AccountMetaSlice{}
+
+	// Add the accounts to the instruction.
+	{
+		// Account 0 "program_data_account": Writable, Non-signer, Required
+		// ProgramData account.
+		accounts__.Append(solana.NewAccountMeta(programDataAccountAccount, true, false))
+		// Account 1 "program_account": Writable, Non-signer, Required
+		// Program account.
+		accounts__.Append(solana.NewAccountMeta(programAccountAccount, true, false))
+		// Account 2 "buffer_account": Writable, Non-signer, Required
+		// Buffer account where the new program data has been written.
+		accounts__.Append(solana.NewAccountMeta(bufferAccountAccount, true, false))
+		// Account 3 "spill_account": Writable, Non-signer, Required
+		// Spill account.
+		accounts__.Append(solana.NewAccountMeta(spillAccountAccount, true, false))
+		// Account 4 "rent_sysvar": Read-only, Non-signer, Required
+		// Rent sysvar.
+		accounts__.Append(solana.NewAccountMeta(rentSysvarAccount, false, false))
+		// Account 5 "clock_sysvar": Read-only, Non-signer, Required
+		// Clock sysvar.
+		accounts__.Append(solana.NewAccountMeta(clockSysvarAccount, false, false))
+		// Account 6 "authority": Read-only, Signer, Required
+		// Authority.
+		accounts__.Append(solana.NewAccountMeta(authorityAccount, false, true))
+	}
+
+	// Create the instruction.
+	return solana.NewInstruction(
+		solana.BPFLoaderUpgradeableProgramID,
+		accounts__,
+		[]byte{0x03, 0x00, 0x00, 0x00},
+	), nil
 }

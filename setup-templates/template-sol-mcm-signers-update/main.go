@@ -80,6 +80,7 @@ func main() {
 			if err != nil {
 				return fmt.Errorf("failed to derive multisig authority PDA: %w", err)
 			}
+			fmt.Printf("mcmAuthority: %s\n", mcmAuthority)
 
 			// 1. Initialize signers instruction
 			fmt.Println("\n1. Creating InitSigners instruction...")
@@ -145,12 +146,6 @@ func main() {
 			}
 			fmt.Printf("   ✓ Groups: %d, Quorums: %v, Parents: %v, ClearRoot: %v\n", len(params.groupQuorums), params.groupQuorums, params.groupParents, params.clearRoot)
 			proposalIxs = append(proposalIxs, setConfigIx)
-
-			// 5. In all ixs where the mcm authority is a signer, make it not signer.
-			// Thus is because the MCM authority is a PDA of the MCM program and will become a signer when doing the CPI via invoke_signed.
-			if err := removeMcmAuthorityAsSigner(proposalIxs, mcmAuthority); err != nil {
-				return fmt.Errorf("failed to remove MCM authority as signer: %w", err)
-			}
 
 			// Save instructions using mcm-go SDK
 			fmt.Printf("\n💾 Saving instructions to %s...\n", params.output)
@@ -275,24 +270,4 @@ func parseCliParams(c *ucli.Context) (*cliParams, error) {
 		clearRoot:    clearRoot,
 		output:       output,
 	}, nil
-}
-
-// removeMcmAuthorityAsSigner removes the MCM authority as a signer from all instructions.
-// This is necessary because the MCM authority is a PDA of the MCM program and will become
-// a signer when doing the CPI via invoke_signed.
-func removeMcmAuthorityAsSigner(ixs []solana.Instruction, mcmAuthority solana.PublicKey) error {
-	for i, ix := range ixs {
-		data, err := ix.Data()
-		if err != nil {
-			return fmt.Errorf("failed to get instruction data: %w", err)
-		}
-		accounts := ix.Accounts()
-		for j, account := range accounts {
-			if account.PublicKey == mcmAuthority {
-				accounts[j].IsSigner = false
-			}
-		}
-		ixs[i] = solana.NewInstruction(ix.ProgramID(), accounts, data)
-	}
-	return nil
 }
