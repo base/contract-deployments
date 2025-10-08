@@ -2,7 +2,7 @@ include .env.example
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@2c2e21f42cd77bc6cb6b36b1a3935da14536d2cf
+	go install github.com/base/mcm-go/cmd/mcmctl@c0451dd0b5cdded5fac9af608bda8d6a7e62ff68
 
 .PHONY: install-eip712sign
 install-eip712sign:
