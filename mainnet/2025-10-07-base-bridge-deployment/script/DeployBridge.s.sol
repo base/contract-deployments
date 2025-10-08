@@ -49,7 +49,7 @@ contract DeployBridge is Script {
     }
 
     function run() public {
-        address precomputedBridgeAddress = ERC1967Factory(cfg.erc1967Factory).predictDeterministicAddress(cfg.salt);
+        address precomputedBridgeAddress = ERC1967Factory(cfg.erc1967Factory).predictDeterministicAddress(_salt());
 
         vm.startBroadcast();
         address twinBeacon = _deployTwinBeacon({precomputedBridgeAddress: precomputedBridgeAddress});
@@ -197,7 +197,7 @@ contract DeployBridge is Script {
         return ERC1967Factory(cfg.erc1967Factory).deployDeterministicAndCall({
             implementation: address(bridgeImpl),
             admin: cfg.initialOwner,
-            salt: cfg.salt,
+            salt: _salt(),
             data: abi.encodeCall(Bridge.initialize, (cfg.initialOwner, cfg.guardians))
         });
     }
@@ -234,5 +234,10 @@ contract DeployBridge is Script {
 
     function _readBytes32FromConfig(string memory key) private view returns (bytes32) {
         return vm.parseJsonBytes32({json: cfgData, key: string.concat(".", key)});
+    }
+
+    function _salt() private view returns (bytes32) {
+        bytes12 s = bytes12(keccak256(abi.encode(cfg.salt)));
+        return bytes32(abi.encodePacked(msg.sender, s));
     }
 }

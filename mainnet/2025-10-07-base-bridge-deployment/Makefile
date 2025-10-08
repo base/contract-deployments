@@ -10,5 +10,8 @@ endif
 deps:
 	forge install --no-git github.com/base/bridge@15ce3dec1df08048a329ea67f7c34728beb49b98
 
-RPC_URL = $(L1_RPC_URL)
-SCRIPT_NAME = FundScript
+.PHONY: deploy
+deploy:
+	forge script DeployBridge --rpc-url $(L2_RPC_URL) \
+	--sender $(shell cast wallet address --ledger --hd-path "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0") \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
