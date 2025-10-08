@@ -106,44 +106,53 @@ contract DeployBridge is Script {
             BridgeValidator(bridgeValidator).getBaseThreshold() == cfg.baseSignatureThreshold,
             "PC06: incorrect Base threshold in BridgeValidator"
         );
+        require(
+            BridgeValidator(bridgeValidator).getBaseValidatorCount() == cfg.baseValidators.length,
+            "PC07: incorrect registered base validator count"
+        );
 
         // TODO: Check that each configured base validator is stored in contract
-        for (uint256 i; i < cfg.baseValidators.length; i++) {}
+        for (uint256 i; i < cfg.baseValidators.length; i++) {
+            require(
+                BridgeValidator(bridgeValidator).isBaseValidator(cfg.baseValidators[i]),
+                "PC08: base validator not registered"
+            );
+        }
 
         // Bridge
-        require(Bridge(bridge).REMOTE_BRIDGE() == cfg.remoteBridge, "PC08: incorrect remote bridge in Bridge contract");
-        require(Bridge(bridge).TWIN_BEACON() == twinBeacon, "PC09: incorrect twin beacon in Bridge contract");
-        require(Bridge(bridge).CROSS_CHAIN_ERC20_FACTORY() == factory, "PC10: incorrect factory in Bridge contract");
+        require(Bridge(bridge).REMOTE_BRIDGE() == cfg.remoteBridge, "PC09: incorrect remote bridge in Bridge contract");
+        require(Bridge(bridge).TWIN_BEACON() == twinBeacon, "PC10: incorrect twin beacon in Bridge contract");
+        require(Bridge(bridge).CROSS_CHAIN_ERC20_FACTORY() == factory, "PC11: incorrect factory in Bridge contract");
         require(
-            Bridge(bridge).BRIDGE_VALIDATOR() == bridgeValidator, "PC11: incorrect bridge validator in Bridge contract"
+            Bridge(bridge).BRIDGE_VALIDATOR() == bridgeValidator, "PC12: incorrect bridge validator in Bridge contract"
         );
-        require(Bridge(bridge).owner() == cfg.initialOwner, "PC12: incorrect Bridge owner");
+        require(Bridge(bridge).owner() == cfg.initialOwner, "PC13: incorrect Bridge owner");
 
         for (uint256 i; i < cfg.guardians.length; i++) {
             require(
                 Bridge(bridge).rolesOf(cfg.guardians[i]) == Bridge(bridge).GUARDIAN_ROLE(),
-                "PC13: guardian missing perms"
+                "PC14: guardian missing perms"
             );
         }
 
         // RelayerOrchestrator
         require(
-            RelayerOrchestrator(relayerOrchestrator).BRIDGE() == bridge, "PC14: incorrect bridge in RelayerOrchestrator"
+            RelayerOrchestrator(relayerOrchestrator).BRIDGE() == bridge, "PC15: incorrect bridge in RelayerOrchestrator"
         );
         require(
             RelayerOrchestrator(relayerOrchestrator).BRIDGE_VALIDATOR() == bridgeValidator,
-            "PC15: incorrect bridge validator in RelayerOrchestrator"
+            "PC16: incorrect bridge validator in RelayerOrchestrator"
         );
 
         // SOL
-        require(CrossChainERC20(sol).bridge() == bridge, "PC16: incorrect bridge in SOL contract");
-        require(LibString.eq(CrossChainERC20(sol).name(), "Solana"), "PC17: incorrect SOL name");
-        require(LibString.eq(CrossChainERC20(sol).symbol(), "SOL"), "PC18: incorrect SOL symbol");
+        require(CrossChainERC20(sol).bridge() == bridge, "PC17: incorrect bridge in SOL contract");
+        require(LibString.eq(CrossChainERC20(sol).name(), "Solana"), "PC18: incorrect SOL name");
+        require(LibString.eq(CrossChainERC20(sol).symbol(), "SOL"), "PC19: incorrect SOL symbol");
         require(
             CrossChainERC20(sol).remoteToken() == CrossChainERC20Factory(factory).SOL_PUBKEY(),
-            "PC19: incorrect SOL remote token"
+            "PC20: incorrect SOL remote token"
         );
-        require(CrossChainERC20(sol).decimals() == 9, "PC20: incorrect SOL decimals");
+        require(CrossChainERC20(sol).decimals() == 9, "PC21: incorrect SOL decimals");
     }
 
     function _deployTwinBeacon(address precomputedBridgeAddress) private returns (address) {
