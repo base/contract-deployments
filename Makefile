@@ -94,6 +94,32 @@ checkout-base-contracts-commit:
 	git reset --hard FETCH_HEAD
 
 ##
+# Task Signer Tool
+##
+SIGNER_TOOL_COMMIT=1172dfcf09ea828e44ded07309fa31d5c1aa5285
+SIGNER_TOOL_PATH=signer-tool
+
+.PHONY: checkout-signer-tool
+checkout-signer-tool:
+	[ -n "$(SIGNER_TOOL_COMMIT)" ] || (echo "SIGNER_TOOL_COMMIT must be set in .env" && exit 1)
+	rm -rf $(SIGNER_TOOL_PATH)
+	mkdir -p $(SIGNER_TOOL_PATH)
+	cd $(SIGNER_TOOL_PATH); \
+	git init; \
+	git remote add origin https://github.com/base/task-signing-tool.git; \
+	git fetch --depth=1 origin $(SIGNER_TOOL_COMMIT); \
+	git reset --hard FETCH_HEAD
+
+.PHONY: sign
+sign:
+	cd $(SIGNER_TOOL_PATH); \
+	npm ci; \
+	bun dev
+
+.PHONY: sign-task
+sign-task: checkout-signer-tool sign
+
+##
 # Solidity Testing
 ##
 .PHONY: solidity-test
