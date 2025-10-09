@@ -11,10 +11,7 @@ endif
 .PHONY: deploy
 deploy:
 	forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
-
-
-# Mainnet Commands
+	--account testnet-admin --broadcast -vvvv
 
 # OWNER_SAFE/
 # ├── CB_SIGNER_SAFE_ADDR/
