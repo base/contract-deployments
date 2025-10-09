@@ -1,21 +1,27 @@
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 MCM_SIGNERS_UPDATE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-signers-update
-PROGRAM_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-program-upgrade
+PROGRAM_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-program-upgrade
 
 TEMPLATE_MCM_SIGNERS_UPDATE = setup-templates/template-mcm-signers-update
-TEMPLATE_PROGRAM_UPGRADE = setup-templates/template-program-upgrade
+TEMPLATE_PROGRAM_UPGRADE = setup-templates/template-mcm-program-upgrade
+TEMPLATE_GENERIC = setup-templates/template-mcm-generic
 
 ##
 # Project Setup
 ##
+
+# Run `make setup-mcm-task network=<network>`
+setup-mcm-task:
+	rm -rf $(TEMPLATE_GENERIC)/cache $(TEMPLATE_GENERIC)/lib $(TEMPLATE_GENERIC)/out
+	cp -r $(TEMPLATE_GENERIC) $(PROJECT_DIR)
 
 # Run `make setup-mcm-signers-update network=<network>`
 setup-mcm-signers-update:
 	rm -rf $(TEMPLATE_MCM_SIGNERS_UPDATE)/cache $(TEMPLATE_MCM_SIGNERS_UPDATE)/lib $(TEMPLATE_MCM_SIGNERS_UPDATE)/out
 	cp -r $(TEMPLATE_MCM_SIGNERS_UPDATE) $(MCM_SIGNERS_UPDATE_DIR)
 
-# Run `make setup-program-upgrade network=<network>`
-setup-program-upgrade:
+# Run `make setup-mcm-program-upgrade network=<network>`
+setup-mcm-program-upgrade:
 	rm -rf $(TEMPLATE_PROGRAM_UPGRADE)/cache $(TEMPLATE_PROGRAM_UPGRADE)/lib $(TEMPLATE_PROGRAM_UPGRADE)/out
 	cp -r $(TEMPLATE_PROGRAM_UPGRADE) $(PROGRAM_UPGRADE_DIR)
 
