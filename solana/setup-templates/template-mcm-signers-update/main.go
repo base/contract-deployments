@@ -23,19 +23,21 @@ func main() {
 		Flags: []ucli.Flag{
 			&ucli.StringFlag{
 				Name:     "mcm-program-id",
-				Aliases:  []string{"p"},
 				Usage:    "MCM program ID (base58 encoded)",
 				Required: true,
 			},
 			&ucli.StringFlag{
 				Name:     "multisig-id",
-				Aliases:  []string{"m"},
 				Usage:    "Multisig ID (32-byte hex string, with 0x prefix)",
 				Required: true,
 			},
 			&ucli.StringFlag{
+				Name:  "ixs-output",
+				Usage: "Instructions output JSON file path",
+				Value: "ixs.json",
+			},
+			&ucli.StringFlag{
 				Name:     "new-signers",
-				Aliases:  []string{"s"},
 				Usage:    "Comma-separated list of new signer addresses (20 byetes hex string, with 0x prefix)",
 				Required: true,
 			},
@@ -55,16 +57,9 @@ func main() {
 				Required: true,
 			},
 			&ucli.BoolFlag{
-				Name:    "clear-root",
-				Aliases: []string{"c"},
-				Usage:   "Clear existing root when setting config",
-				Value:   false,
-			},
-			&ucli.StringFlag{
-				Name:    "output",
-				Aliases: []string{"o"},
-				Usage:   "Output JSON file path",
-				Value:   "signers_update_instructions.json",
+				Name:  "clear-root",
+				Usage: "Clear existing root when setting config",
+				Value: false,
 			},
 		},
 		Action: func(c *ucli.Context) error {
@@ -76,7 +71,7 @@ func main() {
 
 			proposalIxs := make([]solana.Instruction, 0)
 
-			mcmAuthority, _, err := mcmpda.MultisigSignerPDA(params.programID, params.multisigID)
+			mcmAuthority, _, err := mcmpda.MultisigSignerPDA(params.mcmProgramID, params.multisigID)
 			if err != nil {
 				return fmt.Errorf("failed to derive multisig authority PDA: %w", err)
 			}
@@ -88,7 +83,7 @@ func main() {
 				MultisigID:   params.multisigID,
 				TotalSigners: uint8(len(params.newSigners)),
 				Authority:    mcmAuthority,
-				ProgramID:    params.programID,
+				ProgramID:    params.mcmProgramID,
 			})
 			if err != nil {
 				return fmt.Errorf("failed to create init signers instruction: %w", err)
@@ -108,7 +103,7 @@ func main() {
 					MultisigID:   params.multisigID,
 					SignersBatch: signersChunk,
 					Authority:    mcmAuthority,
-					ProgramID:    params.programID,
+					ProgramID:    params.mcmProgramID,
 				})
 				if err != nil {
 					return fmt.Errorf("failed to create append signers instruction: %w", err)
@@ -122,7 +117,7 @@ func main() {
 			finalizeSignersIx, err := mcmInstructions.FinalizeSigners(mcmInstructions.FinalizeSignersParams{
 				MultisigID: params.multisigID,
 				Authority:  mcmAuthority,
-				ProgramID:  params.programID,
+				ProgramID:  params.mcmProgramID,
 			})
 			if err != nil {
 				return fmt.Errorf("failed to create finalize signers instruction: %w", err)
@@ -139,7 +134,7 @@ func main() {
 				GroupParents: params.groupParents,
 				ClearRoot:    params.clearRoot,
 				Authority:    mcmAuthority,
-				ProgramID:    params.programID,
+				ProgramID:    params.mcmProgramID,
 			})
 			if err != nil {
 				return fmt.Errorf("failed to create set config instruction: %w", err)
@@ -148,11 +143,11 @@ func main() {
 			proposalIxs = append(proposalIxs, setConfigIx)
 
 			// Save instructions using mcm-go SDK
-			fmt.Printf("\n💾 Saving instructions to %s...\n", params.output)
-			if err := mcmio.SaveInstructions(proposalIxs, params.output); err != nil {
+			fmt.Printf("\n💾 Saving instructions to %s...\n", params.ixsOutput)
+			if err := mcmio.SaveInstructions(proposalIxs, params.ixsOutput); err != nil {
 				return fmt.Errorf("failed to save instructions: %w", err)
 			}
-			fmt.Printf("\n✅ Signers update instructions written to %s\n", params.output)
+			fmt.Printf("\n✅ Signers update instructions written to %s\n", params.ixsOutput)
 
 			return nil
 		},
@@ -164,18 +159,22 @@ func main() {
 }
 
 type cliParams struct {
+	mcmProgramID solana.PublicKey
 	multisigID   [32]byte
-	programID    solana.PublicKey
+	ixsOutput    string
 	newSigners   [][20]uint8
 	signerGroups []uint8
 	groupQuorums [32]uint8
 	groupParents [32]uint8
 	clearRoot    bool
-	output       string
 }
 
 func parseCliParams(c *ucli.Context) (*cliParams, error) {
 	fmt.Println(" ---CLI params--- ")
+
+	// Parse program ID
+	mcmProgramID := solana.MustPublicKeyFromBase58(c.String("mcm-program-id"))
+	fmt.Println("mcm-program-id:", mcmProgramID)
 
 	// Parse multisig ID
 	multisigID, err := mcmHex.Parse32(c.String("multisig-id"))
@@ -184,9 +183,9 @@ func parseCliParams(c *ucli.Context) (*cliParams, error) {
 	}
 	fmt.Printf("multisig-id: %s\n", hex.EncodeToString(multisigID[:]))
 
-	// Parse program ID
-	programID := solana.MustPublicKeyFromBase58(c.String("mcm-program-id"))
-	fmt.Println("mcm-program-id:", programID)
+	// Parse ixs output
+	ixsOutput := c.String("ixs-output")
+	fmt.Printf("ixs-output: %s\n", ixsOutput)
 
 	// Parse new signers
 	signersStr := c.String("new-signers")
@@ -254,20 +253,17 @@ func parseCliParams(c *ucli.Context) (*cliParams, error) {
 	fmt.Printf("group-parents: %v\n", groupParents)
 
 	clearRoot := c.Bool("clear-root")
-	output := c.String("output")
-
 	fmt.Printf("clear-root: %v\n", clearRoot)
-	fmt.Printf("output: %s\n", output)
 	fmt.Println(" ---------------- ")
 
 	return &cliParams{
+		mcmProgramID: mcmProgramID,
 		multisigID:   multisigID,
-		programID:    programID,
 		newSigners:   newSigners,
 		signerGroups: signerGroups,
 		groupQuorums: groupQuorums,
 		groupParents: groupParents,
 		clearRoot:    clearRoot,
-		output:       output,
+		ixsOutput:    ixsOutput,
 	}, nil
 }

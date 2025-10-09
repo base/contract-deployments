@@ -19,13 +19,18 @@ func main() {
 		Usage: "Generate Solana BPF Loader v3 upgrade instruction",
 		Flags: []ucli.Flag{
 			&ucli.StringFlag{
+				Name:  "ixs-output",
+				Usage: "Instructions output JSON file path",
+				Value: "ixs.json",
+			},
+			&ucli.StringFlag{
 				Name:     "rpc-url",
 				Usage:    "RPC URL to fetch on-chain data",
 				Required: true,
 			},
 			&ucli.StringFlag{
 				Name:     "program",
-				Usage:    "Program account address",
+				Usage:    "Program account address to upgrade",
 				Required: true,
 			},
 			&ucli.StringFlag{
@@ -37,11 +42,6 @@ func main() {
 				Name:     "spill",
 				Usage:    "Spill account address to receive refunded lamports",
 				Required: true,
-			},
-			&ucli.StringFlag{
-				Name:  "output",
-				Usage: "Output JSON file path",
-				Value: "upgrade_instruction.json",
 			},
 		},
 		Action: func(c *ucli.Context) error {
@@ -145,11 +145,11 @@ func main() {
 
 			// Save using mcm-go SDK
 			instructions := []solana.Instruction{upgradeIx}
-			if err := mcmio.SaveInstructions(instructions, params.output); err != nil {
+			if err := mcmio.SaveInstructions(instructions, params.ixsOutput); err != nil {
 				return fmt.Errorf("failed to save instructions: %w", err)
 			}
 
-			fmt.Printf("Upgrade instruction written to %s\n", params.output)
+			fmt.Printf("Upgrade instruction written to %s\n", params.ixsOutput)
 			fmt.Printf("Program: %s\n", params.program)
 			fmt.Printf("ProgramData (derived): %s\n", programData)
 			fmt.Printf("Buffer: %s\n", params.buffer)
@@ -165,20 +165,23 @@ func main() {
 }
 
 type cliParams struct {
-	rpcURL  string
-	program solana.PublicKey
-	buffer  solana.PublicKey
-	spill   solana.PublicKey
-	output  string
+	rpcURL    string
+	program   solana.PublicKey
+	buffer    solana.PublicKey
+	spill     solana.PublicKey
+	ixsOutput string
 }
 
 func parseCliParams(c *ucli.Context) *cliParams {
 	fmt.Println(" ---CLI params--- ")
-	rpcURLInput := c.String("rpc-url")
+
+	ixsOutput := c.String("ixs-output")
+	fmt.Printf("ixs-output: %s\n", ixsOutput)
 
 	// Map cluster aliases to RPC URLs
-	rpcURL := rpcURLInput
-	switch rpcURLInput {
+	rpcAlias := c.String("rpc-url")
+	rpcURL := rpcAlias
+	switch rpcAlias {
 	case "devnet":
 		rpcURL = "https://api.devnet.solana.com"
 	case "testnet":
@@ -194,16 +197,15 @@ func parseCliParams(c *ucli.Context) *cliParams {
 	fmt.Println("buffer", buffer)
 	spill := solana.MustPublicKeyFromBase58(c.String("spill"))
 	fmt.Println("spill", spill)
-	output := c.String("output")
-	fmt.Println("output", output)
+
 	fmt.Println(" ---------------- ")
 
 	return &cliParams{
-		rpcURL:  rpcURL,
-		program: program,
-		buffer:  buffer,
-		spill:   spill,
-		output:  output,
+		rpcURL:    rpcURL,
+		program:   program,
+		buffer:    buffer,
+		spill:     spill,
+		ixsOutput: ixsOutput,
 	}
 }
 
