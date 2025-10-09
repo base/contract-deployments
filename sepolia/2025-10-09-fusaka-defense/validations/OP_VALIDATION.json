@@ -1,9 +1,9 @@
 {
   "task_name": "sepolia-fusaka-defense",
   "script_name": "UpgradeDGF",
-  "signature": "sign()",
+  "signature": "sign(address[])",
   "sender": "0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
-  "args": "",
+  "args": "[0x6AF0674791925f767060Dd52f7fB20984E8639d8]",
   "ledger-id": 1,
   "rpc_url": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expected_domain_and_message_hashes": {
