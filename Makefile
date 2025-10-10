@@ -4,6 +4,7 @@ FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-pro
 SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-swap-owner
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
+PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
@@ -11,6 +12,7 @@ TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
 TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
 TEMPLATE_FUNDING = setup-templates/template-funding
 TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
+TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
@@ -53,6 +55,11 @@ setup-funding:
 setup-bridge-partner-threshold:
 	rm -rf $(TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD)/cache $(TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD)/lib $(TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD)/out
 	cp -r $(TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD) $(SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR)
+
+# Run `make setup-bridge-pause network=<network>`
+setup-bridge-pause:
+	rm -rf $(TEMPLATE_PAUSE_BRIDGE_BASE)/cache $(TEMPLATE_PAUSE_BRIDGE_BASE)/lib $(TEMPLATE_PAUSE_BRIDGE_BASE)/out
+	cp -r $(TEMPLATE_PAUSE_BRIDGE_BASE) $(PAUSE_BRIDGE_BASE_DIR)
 
 ##
 # Solidity Setup
