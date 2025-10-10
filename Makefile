@@ -1,3 +1,5 @@
+FOUNDRY_COMMIT ?= 3b1129b5bc43ba22a9bcf4e4323c5a9df0023140
+
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
