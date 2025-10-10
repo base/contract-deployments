@@ -5,13 +5,14 @@ include ../../Makefile
 
 .PHONY: write-buffer
 write-buffer:
-	solana program write-buffer $(PROGRAM_BINARY) --url $(SOL_RPC_URL)
+	solana program write-buffer $(PROGRAM_BINARY) \
+		--url $(SOL_RPC_URL)
 
 .PHONY: transfer-buffer
 transfer-buffer:
 	solana program set-buffer-authority $(BUFFER) \
-	--new-buffer-authority $(MCM_AUTHORITY) \
-	--url $(SOL_RPC_URL)
+		--new-buffer-authority $(MCM_AUTHORITY) \
+		--url $(SOL_RPC_URL)
 
 .PHONY: ixs
 ixs:
