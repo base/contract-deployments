@@ -111,7 +111,6 @@ contract DeployBridge is Script {
             "PC07: incorrect registered base validator count"
         );
 
-        // TODO: Check that each configured base validator is stored in contract
         for (uint256 i; i < cfg.baseValidators.length; i++) {
             require(
                 BridgeValidator(bridgeValidator).isBaseValidator(cfg.baseValidators[i]),
