@@ -35,7 +35,7 @@ install-eip712sign:
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@v0.0.3
+	go install github.com/base/mcm-go/cmd/mcmctl@v0.1.1
 
 .PHONY: deps
 deps: install-mcmctl install-eip712sign
@@ -122,3 +122,12 @@ mcm-execute:
 		--ws-url $(SOL_WS_URL) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--proposal $(MCM_PROPOSAL_OUTPUT)
+
+.PHONY: mcm-all
+mcm-all:
+	make mcm-init-signatures
+	make mcm-append-signatures
+	make mcm-finalize-signatures
+	make mcm-set-root
+	make mcm-execute
+
