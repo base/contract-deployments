@@ -82,7 +82,7 @@ forge-deps:
 		github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@v4.7.3 \
 		github.com/rari-capital/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
 		github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \
-		github.com/Vectorized/solady@796d4676c7683aa801e8e224ea51e944e3153e6d \
+		github.com/Vectorized/solady@5ea5d9f57ed6d24a27d00934f4a3448def931415 \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
 .PHONY: checkout-op-commit
