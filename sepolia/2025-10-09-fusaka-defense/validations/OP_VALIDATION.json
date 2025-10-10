@@ -1,0 +1,89 @@
+{
+  "task_name": "sepolia-fusaka-defense",
+  "script_name": "UpgradeDGF",
+  "signature": "sign(address[])",
+  "sender": "0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
+  "args": "[0x6AF0674791925f767060Dd52f7fB20984E8639d8]",
+  "ledger-id": 1,
+  "rpc_url": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expected_domain_and_message_hashes": {
+    "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+    "domain_hash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "message_hash": "0xb6dd21740114b19fc35e56f1a1ae00a77249c44cbdc47dc72681801466cf751c"
+  },
+  "expected_nested_hash": "",
+  "state_overrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0xf55cf93558aad1a552a84b53e316a49809aff5d9db75b05763ead5788270ab15",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "state_changes": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "description": "Increments the nonce"
+        },
+        {
+          "key": "0xb29af55234326eb4cad380a2eff35a598abc43d759ed8ae848ce5758091a0d3c",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets an approval for this transaction"
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Increments the nonce"
+        }
+      ]
+    },
+    {
+      "name": "Dispute Game Factory - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x4d5a9bd2e41301728d41c8e705190becb4e74abe869f75bdb405b63716a35f9e",
+          "before": "0x000000000000000000000000217e725700de4dc599360adbd57dbb7de280817e",
+          "after": "0x0000000000000000000000005920bd6ab4c1b96bfd4efc56eb6cf9b018e3bf4c",
+          "description": "Updates the PermissionedDisputeGame implementation address"
+        },
+        {
+          "key": "0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b",
+          "before": "0x00000000000000000000000032b37bbd2c81e853ea098ce45856ae305df10dd1",
+          "after": "0x000000000000000000000000f83157709129bd03fb02e96950be288e8c2c1c67",
+          "description": "Updates the FaultDisputeGame implementation address"
+        }
+      ]
+    }
+  ]
+}
