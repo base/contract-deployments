@@ -41,6 +41,7 @@ To execute a new task, run one of the following commands (depending on the type 
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
 - For funding tasks: `make setup-funding network=<network>`
+- For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
@@ -134,5 +135,21 @@ This template is used to fund addresses from a Gnosis Safe.
 1. Specify the `recipients` and `funds` arrays (in 1e18 units) in the `funding.json` file.
 1. Build the contracts with `forge build`.
 1. Simulate the task with `make sign` and update the generic validations in `VALIDATION.md` with the real values.
+1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
+1. Once executed, check in the records files and mark the task `DONE` in the README.
+
+## Using the pause Base Bridge template
+
+This template is used to pause or un-pause [Base Bridge](https://github.com/base/bridge).
+
+1. Ensure you have followed the instructions above in `setup`.
+1. Run `make setup-bridge-pause network=<network>` and go to the folder that was created by this command.
+1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Run `make deps`.
+1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
+1. Set the `IS_PAUSED` variable to `true` or `false` in the `.env` file depending on if you intend to pause or unpause the bridge.
+1. Ensure the `--sender` flag in the `make gen-validation` command in the `Makefile` file is set to a signer for `OWNER_SAFE` in `.env`.
+1. Build the contracts with `forge build`.
+1. Generate the validation file for signers with `make gen-validation`.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `DONE` in the README.

@@ -3,12 +3,14 @@ GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
 SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-swap-owner
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
+PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
 TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
 TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
 TEMPLATE_FUNDING = setup-templates/template-funding
+TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
@@ -46,6 +48,11 @@ setup-safe-management:
 setup-funding:
 	rm -rf $(TEMPLATE_FUNDING)/cache $(TEMPLATE_FUNDING)/lib $(TEMPLATE_FUNDING)/out
 	cp -r $(TEMPLATE_FUNDING) $(FUNDING_DIR)
+
+# Run `make setup-bridge-pause network=<network>`
+setup-bridge-pause:
+	rm -rf $(TEMPLATE_PAUSE_BRIDGE_BASE)/cache $(TEMPLATE_PAUSE_BRIDGE_BASE)/lib $(TEMPLATE_PAUSE_BRIDGE_BASE)/out
+	cp -r $(TEMPLATE_PAUSE_BRIDGE_BASE) $(PAUSE_BRIDGE_BASE_DIR)
 
 ##
 # Solidity Setup
