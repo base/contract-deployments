@@ -9,7 +9,7 @@
   "expected_domain_and_message_hashes": {
     "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
     "domain_hash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
-    "message_hash": "0xb6dd21740114b19fc35e56f1a1ae00a77249c44cbdc47dc72681801466cf751c"
+    "message_hash": "0xdd7292ec7808a57179b25869cc34fc358d773a80d330ac859d87d3f3ae09b04f"
   },
   "expected_nested_hash": "",
   "state_overrides": [
@@ -29,7 +29,7 @@
       "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
       "overrides": [
         {
-          "key": "0xf55cf93558aad1a552a84b53e316a49809aff5d9db75b05763ead5788270ab15",
+          "key": "0x4559bbb55c927434366c6e32ba5d225c4627a990c160938e5b5db2adc91c5600",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
         }
@@ -61,8 +61,8 @@
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
           "description": "Increments the nonce"
         }
       ]
