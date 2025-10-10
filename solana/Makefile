@@ -52,21 +52,21 @@ ifndef MCM_PROPOSAL_OUTPUT
 override MCM_PROPOSAL_OUTPUT = proposal.json
 endif
 
-.PHONY: print-authority
-print-authority:
+.PHONY: mcm-print-authority
+mcm-print-authority:
 	mcmctl multisig print-authority \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--multisig-id $(MCM_MULTISIG_ID)
 
-.PHONY: print-config
-print-config:
+.PHONY: mcm-print-config
+mcm-print-config:
 	mcmctl signers print-config \
 		--rpc-url $(SOL_RPC_URL) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--multisig-id $(MCM_MULTISIG_ID)
 
-.PHONY: proposal
-proposal:
+.PHONY: mcm-proposal
+mcm-proposal:
 	mcmctl proposal create \
 		--rpc-url $(SOL_RPC_URL) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
@@ -76,13 +76,13 @@ proposal:
 		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
 		--output $(MCM_PROPOSAL_OUTPUT)
 
-.PHONY: sign
-sign:
+.PHONY: mcm-sign
+mcm-sign:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --text -- \
 	mcmctl proposal hash --proposal $(MCM_PROPOSAL_OUTPUT)
 
-.PHONY: init-signatures
-init-signatures:
+.PHONY: mcm-init-signatures
+mcm-init-signatures:
 	mcmctl signatures init \
 		--rpc-url $(SOL_RPC_URL) \
 		--ws-url $(SOL_WS_URL) \
@@ -90,8 +90,8 @@ init-signatures:
 		--proposal $(MCM_PROPOSAL_OUTPUT) \
 		--total $(MCM_SIGNATURES_COUNT)
 
-.PHONY: append-signatures
-append-signatures:
+.PHONY: mcm-append-signatures
+mcm-append-signatures:
 	mcmctl signatures append \
 		--rpc-url $(SOL_RPC_URL) \
 		--ws-url $(SOL_WS_URL) \
@@ -99,24 +99,24 @@ append-signatures:
 		--proposal $(MCM_PROPOSAL_OUTPUT) \
 		--signatures $(MCM_SIGNATURES)
 
-.PHONY: finalize-signatures
-finalize-signatures:
+.PHONY: mcm-finalize-signatures
+mcm-finalize-signatures:
 	mcmctl signatures finalize \
 		--rpc-url $(SOL_RPC_URL) \
 		--ws-url $(SOL_WS_URL) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--proposal $(MCM_PROPOSAL_OUTPUT)
 
-.PHONY: set-root
-set-root:
+.PHONY: mcm-set-root
+mcm-set-root:
 	mcmctl proposal set-root \
 		--rpc-url $(SOL_RPC_URL) \
 		--ws-url $(SOL_WS_URL) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--proposal $(MCM_PROPOSAL_OUTPUT)
 
-.PHONY: execute
-execute:
+.PHONY: mcm-execute
+mcm-execute:
 	mcmctl proposal execute \
 		--rpc-url $(SOL_RPC_URL) \
 		--ws-url $(SOL_WS_URL) \

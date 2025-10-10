@@ -72,17 +72,17 @@ mcm-accept-ownership-proposal:
 		--ixs-output $(MCM_IXS_OUTPUT) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--multisig-id $(MCM_MULTISIG_ID)
-	make proposal
+	make mcm-proposal
 	rm $(MCM_IXS_OUTPUT)
 
 # Internal target - do not run manually
 .PHONY: mcm-accept-ownership
 mcm-accept-ownership:
-	make init-signatures
-	make append-signatures
-	make finalize-signatures
-	make set-root
-	make execute
+	make mcm-init-signatures
+	make mcm-append-signatures
+	make mcm-finalize-signatures
+	make mcm-set-root
+	make mcm-execute
 
 .PHONY: mcm-transfer-ownership
 mcm-transfer-ownership:
@@ -93,4 +93,13 @@ mcm-transfer-ownership:
 		--multisig-id $(MCM_MULTISIG_ID) \
 		--proposed-owner $(MCM_AUTHORITY)
 	make mcm-accept-ownership
-	make print-config
+	make mcm-print-config
+
+.PHONY: mcm-transfer-upgrade-authority
+mcm-transfer-upgrade-authority:
+	solana program set-upgrade-authority $(MCM_PROGRAM_ID) \
+		--url $(SOL_RPC_URL) \
+		--new-upgrade-authority $(MCM_AUTHORITY) \
+		--skip-new-upgrade-authority-signer-check
+	solana program show $(MCM_PROGRAM_ID) \
+		--url $(SOL_RPC_URL)
