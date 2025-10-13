@@ -1,6 +1,6 @@
 # Funding
 
-Status: PENDING
+Status: [EXECUTED](https://etherscan.io/tx/0x33ad6a93583d4220082db978b7423a4674a4a6d165c29502b0284944af6715e5)
 
 ## Description
 
