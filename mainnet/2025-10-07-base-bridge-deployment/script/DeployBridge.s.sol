@@ -7,6 +7,7 @@ import {ERC1967Factory} from "@solady/utils/ERC1967Factory.sol";
 import {ERC1967FactoryConstants} from "@solady/utils/ERC1967FactoryConstants.sol";
 import {LibString} from "solady/utils/LibString.sol";
 import {UpgradeableBeacon} from "@solady/utils/UpgradeableBeacon.sol";
+import {AddressAliasHelper} from "@eth-optimism-bedrock/src/vendor/AddressAliasHelper.sol";
 
 import {Pubkey} from "bridge/libraries/SVMLib.sol";
 import {RelayerOrchestrator} from "bridge/periphery/RelayerOrchestrator.sol";
@@ -30,6 +31,7 @@ struct Cfg {
 
 contract DeployBridge is Script {
     using stdJson for string;
+    using AddressAliasHelper for address;
 
     string public cfgData;
     Cfg public cfg;
@@ -39,13 +41,16 @@ contract DeployBridge is Script {
 
         cfg.salt = _readBytes32FromConfig("salt");
         cfg.erc1967Factory = ERC1967FactoryConstants.ADDRESS;
-        cfg.initialOwner = _readAddressFromConfig("initialOwner");
+        cfg.initialOwner = _readAddressFromConfig("initialOwner").applyL1ToL2Alias();
         cfg.partnerValidators = _readAddressFromConfig("partnerValidators");
         cfg.baseValidators = _readAddressArrayFromConfig("baseValidators");
         cfg.baseSignatureThreshold = uint128(_readUintFromConfig("baseSignatureThreshold"));
         cfg.partnerValidatorThreshold = _readUintFromConfig("partnerValidatorThreshold");
         cfg.remoteBridge = Pubkey.wrap(_readBytes32FromConfig("remoteBridge"));
         cfg.guardians = _readAddressArrayFromConfig("guardians");
+
+        require(cfg.guardians.length == 1, "invalid guardians length");
+        cfg.guardians[0] = cfg.guardians[0].applyL1ToL2Alias();
     }
 
     function run() public {
