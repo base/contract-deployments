@@ -1,19 +1,16 @@
-PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 MCM_SIGNERS_UPDATE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-signers-update
 PROGRAM_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-program-upgrade
+SET_PAUSE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-set-pause-bridge
+SET_PARTNER_THRESHOLD_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-set-partner-threshold-bridge
 
 TEMPLATE_MCM_SIGNERS_UPDATE = setup-templates/template-mcm-signers-update
 TEMPLATE_PROGRAM_UPGRADE = setup-templates/template-mcm-program-upgrade
-TEMPLATE_GENERIC = setup-templates/template-mcm-generic
+TEMPLATE_SET_PAUSE_BRIDGE = setup-templates/template-mcm-set-pause-bridge
+TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE = setup-templates/template-mcm-set-partner-threshold-bridge
 
 ##
 # Project Setup
 ##
-
-# Run `make setup-mcm-task network=<network>`
-setup-mcm-task:
-	rm -rf $(TEMPLATE_GENERIC)/cache $(TEMPLATE_GENERIC)/lib $(TEMPLATE_GENERIC)/out
-	cp -r $(TEMPLATE_GENERIC) $(PROJECT_DIR)
 
 # Run `make setup-mcm-signers-update network=<network>`
 setup-mcm-signers-update:
@@ -25,6 +22,16 @@ setup-mcm-program-upgrade:
 	rm -rf $(TEMPLATE_PROGRAM_UPGRADE)/cache $(TEMPLATE_PROGRAM_UPGRADE)/lib $(TEMPLATE_PROGRAM_UPGRADE)/out
 	cp -r $(TEMPLATE_PROGRAM_UPGRADE) $(PROGRAM_UPGRADE_DIR)
 
+# Run `make setup-mcm-set-pause-bridge network=<network>`
+setup-mcm-set-pause-bridge:
+	rm -rf $(TEMPLATE_SET_PAUSE_BRIDGE)/cache $(TEMPLATE_SET_PAUSE_BRIDGE)/lib $(TEMPLATE_SET_PAUSE_BRIDGE)/out
+	cp -r $(TEMPLATE_SET_PAUSE_BRIDGE) $(SET_PAUSE_BRIDGE_DIR)
+
+# Run `make setup-mcm-set-partner-threshold-bridge network=<network>`
+setup-mcm-set-partner-threshold-bridge:
+	rm -rf $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/cache $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/lib $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/out
+	cp -r $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE) $(SET_PARTNER_THRESHOLD_BRIDGE_DIR)
+
 ##
 # Dependencies
 ##
@@ -35,7 +42,7 @@ install-eip712sign:
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@v0.2.0
+	go install github.com/base/mcm-go/cmd/mcmctl@v0.3.0
 
 .PHONY: deps
 deps: install-mcmctl install-eip712sign
@@ -63,7 +70,8 @@ mcm-print-config:
 	mcmctl signers print-config \
 		--rpc-url $(SOL_RPC_URL) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID)
+		--multisig-id $(MCM_MULTISIG_ID) \
+		--pretty
 
 .PHONY: mcm-proposal
 mcm-proposal:
@@ -102,6 +110,14 @@ mcm-append-signatures:
 .PHONY: mcm-finalize-signatures
 mcm-finalize-signatures:
 	mcmctl signatures finalize \
+		--rpc-url $(SOL_RPC_URL) \
+		--ws-url $(SOL_WS_URL) \
+		--mcm-program-id $(MCM_PROGRAM_ID) \
+		--proposal $(MCM_PROPOSAL_OUTPUT)
+
+.PHONY: mcm-clear-signatures
+mcm-clear-signatures:
+	mcmctl signatures clear \
 		--rpc-url $(SOL_RPC_URL) \
 		--ws-url $(SOL_WS_URL) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \

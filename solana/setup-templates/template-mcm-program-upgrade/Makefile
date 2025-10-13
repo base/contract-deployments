@@ -17,13 +17,13 @@ transfer-buffer:
 # Override the parent Makefile's mcm-proposal command
 .PHONY: mcm-proposal
 mcm-proposal:
-	mcmctl proposal create-upgrade \
+	mcmctl proposal loader-v3 upgrade \
 		--rpc-url $(SOL_RPC_URL) \
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--multisig-id $(MCM_MULTISIG_ID) \
 		--valid-until $(MCM_VALID_UNTIL) \
 		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
-		--output $(MCM_PROPOSAL_OUTPUT)
+		--output $(MCM_PROPOSAL_OUTPUT) \
 		--program $(PROGRAM) \
 		--buffer $(BUFFER) \
 		--spill $(SPILL)
