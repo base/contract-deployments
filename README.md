@@ -48,7 +48,7 @@ Next, `cd` into the directory that was created for you and follow the steps list
 
 > **👥 For Signers:** Please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
 
-Please note, you will need to manually create a `VALIDATION.md` file for your task as they are bespoke to each task and therefore not created automatically as a part of the templates. If you need examples to work from, you can browse through similar past tasks in this repo and adapt them to your specific task.
+Please note, you will need to manually create validation file(s) for your task as they are bespoke to each task and therefore not created automatically as a part of the templates. We use one validation Markdown file per multisig involved in the task, so if there's only one multisig involved in your task, then you can simply create a `VALIDATION.md` file at the root of your task containing the validation instructions, while if there are multiple multisigs involved in the task, then create a `validations/` sub-directory at the root of your task containing the corresponding validation Markdown files. If you need examples to work from, you can browse through similar past tasks in this repo and adapt them to your specific task. Also, please note that we have tooling to generate these files (like the `task-signer-tool`) which removes the manual aspect of creating these validation files, we will soon update these instructions to reflect how this process can be automated.
 
 ## Directory structure
 
