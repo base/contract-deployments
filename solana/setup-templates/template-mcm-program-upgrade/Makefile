@@ -3,27 +3,37 @@ include .env
 
 include ../../Makefile
 
-.PHONY: write-buffer
-write-buffer:
-	solana program write-buffer $(PROGRAM_BINARY) \
-		--url $(SOL_RPC_URL)
+##
+# MCM Program Upgrade Workflow
+##
 
-.PHONY: transfer-buffer
-transfer-buffer:
-	solana program set-buffer-authority $(BUFFER) \
-		--new-buffer-authority $(MCM_AUTHORITY) \
-		--url $(SOL_RPC_URL)
+# Step 1: Write program buffer
+.PHONY: step1-write-buffer
+step1-write-buffer:
+	@echo "==> Step 1: Writing program buffer..."
+	make sol-write-buffer
 
-# Override the parent Makefile's mcm-proposal command
-.PHONY: mcm-proposal
-mcm-proposal:
-	mcmctl proposal loader-v3 upgrade \
-		--rpc-url $(SOL_RPC_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--valid-until $(MCM_VALID_UNTIL) \
-		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
-		--output $(MCM_PROPOSAL_OUTPUT) \
-		--program $(PROGRAM) \
-		--buffer $(BUFFER) \
-		--spill $(SPILL)
+# Step 2: Transfer buffer authority to MCM
+.PHONY: step2-transfer-buffer
+step2-transfer-buffer:
+	@echo "==> Step 2: Transferring buffer authority to MCM..."
+	make sol-set-buffer-authority
+
+# Step 3: Create upgrade proposal
+.PHONY: step3-create-proposal
+step3-create-proposal:
+	@echo "==> Step 3: Creating MCM upgrade proposal..."
+	make mcm-proposal-loader-v3-upgrade
+
+# Step 4: Sign proposal
+.PHONY: step4-sign-proposal
+step4-sign-proposal:
+	@echo "==> Step 4: Signing proposal..."
+	make mcm-sign
+
+# Step 5: Execute proposal (signatures + set-root + execute)
+.PHONY: step5-execute-proposal
+step5-execute-proposal:
+	@echo "==> Step 5: Executing MCM proposal..."
+	make mcm-signatures-all
+	make mcm-proposal-all

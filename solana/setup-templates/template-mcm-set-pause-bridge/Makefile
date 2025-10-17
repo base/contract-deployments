@@ -3,17 +3,25 @@ include .env
 
 include ../../Makefile
 
-# Override the parent Makefile's mcm-proposal command
-.PHONY: mcm-proposal
-mcm-proposal:
-	mcmctl proposal bridge pause \
-		--rpc-url $(SOL_RPC_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--bridge-program-id $(BRIDGE_PROGRAM_ID) \
-		--bridge $(BRIDGE_ACCOUNT) \
-		--guardian $(GUARDIAN) \
-		--paused $(PAUSED) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--valid-until $(MCM_VALID_UNTIL) \
-		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
-		--output $(MCM_PROPOSAL_OUTPUT)
+##
+# MCM Bridge Pause/Unpause Workflow
+##
+
+# Step 1: Create pause/unpause proposal
+.PHONY: step1-create-proposal
+step1-create-proposal:
+	@echo "==> Step 1: Creating MCM pause/unpause proposal..."
+	make mcm-proposal-bridge-pause
+
+# Step 2: Sign proposal
+.PHONY: step2-sign-proposal
+step2-sign-proposal:
+	@echo "==> Step 2: Signing proposal..."
+	make mcm-sign
+
+# Step 3: Execute proposal (signatures + set-root + execute)
+.PHONY: step3-execute-proposal
+step3-execute-proposal:
+	@echo "==> Step 3: Executing MCM proposal..."
+	make mcm-signatures-all
+	make mcm-proposal-all

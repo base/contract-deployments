@@ -3,99 +3,82 @@ include .env
 
 include ../../Makefile
 
-.PHONY: mcm-clone
-mcm-clone:
+##
+# Project Setup
+##
+
+.PHONY: install-rust
+install-rust:
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+.PHONY: install-solana-cli
+install-solana-cli:
+	sh -c "$(curl -sSfL https://release.anza.xyz/v$(SOLANA_VERSION)/install)"
+
+.PHONY: install-anchor
+install-anchor:
+	cargo install --git https://github.com/coral-xyz/anchor --tag v$(ANCHOR_VERSION) anchor-cli --force
+
+.PHONY:
+deps: install-rust install-solana-cli install-anchor
+
+##
+# Deployment Workflow
+##
+
+# Step 1: Clone and patch the MCM program
+.PHONY: step1-clone-and-patch
+step1-clone-and-patch:
+	@echo "==> Step 1: Cloning and patching the MCM program..."
 	rm -rf chainlink-ccip
 	git clone --filter=blob:none $(MCM_REPO) chainlink-ccip
 	cd chainlink-ccip && \
 		git checkout $(MCM_AUDITED_COMMIT) && \
 		git apply ../$(MCM_PROGRAM_PATCH)
 
-.PHONY: mcm-deploy
-mcm-deploy:
+# Step 2: Build and deploy the MCM program
+.PHONY: step2-build-and-deploy
+step2-build-and-deploy:
+	@echo "==> Step 2: Building and deploying the MCM program..."
 	cd chainlink-ccip/chains/solana/contracts && \
-		anchor keys sync  && \
+		anchor keys sync && \
 		anchor build -p mcm && \
-		anchor deploy --provider.cluster $(CLUSTER) --provider.wallet $(WALLET) -p mcm
+		anchor deploy --provider.cluster $(CLUSTER) --provider.wallet $(AUTHORITY) -p mcm
 
-.PHONY: mcm-init
-mcm-init:
-	mcmctl multisig init \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--chain-id $(MCM_CHAIN_ID)
+# Step 3: Initialize the multisig (inherited from parent)
+.PHONY: step3-init-multisig
+step3-init-multisig:
+	@echo "==> Step 3: Initializing MCM multisig..."
+	make mcm-multisig-init
 
-.PHONY: mcm-init-signers
-mcm-init-signers:
-	mcmctl signers init \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--total $(MCM_SIGNER_COUNT)
-	mcmctl signers append \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--signers $(MCM_SIGNERS)
-	mcmctl signers finalize \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID)
-	mcmctl signers set-config \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--signer-groups $(MCM_SIGNER_GROUPS) \
-		--group-quorums $(MCM_GROUP_QUORUMS) \
-		--group-parents $(MCM_GROUP_PARENTS)
-	mcmctl signers print-config \
-		--rpc-url $(SOL_RPC_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--pretty
+# Step 4: Initialize the signers (inherited from parent)
+.PHONY: step4-init-signers
+step4-init-signers:
+	@echo "==> Step 4: Initializing MCM signers..."
+	make mcm-signers-all
 
-# Override the parent Makefile's mcm-proposal command
-.PHONY: mcm-proposal
-mcm-proposal:
-	mcmctl proposal mcm accept-ownership \
-		--rpc-url $(SOL_RPC_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--valid-until $(MCM_VALID_UNTIL) \
-		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
-		--output $(MCM_PROPOSAL_OUTPUT)
+# Step 5: Create accept-ownership proposal (inherited from parent)
+.PHONY: step5-create-accept-ownership-proposal
+step5-create-accept-ownership-proposal:
+	@echo "==> Step 5: Creating MCM accept-ownership proposal..."
+	make mcm-proposal-accept-ownership
 
-# Internal target - do not run manually
-.PHONY: mcm-accept-ownership
-mcm-accept-ownership:
-	make mcm-init-signatures
-	make mcm-append-signatures
-	make mcm-finalize-signatures
-	make mcm-set-root
-	make mcm-execute
+# Step 5.5: Collect signatures (inherited from parent)
+.PHONY: step5.5-collect-signatures
+step5.5-collect-signatures:
+	@echo "==> Step 5.5: Collecting MCM signatures..."
+	make mcm-sign
 
-.PHONY: mcm-transfer-ownership
-mcm-transfer-ownership:
-	mcmctl ownership transfer \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--proposed-owner $(MCM_AUTHORITY)
-	make mcm-accept-ownership
-	make mcm-print-config
+# Step 6: Execute ownership transfer (inherited from parent)
+.PHONY: step6-execute-ownership-transfer
+step6-execute-ownership-transfer:
+	@echo "==> Step 6: Executing MCM ownership transfer..."
+	make mcm-ownership-transfer
+	make mcm-all
 
-.PHONY: mcm-transfer-upgrade-authority
-mcm-transfer-upgrade-authority:
-	solana program set-upgrade-authority $(MCM_PROGRAM_ID) \
-		--url $(SOL_RPC_URL) \
-		--new-upgrade-authority $(MCM_AUTHORITY) \
-		--skip-new-upgrade-authority-signer-check
-	solana program show $(MCM_PROGRAM_ID) \
-		--url $(SOL_RPC_URL)
+# Step 7: Transfer upgrade authority (inherited from parent)
+.PHONY: step7-transfer-upgrade-authority
+step7-transfer-upgrade-authority:
+	@echo "==> Step 7: Transferring MCM upgrade authority..."
+	make sol-program-set-upgrade-authority
+	make sol-program-show

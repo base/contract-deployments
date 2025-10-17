@@ -3,18 +3,25 @@ include .env
 
 include ../../Makefile
 
-# Override the parent Makefile's mcm-proposal command
-.PHONY: mcm-proposal
-mcm-proposal:
-	mcmctl proposal mcm update-signers \
-		--rpc-url $(SOL_RPC_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--valid-until $(MCM_VALID_UNTIL) \
-		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
-		--output $(MCM_PROPOSAL_OUTPUT) \
-		--new-signers $(MCM_NEW_SIGNERS) \
-		--signer-groups $(MCM_SIGNER_GROUPS) \
-		--group-quorums $(MCM_GROUP_QUORUMS) \
-		--group-parents $(MCM_GROUP_PARENTS) \
-		$(if $(filter true,$(MCM_CLEAR_ROOT)),--clear-root)
+##
+# MCM Signers Update Workflow
+##
+
+# Step 1: Create signers update proposal
+.PHONY: step1-create-proposal
+step1-create-proposal:
+	@echo "==> Step 1: Creating MCM signers update proposal..."
+	make mcm-proposal-update-signers
+
+# Step 2: Sign proposal
+.PHONY: step2-sign-proposal
+step2-sign-proposal:
+	@echo "==> Step 2: Signing proposal..."
+	make mcm-sign
+
+# Step 3: Execute proposal (signatures + set-root + execute)
+.PHONY: step3-execute-proposal
+step3-execute-proposal:
+	@echo "==> Step 3: Executing MCM proposal..."
+	make mcm-signatures-all
+	make mcm-proposal-all
