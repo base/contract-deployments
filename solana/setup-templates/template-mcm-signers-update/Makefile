@@ -14,8 +14,8 @@ step1-create-proposal:
 	make mcm-proposal-update-signers
 
 # Step 2: Sign proposal
-.PHONY: step2-sign-proposal
-step2-sign-proposal:
+.PHONY: sign
+sign:
 	@echo "==> Step 2: Signing proposal..."
 	make mcm-sign
 

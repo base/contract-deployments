@@ -19,6 +19,12 @@ step2-transfer-buffer:
 	@echo "==> Step 2: Transferring buffer authority to MCM..."
 	make sol-set-buffer-authority
 
+# Step 2.5: Generate set-buffer-authority artifacts (use solana explorer to get the signature of the set-buffer-authority tx)
+.PHONY: step7.5-generate-set-buffer-authority-artifacts
+step7.5-generate-set-buffer-authority-artifacts:
+	@echo "==> Step 7.5: Generating MCM set-buffer-authority artifacts..."
+	make sol-confirm SIG=$(SET_BUFFER_AUTHORITY_SIGNATURE) output=artifacts/set-buffer-authority-artifacts.json
+
 # Step 3: Create upgrade proposal
 .PHONY: step3-create-proposal
 step3-create-proposal:
@@ -26,8 +32,8 @@ step3-create-proposal:
 	make mcm-proposal-loader-v3-upgrade
 
 # Step 4: Sign proposal
-.PHONY: step4-sign-proposal
-step4-sign-proposal:
+.PHONY: sign
+sign:
 	@echo "==> Step 4: Signing proposal..."
 	make mcm-sign
 

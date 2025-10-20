@@ -42,7 +42,7 @@ install-eip712sign:
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@v0.3.5
+	go install github.com/base/mcm-go/cmd/mcmctl@v0.3.6
 
 .PHONY: deps
 deps: install-mcmctl install-eip712sign
@@ -57,32 +57,20 @@ include $(dir $(lastword $(MAKEFILE_LIST)))MCM.mk
 # Solana Utils
 ##
 
-# Run `make sol-confirm-cmd sig=<signature> output=<output-file>`
-# Or `make sol-confirm-cmd cmd=<command> output=<output-file> [auto=true]`
-#
-# Manual mode: Confirms a specific signature
-# Auto mode (default when cmd is provided): Captures signature from command output and confirms it
-# Set auto=false to skip automatic confirmation when using cmd parameter
+# Run `make sol-confirm-cmd cmd=<command> output=<output-file>`
+# Captures signature from command output and confirms it
 .PHONY: sol-confirm-cmd
 sol-confirm-cmd:
-ifdef cmd
-ifeq ($(auto),false)
-	@$(cmd)
-else
 	@OUTPUT=$$($(cmd) 2>&1 | tee /dev/tty); \
 	SIG=$$(echo "$$OUTPUT" | grep -oE '[1-9A-HJ-NP-Za-km-z]{87,88}' | tail -1); \
 	if [ -n "$$SIG" ]; then \
 		echo ""; \
 		$(MAKE) sol-confirm SIG=$$SIG output=$(output); \
+		echo "Transaction artifacts written to $(output)"; \
 	else \
 		echo "ERROR: No signature found"; \
 		exit 1; \
 	fi
-endif
-else
-	mkdir -p $(dir $(output))
-	solana confirm $(sig) -v --output json --url $(SOL_RPC_URL) >> $(output)
-endif
 
 # Run `make sol-confirm SIG=<signature> output=<output-file>`
 # Confirms a signature and saves the result to a JSON file
@@ -101,33 +89,32 @@ sol-program-show:
 	solana program show $(SOL_PROGRAM_ID) --url $(SOL_RPC_URL)
 
 .PHONY: sol-transfer
+sol-transfer: output ?= artifacts/sol-transfer.json
 sol-transfer:
 	make sol-confirm-cmd \
 		cmd="solana transfer $(SOL_RECIPIENT) $(SOL_AMOUNT) \
 			--url $(SOL_RPC_URL) \
-			--fee-payer $(AUTHORITY)" \
-		output=artifacts/sol-transfer.json
+			--fee-payer $(AUTHORITY) \
+			--allow-unfunded-recipient" \
+		output=$(output)
 
+# This command does not output the signature, so we cannot use make sol-confirm-cmd
 .PHONY: sol-program-set-upgrade-authority
 sol-program-set-upgrade-authority:
-	make sol-confirm-cmd \
-		cmd="solana program set-upgrade-authority $(SOL_PROGRAM_ID) \
-			--url $(SOL_RPC_URL) \
-			--new-upgrade-authority $(NEW_UPGRADE_AUTHORITY) \
-			--skip-new-upgrade-authority-signer-check" \
-		output=artifacts/sol-program-set-upgrade-authority.json
+	solana program set-upgrade-authority $(SOL_PROGRAM_ID) \
+	--url $(SOL_RPC_URL) \
+	--new-upgrade-authority $(NEW_UPGRADE_AUTHORITY) \
+	--skip-new-upgrade-authority-signer-check
 
+# This command does not output the signature, so we cannot use make sol-confirm-cmd
 .PHONY: sol-write-buffer
 sol-write-buffer:
-	make sol-confirm-cmd \
-		cmd="solana program write-buffer $(PROGRAM_BINARY) \
-			--url $(SOL_RPC_URL)" \
-		output=artifacts/sol-write-buffer.json
+	solana program write-buffer $(PROGRAM_BINARY) \
+	--url $(SOL_RPC_URL)
 
+# This command does not output the signature, so we cannot use make sol-confirm-cmd
 .PHONY: sol-set-buffer-authority
 sol-set-buffer-authority:
-	make sol-confirm-cmd \
-		cmd="solana program set-buffer-authority $(BUFFER) \
-			--new-buffer-authority $(NEW_BUFFER_AUTHORITY) \
-			--url $(SOL_RPC_URL)" \
-		output=artifacts/sol-set-buffer-authority.json
+	solana program set-buffer-authority $(BUFFER) \
+	--new-buffer-authority $(NEW_BUFFER_AUTHORITY) \
+	--url $(SOL_RPC_URL)"

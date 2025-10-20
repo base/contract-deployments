@@ -47,7 +47,7 @@ mcm-proposal-hash:
 .PHONY: mcm-sign
 mcm-sign:
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --text -- \
-	mcm-proposal-hash
+	make mcm-proposal-hash
 
 ##
 # Atomic commands with transaction confirmation

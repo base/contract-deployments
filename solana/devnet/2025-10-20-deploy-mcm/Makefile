@@ -13,13 +13,13 @@ install-rust:
 
 .PHONY: install-solana-cli
 install-solana-cli:
-	sh -c "$(curl -sSfL https://release.anza.xyz/v$(SOLANA_VERSION)/install)"
+	curl -sSfL https://release.anza.xyz/v$(SOLANA_VERSION)/install | sh
 
 .PHONY: install-anchor
 install-anchor:
 	cargo install --git https://github.com/coral-xyz/anchor --tag v$(ANCHOR_VERSION) anchor-cli --force
 
-.PHONY:
+.PHONY: deps
 deps: install-rust install-solana-cli install-anchor
 
 ##
@@ -45,11 +45,18 @@ step2-build-and-deploy:
 		anchor build -p mcm && \
 		anchor deploy --provider.cluster $(CLUSTER) --provider.wallet $(AUTHORITY) -p mcm
 
+# Step 2.5: Generate deploy artifacts (use solana explorer to get the signature of the deployWithMaxDataLen tx)
+.PHONY: step2.5-generate-deploy-artifacts
+step2.5-generate-deploy-artifacts:
+	@echo "==> Step 2.5: Generating MCM deploy artifacts..."
+	make sol-confirm SIG=$(MCM_DEPLOY_SIGNATURE) output=artifacts/mcm-deploy-artifacts.json
+
 # Step 3: Initialize the multisig (inherited from parent)
 .PHONY: step3-init-multisig
 step3-init-multisig:
 	@echo "==> Step 3: Initializing MCM multisig..."
 	make mcm-multisig-init
+	make mcm-multisig-print-authority
 
 # Step 4: Initialize the signers (inherited from parent)
 .PHONY: step4-init-signers
@@ -63,10 +70,10 @@ step5-create-accept-ownership-proposal:
 	@echo "==> Step 5: Creating MCM accept-ownership proposal..."
 	make mcm-proposal-accept-ownership
 
-# Step 5.5: Collect signatures (inherited from parent)
-.PHONY: step5.5-collect-signatures
-step5.5-collect-signatures:
-	@echo "==> Step 5.5: Collecting MCM signatures..."
+# Step 5.5: Sign the proposal (inherited from parent)
+.PHONY: step5.5-sign-proposal
+step5.5-sign-proposal:
+	@echo "==> Step 5.5: Signing MCM proposal..."
 	make mcm-sign
 
 # Step 6: Execute ownership transfer (inherited from parent)
@@ -82,3 +89,9 @@ step7-transfer-upgrade-authority:
 	@echo "==> Step 7: Transferring MCM upgrade authority..."
 	make sol-program-set-upgrade-authority
 	make sol-program-show
+
+# Step 7.5: Generate set-upgrade-authority artifacts (use solana explorer to get the signature of the set-upgrade-authority tx)
+.PHONY: step7.5-generate-set-upgrade-authority-artifacts
+step7.5-generate-set-upgrade-authority-artifacts:
+	@echo "==> Step 7.5: Generating MCM set-upgrade-authority artifacts..."
+	make sol-confirm SIG=$(SET_UPGRADE_AUTHORITY_SIGNATURE) output=artifacts/set-upgrade-authority-artifacts.json
