@@ -56,7 +56,7 @@ step2-build-programs:
 		--bridge-program-kp ../../bridge-keypair.json \
 		--base-relayer-program-kp ../../base_relayer-keypair.json
 
-# Step 3: Deploy programs
+# Step 3: Deploy programs 
 .PHONY: step3-deploy-programs
 step3-deploy-programs:
 	@echo "==> Step 3: Deploying programs..."
