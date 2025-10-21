@@ -1,0 +1,91 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "127scRFUVMDXZ27DWppN9o4m8VadRf9KCR44261PxYqYpCdvS5TDA9dctt1GeNoFjKukXv4NiCQdr4nyhJEaSTY3"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 3
+      },
+      "accountKeys": [
+        "2aWsUTRfJu2hPNUYHaYJjm6C3SVPqXjtoxu2VgBXsd72",
+        "8e9iEAej6ZsWQeJyfwEha1o67HGirYqXVaMKSW8Gqx3T",
+        "7BrnaHaHtFDshmyrZFi28r9vzxTqcmTjSZcf7KdLHRhL",
+        "11111111111111111111111111111111",
+        "Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX"
+      ],
+      "recentBlockhash": "DAjuukF3x86JPvvLYJuqQrXkVZdKWfzP4YdtxGvfrUt1",
+      "instructions": [
+        {
+          "programIdIndex": 4,
+          "accounts": [
+            2,
+            1,
+            0,
+            3
+          ],
+          "data": "PXWSyLz7TkBDeki3V6tWD5LEQFNUshsGo5XhC69om7re6dKuVXRBHyCG",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      213262193560,
+      0,
+      2143680,
+      1,
+      1141440
+    ],
+    "postBalances": [
+      213259390640,
+      2797920,
+      2143680,
+      1,
+      1141440
+    ],
+    "innerInstructions": [
+      {
+        "index": 0,
+        "instructions": [
+          {
+            "programIdIndex": 3,
+            "accounts": [
+              0,
+              1
+            ],
+            "data": "11114Yini18cyWdoT2b5xcdaJ18Qzshjktbm1L4pFf1RqWPBLeEVAMMCB2WuZ7ipPSo1Mj",
+            "stackHeight": 2
+          }
+        ]
+      }
+    ],
+    "logMessages": [
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX invoke [1]",
+      "Program log: Instruction: InitSigners",
+      "Program 11111111111111111111111111111111 invoke [2]",
+      "Program 11111111111111111111111111111111 success",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX consumed 10272 of 200000 compute units",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 10272
+  },
+  "blockTime": 1761065384,
+  "slot": 416141279
+}

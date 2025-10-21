@@ -1,0 +1,70 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "4PKytW5KdhEUrRCitkK676RH8pYZoxZfDSM4PMxgzbW19hJzvia3CFSZHr5MnaRuG6VcbnN3ULXV1bAxAKft8Vcg"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 2
+      },
+      "accountKeys": [
+        "2aWsUTRfJu2hPNUYHaYJjm6C3SVPqXjtoxu2VgBXsd72",
+        "8e9iEAej6ZsWQeJyfwEha1o67HGirYqXVaMKSW8Gqx3T",
+        "7BrnaHaHtFDshmyrZFi28r9vzxTqcmTjSZcf7KdLHRhL",
+        "Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX"
+      ],
+      "recentBlockhash": "CkAbbUJfyVra9rf9icfTtMseN9LUjrfD4FSwJcrzco9o",
+      "instructions": [
+        {
+          "programIdIndex": 3,
+          "accounts": [
+            2,
+            1,
+            0
+          ],
+          "data": "2nf1F9kmbuTdp5Vczs1R1Fq4atVAVZ4tQGZ2Cjmt6iBMcyXoAR5WFnbQNQBJgQtBujGH3mrsncheGs1Dhqsqkes9uk7tRPK4Th8R2TYZjNzN9rfEKWWLhmT9p6wxwFrCKwokEMR6DLapCu1VbWVDDVPsGTACU2SJJJ6pAQi2VXZBcAxDE4jrFHNhNRJCYkBbmkSqhEpBV4ii8jZ9sLEE2J82kfECng48U6QRm531iUwY45k1w1mtprBNEv9c4eaiyr54gSL35v7CKdBaAwS7eQZfhaiHeUxfATVV5UWxK6p5xXqhezit9hbXxF47rANWMZxHf3soxprRMJrgVA7vKUCsmYUny4GvyXFhrM1ppzD6DGE3wungioQqbxZ77iY8wDcm9UYwuUWA7wdihPUp2ZudiihPXz6p",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      213259390640,
+      2797920,
+      2143680,
+      1141440
+    ],
+    "postBalances": [
+      213259385640,
+      2797920,
+      2143680,
+      1141440
+    ],
+    "innerInstructions": [],
+    "logMessages": [
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX invoke [1]",
+      "Program log: Instruction: AppendSigners",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX consumed 8742 of 200000 compute units",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 8742
+  },
+  "blockTime": 1761065400,
+  "slot": 416141319
+}

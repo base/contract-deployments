@@ -1,0 +1,29 @@
+{
+  "multisigId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "validUntil": 1761144659,
+  "instructions": [
+    {
+      "programId": "Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX",
+      "data": "rBcrDe7VVZYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "accounts": [
+        {
+          "pubkey": "7BrnaHaHtFDshmyrZFi28r9vzxTqcmTjSZcf7KdLHRhL",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "2N9nKVFPHsBVazniiYNxECB2nPLcwjk3dHAJH9tkr2xQ",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ]
+    }
+  ],
+  "rootMetadata": {
+    "chainId": 0,
+    "multisig": "7BrnaHaHtFDshmyrZFi28r9vzxTqcmTjSZcf7KdLHRhL",
+    "preOpCount": 0,
+    "postOpCount": 1,
+    "overridePreviousRoot": false
+  }
+}
