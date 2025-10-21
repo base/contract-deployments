@@ -172,3 +172,18 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 1. Generate the validation file for signers with `make gen-validation`.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+
+---
+
+## 🧰 Troubleshooting (Bridge Tasks)
+
+**Common issues when setting up Base Bridge tasks**
+
+- **forge not found**  
+  → Run `make install-foundry` to install Foundry before setup.
+
+- **“.env: no such file or directory”**  
+  → Each task folder requires a `.env` file.  
+  Copy the example template:  
+  ```bash
+  cp setup-templates/bridge-partner-threshold/.env.example .env
