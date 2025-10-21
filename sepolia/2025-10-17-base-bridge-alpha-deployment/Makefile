@@ -4,7 +4,7 @@ include .env
 
 .PHONY: deps
 deps:
-	forge install --no-git github.com/base/bridge@3666ba89cd4882e457ba0f672b1a12b74998db29
+	forge install --no-git github.com/base/bridge@e9b5fe27280ad2345d823d42668810432b0651aa
 
 .PHONY: deploy
 deploy:

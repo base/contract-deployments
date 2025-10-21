@@ -11,9 +11,7 @@ cd sepolia/2025-10-17-base-bridge-alpha-deployment
 make deps
 ```
 
-2. Connect and unlock Ledger
-
-3. Deploy bridge
+2. Deploy bridge
 
 ```bash
 make deploy
