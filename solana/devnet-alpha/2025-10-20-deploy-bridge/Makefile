@@ -35,7 +35,7 @@ step1-clone-bridge:
 	rm -rf bridge
 	git clone --filter=blob:none $(BRIDGE_REPO) bridge
 	cd bridge && \
-		git checkout $(BRIDGE_AUDITED_COMMIT)
+		git checkout $(BRIDGE_COMMIT)
 	cd bridge/clients/ts && \
 		bun install && \
 		bun run build
@@ -136,3 +136,23 @@ step5-print-sol-vault:
 step6-fund-sol-vault:
 	@echo "==> Step 6: Funding SOL vault..."
 	make sol-transfer output=artifacts/fund-sol-vault.json
+
+# Step 7: Transfer upgrade authorities of the bridge and base relayer programs
+.PHONY: step7-transfer-upgrade-authorities
+step7-transfer-upgrade-authorities:
+	@echo "==> Step 7: Transferring upgrade authorities of the bridge and base relayer programs..."
+	make sol-program-set-upgrade-authority \
+		SOL_PROGRAM_ID=$(BRIDGE_PROGRAM_ID) \
+		NEW_UPGRADE_AUTHORITY=$(GUARDIAN)
+	make sol-program-show SOL_PROGRAM_ID=$(BRIDGE_PROGRAM_ID)
+	make sol-program-set-upgrade-authority \
+		SOL_PROGRAM_ID=$(BASE_RELAYER_PROGRAM_ID) \
+		NEW_UPGRADE_AUTHORITY=$(GUARDIAN)
+	make sol-program-show SOL_PROGRAM_ID=$(BASE_RELAYER_PROGRAM_ID)
+
+# Step 8: Generate set-upgrade-authority artifacts (use solana explorer to get the signature of the set-upgrade-authority tx)
+.PHONY: step8-generate-set-upgrade-authorities-artifacts
+step8-generate-set-upgrade-authorities-artifacts:
+	@echo "==> Step 8: Generating set-upgrade-authorities artifacts..."
+	make sol-confirm SIG=$(SET_BRIDGE_UPGRADE_AUTHORITY_SIGNATURE) output=artifacts/set-bridge-upgrade-authority-artifacts.json
+	make sol-confirm SIG=$(SET_BASE_RELAYER_UPGRADE_AUTHORITY_SIGNATURE) output=artifacts/set-base-relayer-upgrade-authority-artifacts.json
