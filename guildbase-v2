@@ -1,0 +1,5 @@
+git branch -m base "cmd base V2"
+git fetch origin
+git branch -u origin/cmd cmd
+git remote set-head origin -a
+88644081+Kyone00@users.noreply.github.com
