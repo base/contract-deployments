@@ -42,11 +42,11 @@ mcm-proposal-create:
 
 .PHONY: mcm-proposal-hash
 mcm-proposal-hash:
-	mcmctl proposal hash --proposal $(MCM_PROPOSAL_OUTPUT)
+	mcmctl proposal hash --proposal $(MCM_PROPOSAL_OUTPUT) --mcm-program-id $(MCM_PROGRAM_ID)
 
 .PHONY: mcm-sign
 mcm-sign:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --text -- \
+	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	make mcm-proposal-hash
 
 ##
