@@ -1,6 +1,6 @@
 # MCM Program Upgrade via Multi-Chain Multisig
 
-Status: PENDING
+Status: [EXECUTED](https://solscan.io/tx/5cqjb6boxTizf75bUGRxfRt3sna7VxehDnW1dsy7FhzdPsBhimrrXdP2TUMxz1VXEkHGv2nsqb53tujEKHBR5UXJ?cluster=devnet)
 
 ## Description
 
