@@ -6,7 +6,7 @@ This repo contains execution code and artifacts related to Base contract deploym
 
 This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network.
 
-<!-- Badge row 1 - status -->
+<!-- Badge row 1 - status 1 -->
 
 [![GitHub contributors](https://img.shields.io/github/contributors/base-org/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/base-org/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
