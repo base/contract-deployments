@@ -20,9 +20,9 @@ step2-transfer-buffer:
 	make sol-set-buffer-authority
 
 # Step 2.5: Generate set-buffer-authority artifacts (use solana explorer to get the signature of the set-buffer-authority tx)
-.PHONY: step7.5-generate-set-buffer-authority-artifacts
-step7.5-generate-set-buffer-authority-artifacts:
-	@echo "==> Step 7.5: Generating MCM set-buffer-authority artifacts..."
+.PHONY: step2.5-generate-set-buffer-authority-artifacts
+step2.5-generate-set-buffer-authority-artifacts:
+	@echo "==> Step 2.5: Generating MCM set-buffer-authority artifacts..."
 	make sol-confirm SIG=$(SET_BUFFER_AUTHORITY_SIGNATURE) output=artifacts/set-buffer-authority-artifacts.json
 
 # Step 3: Create upgrade proposal

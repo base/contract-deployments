@@ -34,7 +34,8 @@ step1-clone-and-patch:
 	git clone --filter=blob:none $(MCM_REPO) chainlink-ccip
 	cd chainlink-ccip && \
 		git checkout $(MCM_AUDITED_COMMIT) && \
-		git apply ../$(MCM_PROGRAM_PATCH)
+		git apply ../$(INVOKE_SIGNED_PATCH) && \
+		git apply ../$(EIP712_PATCH)
 
 # Step 2: Build and deploy the MCM program
 .PHONY: step2-build-and-deploy

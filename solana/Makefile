@@ -117,4 +117,4 @@ sol-write-buffer:
 sol-set-buffer-authority:
 	solana program set-buffer-authority $(BUFFER) \
 	--new-buffer-authority $(NEW_BUFFER_AUTHORITY) \
-	--url $(SOL_RPC_URL)"
+	--url $(SOL_RPC_URL)
