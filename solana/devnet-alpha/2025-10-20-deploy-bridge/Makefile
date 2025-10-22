@@ -128,19 +128,24 @@ step5-print-sol-vault:
 	@echo "==> Step 5: Printing SOL vault..."
 	cd bridge/scripts && \
 		bun cli sol bridge sol-vault \
-		--bridge-program $(BRIDGE_PROGRAM_ID) \
-		--remote-token $(SOL_REMOTE_TOKEN)
+		--bridge-program $(BRIDGE_PROGRAM_ID)
 
-# Step 6: Print SOL vault and fund it
+# Step 6: Fund SOL vault
 .PHONY: step6-fund-sol-vault
 step6-fund-sol-vault:
 	@echo "==> Step 6: Funding SOL vault..."
-	make sol-transfer output=artifacts/fund-sol-vault.json
+	make sol-transfer SOL_RECIPIENT=$(SOL_VAULT) output=artifacts/fund-sol-vault.json
 
-# Step 7: Transfer upgrade authorities of the bridge and base relayer programs
-.PHONY: step7-transfer-upgrade-authorities
-step7-transfer-upgrade-authorities:
-	@echo "==> Step 7: Transferring upgrade authorities of the bridge and base relayer programs..."
+# Step 7: Fund the gas fee receiver
+.PHONY: step7-fund-gas-fee-receiver
+step7-fund-gas-fee-receiver:
+	@echo "==> Step 7: Funding gas fee receiver..."
+	make sol-transfer SOL_RECIPIENT=$(GAS_FEE_RECEIVER) output=artifacts/fund-gas-fee-receiver.json
+
+# Step 8: Transfer upgrade authorities of the bridge and base relayer programs
+.PHONY: step8-transfer-upgrade-authorities
+step8-transfer-upgrade-authorities:
+	@echo "==> Step 8: Transferring upgrade authorities of the bridge and base relayer programs..."
 	make sol-program-set-upgrade-authority \
 		SOL_PROGRAM_ID=$(BRIDGE_PROGRAM_ID) \
 		NEW_UPGRADE_AUTHORITY=$(GUARDIAN)
@@ -150,9 +155,9 @@ step7-transfer-upgrade-authorities:
 		NEW_UPGRADE_AUTHORITY=$(GUARDIAN)
 	make sol-program-show SOL_PROGRAM_ID=$(BASE_RELAYER_PROGRAM_ID)
 
-# Step 8: Generate set-upgrade-authority artifacts (use solana explorer to get the signature of the set-upgrade-authority tx)
-.PHONY: step8-generate-set-upgrade-authorities-artifacts
-step8-generate-set-upgrade-authorities-artifacts:
+# Step 9: Generate set-upgrade-authority artifacts (use solana explorer to get the signature of the set-upgrade-authority tx)
+.PHONY: step9-generate-set-upgrade-authorities-artifacts
+step9-generate-set-upgrade-authorities-artifacts:
 	@echo "==> Step 8: Generating set-upgrade-authorities artifacts..."
 	make sol-confirm SIG=$(SET_BRIDGE_UPGRADE_AUTHORITY_SIGNATURE) output=artifacts/set-bridge-upgrade-authority-artifacts.json
 	make sol-confirm SIG=$(SET_BASE_RELAYER_UPGRADE_AUTHORITY_SIGNATURE) output=artifacts/set-base-relayer-upgrade-authority-artifacts.json
