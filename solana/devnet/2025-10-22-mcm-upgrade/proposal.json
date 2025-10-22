@@ -17,7 +17,7 @@
           "isWritable": true
         },
         {
-          "pubkey": "C4XSxK5zGw2ANbWQSURn6Cx4HaFiCxpmD6Nbb4T6szNu",
+          "pubkey": "FsfzjZQu5MUAuZybaNNEkQbbzgKExUdGNFEbTohBGJGn",
           "isSigner": false,
           "isWritable": true
         },
@@ -49,6 +49,6 @@
     "multisig": "7BrnaHaHtFDshmyrZFi28r9vzxTqcmTjSZcf7KdLHRhL",
     "preOpCount": 0,
     "postOpCount": 1,
-    "overridePreviousRoot": false
+    "overridePreviousRoot": true
   }
 }

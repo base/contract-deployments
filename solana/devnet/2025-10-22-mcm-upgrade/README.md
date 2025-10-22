@@ -34,7 +34,7 @@ These values are in the `.env` file and the generated `proposal.json`.
 ### 4. Sign the proposal
 
 ```bash
-make mcm-sign
+make sign
 ```
 
 This command will:

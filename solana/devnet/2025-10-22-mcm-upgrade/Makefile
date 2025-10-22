@@ -73,7 +73,7 @@ sign:
 
 # Step 6: Execute proposal (signatures + set-root + execute)
 .PHONY: step6-execute-proposal
-step5-execute-proposal:
+step6-execute-proposal:
 	@echo "==> Step 6: Executing MCM proposal..."
 	make mcm-signatures-all
 	make mcm-proposal-all

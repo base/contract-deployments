@@ -1,9 +1,13 @@
 diff --git a/chains/solana/contracts/programs/mcm/src/instructions/execute.rs b/chains/solana/contracts/programs/mcm/src/instructions/execute.rs
-index 155b1a71..b550e7fe 100644
+index 155b1a71..a91e2a68 100644
 --- a/chains/solana/contracts/programs/mcm/src/instructions/execute.rs
 +++ b/chains/solana/contracts/programs/mcm/src/instructions/execute.rs
-@@ -93,6 +93,13 @@ pub fn execute<'info>(
+@@ -89,10 +89,17 @@ pub fn execute<'info>(
+     ];
+     let signer = &[&seeds[..]];
  
+-    ctx.accounts.expiring_root_and_op_count.op_count += 1;
+-
      invoke_signed(&instruction, acc_infos, signer)?;
  
 +    // If the CPI modified any typed accounts present in this outer context
@@ -12,6 +16,8 @@ index 155b1a71..b550e7fe 100644
 +    ctx.accounts.multisig_config.reload()?;
 +    ctx.accounts.root_metadata.reload()?;
 +    ctx.accounts.expiring_root_and_op_count.reload()?;
++
++    ctx.accounts.expiring_root_and_op_count.op_count += 1;
 +
      emit!(OpExecuted {
          nonce,
