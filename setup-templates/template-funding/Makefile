@@ -18,9 +18,7 @@ SCRIPT_NAME = FundScript
 
 .PHONY: sign
 sign:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) FundScript \
-	--sig "sign(address[])" "[]" --sender $(SENDER)
+	$(call MULTISIG_SIGN,) --sender $(SENDER)
 
 .PHONY: execute
 execute:
