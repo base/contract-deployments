@@ -1,0 +1,54 @@
+{
+  "multisigId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "validUntil": 1761205094,
+  "instructions": [
+    {
+      "programId": "BPFLoaderUpgradeab1e11111111111111111111111",
+      "data": "AwAAAA==",
+      "accounts": [
+        {
+          "pubkey": "Ca93fFb5tQR14XzNpvBi6WNTuPHWZLNwoZ3hu6EErgDF",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "C4XSxK5zGw2ANbWQSURn6Cx4HaFiCxpmD6Nbb4T6szNu",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "2aWsUTRfJu2hPNUYHaYJjm6C3SVPqXjtoxu2VgBXsd72",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "SysvarRent111111111111111111111111111111111",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "pubkey": "SysvarC1ock11111111111111111111111111111111",
+          "isSigner": false,
+          "isWritable": false
+        },
+        {
+          "pubkey": "2N9nKVFPHsBVazniiYNxECB2nPLcwjk3dHAJH9tkr2xQ",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ]
+    }
+  ],
+  "rootMetadata": {
+    "chainId": 0,
+    "multisig": "7BrnaHaHtFDshmyrZFi28r9vzxTqcmTjSZcf7KdLHRhL",
+    "preOpCount": 0,
+    "postOpCount": 1,
+    "overridePreviousRoot": false
+  }
+}

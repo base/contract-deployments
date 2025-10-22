@@ -19,8 +19,8 @@ install-solana-cli:
 install-anchor:
 	cargo install --git https://github.com/coral-xyz/anchor --tag v$(ANCHOR_VERSION) anchor-cli --force
 
-.PHONY: deps
-deps: install-rust install-solana-cli install-anchor
+.PHONY: setup-deps
+setup-deps: install-rust install-solana-cli install-anchor
 
 ##
 # Deployment Workflow
@@ -34,7 +34,8 @@ step1-clone-and-patch:
 	git clone --filter=blob:none $(MCM_REPO) chainlink-ccip
 	cd chainlink-ccip && \
 		git checkout $(MCM_AUDITED_COMMIT) && \
-		git apply ../$(MCM_PROGRAM_PATCH)
+		git apply ../$(INVOKE_SIGNED_PATCH) && \
+		git apply ../$(EIP712_PATCH)
 
 # Step 2: Build and deploy the MCM program
 .PHONY: step2-build-and-deploy

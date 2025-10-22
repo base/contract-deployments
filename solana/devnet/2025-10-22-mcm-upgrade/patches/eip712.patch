@@ -1,0 +1,404 @@
+diff --git a/chains/solana/contracts/programs/mcm/src/eip712.rs b/chains/solana/contracts/programs/mcm/src/eip712.rs
+new file mode 100644
+index 00000000..87b20002
+--- /dev/null
++++ b/chains/solana/contracts/programs/mcm/src/eip712.rs
+@@ -0,0 +1,268 @@
++//! # EIP-712 Typed Structured Data Hashing
++//!
++//! This module implements EIP-712 typed structured data hashing for Ethereum-compatible
++//! signature verification.
++//!
++//! ## Domain Separator
++//!
++//! The domain separator uniquely identifies this contract instance and prevents
++//! signature replay attacks across different chains or contracts:
++//!
++//! - **name**: "ManyChainMultiSig" - The contract name
++//! - **version**: "1" - The contract version
++//! - **chainId**: Solana chain identifier (e.g., hash of "solana:localnet")
++//! - **verifyingContract**: `address(0)` - Not applicable for Solana
++//! - **salt**: The Solana Program ID (32 bytes) - Uniquely identifies this program instance
++//!
++//! ## Message Structure
++//!
++//! Users sign a `RootValidation` message containing:
++//! - **root**: The 32-byte Merkle root of operations
++//! - **validUntil**: Timestamp (uint32) until which the root is valid
++
++use anchor_lang::prelude::*;
++use anchor_lang::solana_program::keccak::{hashv, Hash, HASH_BYTES};
++
++/// EIP-712 domain name for the ManyChainMultiSig contract
++pub const EIP712_DOMAIN_NAME: &str = "ManyChainMultiSig";
++
++/// EIP-712 domain version
++pub const EIP712_DOMAIN_VERSION: &str = "1";
++
++/// Type hash for EIP712Domain
++/// keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract,bytes32 salt)")
++pub const EIP712_DOMAIN_TYPE_HASH: &[u8; HASH_BYTES] = &[
++    0xd8, 0x7c, 0xd6, 0xef, 0x79, 0xd4, 0xe2, 0xb9, 0x5e, 0x15, 0xce, 0x8a, 0xbf, 0x73, 0x2d, 0xb5,
++    0x1e, 0xc7, 0x71, 0xf1, 0xca, 0x2e, 0xdc, 0xcf, 0x22, 0xa4, 0x6c, 0x72, 0x9a, 0xc5, 0x64, 0x72,
++];
++
++/// Type hash for RootValidation message
++/// keccak256("RootValidation(bytes32 root,uint32 validUntil)")
++pub const ROOT_VALIDATION_TYPE_HASH: &[u8; HASH_BYTES] = &[
++    0x07, 0x02, 0x19, 0xd6, 0x56, 0xf4, 0x72, 0x71, 0xfe, 0x6e, 0x2e, 0x8c, 0xff, 0x49, 0x55, 0xfe,
++    0xcb, 0xca, 0xb4, 0xc9, 0x42, 0x22, 0x83, 0x09, 0xe9, 0x0a, 0xae, 0x20, 0xbd, 0x1f, 0xa8, 0x95,
++];
++
++/// Hash of the domain name "ManyChainMultiSig"
++/// keccak256("ManyChainMultiSig")
++pub const EIP712_DOMAIN_NAME_HASH: &[u8; HASH_BYTES] = &[
++    0x62, 0x7b, 0x9a, 0x5c, 0xae, 0x29, 0x68, 0x84, 0x2a, 0x54, 0x1a, 0x6b, 0xa8, 0x61, 0xa7, 0x15,
++    0x0a, 0xb5, 0xec, 0x3c, 0x42, 0x02, 0xa6, 0x24, 0xbc, 0xa4, 0x6b, 0xff, 0x04, 0x11, 0xce, 0x9a,
++];
++
++/// Hash of the domain version "1"
++/// keccak256("1")
++pub const EIP712_DOMAIN_VERSION_HASH: &[u8; HASH_BYTES] = &[
++    0xc8, 0x9e, 0xfd, 0xaa, 0x54, 0xc0, 0xf2, 0x0c, 0x7a, 0xdf, 0x61, 0x28, 0x82, 0xdf, 0x09, 0x50,
++    0xf5, 0xa9, 0x51, 0x63, 0x7e, 0x03, 0x07, 0xcd, 0xcb, 0x4c, 0x67, 0x2f, 0x29, 0x8b, 0x8b, 0xc6,
++];
++
++/// Computes the EIP-712 message hash for root validation.
++///
++/// This is the final hash that gets signed by the user. It follows the EIP-712
++/// format: `keccak256("\x19\x01" || domainSeparator || structHash)`
++///
++/// # Parameters
++///
++/// - `root`: The 32-byte Merkle root
++/// - `valid_until`: Timestamp until which the root is valid
++/// - `chain_id`: The chain identifier
++/// - `program_id`: The Solana Program ID
++///
++/// # Returns
++///
++/// - The 32-byte message hash ready for ECDSA verification
++pub fn compute_message_hash(
++    root: &[u8; HASH_BYTES],
++    valid_until: u32,
++    chain_id: u64,
++    program_id: &Pubkey,
++) -> Hash {
++    let domain_separator = compute_domain_hash(chain_id, program_id);
++    let struct_hash = compute_struct_hash(root, valid_until);
++
++    hashv(&[
++        b"\x19\x01",
++        &domain_separator.to_bytes(),
++        &struct_hash.to_bytes(),
++    ])
++}
++
++/// Computes the EIP-712 domain separator hash.
++///
++/// The domain separator ensures that signatures are unique to this specific
++/// contract instance and chain, preventing replay attacks.
++///
++/// # Parameters
++///
++/// - `chain_id`: The chain identifier (e.g., keccak256("solana:localnet"))
++/// - `program_id`: The Solana Program ID (32 bytes), used as the salt
++///
++/// # Returns
++///
++/// - The 32-byte domain separator hash
++pub fn compute_domain_hash(chain_id: u64, program_id: &Pubkey) -> Hash {
++    // Chain ID as bytes32 (big-endian, left-padded)
++    let chain_id_bytes = left_pad_to_32(&chain_id.to_be_bytes());
++
++    // Verifying contract = address(0) = 20 zero bytes, left-padded to 32 bytes
++    let verifying_contract = [0u8; 32];
++
++    // Salt = Program ID (32 bytes)
++    let salt = program_id.to_bytes();
++
++    hashv(&[
++        EIP712_DOMAIN_TYPE_HASH,
++        EIP712_DOMAIN_NAME_HASH,
++        EIP712_DOMAIN_VERSION_HASH,
++        &chain_id_bytes,
++        &verifying_contract,
++        &salt,
++    ])
++}
++
++/// Computes the EIP-712 struct hash for a RootValidation message.
++///
++/// # Parameters
++///
++/// - `root`: The 32-byte Merkle root
++/// - `valid_until`: Timestamp until which the root is valid
++///
++/// # Returns
++///
++/// - The 32-byte struct hash
++pub fn compute_struct_hash(root: &[u8; HASH_BYTES], valid_until: u32) -> Hash {
++    // valid_until as bytes32 (big-endian, left-padded)
++    let valid_until_bytes = left_pad_to_32(&valid_until.to_be_bytes());
++
++    hashv(&[ROOT_VALIDATION_TYPE_HASH, root, &valid_until_bytes])
++}
++
++/// Left-pads a byte array to 32 bytes with zeros.
++///
++/// # Parameters
++///
++/// - `input`: The input byte array
++///
++/// # Returns
++///
++/// - A 32-byte array with the input left-padded with zeros
++fn left_pad_to_32(input: &[u8]) -> [u8; 32] {
++    let mut padded = [0u8; 32];
++    let start = 32 - input.len();
++    padded[start..].copy_from_slice(input);
++    padded
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use anchor_lang::solana_program::keccak::hash;
++
++    // Last 8 bytes of keccak256("solana:localnet") as big-endian
++    const CHAIN_ID: u64 = 5190648258797659666;
++
++    fn decode32(s: &str) -> [u8; HASH_BYTES] {
++        hex::decode(s).unwrap().try_into().unwrap()
++    }
++
++    #[test]
++    fn verify_domain_type_hash() {
++        let expected = hash(b"EIP712Domain(string name,string version,uint256 chainId,address verifyingContract,bytes32 salt)");
++        assert_eq!(&expected.to_bytes(), EIP712_DOMAIN_TYPE_HASH);
++    }
++
++    #[test]
++    fn verify_domain_name_hash() {
++        let expected = hash(EIP712_DOMAIN_NAME.as_bytes());
++        assert_eq!(&expected.to_bytes(), EIP712_DOMAIN_NAME_HASH);
++    }
++
++    #[test]
++    fn verify_domain_version_hash() {
++        let expected = hash(EIP712_DOMAIN_VERSION.as_bytes());
++        assert_eq!(&expected.to_bytes(), EIP712_DOMAIN_VERSION_HASH);
++    }
++
++    #[test]
++    fn verify_root_validation_type_hash() {
++        let expected = hash(b"RootValidation(bytes32 root,uint32 validUntil)");
++        assert_eq!(&expected.to_bytes(), ROOT_VALIDATION_TYPE_HASH);
++    }
++
++    #[test]
++    fn test_left_pad_to_32() {
++        let input = [1, 2, 3, 4];
++        let result = left_pad_to_32(&input);
++        let expected: [u8; 32] = [
++            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
++            2, 3, 4,
++        ];
++        assert_eq!(result, expected);
++    }
++
++    #[test]
++    fn test_compute_domain_hash() {
++        let program_id = Pubkey::new_from_array(decode32(
++            "b870e12dd379891561d2e9fa8f26431834eb736f2f24fc2a2a4dff1fd5dca4df",
++        ));
++
++        let domain_hash = compute_domain_hash(CHAIN_ID, &program_id);
++
++        // The domain hash should be deterministic
++        // We'll verify it matches the expected structure by recomputing
++        let name_hash = hash(EIP712_DOMAIN_NAME.as_bytes());
++        let version_hash = hash(EIP712_DOMAIN_VERSION.as_bytes());
++        let chain_id_bytes = left_pad_to_32(&CHAIN_ID.to_be_bytes());
++        let verifying_contract = [0u8; 32];
++        let salt = program_id.to_bytes();
++
++        let expected = hashv(&[
++            EIP712_DOMAIN_TYPE_HASH,
++            &name_hash.to_bytes(),
++            &version_hash.to_bytes(),
++            &chain_id_bytes,
++            &verifying_contract,
++            &salt,
++        ]);
++
++        assert_eq!(domain_hash.to_bytes(), expected.to_bytes());
++    }
++
++    #[test]
++    fn test_compute_struct_hash() {
++        let root = decode32("d5ef592d1ad183db43b4980d7ab7ee43a6f6a284988c3e3a23d38c07beb520c7");
++        let valid_until: u32 = 1748317727;
++
++        let struct_hash = compute_struct_hash(&root, valid_until);
++
++        // Verify the structure
++        let valid_until_bytes = left_pad_to_32(&valid_until.to_be_bytes());
++        let expected = hashv(&[ROOT_VALIDATION_TYPE_HASH, &root, &valid_until_bytes]);
++
++        assert_eq!(struct_hash.to_bytes(), expected.to_bytes());
++    }
++
++    #[test]
++    fn test_compute_message_hash() {
++        let root = decode32("d5ef592d1ad183db43b4980d7ab7ee43a6f6a284988c3e3a23d38c07beb520c7");
++        let valid_until: u32 = 1748317727;
++        let program_id = Pubkey::new_from_array(decode32(
++            "b870e12dd379891561d2e9fa8f26431834eb736f2f24fc2a2a4dff1fd5dca4df",
++        ));
++
++        let message_hash = compute_message_hash(&root, valid_until, CHAIN_ID, &program_id);
++
++        // Verify it follows EIP-712 format: \x19\x01 || domainSeparator || structHash
++        let domain_separator = compute_domain_hash(CHAIN_ID, &program_id);
++        let struct_hash = compute_struct_hash(&root, valid_until);
++
++        let expected = hashv(&[
++            b"\x19\x01",
++            &domain_separator.to_bytes(),
++            &struct_hash.to_bytes(),
++        ]);
++
++        assert_eq!(message_hash.to_bytes(), expected.to_bytes());
++    }
++}
+diff --git a/chains/solana/contracts/programs/mcm/src/eth_utils.rs b/chains/solana/contracts/programs/mcm/src/eth_utils.rs
+index 7b030cda..eaf3b666 100644
+--- a/chains/solana/contracts/programs/mcm/src/eth_utils.rs
++++ b/chains/solana/contracts/programs/mcm/src/eth_utils.rs
+@@ -14,7 +14,7 @@
+ //!
+ //! These separators ensure that hashes for different purposes cannot be reused or confused.
+ use anchor_lang::prelude::*;
+-use anchor_lang::solana_program::keccak::{hash, hashv, Hash, HASH_BYTES}; // use keccak256 for EVM compatibility
++use anchor_lang::solana_program::keccak::{hash, hashv, HASH_BYTES}; // use keccak256 for EVM compatibility
+ use anchor_lang::solana_program::secp256k1_recover::{
+     secp256k1_recover, Secp256k1Pubkey, Secp256k1RecoverError,
+ };
+@@ -54,7 +54,7 @@ pub const EVM_ADDRESS_BYTES: usize = 20;
+ ///
+ /// # Parameters
+ ///
+-/// - `eth_signed_msg_hash`: 32-byte hash of the Ethereum signed message
++/// - `eth_signed_msg_hash`: 32-byte EIP-712 message hash
+ /// - `sig`: The ECDSA signature containing v, r, s components
+ ///
+ /// # Returns
+@@ -81,30 +81,6 @@ pub fn ecdsa_recover_evm_addr(
+     Ok(evm_addr)
+ }
+ 
+-/// Computes the Ethereum-compatible message hash for root validation.
+-///
+-/// Creates a hash that matches Ethereum's personal sign message format:
+-/// "\x19Ethereum Signed Message:\n32" + keccak256(root || valid_until)
+-///
+-/// # Parameters
+-///
+-/// - `root`: The 32-byte Merkle root
+-/// - `valid_until`: Timestamp until which the root is valid
+-///
+-/// # Returns
+-///
+-/// - The 32-byte message hash ready for ECDSA verification
+-pub fn compute_eth_message_hash(root: &[u8; HASH_BYTES], valid_until: u32) -> Hash {
+-    // Use big-endian encoding for EVM compatibility
+-    let valid_until_bytes = left_pad_vec(&valid_until.to_be_bytes());
+-    let hashed_encoded_params = hashv(&[root, &valid_until_bytes]);
+-
+-    hashv(&[
+-        b"\x19Ethereum Signed Message:\n32",
+-        &hashed_encoded_params.to_bytes(),
+-    ])
+-}
+-
+ /// Calculates a Merkle root from a leaf node and a proof path.
+ ///
+ /// This function iteratively combines a leaf hash with the provided proof elements
+@@ -392,23 +368,6 @@ mod tests {
+         }
+     }
+ 
+-    mod test_compute_eth_message_hash {
+-        use super::*;
+-
+-        #[test]
+-        fn basic() {
+-            let root =
+-                &decode32("d5ef592d1ad183db43b4980d7ab7ee43a6f6a284988c3e3a23d38c07beb520c7");
+-            let valid_until: u32 = 1748317727;
+-
+-            let result = compute_eth_message_hash(root, valid_until);
+-
+-            assert_eq!(
+-                result.to_bytes(),
+-                decode32("032705bd71839baef725154f00f87ddcc1d95c4b5189c9fb5983f26ad6c95102")
+-            );
+-        }
+-    }
+ 
+     mod test_hash_leaf {
+         use super::*;
+diff --git a/chains/solana/contracts/programs/mcm/src/instructions/set_root.rs b/chains/solana/contracts/programs/mcm/src/instructions/set_root.rs
+index 5d5167d4..8cbce01c 100644
+--- a/chains/solana/contracts/programs/mcm/src/instructions/set_root.rs
++++ b/chains/solana/contracts/programs/mcm/src/instructions/set_root.rs
+@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
+ 
+ use crate::config::MultisigConfig;
+ use crate::constant::*;
++use crate::eip712;
+ use crate::error::*;
+ use crate::eth_utils::*;
+ use crate::event::*;
+@@ -20,12 +21,13 @@ pub fn set_root(
+         McmError::SignedHashAlreadySeen
+     );
+ 
+-    // verify ECDSA signatures on (root, validUntil) and ensure that the root group is successful
++    // verify EIP-712 ECDSA signatures on (root, validUntil) and ensure that the root group is successful
+     verify_ecdsa_signatures(
+         &ctx.accounts.root_signatures.signatures,
+         &ctx.accounts.multisig_config,
+         &root,
+         valid_until,
++        ctx.program_id,
+     )?;
+ 
+     require!(
+@@ -114,8 +116,10 @@ fn verify_ecdsa_signatures(
+     multisig_config: &MultisigConfig,
+     root: &[u8; 32],
+     valid_until: u32,
++    program_id: &Pubkey,
+ ) -> Result<()> {
+-    let signed_hash = compute_eth_message_hash(root, valid_until);
++    let signed_hash =
++        eip712::compute_message_hash(root, valid_until, multisig_config.chain_id, program_id);
+     let mut previous_addr: [u8; EVM_ADDRESS_BYTES] = [0; EVM_ADDRESS_BYTES];
+     let mut group_vote_counts: [u8; NUM_GROUPS] = [0; NUM_GROUPS];
+ 
+diff --git a/chains/solana/contracts/programs/mcm/src/lib.rs b/chains/solana/contracts/programs/mcm/src/lib.rs
+index 88f855e8..a2e1d0b3 100644
+--- a/chains/solana/contracts/programs/mcm/src/lib.rs
++++ b/chains/solana/contracts/programs/mcm/src/lib.rs
+@@ -19,6 +19,9 @@ pub use state::*;
+ mod eth_utils;
+ use eth_utils::*;
+ 
++mod eip712;
++pub use eip712::*;
++
+ mod instructions;
+ use instructions::*;
+ 
