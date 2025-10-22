@@ -19,8 +19,8 @@ install-solana-cli:
 install-anchor:
 	cargo install --git https://github.com/coral-xyz/anchor --tag v$(ANCHOR_VERSION) anchor-cli --force
 
-.PHONY: deps
-deps: install-rust install-solana-cli install-anchor
+.PHONY: setup-deps
+setup-deps: install-rust install-solana-cli install-anchor
 
 ##
 # MCM Program Upgrade Workflow
