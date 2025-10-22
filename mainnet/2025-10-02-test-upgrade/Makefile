@@ -10,5 +10,5 @@ run-script:
 	cd $(SIGNER_TOOL_PATH); \
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
-	--workdir .. --forge-cmd 'forge script --rpc-url https://eth-mainnet.public.blastapi.io \
+	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
 	SwapOwner --sig "sign()" --sender $(SENDER)' --out ../validations/base-nested.json;
