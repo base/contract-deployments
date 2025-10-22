@@ -35,7 +35,7 @@ step1-clone-bridge:
 	rm -rf bridge
 	git clone --filter=blob:none $(BRIDGE_REPO) bridge
 	cd bridge && \
-		git checkout $(BRIDGE_AUDITED_COMMIT)
+		git checkout $(BRIDGE_COMMIT)
 	cd bridge/clients/ts && \
 		bun install && \
 		bun run build
