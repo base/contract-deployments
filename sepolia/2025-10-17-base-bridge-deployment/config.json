@@ -1,5 +1,5 @@
 {
-  "salt": "0x928e88ac3b7e376abdda9d42289e3e39d878c78869402e3dc1fb002aaa0cc852",
+  "salt": "0x90c21999d061600a9c6553e1e6feddb6c90ba96a617a140fe81e8195be404b6e",
   "initialOwner": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
   "partnerValidators": "0x0000000000000000000000000000000000000001",
   "baseValidators": [
@@ -8,6 +8,6 @@
   ],
   "baseSignatureThreshold": 2,
   "partnerValidatorThreshold": 0,
-  "remoteBridge": "0x7a0eb3d4a789392a9965e2020949ba3388959434f08beeed8391b07c48fcdabb",
+  "remoteBridge": "0x6223fa80b3f80549a9ac4f1deea54e39a74aa8fa8f74a62131460716519d4f8f",
   "guardians": ["0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f"]
 }

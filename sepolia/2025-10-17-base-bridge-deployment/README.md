@@ -1,5 +1,7 @@
 # Base Bridge Deployment
 
+Status: EXECUTED
+
 Deploys the Base side of [Base Bridge](https://github.com/base/bridge). This should be done after deploying the Solana bridge program since the program's pubkey needs to be added to `config.json`.
 
 ## Deployment Steps
