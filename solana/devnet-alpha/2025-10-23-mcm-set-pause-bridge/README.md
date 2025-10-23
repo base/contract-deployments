@@ -1,10 +1,10 @@
-# MCM Bridge Pause/Unpause
+# MCM Bridge Pause
 
-Status: PENDING
+Status: [EXECUTED](https://solscan.io/tx/2aRigbkBHkEQsgmg8zKum9C7V6ggKoGN69Wz3areFSdjFXVfRt6N4XbvejTwt7pXX9R1ns6LUMkLArSAKnUnhXCe?cluster=devnet)
 
 ## Description
 
-This task pauses or unpauses the Bridge program using the MCM program. This is a critical security operation that can be used to halt bridge operations in emergency situations or resume them after issues are resolved.
+This task pauses the Bridge program using the MCM program. This is a critical security operation that can be used to halt bridge operations in emergency situations.
 
 ## Procedure for Signers
 
@@ -13,7 +13,7 @@ This task pauses or unpauses the Bridge program using the MCM program. This is a
 ```bash
 cd contract-deployments
 git pull
-cd solana/<network>/<task-directory>
+cd solana/devnet-alpha/2025-10-23-mcm-set-pause-bridge
 make deps
 ```
 
@@ -21,20 +21,10 @@ make deps
 
 Your Ledger needs to be connected and unlocked. The **Ethereum application** needs to be opened on Ledger with the message "Application is ready".
 
-### 3. Review the proposal
-
-The Facilitator will provide you with the proposal details. Review:
-- Bridge program ID: `BRIDGE_PROGRAM_ID`
-- Pause status: `PAUSED` (true to pause, false to unpause)
-- MCM Program ID: `MCM_PROGRAM_ID`
-- Valid until timestamp: `MCM_VALID_UNTIL`
-
-These values are in the `.env` file and the generated proposal file.
-
-### 4. Sign the proposal
+### 3. Sign the proposal
 
 ```bash
-make mcm-sign
+make sign
 ```
 
 This command will:
@@ -50,7 +40,7 @@ After signing, you will see output like:
 Signature: 1234567890abcdef...
 ```
 
-### 5. Send signature to Facilitator
+### 4. Send signature to Facilitator
 
 Copy the **entire signature** and send it to the Facilitator via your secure communication channel.
 
