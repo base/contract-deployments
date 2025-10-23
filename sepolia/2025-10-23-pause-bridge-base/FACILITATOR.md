@@ -7,12 +7,18 @@ Guide for facilitators after collecting signatures from signers.
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<task-name>
+cd sepolia/2025-10-23-pause-bridge-base
 make deps
 ```
 
-### 2. Execute the transaction
+### 2. Execute pause
 
 ```bash
-SIGNATURES=AAABBBCCC make execute
+SIGNATURES=AAABBBCCC make execute-pause
+```
+
+### 3. (When ready) Execute un-pause
+
+```bash
+SIGNATURES=AAABBBCCC make execute-unpause
 ```
