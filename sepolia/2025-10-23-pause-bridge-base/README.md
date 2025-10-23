@@ -1,6 +1,6 @@
 # Pause Base Bridge
 
-Status: READY TO SIGN
+Status: EXECUTED
 
 ## Description
 
