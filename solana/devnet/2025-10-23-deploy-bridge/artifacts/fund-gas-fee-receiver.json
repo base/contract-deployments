@@ -1,0 +1,64 @@
+{
+  "confirmationStatus": "confirmed",
+  "transaction": {
+    "signatures": [
+      "vtcC5RJBEhqjxNvkpTtdF78zR3YiXLYHJJR8rCncNejTEAix25wAmUGfu4FVwQrR5uWZzaiX9UkTJ8RngyZJmNr"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 1
+      },
+      "accountKeys": [
+        "2aWsUTRfJu2hPNUYHaYJjm6C3SVPqXjtoxu2VgBXsd72",
+        "AFs1LCbodhvwpgX3u3URLsud6R1XMSaMiQ5LtXw4GKYT",
+        "11111111111111111111111111111111"
+      ],
+      "recentBlockhash": "CUf2eHgnhoZqakh8crjWRGjVZ9h3ZjyiUuTU1PQGkPCV",
+      "instructions": [
+        {
+          "programIdIndex": 2,
+          "accounts": [
+            0,
+            1
+          ],
+          "data": "3Bxs411Dtc7pkFQj",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      168911571920,
+      3335600880,
+      1
+    ],
+    "postBalances": [
+      168811566920,
+      3435600880,
+      1
+    ],
+    "innerInstructions": [],
+    "logMessages": [
+      "Program 11111111111111111111111111111111 invoke [1]",
+      "Program 11111111111111111111111111111111 success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 150
+  },
+  "blockTime": 1761256427,
+  "slot": 416638573
+}
