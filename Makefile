@@ -126,14 +126,11 @@ checkout-signer-tool:
 	git fetch --depth=1 origin $(SIGNER_TOOL_COMMIT); \
 	git reset --hard FETCH_HEAD
 
-.PHONY: sign
-sign:
+.PHONY: sign-task
+sign-task: checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH); \
 	npm ci; \
 	npm run dev
-
-.PHONY: sign-task
-sign-task: checkout-signer-tool sign
 
 ##
 # Solidity Testing

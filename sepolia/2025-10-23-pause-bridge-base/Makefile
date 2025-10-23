@@ -3,16 +3,25 @@ include ../.env
 include .env
 
 ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 0
+override LEDGER_ACCOUNT = 1
 endif
 
-# TODO: ensure `sender` is a signer for `OWNER_SAFE`
 .PHONY: gen-validation
-gen-validation:
-	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o validations/signer.json \
-	-- forge script --rpc-url $(L1_RPC_URL) PauseBridge \
-	--sig "sign(address[])" "[$(OWNER_SAFE)]" \
-	--sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B
+gen-validation: checkout-signer-tool run-script
+
+.PHONY: run-script
+run-script:
+	cd $(SIGNER_TOOL_PATH); \
+	npm ci; \
+	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
+	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
+	PauseBridge --sig "sign(address[])" [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B' --out ../validations/base-signer.json;
+
+.PHONY: sign
+sign:
+	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+	forge script --rpc-url $(L1_RPC_URL) PauseBridge \
+	--sig "sign(address[])" "[]" --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B
 
 # Execute
 .PHONY: execute
