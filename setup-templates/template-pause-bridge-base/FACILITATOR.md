@@ -11,8 +11,14 @@ cd <network>/<task-name>
 make deps
 ```
 
-### 2. Execute the transaction
+### 2. Execute pause
 
 ```bash
-SIGNATURES=AAABBBCCC make execute
+SIGNATURES=AAABBBCCC make execute-pause
+```
+
+### 3. (When ready) Execute un-pause
+
+```bash
+SIGNATURES=AAABBBCCC make execute-unpause
 ```
