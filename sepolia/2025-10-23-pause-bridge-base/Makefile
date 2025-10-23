@@ -8,6 +8,8 @@ endif
 
 SAFE_NONCE=6
 
+SCRIPT_NAME=PauseBridge
+
 .PHONY: gen-validation
 gen-validation: checkout-signer-tool run-script
 
@@ -17,25 +19,31 @@ run-script:
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
-	PauseBridge --sig "sign(address[])" [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B' --out ../validations/base-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B' --out ../validations/base-signer.json;
 
 .PHONY: sign-pause
 sign-pause:
 	IS_PAUSED=true SAFE_NONCE=$(SAFE_NONCE) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) PauseBridge \
+	forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 	--sig "sign(address[])" "[]" --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B
 
 .PHONY: sign-unpause
 sign-unpause:
 	IS_PAUSED=false SAFE_NONCE=$(SAFE_NONCE) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) PauseBridge \
+	forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 	--sig "sign(address[])" "[]" --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B
 
 # Execute
 .PHONY: execute-pause
 execute-pause:
-	IS_PAUSED=true $(call MULTISIG_EXECUTE,$(SIGNATURES))
+	IS_PAUSED=true forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
 
 .PHONY: execute-unpause
 execute-unpause:
-	IS_PAUSED=false $(call MULTISIG_EXECUTE,$(SIGNATURES))
+	IS_PAUSED=false forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
+
+.PHONY: check-status
+check-status:
+	cast call $(L2_BRIDGE) "paused()" --rpc-url $(L2_RPC_URL)
