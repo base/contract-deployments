@@ -44,7 +44,7 @@ PROGRAM_BINARY=<path-to-.so-file>
 ### 1.3. Write buffer
 
 ```bash
-make write-buffer
+make step1-write-buffer
 ```
 
 This will output a buffer address. Copy it.
@@ -62,10 +62,25 @@ SPILL=<your-wallet-address>
 Then transfer buffer authority to MCM:
 
 ```bash
-make transfer-buffer
+make step2-transfer-buffer
 ```
 
 The buffer is now controlled by the MCM authority.
+
+### 1.5. Generate set-buffer-authority artifacts (use solana explorer to get the signature of the set-buffer-authority tx)
+
+Set the following in `.env`:
+```bash
+SET_BUFFER_AUTHORITY_SIGNATURE=<signature-of-set-buffer-authority-tx>
+```
+
+Then generate the artifacts:
+
+```bash
+make step2.5-generate-set-buffer-authority-artifacts
+```
+
+This will output a file called `artifacts/set-buffer-authority-artifacts.json`.
 
 ## Phase 2: Create and Commit MCM Proposal
 
@@ -84,7 +99,7 @@ MCM_PROPOSAL_OUTPUT=proposal.json
 ### 2.2. Generate proposal
 
 ```bash
-make mcm-proposal
+make step3-create-proposal
 ```
 
 This creates the proposal file (default `proposal.json` or whatever is set in `MCM_PROPOSAL_OUTPUT`).
@@ -108,7 +123,7 @@ git push
 
 ## Phase 3: Coordinate with Signers and Collect Signatures
 
-Coordinate with Signers to collect their signatures. Each Signer will run `make mcm-sign` and provide their signature.
+Coordinate with Signers to collect their signatures. Each Signer will run `make sign` and provide their signature.
 
 Concatenate all signatures in the format: `0xSIG1,0xSIG2,0xSIG3`
 
@@ -122,7 +137,7 @@ MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
 ## Phase 4: Execute Proposal
 
 ```bash
-make mcm-all
+make step5-execute-proposal
 ```
 
 This command executes all the necessary steps:

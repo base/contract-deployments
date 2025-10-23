@@ -42,108 +42,79 @@ install-eip712sign:
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@v0.3.0
+	go install github.com/base/mcm-go/cmd/mcmctl@8fdb1611ffc7081ce592f8957a9806c393c6f447
 
 .PHONY: deps
 deps: install-mcmctl install-eip712sign
 
 ##
-# MCM commands
+# MCM commands - imported from MCM.mk
 ##
 
-ifndef MCM_IXS_OUTPUT
-override MCM_IXS_OUTPUT = ixs.json
-endif
+include $(dir $(lastword $(MAKEFILE_LIST)))MCM.mk
 
-ifndef MCM_PROPOSAL_OUTPUT
-override MCM_PROPOSAL_OUTPUT = proposal.json
-endif
+##
+# Solana Utils
+##
 
-.PHONY: mcm-print-authority
-mcm-print-authority:
-	mcmctl multisig print-authority \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID)
+# Run `make sol-confirm-cmd cmd=<command> output=<output-file>`
+# Captures signature from command output and confirms it
+.PHONY: sol-confirm-cmd
+sol-confirm-cmd:
+	@OUTPUT=$$($(cmd) 2>&1 | tee /dev/tty); \
+	SIG=$$(echo "$$OUTPUT" | grep -oE '[1-9A-HJ-NP-Za-km-z]{87,88}' | tail -1); \
+	if [ -n "$$SIG" ]; then \
+		echo ""; \
+		$(MAKE) sol-confirm SIG=$$SIG output=$(output); \
+		echo "Transaction artifacts written to $(output)"; \
+	else \
+		echo "ERROR: No signature found"; \
+		exit 1; \
+	fi
 
-.PHONY: mcm-print-config
-mcm-print-config:
-	mcmctl signers print-config \
-		--rpc-url $(SOL_RPC_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--pretty
+# Run `make sol-confirm SIG=<signature> output=<output-file>`
+# Confirms a signature and saves the result to a JSON file
+.PHONY: sol-confirm
+sol-confirm:
+	@echo "==> Confirming signature: $$SIG"; \
+	mkdir -p $(dir $(output)); \
+	solana confirm $$SIG -v --output json --url $(SOL_RPC_URL) >> $(output)
 
-.PHONY: mcm-proposal
-mcm-proposal:
-	mcmctl proposal create \
-		--rpc-url $(SOL_RPC_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--multisig-id $(MCM_MULTISIG_ID) \
-		--valid-until $(MCM_VALID_UNTIL) \
-		--instructions $(MCM_IXS_OUTPUT) \
-		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
-		--output $(MCM_PROPOSAL_OUTPUT)
+##
+# Solana Native Commands
+##
 
-.PHONY: mcm-sign
-mcm-sign:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --text -- \
-	mcmctl proposal hash --proposal $(MCM_PROPOSAL_OUTPUT)
+.PHONY: sol-program-show
+sol-program-show:
+	solana program show $(SOL_PROGRAM_ID) --url $(SOL_RPC_URL)
 
-.PHONY: mcm-init-signatures
-mcm-init-signatures:
-	mcmctl signatures init \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--proposal $(MCM_PROPOSAL_OUTPUT) \
-		--total $(MCM_SIGNATURES_COUNT)
+.PHONY: sol-transfer
+sol-transfer: output ?= artifacts/sol-transfer.json
+sol-transfer:
+	make sol-confirm-cmd \
+		cmd="solana transfer $(SOL_RECIPIENT) $(SOL_AMOUNT) \
+			--url $(SOL_RPC_URL) \
+			--fee-payer $(AUTHORITY) \
+			--allow-unfunded-recipient" \
+		output=$(output)
 
-.PHONY: mcm-append-signatures
-mcm-append-signatures:
-	mcmctl signatures append \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--proposal $(MCM_PROPOSAL_OUTPUT) \
-		--signatures $(MCM_SIGNATURES)
+# This command does not output the signature, so we cannot use make sol-confirm-cmd
+.PHONY: sol-program-set-upgrade-authority
+sol-program-set-upgrade-authority:
+	solana program set-upgrade-authority $(SOL_PROGRAM_ID) \
+	--url $(SOL_RPC_URL) \
+	--new-upgrade-authority $(NEW_UPGRADE_AUTHORITY) \
+	--skip-new-upgrade-authority-signer-check
 
-.PHONY: mcm-finalize-signatures
-mcm-finalize-signatures:
-	mcmctl signatures finalize \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--proposal $(MCM_PROPOSAL_OUTPUT)
+# This command does not output the signature, so we cannot use make sol-confirm-cmd
+.PHONY: sol-write-buffer
+sol-write-buffer:
+	solana program write-buffer $(PROGRAM_BINARY) \
+	--url $(SOL_RPC_URL)
 
-.PHONY: mcm-clear-signatures
-mcm-clear-signatures:
-	mcmctl signatures clear \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--proposal $(MCM_PROPOSAL_OUTPUT)
-
-.PHONY: mcm-set-root
-mcm-set-root:
-	mcmctl proposal set-root \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--proposal $(MCM_PROPOSAL_OUTPUT)
-
-.PHONY: mcm-execute
-mcm-execute:
-	mcmctl proposal execute \
-		--rpc-url $(SOL_RPC_URL) \
-		--ws-url $(SOL_WS_URL) \
-		--mcm-program-id $(MCM_PROGRAM_ID) \
-		--proposal $(MCM_PROPOSAL_OUTPUT)
-
-.PHONY: mcm-all
-mcm-all:
-	make mcm-init-signatures
-	make mcm-append-signatures
-	make mcm-finalize-signatures
-	make mcm-set-root
-	make mcm-execute
-
+# This command does not output the signature, so we cannot use make sol-confirm-cmd
+.PHONY: sol-set-buffer-authority
+sol-set-buffer-authority:
+	solana program set-buffer-authority $(BUFFER) \
+	--new-buffer-authority $(NEW_BUFFER_AUTHORITY) \
+	--url $(SOL_RPC_URL)
