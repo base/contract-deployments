@@ -41,5 +41,4 @@ sign:
 .PHONY: step5-execute-proposal
 step5-execute-proposal:
 	@echo "==> Step 5: Executing MCM proposal..."
-	make mcm-signatures-all
-	make mcm-proposal-all
+	make mcm-all
