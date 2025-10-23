@@ -258,7 +258,7 @@ mcm-proposal-bridge-pause:
 		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
 		--output $(MCM_PROPOSAL_OUTPUT) \
 		--bridge-program-id $(BRIDGE_PROGRAM_ID) \
-		--paused $(PAUSED)
+		$(if $(filter true,$(PAUSED)),--pause,--unpause)
 
 .PHONY: mcm-proposal-loader-v3-upgrade
 mcm-proposal-loader-v3-upgrade:
