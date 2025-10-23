@@ -1,6 +1,6 @@
 # MCM Bridge Unpause
 
-Status: PENDING
+Status: [EXECUTED](https://solscan.io/tx/LGeTAveW3V5LDZBjtdLnEBjLV2GUDXwN9EapbSRr3rsD4tBUg3rCayNfmrjTQSWRiuj887QCvpWVg4LAiEbkK8k?cluster=devnet)
 
 ## Description
 
