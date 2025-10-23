@@ -23,5 +23,4 @@ sign:
 .PHONY: step3-execute-proposal
 step3-execute-proposal:
 	@echo "==> Step 3: Executing MCM proposal..."
-	make mcm-signatures-all
-	make mcm-proposal-all
+	make mcm-all
