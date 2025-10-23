@@ -8,6 +8,6 @@
   ],
   "baseSignatureThreshold": 2,
   "partnerValidatorThreshold": 0,
-  "remoteBridge": "",
+  "remoteBridge": "0x7a0eb3d4a789392a9965e2020949ba3388959434f08beeed8391b07c48fcdabb",
   "guardians": ["0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f"]
 }

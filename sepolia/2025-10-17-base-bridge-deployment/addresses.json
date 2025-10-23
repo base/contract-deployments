@@ -1,8 +1,8 @@
 {
-  "Bridge": "",
-  "BridgeValidator": "",
-  "CrossChainERC20Factory": "",
-  "Twin": "",
-  "RelayerOrchestrator": "",
-  "WrappedSol": ""
+  "Bridge": "0xf54537D785D06ABf1dD6fA1c07158BA947C5a59D",
+  "BridgeValidator": "0x2a10Dc8A5a56DF460Ede79E2026018D195d439da",
+  "CrossChainERC20Factory": "0x04733Dc991B1Fa355b06C0E86c36DD28A9f2F6c5",
+  "Twin": "0xd183CD1a3c01877979C24cf8C0029b54BA9779D1",
+  "RelayerOrchestrator": "0x45a1bEcA5d5A965E28a1B3aa5124D8Ef44431F48",
+  "WrappedSol": "0x0DB4Ea377f17f6f22674D3a0C83EA10d29dda1F2"
 }
