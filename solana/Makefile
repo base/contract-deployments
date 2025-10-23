@@ -42,7 +42,7 @@ install-eip712sign:
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@972fd9985ed21543fc298cd65f45625fffd2e550
+	go install github.com/base/mcm-go/cmd/mcmctl@8fdb1611ffc7081ce592f8957a9806c393c6f447
 
 .PHONY: deps
 deps: install-mcmctl install-eip712sign
