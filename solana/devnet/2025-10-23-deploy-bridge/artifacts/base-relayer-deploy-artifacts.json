@@ -1,0 +1,116 @@
+{
+  "confirmationStatus": "confirmed",
+  "transaction": {
+    "signatures": [
+      "2k59UnU4dQkXGdebaSrPX95QzXZNqbHEqqC7qzLitrydi1MYw5NbV9q1xdMTe976wTistASd6Lvn8ccHXbDnaKRL",
+      "4V15b7Bf28HwhU5WKnkPSnzVACQ9E1KdxcgXxNC9C91mjcUGDnsXbQbCfBK9HnTcfEQpRFN14NdadZn9iX68HQHY"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 2,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 4
+      },
+      "accountKeys": [
+        "2aWsUTRfJu2hPNUYHaYJjm6C3SVPqXjtoxu2VgBXsd72",
+        "56MBBEYAtQAdjT4e1NzHD8XaoyRSTvfgbSVVcEcHj51H",
+        "9mUcnyK4TVwHoMkyVCTiVFqWDUuRqHoAJP32pxSXCTjP",
+        "De6pBEXUw4DiJ9zFzfdM69BDxU8F7rVrcV3tRVhDSWc4",
+        "11111111111111111111111111111111",
+        "BPFLoaderUpgradeab1e11111111111111111111111",
+        "SysvarC1ock11111111111111111111111111111111",
+        "SysvarRent111111111111111111111111111111111"
+      ],
+      "recentBlockhash": "FAh2wWUXeWPnuMKPi7L2DdKxrxBrbJaZndoeCZuxz6mb",
+      "instructions": [
+        {
+          "programIdIndex": 4,
+          "accounts": [
+            0,
+            1
+          ],
+          "data": "111184NuZo7gmbjwda8fGAim94roEJcdbYKd7Gdtpi6CbBByeanCr8u4EAFXLjnY2U8bjD",
+          "stackHeight": null
+        },
+        {
+          "programIdIndex": 5,
+          "accounts": [
+            0,
+            2,
+            1,
+            3,
+            7,
+            6,
+            4,
+            0
+          ],
+          "data": "3Bxs42J4x6iEtSZM",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 10000,
+    "preBalances": [
+      169019364280,
+      0,
+      0,
+      2098391280,
+      1,
+      1,
+      1169280,
+      1009200
+    ],
+    "postBalances": [
+      169018212840,
+      1141440,
+      2098391280,
+      0,
+      1,
+      1,
+      1169280,
+      1009200
+    ],
+    "innerInstructions": [
+      {
+        "index": 1,
+        "instructions": [
+          {
+            "programIdIndex": 4,
+            "accounts": [
+              0,
+              2,
+              3
+            ],
+            "data": "11119qYqhtqT5NHTm27UYqYVeF4Lm2dwfwCnPkVvZ6nWdk5kZP2tzGt1VBLLyRd9W8hoWf",
+            "stackHeight": 2
+          }
+        ]
+      }
+    ],
+    "logMessages": [
+      "Program 11111111111111111111111111111111 invoke [1]",
+      "Program 11111111111111111111111111111111 success",
+      "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [1]",
+      "Program 11111111111111111111111111111111 invoke [2]",
+      "Program 11111111111111111111111111111111 success",
+      "Deployed program 56MBBEYAtQAdjT4e1NzHD8XaoyRSTvfgbSVVcEcHj51H",
+      "Program BPFLoaderUpgradeab1e11111111111111111111111 success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 2670
+  },
+  "blockTime": 1761256231,
+  "slot": 416638064
+}
