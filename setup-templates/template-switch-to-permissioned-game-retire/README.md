@@ -14,7 +14,7 @@ This task contains a single script that will update the `respectedGameType` and 
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<date>-switch-to-permissioned-game
+cd <network>/<date>-switch-to-permissioned-game-retire
 make deps
 ```
 

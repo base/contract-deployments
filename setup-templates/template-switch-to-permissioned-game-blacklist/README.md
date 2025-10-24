@@ -4,8 +4,8 @@ Status: PENDING
 
 ## Description
 
-This task contains a single script that will update the `respectedGameType` and `retirementTimestamp` in the AnchorStateRegistry. This can only be done by the
-"Optimism Guardian Multisig" which is a single-nested multisig controlled by the OP Security Council.
+This task contains a single script that will blacklist fault dispute games after a provided L2 block number in the AnchorStateRegistry.
+This can only be done by the "Optimism Guardian Multisig" which is a single-nested multisig controlled by the OP Security Council.
 
 ## Procedure
 
@@ -14,7 +14,7 @@ This task contains a single script that will update the `respectedGameType` and 
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<date>-switch-to-permissioned-game
+cd <network>/<date>-switch-to-permissioned-game-blacklist
 make deps
 ```
 
