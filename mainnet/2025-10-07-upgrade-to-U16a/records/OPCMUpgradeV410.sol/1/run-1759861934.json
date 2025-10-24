@@ -3,7 +3,7 @@
     {
       "hash": "0x1339e97e1489f00265f81337d8d221e3eaa278b513f3927243a7a0ccee805718",
       "transactionType": "CALL",
-      "contractName": null,
+      "contractName": "GnosisSafe",
       "contractAddress": "0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
       "function": "execTransaction(address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes)",
       "arguments": [
