@@ -24,3 +24,12 @@ approve-op:
 .PHONY: execute
 execute:
 	$(call MULTISIG_EXECUTE,0x)
+
+# Base -- used for simulating the transcations as op-signers by base engineers
+.PHONY: sign-base-sepolia
+sign-base-mainnet:
+	$(call MULTISIG_SIGN,$(OP_SECURITY_COUNCIL_SAFE)) --sender 0x1822b35B09f5ce1C78ecbC06AC0A4e17885b925e
+
+.PHONY: sign-base-sepolia
+sign-base-sepolia:
+	$(call MULTISIG_SIGN,$(OP_SECURITY_COUNCIL_SAFE)) --sender 0x1084092Ac2f04c866806CF3d4a385Afa4F6A6C97
