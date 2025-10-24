@@ -49,6 +49,7 @@ contract SwitchToPermissionedGame is MultisigScript {
     // Confirm the CURRENT_RETIREMENT_TIMESTAMP is updated to the block time.
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         require(anchorStateRegistry.retirementTimestamp() == block.timestamp, "post-110");
+        require(anchorStateRegistry.respectedGameType() == GameTypes.PERMISSIONED_CANNON, "post-111");
     }
 
 
