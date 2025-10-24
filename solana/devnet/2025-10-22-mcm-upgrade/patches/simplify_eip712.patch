@@ -1,0 +1,74 @@
+diff --git a/chains/solana/contracts/programs/mcm/src/eip712.rs b/chains/solana/contracts/programs/mcm/src/eip712.rs
+index 87b20002..3a19c422 100644
+--- a/chains/solana/contracts/programs/mcm/src/eip712.rs
++++ b/chains/solana/contracts/programs/mcm/src/eip712.rs
+@@ -11,7 +11,6 @@
+ //! - **name**: "ManyChainMultiSig" - The contract name
+ //! - **version**: "1" - The contract version
+ //! - **chainId**: Solana chain identifier (e.g., hash of "solana:localnet")
+-//! - **verifyingContract**: `address(0)` - Not applicable for Solana
+ //! - **salt**: The Solana Program ID (32 bytes) - Uniquely identifies this program instance
+ //!
+ //! ## Message Structure
+@@ -30,10 +29,10 @@ pub const EIP712_DOMAIN_NAME: &str = "ManyChainMultiSig";
+ pub const EIP712_DOMAIN_VERSION: &str = "1";
+ 
+ /// Type hash for EIP712Domain
+-/// keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract,bytes32 salt)")
++/// keccak256("EIP712Domain(string name,string version,uint256 chainId,bytes32 salt)")
+ pub const EIP712_DOMAIN_TYPE_HASH: &[u8; HASH_BYTES] = &[
+-    0xd8, 0x7c, 0xd6, 0xef, 0x79, 0xd4, 0xe2, 0xb9, 0x5e, 0x15, 0xce, 0x8a, 0xbf, 0x73, 0x2d, 0xb5,
+-    0x1e, 0xc7, 0x71, 0xf1, 0xca, 0x2e, 0xdc, 0xcf, 0x22, 0xa4, 0x6c, 0x72, 0x9a, 0xc5, 0x64, 0x72,
++    0xa6, 0x04, 0xff, 0xf5, 0xa2, 0x7d, 0x59, 0x51, 0xf3, 0x34, 0xcc, 0xda, 0x7a, 0xbf, 0xf3, 0x28,
++    0x6a, 0x8a, 0xf2, 0x9c, 0xae, 0xeb, 0x19, 0x6a, 0x6f, 0x2b, 0x40, 0xa1, 0xdc, 0xe7, 0x61, 0x2b,
+ ];
+ 
+ /// Type hash for RootValidation message
+@@ -105,9 +104,6 @@ pub fn compute_domain_hash(chain_id: u64, program_id: &Pubkey) -> Hash {
+     // Chain ID as bytes32 (big-endian, left-padded)
+     let chain_id_bytes = left_pad_to_32(&chain_id.to_be_bytes());
+ 
+-    // Verifying contract = address(0) = 20 zero bytes, left-padded to 32 bytes
+-    let verifying_contract = [0u8; 32];
+-
+     // Salt = Program ID (32 bytes)
+     let salt = program_id.to_bytes();
+ 
+@@ -116,7 +112,6 @@ pub fn compute_domain_hash(chain_id: u64, program_id: &Pubkey) -> Hash {
+         EIP712_DOMAIN_NAME_HASH,
+         EIP712_DOMAIN_VERSION_HASH,
+         &chain_id_bytes,
+-        &verifying_contract,
+         &salt,
+     ])
+ }
+@@ -168,7 +163,7 @@ mod tests {
+ 
+     #[test]
+     fn verify_domain_type_hash() {
+-        let expected = hash(b"EIP712Domain(string name,string version,uint256 chainId,address verifyingContract,bytes32 salt)");
++        let expected = hash(b"EIP712Domain(string name,string version,uint256 chainId,bytes32 salt)");
+         assert_eq!(&expected.to_bytes(), EIP712_DOMAIN_TYPE_HASH);
+     }
+ 
+@@ -211,18 +206,14 @@ mod tests {
+ 
+         // The domain hash should be deterministic
+         // We'll verify it matches the expected structure by recomputing
+-        let name_hash = hash(EIP712_DOMAIN_NAME.as_bytes());
+-        let version_hash = hash(EIP712_DOMAIN_VERSION.as_bytes());
+         let chain_id_bytes = left_pad_to_32(&CHAIN_ID.to_be_bytes());
+-        let verifying_contract = [0u8; 32];
+         let salt = program_id.to_bytes();
+ 
+         let expected = hashv(&[
+             EIP712_DOMAIN_TYPE_HASH,
+-            &name_hash.to_bytes(),
+-            &version_hash.to_bytes(),
++            EIP712_DOMAIN_NAME_HASH,
++            EIP712_DOMAIN_VERSION_HASH,
+             &chain_id_bytes,
+-            &verifying_contract,
+             &salt,
+         ]);
+ 

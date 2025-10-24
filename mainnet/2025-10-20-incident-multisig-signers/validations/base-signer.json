@@ -1,0 +1,106 @@
+{
+  "task_name": "mainnet-incident-multisig-signers",
+  "script_name": "UpdateSigners",
+  "signature": "sign(address[])",
+  "sender": "0x24c3AE1AeDB8142D32BB6d3B988f5910F272D53b",
+  "args": "[]",
+  "ledger-id": 0,
+  "rpc_url": "https://eth-mainnet.public.blastapi.io",
+  "expected_domain_and_message_hashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domain_hash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "message_hash": "0x8f77ab6b8505bc0d11953d7d36c3d3ddb7411201fead650fce373c067b2e98ec"
+  },
+  "state_overrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0xde176162c7afd44b2fd12bfe2e0063b0021a8e652774d77dad1a7bf7057f7b8d",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "state_changes": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Updates the owner count"
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Updates the execution threshold"
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000005b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000005c",
+          "description": "Increments the nonce"
+        },
+        {
+          "key": "0x03fe74f236e7c719072f101a65bf28fcc331b8991895a586493c4ec54f013c79",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000541a833e4303eb56a45be7e8e4a908db97568d1e",
+          "description": "Adds `0x5b154b8587168cb984ff610f5de74289d8f68874` to the owners mapping (sets its next pointer)."
+        },
+        {
+          "key": "0x51d0c1d26cdd742324bf18c3cb0c420aba6f951a054a73620fd9d0ed20dae7e8",
+          "before": "0x00000000000000000000000073565876170a336fa02fde34eed03e3121f70ba6",
+          "after": "0x000000000000000000000000a3d3c103442f162856163d564b983ae538c6202d",
+          "description": "Removes `0x73565876170a336fa02fde34eed03e3121f70ba6` from the owners list."
+        },
+        {
+          "key": "0x680f53193021c7b5ff32fc6154805dcdc0fe6dae60134f899becf9139fee0f45",
+          "before": "0x000000000000000000000000b37b2d42cb0c10ebf96279cceca2cbfc47c6f236",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Removes `0x9bf96dcf51959915c8c343a3e50820ad069a1859` from the owners list."
+        },
+        {
+          "key": "0x7ea68b3c8a7f7867f7b6d6e5bd030223645fb027b0eb1dd797ca76b222c926e4",
+          "before": "0x000000000000000000000000a3d3c103442f162856163d564b983ae538c6202d",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Removes `0x92b79e6c995ee8b267ec1ac2743d1c1fbfffc447` from the owners list."
+        },
+        {
+          "key": "0x8332864b30eecf94bd2500246d5909d9976538bbb15157e05a181a220803d096",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000005b154b8587168cb984ff610f5de74289d8f68874",
+          "description": "Adds `0x5b154b8587168cb984ff610f5de74289d8f68874` to the owners mapping (sets the next pointer for its prev node to point to it)."
+        },
+        {
+          "key": "0xb66edc9a114e89f02d0b7982582a48a539d388af46cfade8e93f01cba0973729",
+          "before": "0x0000000000000000000000009bf96dcf51959915c8c343a3e50820ad069a1859",
+          "after": "0x000000000000000000000000b37b2d42cb0c10ebf96279cceca2cbfc47c6f236",
+          "description": "Updates the owners list for `0xa31e1c38d5c37d8ecd0e94c80c0f7fd624d009a3` to point to the next address `0xb37b2d42cb0c10ebf96279cceca2cbfc47c6f236` since its current next address was deleted."
+        },
+        {
+          "key": "0xd5d27d91bd7fb221a305aba9b1452dc14191edebe72a0d2caa92579343b1367f",
+          "before": "0x00000000000000000000000092b79e6c995ee8b267ec1ac2743d1c1fbfffc447",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Removes `0x73565876170a336fa02fde34eed03e3121f70ba6` from the owners list."
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "before": "0x000000000000000000000000541a833e4303eb56a45be7e8e4a908db97568d1e",
+          "after": "0x0000000000000000000000001841cb3c2ce6870d0417844c817849da64e6e937",
+          "description": "Sets the head of the owners linked list."
+        }
+      ]
+    }
+  ]
+}

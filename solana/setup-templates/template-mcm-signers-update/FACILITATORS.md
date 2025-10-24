@@ -45,12 +45,10 @@ MCM_GROUP_PARENTS=0,0
 MCM_CLEAR_ROOT=false  # or true if needed
 ```
 
-**Important**: Carefully review the signers configuration to ensure it matches the intended governance structure.
-
 ### 1.2. Generate proposal
 
 ```bash
-make mcm-proposal
+make step1-create-proposal
 ```
 
 This creates the proposal file (default `proposal.json` or whatever is set in `MCM_PROPOSAL_OUTPUT`).
@@ -74,7 +72,7 @@ git push
 
 ## Phase 2: Coordinate with Signers and Collect Signatures
 
-Coordinate with Signers to collect their signatures. Each Signer will run `make mcm-sign` and provide their signature.
+Coordinate with Signers to collect their signatures. Each Signer will run `make sign` and provide their signature.
 
 Concatenate all signatures in the format: `0xSIG1,0xSIG2,0xSIG3`
 
@@ -88,7 +86,7 @@ MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
 ## Phase 3: Execute Proposal
 
 ```bash
-make mcm-all
+make step3-execute-proposal
 ```
 
 This command executes all the necessary steps:
@@ -97,14 +95,11 @@ This command executes all the necessary steps:
 - Finalize signatures
 - Set root
 - Execute proposal
+- Print the new configuration
 
 ## Phase 4: Verification
 
 ### 4.1. Verify MCM configuration
-
-```bash
-make mcm-print-config
-```
 
 Check that:
 - All new signers are present

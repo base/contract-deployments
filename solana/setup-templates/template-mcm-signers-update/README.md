@@ -21,22 +21,10 @@ make deps
 
 Your Ledger needs to be connected and unlocked. The **Ethereum application** needs to be opened on Ledger with the message "Application is ready".
 
-### 3. Review the proposal
-
-The Facilitator will provide you with the proposal details. Review:
-- New signers list: `MCM_NEW_SIGNERS`
-- Signer groups configuration: `MCM_SIGNER_GROUPS`
-- Group quorums: `MCM_GROUP_QUORUMS`
-- Group parents: `MCM_GROUP_PARENTS`
-- MCM Program ID: `MCM_PROGRAM_ID`
-- Valid until timestamp: `MCM_VALID_UNTIL`
-
-These values are in the `.env` file and the generated proposal file.
-
-### 4. Sign the proposal
+### 3. Sign the proposal
 
 ```bash
-make mcm-sign
+make sign
 ```
 
 This command will:
@@ -52,7 +40,7 @@ After signing, you will see output like:
 Signature: 1234567890abcdef...
 ```
 
-### 5. Send signature to Facilitator
+### 4. Send signature to Facilitator
 
 Copy the **entire signature** and send it to the Facilitator via your secure communication channel.
 

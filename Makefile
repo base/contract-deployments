@@ -1,3 +1,5 @@
+FOUNDRY_COMMIT ?= 3b1129b5bc43ba22a9bcf4e4323c5a9df0023140
+
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
@@ -116,7 +118,7 @@ checkout-base-contracts-commit:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=f33affd459859882b30fbda29e43abfded77903a
+SIGNER_TOOL_COMMIT=dc9dcd57e66cc71d8e8f40afc2d0bad454cba998
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool
@@ -130,14 +132,11 @@ checkout-signer-tool:
 	git fetch --depth=1 origin $(SIGNER_TOOL_COMMIT); \
 	git reset --hard FETCH_HEAD
 
-.PHONY: sign
-sign:
+.PHONY: sign-task
+sign-task: checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH); \
 	npm ci; \
-	bun dev
-
-.PHONY: sign-task
-sign-task: checkout-signer-tool sign
+	npm run dev
 
 ##
 # Solidity Testing

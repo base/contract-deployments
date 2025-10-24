@@ -39,15 +39,13 @@ MCM_PROPOSAL_OUTPUT=proposal.json
 
 # Bridge configuration
 BRIDGE_PROGRAM_ID=<bridge-program-id>
-BRIDGE_ACCOUNT=<bridge-account-address>
-GUARDIAN=<mcm-authority>
 PAUSED=true  # or false to unpause
 ```
 
 ### 1.2. Generate proposal
 
 ```bash
-make mcm-proposal
+make step1-create-proposal
 ```
 
 This creates the proposal file (default `proposal.json` or whatever is set in `MCM_PROPOSAL_OUTPUT`).
@@ -56,8 +54,6 @@ This creates the proposal file (default `proposal.json` or whatever is set in `M
 
 Open and review the generated proposal file to verify:
 - Bridge program ID is correct
-- Bridge account address is correct
-- Guardian address is correct
 - Pause status is correct (pausing or unpausing)
 - Valid until timestamp is appropriate
 
@@ -71,7 +67,7 @@ git push
 
 ## Phase 2: Coordinate with Signers and Collect Signatures
 
-Coordinate with Signers to collect their signatures. Each Signer will run `make mcm-sign` and provide their signature.
+Coordinate with Signers to collect their signatures. Each Signer will run `make sign` and provide their signature.
 
 Concatenate all signatures in the format: `0xSIG1,0xSIG2,0xSIG3`
 
@@ -85,7 +81,7 @@ MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
 ## Phase 3: Execute Proposal
 
 ```bash
-make mcm-all
+make step3-execute-proposal
 ```
 
 This command executes all the necessary steps:
