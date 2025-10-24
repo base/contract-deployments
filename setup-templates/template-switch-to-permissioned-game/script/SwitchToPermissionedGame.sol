@@ -9,7 +9,7 @@ import {IAnchorStateRegistry} from "@eth-optimism-bedrock/src/dispute/FaultDispu
 import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
 import {DisputeGameFactory} from "@eth-optimism-bedrock/src/dispute/DisputeGameFactory.sol";
 import {FaultDisputeGame} from "@eth-optimism-bedrock/src/dispute/PermissionedDisputeGame.sol";
-import {GameTypes} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
+import {GameTypes, GameType} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 
@@ -49,7 +49,7 @@ contract SwitchToPermissionedGame is MultisigScript {
     // Confirm the CURRENT_RETIREMENT_TIMESTAMP is updated to the block time.
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         require(anchorStateRegistry.retirementTimestamp() == block.timestamp, "post-110");
-        require(anchorStateRegistry.respectedGameType() == GameTypes.PERMISSIONED_CANNON, "post-111");
+        require(GameType.unwrap(anchorStateRegistry.respectedGameType()) == GameType.unwrap(GameTypes.PERMISSIONED_CANNON), "post-111");
     }
 
 
