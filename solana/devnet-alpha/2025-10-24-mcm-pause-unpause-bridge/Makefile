@@ -36,9 +36,9 @@ sign:
 	@make mcm-sign
 
 # Step 3: Register proposal (signatures + set-root)
-.PHONY: step3-execute
-step3-execute:
-	@echo "==> Step 3: Executing MCM proposal..."
+.PHONY: step3-register-proposal
+step3-register-proposal:
+	@echo "==> Step 3: Registering MCM proposal..."
 	@make mcm-signatures-all
 	@make mcm-proposal-set-root
 
