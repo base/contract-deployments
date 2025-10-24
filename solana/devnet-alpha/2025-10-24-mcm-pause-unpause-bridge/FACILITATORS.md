@@ -15,7 +15,7 @@ As a Facilitator, you are responsible for:
 ```bash
 cd contract-deployments
 git pull
-cd solana/<network>/<task-directory>
+cd solana/devnet-alpha/2025-10-24-mcm-pause-unpause-bridge
 make deps
 ```
 
@@ -78,22 +78,37 @@ MCM_SIGNATURES_COUNT=<number-of-signatures>
 MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
 ```
 
-## Phase 3: Execute Proposal
+## Phase 3: Register Proposal
 
 ```bash
-make step3-execute-proposal
+make step3-register-proposal
 ```
 
-This command executes all the necessary steps:
+This command registers the proposal:
 - Initialize signatures account
 - Append signatures
 - Finalize signatures
 - Set root
-- Execute proposal
 
-## Phase 4: Verification
+## Phase 4: Execute Pause Proposal
 
-### 4.1. View transaction on Solana Explorer
+```bash
+make step4-execute-pause
+```
+
+This command executes the pause proposal
+
+## Phase 5: Execute Unpause Proposal
+
+```bash
+make step5-execute-unpause
+```
+
+This command executes the unpause proposal
+
+## Phase 6: Verification
+
+### 6.1. View transaction on Solana Explorer
 
 Visit the Solana Explorer for your network:
 - Mainnet: https://explorer.solana.com/
@@ -104,7 +119,7 @@ Search for the execution transaction and verify:
 - The program logs show `Instruction: SetPauseStatus` (Anchor log)
 - The pause status matches the intended action (paused or unpaused)
 
-### 4.2. Update README
+### 6.2. Update README
 
 Update the Status line in README.md to:
 
