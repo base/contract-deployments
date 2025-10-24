@@ -58,7 +58,7 @@ contract SwitchToPermissionedGame is MultisigScript {
         calls[0] = IMulticall3.Call3Value({
             target: address(anchorStateRegistry),
             allowFailure: false,
-            callData: abi.encodeCall(IAnchorStateRegistry.setRespectedGameType, (GameType.PERMISSIONED_CANNON)),
+            callData: abi.encodeCall(IAnchorStateRegistry.setRespectedGameType, (GameTypes.PERMISSIONED_CANNON)),
             value: 0
         });
 
