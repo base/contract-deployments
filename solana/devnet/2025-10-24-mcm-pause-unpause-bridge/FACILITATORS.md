@@ -15,7 +15,7 @@ As a Facilitator, you are responsible for:
 ```bash
 cd contract-deployments
 git pull
-cd solana/devnet-alpha/2025-10-24-mcm-pause-unpause-bridge
+cd solana/devnet/2025-10-24-mcm-pause-unpause-bridge
 make deps
 ```
 

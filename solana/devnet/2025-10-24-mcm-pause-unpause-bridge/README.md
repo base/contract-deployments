@@ -1,8 +1,8 @@
 # MCM Bridge Pause/Unpause
 
-Status: EXECUTED (https://solscan.io/tx/PXqdRH8rpBLfCy88BBKf6gDJhC5Z7gzDFnx4M2jVEBU27dEMbYzswczcp7LWtVQQhoNMjFG1326w4NcHFhEanhs?cluster=devnet)
+Status: EXECUTED (https://solscan.io/tx/mvDops5iMa5GbeMKsCDGBEhKC1qAZB5ykdCQyTtVM7eED9JQxoC5dxf61dtgKMXLMLB74sT5FBaLbCw5YC3oAuF?cluster=devnet)
 
-Unpause: https://solscan.io/tx/2cmXXwF3A3fWwFyUpNhktpYdwo8fftsxtGzP1BmaptHYuURiSWMgNmtgRpZmYLMq4VVSDUTQMdRJdtE4UBe6zE9A?cluster=devnet
+Unpause: https://solscan.io/tx/2dV1McFJFkceBdqUqe6Nd2tgVNE5ts8ZBTS2p38fp4mu3DngcpRZCeeNbU2KzNwWUnZ8pY9uUnMEVktqo9CZCLfd?cluster=devnet
 
 ## Description
 
@@ -15,7 +15,7 @@ This task pauses or unpauses the Bridge program using the MCM program. This is a
 ```bash
 cd contract-deployments
 git pull
-cd solana/devnet-alpha/2025-10-24-mcm-pause-unpause-bridge
+cd solana/devnet/2025-10-24-mcm-pause-unpause-bridge
 make deps
 ```
 
