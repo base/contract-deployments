@@ -6,6 +6,7 @@ Status: PENDING
 
 This task contains a single script that will blacklist fault dispute games after a provided L2 block number in the AnchorStateRegistry.
 This can only be done by the "Optimism Guardian Multisig" which is a single-nested multisig controlled by the OP Security Council.
+This task may take 10+ minutes to complete.
 
 ## Procedure
 
