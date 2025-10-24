@@ -27,11 +27,6 @@ setup-mcm-set-pause-bridge:
 	rm -rf $(TEMPLATE_SET_PAUSE_BRIDGE)/cache $(TEMPLATE_SET_PAUSE_BRIDGE)/lib $(TEMPLATE_SET_PAUSE_BRIDGE)/out
 	cp -r $(TEMPLATE_SET_PAUSE_BRIDGE) $(SET_PAUSE_BRIDGE_DIR)
 
-# Run `make setup-mcm-set-partner-threshold-bridge network=<network>`
-setup-mcm-set-partner-threshold-bridge:
-	rm -rf $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/cache $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/lib $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/out
-	cp -r $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE) $(SET_PARTNER_THRESHOLD_BRIDGE_DIR)
-
 ##
 # Dependencies
 ##

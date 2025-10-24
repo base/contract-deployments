@@ -1,0 +1,12 @@
+diff --git a/chains/solana/contracts/programs/mcm/src/lib.rs b/chains/solana/contracts/programs/mcm/src/lib.rs
+index a2e1d0b3..f2420a45 100644
+--- a/chains/solana/contracts/programs/mcm/src/lib.rs
++++ b/chains/solana/contracts/programs/mcm/src/lib.rs
+@@ -1,6 +1,6 @@
+ use anchor_lang::prelude::*;
+ 
+-declare_id!("5vNJx78mz7KVMjhuipyr9jKBKcMrKYGdjGkgE4LUmjKk");
++declare_id!("Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX");
+ 
+ use program::Mcm;
+ 
