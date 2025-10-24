@@ -7,6 +7,7 @@ override LEDGER_ACCOUNT = 1
 endif
 
 SAFE_NONCE=8
+NEXT_NONCE=9
 SENDER=0xb2d9a52e76841279EF0372c534C539a4f68f8C0B
 
 SCRIPT_NAME=PauseBridge
@@ -30,7 +31,7 @@ sign-pause:
 
 .PHONY: sign-unpause
 sign-unpause:
-	IS_PAUSED=false SAFE_NONCE=$(SAFE_NONCE) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+	IS_PAUSED=false SAFE_NONCE=$(NEXT_NONCE) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 	--sig "sign(address[])" "[]" --sender $(SENDER)
 
