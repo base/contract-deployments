@@ -1,6 +1,6 @@
 # MCM Program Upgrade via Multi-Chain Multisig
 
-Status: [EXECUTED](https://solscan.io/tx/5cqjb6boxTizf75bUGRxfRt3sna7VxehDnW1dsy7FhzdPsBhimrrXdP2TUMxz1VXEkHGv2nsqb53tujEKHBR5UXJ?cluster=devnet)
+Status: [EXECUTED](https://solscan.io/tx/5tR6S66cJri7xyCBaw6UxS1hVtyyb49McHJ5aoUxvzKA3jqMUA71e8f83MCHaLo9CXDBLrwA7vD16QqNWSte51VU?cluster=devnet)
 
 ## Description
 

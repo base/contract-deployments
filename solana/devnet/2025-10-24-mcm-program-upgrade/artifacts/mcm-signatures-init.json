@@ -1,0 +1,87 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "YKhSCTnHpXgKjQNnNdmVpdH91s8t8HB46MA6mo2iVTsLwYYMcRucdv6Rmia6JgDK3i6PSGnrpSuxE89F3k4nc7b"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 2
+      },
+      "accountKeys": [
+        "2aWsUTRfJu2hPNUYHaYJjm6C3SVPqXjtoxu2VgBXsd72",
+        "yb8oLewR5V9gidvHEqUj81sUF8ppdS2traHQenD2z7N",
+        "11111111111111111111111111111111",
+        "Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX"
+      ],
+      "recentBlockhash": "BabRafUhdQf6M4zX1EqRTGacmPZ3oKLKwyqsvnHK9n67",
+      "instructions": [
+        {
+          "programIdIndex": 3,
+          "accounts": [
+            1,
+            0,
+            2
+          ],
+          "data": "2QCcPn6AhHR9Zi4mhnFE53M8tJopZFLmSWFEPUWVFoNxRRu5UeGEiNaoYZ7rSfvLH6gwQRsvBnKPa7KMq3UyzqyAXhTHiD6pL1rKank8yp",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      165337787680,
+      0,
+      1,
+      1141440
+    ],
+    "postBalances": [
+      165335437160,
+      2345520,
+      1,
+      1141440
+    ],
+    "innerInstructions": [
+      {
+        "index": 0,
+        "instructions": [
+          {
+            "programIdIndex": 2,
+            "accounts": [
+              0,
+              1
+            ],
+            "data": "11112nodbJCN8fXPKGyCu9NpWW4Z1ZkxMmEywtSX6cwUwwiUiy2t2NJ1N7s3c1VyVFW6Sm",
+            "stackHeight": 2
+          }
+        ]
+      }
+    ],
+    "logMessages": [
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX invoke [1]",
+      "Program log: Instruction: InitSignatures",
+      "Program 11111111111111111111111111111111 invoke [2]",
+      "Program 11111111111111111111111111111111 success",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX consumed 7983 of 200000 compute units",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 7983
+  },
+  "blockTime": 1761327513,
+  "slot": 416823187
+}
