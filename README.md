@@ -8,10 +8,10 @@ This repo is structured with each network having a high-level directory which co
 
 <!-- Badge row 1 - status -->
 
-[![GitHub contributors](https://img.shields.io/github/contributors/base-org/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
+[![GitHub contributors](https://img.shields.io/github/contributors/base-org/contract-deployments)](https://github.com/base-org/contract-deployments/graphs/contributors)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/base-org/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
 [![GitHub Stars](https://img.shields.io/github/stars/base-org/contract-deployments.svg)](https://github.com/base/contract-deployments/stargazers)
-![GitHub repo size](https://img.shields.io/github/repo-size/base/contract-deployments)
+![GitHub repo size](https://img.shields.io/github/repo-size/base-org/contract-deployments)
 [![GitHub](https://img.shields.io/github/license/base-org/contract-deployments?color=blue)](https://github.com/base/contract-deployments/blob/main/LICENSE)
 
 <!-- Badge row 2 - links and profiles -->
