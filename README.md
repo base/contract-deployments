@@ -1,5 +1,7 @@
 ![Base](logo.png)
 
+Easy manual
+
 # contract-deployments
 
 This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base-org/contracts](https://github.com/base-org/contracts).
