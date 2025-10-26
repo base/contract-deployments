@@ -44,7 +44,7 @@ To execute a new task, run one of the following commands (depending on the type 
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
 
-Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
+Next, `cd` into the directory that was created for you and unfollow the steps listed below for the relevant template.
 
 > **👥 For Signers:** Please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
 
