@@ -1,0 +1,58 @@
+{
+  "task_name": "sepolia-pause-base-bridge",
+  "script_name": "PauseBridge",
+  "signature": "sign(address[])",
+  "sender": "0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
+  "args": "[]",
+  "ledger-id": 1,
+  "rpc_url": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expected_domain_and_message_hashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domain_hash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "message_hash": "0x4b6ccc7a2fbd88da7340b54ab6b065a2a6640ed4dcaf3342fefa89bf075eec90"
+  },
+  "state_overrides": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0x2e7309fd460be25e22fa96a891bd961839cf6c2ca56f9a059b605f768f8b4a92",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "state_changes": [
+    {
+      "name": "OptimismPortal2 - Sepolia",
+      "address": "0x49f53e41452c74589e85ca1677426ba426459e85",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x00000000009092cb000000000007e1760000000000000000000000003b9aca00",
+          "after": "0x00000000009092cc00000000000186a00000000000000000000000003b9aca00",
+          "description": "Gas fee tracking for deposit tx execution on L2"
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000007",
+          "description": "Increments the nonce"
+        }
+      ]
+    }
+  ]
+}

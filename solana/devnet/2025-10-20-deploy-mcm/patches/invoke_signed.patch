@@ -1,0 +1,18 @@
+diff --git a/chains/solana/contracts/programs/mcm/src/instructions/execute.rs b/chains/solana/contracts/programs/mcm/src/instructions/execute.rs
+index 155b1a71..b550e7fe 100644
+--- a/chains/solana/contracts/programs/mcm/src/instructions/execute.rs
++++ b/chains/solana/contracts/programs/mcm/src/instructions/execute.rs
+@@ -93,6 +93,13 @@ pub fn execute<'info>(
+ 
+     invoke_signed(&instruction, acc_infos, signer)?;
+ 
++    // If the CPI modified any typed accounts present in this outer context
++    // (e.g., calling `accept_ownership` which updates `multisig_config`),
++    // reload them to avoid Anchor writing back the stale outer copy on exit.
++    ctx.accounts.multisig_config.reload()?;
++    ctx.accounts.root_metadata.reload()?;
++    ctx.accounts.expiring_root_and_op_count.reload()?;
++
+     emit!(OpExecuted {
+         nonce,
+         to: instruction.program_id,

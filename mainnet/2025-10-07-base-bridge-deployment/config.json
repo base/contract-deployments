@@ -1,0 +1,13 @@
+{
+  "salt": "0x928e88ac3b7e376abdda9d42289e3e39d878c78869402e3dc1fb002aaa0cc852",
+  "initialOwner": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+  "partnerValidators": "",
+  "baseValidators": [
+    "0xa0f80e237be74a580ccaed06236075c17f1fec69",
+    "0xe018748703F74b806399dd1ECe608453578DDE79"
+  ],
+  "baseSignatureThreshold": 2,
+  "partnerValidatorThreshold": 3,
+  "remoteBridge": "",
+  "guardians": ["0x14536667Cd30e52C0b458BaACcB9faDA7046E056"]
+}

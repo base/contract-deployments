@@ -1,0 +1,128 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "5cqjb6boxTizf75bUGRxfRt3sna7VxehDnW1dsy7FhzdPsBhimrrXdP2TUMxz1VXEkHGv2nsqb53tujEKHBR5UXJ"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 5
+      },
+      "accountKeys": [
+        "2aWsUTRfJu2hPNUYHaYJjm6C3SVPqXjtoxu2VgBXsd72",
+        "7BrnaHaHtFDshmyrZFi28r9vzxTqcmTjSZcf7KdLHRhL",
+        "9mYamYp9qGXSC5whTmfH92RG2BdBpwSP3DwaczyFieDN",
+        "Ca93fFb5tQR14XzNpvBi6WNTuPHWZLNwoZ3hu6EErgDF",
+        "Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX",
+        "FsfzjZQu5MUAuZybaNNEkQbbzgKExUdGNFEbTohBGJGn",
+        "AFs1LCbodhvwpgX3u3URLsud6R1XMSaMiQ5LtXw4GKYT",
+        "DBKy3Bb6kFS2HH2JXZ1DhaR1KvZ6z6nTVyu4HJuvnd1S",
+        "BPFLoaderUpgradeab1e11111111111111111111111",
+        "2N9nKVFPHsBVazniiYNxECB2nPLcwjk3dHAJH9tkr2xQ",
+        "SysvarRent111111111111111111111111111111111",
+        "SysvarC1ock11111111111111111111111111111111"
+      ],
+      "recentBlockhash": "38XcLeeoHPdjbSrV65cojkGoit5yEAuPrvndH1TWY3g7",
+      "instructions": [
+        {
+          "programIdIndex": 4,
+          "accounts": [
+            1,
+            7,
+            2,
+            8,
+            9,
+            0,
+            3,
+            4,
+            5,
+            6,
+            10,
+            11,
+            9
+          ],
+          "data": "65zRtZe3ydJWJeJJEUXq3RVmLzRGFdSm94DUpibi5UNcLWiV78xjAha9DLJrUHx7qbdjn514ix9CUwqJmkfRGBimoMCqfa4Gz6EPLBHCDMt71vhiXhgdgTG7FAy6p5XwZR7Ds32gb",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      197831196360,
+      4134240,
+      1252800,
+      6670665840,
+      1141440,
+      3335600880,
+      0,
+      1343280,
+      1,
+      0,
+      1009200,
+      1169280
+    ],
+    "postBalances": [
+      197831191360,
+      4134240,
+      1252800,
+      6670665840,
+      1141440,
+      0,
+      3335600880,
+      1343280,
+      1,
+      0,
+      1009200,
+      1169280
+    ],
+    "innerInstructions": [
+      {
+        "index": 0,
+        "instructions": [
+          {
+            "programIdIndex": 8,
+            "accounts": [
+              3,
+              4,
+              5,
+              6,
+              10,
+              11,
+              9
+            ],
+            "data": "5Sxr3",
+            "stackHeight": 2
+          }
+        ]
+      }
+    ],
+    "logMessages": [
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX invoke [1]",
+      "Program log: Instruction: Execute",
+      "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [2]",
+      "Upgraded program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX",
+      "Program BPFLoaderUpgradeab1e11111111111111111111111 success",
+      "Program data: 3Q/UHSP8/04AAAAAAAAAAAKo9pFOiKGw4hAVPvdjrisAwrk9FsEk0sBTehAEgAAABAAAAAMAAAA=",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX consumed 46411 of 200000 compute units",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 46411
+  },
+  "blockTime": 1761166938,
+  "slot": 416405847
+}

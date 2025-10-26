@@ -1,0 +1,123 @@
+{
+  "task_name": "sepolia-fusaka-defense",
+  "script_name": "UpgradeDGF",
+  "signature": "sign(address[])",
+  "sender": "0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
+  "args": "[0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f,0x646132A1667ca7aD00d36616AFBA1A28116C770A]",
+  "ledger-id": 1,
+  "rpc_url": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expected_domain_and_message_hashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domain_hash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "message_hash": "0x944752703c0c80fd083016d34d1d6fb26daa2aac5d61824638b19f5027e64c34"
+  },
+  "expected_nested_hash": "",
+  "state_overrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0x5f8247dedc09521b672973565542085da2880c5b9ece59fd089115b14af87e59",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    }
+  ],
+  "state_changes": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "description": "Increments the nonce"
+        },
+        {
+          "key": "0xf053cd9a0ff3b12c0e12da96b5403383c5c0b737175cbbce357166a3d3354b5c",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets an approval for this transaction"
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "description": "Increments the nonce"
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "description": "Increments the nonce"
+        },
+        {
+          "key": "0xcab2546401c6fb6e5329ad63e24fb95fbd28fc4fef6efd120dfa7c9f671f7ba7",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets an approval for this transaction"
+        }
+      ]
+    },
+    {
+      "name": "Dispute Game Factory - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x4d5a9bd2e41301728d41c8e705190becb4e74abe869f75bdb405b63716a35f9e",
+          "before": "0x000000000000000000000000217e725700de4dc599360adbd57dbb7de280817e",
+          "after": "0x0000000000000000000000005920bd6ab4c1b96bfd4efc56eb6cf9b018e3bf4c",
+          "description": "Updates the PermissionedDisputeGame implementation address"
+        },
+        {
+          "key": "0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b",
+          "before": "0x00000000000000000000000032b37bbd2c81e853ea098ce45856ae305df10dd1",
+          "after": "0x000000000000000000000000f83157709129bd03fb02e96950be288e8c2c1c67",
+          "description": "Updates the FaultDisputeGame implementation address"
+        }
+      ]
+    }
+  ]
+}
