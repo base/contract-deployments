@@ -7,7 +7,7 @@ Guide for facilitators after collecting signatures from signers.
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2025-09-13-incident-multisig-signers
+cd mainnet/2025-10-02-test-upgrade
 make deps
 ```
 

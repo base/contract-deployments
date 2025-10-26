@@ -11,4 +11,4 @@ run-script:
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
-	SwapOwner --sig "sign()" --sender $(SENDER)' --out ../validations/base-nested.json;
+	SwapOwner --sig "sign()" --sender $(SENDER)' --out ../validations/test.json;

@@ -1,17 +1,17 @@
 {
-  "task_name": "mainnet-safe-swap-owner",
-  "script_name": "SwapOwner",
+  "taskName": "mainnet-safe-swap-owner",
+  "scriptName": "SwapOwner",
   "signature": "sign()",
   "sender": "0x6CD3850756b7894774Ab715D136F9dD02837De50",
   "args": "",
-  "ledger-id": 0,
-  "rpc_url": "https://eth-mainnet.public.blastapi.io",
-  "expected_domain_and_message_hashes": {
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
     "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
-    "domain_hash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
-    "message_hash": "0xef72f90aff9fc99cf729c1cca266075c99f84a63a5cfb5638800835e4d0eaf61"
+    "domainHash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
+    "messageHash": "0xef72f90aff9fc99cf729c1cca266075c99f84a63a5cfb5638800835e4d0eaf61"
   },
-  "state_overrides": [
+  "stateOverrides": [
     {
       "name": "Base Nested Multisig",
       "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
@@ -29,7 +29,7 @@
       ]
     }
   ],
-  "state_changes": [
+  "stateChanges": [
     {
       "name": "Base GnosisSafeProxy",
       "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
@@ -38,25 +38,29 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000004",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "description": "Increments the nonce value of the Gnosis Safe"
+          "description": "Increments the nonce value of the Gnosis Safe",
+          "allowDifference": false
         },
         {
           "key": "0x41ed7d57be3aeb16e937147407ec4fe9778850776e44a977f984860d4294c66f",
           "before": "0x0000000000000000000000003dad2200849925bb46d9bf05afa5f7f213f4c18e",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "description": "Sets the address value at the mapping key owners[newOwner] to the next address in the list"
+          "description": "Sets the address value at the mapping key owners[newOwner] to the next address in the list",
+          "allowDifference": false
         },
         {
           "key": "0xe077bc86bf4816fca3ddbc505f9b18f5cc29706777f4fc6748d483b6b6e39c02",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000003dad2200849925bb46d9bf05afa5f7f213f4c18e",
-          "description": "Clears the address value at the mapping key owners[oldOwner]"
+          "description": "Clears the address value at the mapping key owners[oldOwner]",
+          "allowDifference": false
         },
         {
           "key": "0xf50027dc233102bb13bb30a38326315505fe2452eaf2e2f78f1c0da0084d86c4",
           "before": "0x0000000000000000000000001c870776b168a9ffae80c51f050c611edd246741",
           "after": "0x000000000000000000000000966e0845e4cacb3763b59f39936c00db80d43e16",
-          "description": "Points the address value at mapping key owners[prevOwner] to the newOwner address"
+          "description": "Points the address value at mapping key owners[prevOwner] to the newOwner address",
+          "allowDifference": false
         }
       ]
     }
