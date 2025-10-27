@@ -22,6 +22,13 @@ contract PauseBridge is MultisigScript {
     address public immutable L2_BRIDGE = vm.envAddress("L2_BRIDGE");
     bool public immutable IS_PAUSED = vm.envBool("IS_PAUSED");
 
+//validation to avoid silent errors
+constructor() {
+    require(OWNER_SAFE != address(0), "OWNER_SAFE not set");
+    require(L1_PORTAL != address(0), "L1_PORTAL not set");
+    require(L2_BRIDGE != address(0), "L2_BRIDGE not set");
+}
+
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
         IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](1);
 
