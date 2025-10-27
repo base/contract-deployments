@@ -63,7 +63,7 @@ mcm-multisig-init:
 			--authority $(AUTHORITY) \
 			--multisig-id $(MCM_MULTISIG_ID) \
 			--chain-id $(MCM_CHAIN_ID)" \
-		output=artifacts/mcm-multisig-init.json
+		output=$(or $(MCM_MULTISIG_INIT_ARTIFACT),artifacts/mcm-multisig-init.json)
 
 .PHONY: mcm-signers-init
 mcm-signers-init:
@@ -75,7 +75,7 @@ mcm-signers-init:
 			--authority $(AUTHORITY) \
 			--multisig-id $(MCM_MULTISIG_ID) \
 			--total $(MCM_SIGNER_COUNT)" \
-		output=artifacts/mcm-signers-init.json
+		output=$(or $(MCM_SIGNERS_INIT_ARTIFACT),artifacts/mcm-signers-init.json)
 
 .PHONY: mcm-signers-append
 mcm-signers-append:
@@ -87,7 +87,7 @@ mcm-signers-append:
 			--authority $(AUTHORITY) \
 			--multisig-id $(MCM_MULTISIG_ID) \
 			--signers $(MCM_SIGNERS)" \
-		output=artifacts/mcm-signers-append.json
+		output=$(or $(MCM_SIGNERS_APPEND_ARTIFACT),artifacts/mcm-signers-append.json)
 
 .PHONY: mcm-signers-finalize
 mcm-signers-finalize:
@@ -98,7 +98,7 @@ mcm-signers-finalize:
 			--mcm-program-id $(MCM_PROGRAM_ID) \
 			--authority $(AUTHORITY) \
 			--multisig-id $(MCM_MULTISIG_ID)" \
-		output=artifacts/mcm-signers-finalize.json
+		output=$(or $(MCM_SIGNERS_FINALIZE_ARTIFACT),artifacts/mcm-signers-finalize.json)
 
 .PHONY: mcm-signers-clear
 mcm-signers-clear:
@@ -109,7 +109,7 @@ mcm-signers-clear:
 			--mcm-program-id $(MCM_PROGRAM_ID) \
 			--authority $(AUTHORITY) \
 			--multisig-id $(MCM_MULTISIG_ID)" \
-		output=artifacts/mcm-signers-clear.json
+		output=$(or $(MCM_SIGNERS_CLEAR_ARTIFACT),artifacts/mcm-signers-clear.json)
 
 .PHONY: mcm-signers-set-config
 mcm-signers-set-config:
@@ -124,7 +124,7 @@ mcm-signers-set-config:
 			--group-quorums $(MCM_GROUP_QUORUMS) \
 			--group-parents $(MCM_GROUP_PARENTS) \
 			$(if $(filter true,$(MCM_CLEAR_ROOT)),--clear-root)" \
-		output=artifacts/mcm-signers-set-config.json
+		output=$(or $(MCM_SIGNERS_SET_CONFIG_ARTIFACT),artifacts/mcm-signers-set-config.json)
 
 .PHONY: mcm-signatures-init
 mcm-signatures-init:
@@ -136,7 +136,7 @@ mcm-signatures-init:
 			--authority $(AUTHORITY) \
 			--proposal $(MCM_PROPOSAL_OUTPUT) \
 			--total $(MCM_SIGNATURES_COUNT)" \
-		output=artifacts/mcm-signatures-init.json
+		output=$(or $(MCM_SIGNATURES_INIT_ARTIFACT),artifacts/mcm-signatures-init.json)
 
 .PHONY: mcm-signatures-append
 mcm-signatures-append:
@@ -148,7 +148,7 @@ mcm-signatures-append:
 			--authority $(AUTHORITY) \
 			--proposal $(MCM_PROPOSAL_OUTPUT) \
 			--signatures $(MCM_SIGNATURES)" \
-		output=artifacts/mcm-signatures-append.json
+		output=$(or $(MCM_SIGNATURES_APPEND_ARTIFACT),artifacts/mcm-signatures-append.json)
 
 .PHONY: mcm-signatures-finalize
 mcm-signatures-finalize:
@@ -159,7 +159,7 @@ mcm-signatures-finalize:
 			--mcm-program-id $(MCM_PROGRAM_ID) \
 			--authority $(AUTHORITY) \
 			--proposal $(MCM_PROPOSAL_OUTPUT)" \
-		output=artifacts/mcm-signatures-finalize.json
+		output=$(or $(MCM_SIGNATURES_FINALIZE_ARTIFACT),artifacts/mcm-signatures-finalize.json)
 
 .PHONY: mcm-signatures-clear
 mcm-signatures-clear:
@@ -170,7 +170,7 @@ mcm-signatures-clear:
 			--mcm-program-id $(MCM_PROGRAM_ID) \
 			--authority $(AUTHORITY) \
 			--proposal $(MCM_PROPOSAL_OUTPUT)" \
-		output=artifacts/mcm-signatures-clear.json
+		output=$(or $(MCM_SIGNATURES_CLEAR_ARTIFACT),artifacts/mcm-signatures-clear.json)
 
 .PHONY: mcm-ownership-transfer
 mcm-ownership-transfer:
@@ -182,7 +182,7 @@ mcm-ownership-transfer:
 			--authority $(AUTHORITY) \
 			--multisig-id $(MCM_MULTISIG_ID) \
 			--proposed-owner $(MCM_PROPOSED_OWNER)" \
-		output=artifacts/mcm-ownership-transfer.json
+		output=$(or $(MCM_OWNERSHIP_TRANSFER_ARTIFACT),artifacts/mcm-ownership-transfer.json)
 
 .PHONY: mcm-ownership-accept
 mcm-ownership-accept:
@@ -193,7 +193,7 @@ mcm-ownership-accept:
 			--mcm-program-id $(MCM_PROGRAM_ID) \
 			--authority $(AUTHORITY) \
 			--multisig-id $(MCM_MULTISIG_ID)" \
-		output=artifacts/mcm-ownership-accept.json
+		output=$(or $(MCM_OWNERSHIP_ACCEPT_ARTIFACT),artifacts/mcm-ownership-accept.json)
 
 .PHONY: mcm-proposal-set-root
 mcm-proposal-set-root:
@@ -204,7 +204,7 @@ mcm-proposal-set-root:
 			--mcm-program-id $(MCM_PROGRAM_ID) \
 			--authority $(AUTHORITY) \
 			--proposal $(MCM_PROPOSAL_OUTPUT)" \
-		output=artifacts/mcm-proposal-set-root.json
+		output=$(or $(MCM_PROPOSAL_SET_ROOT_ARTIFACT),artifacts/mcm-proposal-set-root.json)
 
 .PHONY: mcm-proposal-execute
 mcm-proposal-execute:
@@ -217,7 +217,7 @@ mcm-proposal-execute:
 			--proposal $(MCM_PROPOSAL_OUTPUT) \
 			$(if $(MCM_START_INDEX),--start-index $(MCM_START_INDEX)) \
 			$(if $(MCM_OPERATION_COUNT),--operation-count $(MCM_OPERATION_COUNT))" \
-		output=artifacts/mcm-proposal-execute.json
+		output=$(or $(MCM_PROPOSAL_EXECUTE_ARTIFACT),artifacts/mcm-proposal-execute.json)
 
 ##
 # Proposal creation commands (read-only, create proposal files)

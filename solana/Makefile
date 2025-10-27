@@ -73,7 +73,7 @@ sol-confirm-cmd:
 sol-confirm:
 	@echo "==> Confirming signature: $$SIG"; \
 	mkdir -p $(dir $(output)); \
-	solana confirm $$SIG -v --output json --url $(SOL_RPC_URL) >> $(output)
+	solana confirm $$SIG -v --output json --url $(SOL_RPC_URL) > $(output)
 
 ##
 # Solana Native Commands
