@@ -246,7 +246,8 @@ mcm-proposal-update-signers:
 		--signer-groups $(MCM_SIGNER_GROUPS) \
 		--group-quorums $(MCM_GROUP_QUORUMS) \
 		--group-parents $(MCM_GROUP_PARENTS) \
-		$(if $(filter true,$(MCM_CLEAR_ROOT)),--clear-root)
+		$(if $(filter true,$(MCM_CLEAR_ROOT)),--clear-root) \
+		$(if $(filter true,$(MCM_CLEAR_SIGNERS)),--clear-signers)
 
 .PHONY: mcm-proposal-bridge-pause
 mcm-proposal-bridge-pause:

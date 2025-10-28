@@ -24,4 +24,4 @@ sign:
 step3-execute-proposal:
 	@echo "==> Step 3: Executing MCM proposal..."
 	make mcm-all
-	make mcm-print-config
+	make mcm-signers-print-config
