@@ -147,3 +147,10 @@ step9-transfer-upgrade-authority:
 step10-generate-set-upgrade-authority-artifacts:
 	@echo "==> Step 10: Generating MCM set-upgrade-authority artifacts..."
 	make sol-confirm SIG=$(SET_UPGRADE_AUTHORITY_SIGNATURE) output=artifacts/set-upgrade-authority-artifacts.json
+
+# Step 11: Fund MCM authorities (inherited from parent)
+.PHONY: step11-fund-mcm-authorities
+step11-fund-mcm-authorities:
+	@echo "==> Step 11: Funding MCM authorities..."
+	make sol-transfer SOL_RECIPIENT=$(MCM_AUTHORITY_0) output=artifacts/fund-mcm-authority-0.json
+	make sol-transfer SOL_RECIPIENT=$(MCM_AUTHORITY_1) output=artifacts/fund-mcm-authority-1.json
