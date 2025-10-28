@@ -37,7 +37,7 @@ install-eip712sign:
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@89e88905998a0dd10fe75dad99b8121bfe5dca93
+	go install github.com/base/mcm-go/cmd/mcmctl@66ad0d9e28ecc1ef0b3b1504bdc5d40da413b678
 
 .PHONY: deps
 deps: install-mcmctl install-eip712sign
@@ -73,7 +73,7 @@ sol-confirm-cmd:
 sol-confirm:
 	@echo "==> Confirming signature: $$SIG"; \
 	mkdir -p $(dir $(output)); \
-	solana confirm $$SIG -v --output json --url $(SOL_RPC_URL) >> $(output)
+	solana confirm $$SIG -v --output json --url $(SOL_RPC_URL) > $(output)
 
 ##
 # Solana Native Commands
