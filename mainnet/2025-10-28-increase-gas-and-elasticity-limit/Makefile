@@ -14,12 +14,6 @@ endif
 
 SCRIPT_NAME = IncreaseEip1559ElasticityAndIncreaseGasLimitScript
 
-# # Map .env values and export them for child processes
-# export FROM_GAS_LIMIT=$(OLD_GAS_LIMIT)
-# export TO_GAS_LIMIT=$(NEW_GAS_LIMIT)
-# export FROM_ELASTICITY=$(OLD_ELASTICITY)
-# export TO_ELASTICITY=$(NEW_ELASTICITY)
-
 .PHONY: deps
 deps: new-forge-deps
 
