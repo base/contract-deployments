@@ -14,6 +14,8 @@ endif
 
 SCRIPT_NAME = IncreaseEip1559ElasticityAndIncreaseGasLimitScript
 
+RPC_URL = $(L1_RPC_URL)
+
 .PHONY: gen-validation
 gen-validation: checkout-signer-tool run-script
 
