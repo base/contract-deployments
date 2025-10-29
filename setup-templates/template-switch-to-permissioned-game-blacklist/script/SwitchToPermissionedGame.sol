@@ -43,11 +43,13 @@ contract SwitchToPermissionedGame is MultisigScript {
         // Split by commas
         string[] memory parts = vm.split(RAW_ADDRESSES_TO_BLACKLIST, ",");
         if (parts.length == 0) {
+            console.log("using provided address_to_blacklist list");
             for (uint256 i; i < parts.length; i++) {
                 address_to_blacklist = vm.parseAddress(parts[i]);
                 gamesToBlacklist.push(address_to_blacklist);
             }
         } else {
+            console.log("searching for addresses to blacklist");
             getGamesToBlacklist(dgfProxy);
         }
 
