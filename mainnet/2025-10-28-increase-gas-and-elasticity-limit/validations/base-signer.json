@@ -1,0 +1,67 @@
+{
+  "taskName": "Increase EIP-1559 Elasticity and Gas Limit",
+  "scriptName": "IncreaseEip1559ElasticityAndIncreaseGasLimitScript",
+  "signature": "sign(address[])",
+  "sender": "0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "args": "[]",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x0cb6e713a2269e0a8511ad20124a20098af5f6386c910b1d9abc8f44b85493ae"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0xeb8f6f520dafe4d80435058e29df30db0a9746fcf085933f338bf88dacc608b2",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000005c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000005d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x0000000000000000000000000000000000101c12000008dd0000000008f0d180",
+          "after": "0x0000000000000000000000000000000000101c12000008dd000000000bebc200",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000000000000000000000000000000000000000300000032",
+          "after": "0x0000000000000000000000000000000000000000000000000000000400000032",
+          "description": "Updates EIP 1559 params for the chain",
+          "allowDifference": false
+        }
+      ]
+    }
+  ]
+}
