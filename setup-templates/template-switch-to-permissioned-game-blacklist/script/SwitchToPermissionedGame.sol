@@ -23,7 +23,7 @@ contract SwitchToPermissionedGame is MultisigScript {
     string public constant EXPECTED_VERSION = "1.4.1";
 
     address public immutable OWNER_SAFE;
-    uint256 public immutable L2_DIVERGENCE_BLOCK_NUMBER;
+    string public immutable RAW_ADDRESSES_TO_BLACKLIST;
 
     SystemConfig internal _SYSTEM_CONFIG = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
 
@@ -32,7 +32,7 @@ contract SwitchToPermissionedGame is MultisigScript {
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
-        L2_DIVERGENCE_BLOCK_NUMBER = uint64(vm.envUint("L2_DIVERGENCE_BLOCK_NUMBER"));
+        RAW_ADDRESSES_TO_BLACKLIST = vm.envString("ADDRESSES_TO_BLACKLIST");
     }
 
     function setUp() public {
@@ -40,7 +40,18 @@ contract SwitchToPermissionedGame is MultisigScript {
         FaultDisputeGame currentFdg = FaultDisputeGame(address(dgfProxy.gameImpls(GameTypes.CANNON)));
         anchorStateRegistry = currentFdg.anchorStateRegistry();
 
-        getGamesToBlacklist(dgfProxy);
+        // Split by commas
+        string[] memory parts = vm.split(RAW_ADDRESSES_TO_BLACKLIST, ",");
+        if (parts.length == 0) {
+            for (uint256 i; i < parts.length; i++) {
+                address_to_blacklist = vm.parseAddress(parts[i]);
+                gamesToBlacklist.push(address_to_blacklist);
+            }
+        } else {
+            getGamesToBlacklist(dgfProxy);
+        }
+
+        console.log("total games to blacklist", gamesToBlacklist.length);
     }
 
     function getGamesToBlacklist(IDisputeGameFactory dgfProxy) internal {
@@ -54,8 +65,6 @@ contract SwitchToPermissionedGame is MultisigScript {
                 gamesToBlacklist.push(game);
             }
         }
-
-        console.log("total games to blacklist", gamesToBlacklist.length);
     }
 
     // Confirm the CURRENT_RETIREMENT_TIMESTAMP is updated to the block time.
@@ -64,7 +73,6 @@ contract SwitchToPermissionedGame is MultisigScript {
             require(anchorStateRegistry.isGameBlacklisted(gamesToBlacklist[i]), "post-110");
         }
     }
-
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
         IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](gamesToBlacklist.length);
