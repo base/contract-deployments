@@ -69,6 +69,7 @@ Complete the above steps for `Approving the Update transaction` before continuin
 Make sure your ledger is still unlocked and run the following.
 
 ```shell
+cd mainnet/2025-10-28-increase-gas-and-elasticity-limit
 make sign-rollback
 ```
 

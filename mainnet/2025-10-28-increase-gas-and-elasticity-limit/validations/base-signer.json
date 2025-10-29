@@ -51,14 +51,14 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
           "before": "0x0000000000000000000000000000000000101c12000008dd0000000008f0d180",
           "after": "0x0000000000000000000000000000000000101c12000008dd000000000bebc200",
-          "description": "<<Summary>>",
+          "description": "Updates gas limit from 150M to 200M for the chain",
           "allowDifference": false
         },
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "before": "0x0000000000000000000000000000000000000000000000000000000300000032",
           "after": "0x0000000000000000000000000000000000000000000000000000000400000032",
-          "description": "Updates EIP 1559 params for the chain",
+          "description": "Updates elasticity from 3 to 4 for the chain",
           "allowDifference": false
         }
       ]

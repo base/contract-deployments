@@ -14,13 +14,6 @@ endif
 
 SCRIPT_NAME = IncreaseEip1559ElasticityAndIncreaseGasLimitScript
 
-.PHONY: deps
-deps: new-forge-deps
-
-.PHONY: new-forge-deps
-new-forge-deps:
-	forge install --no-git safe-global/safe-smart-account@186a21a74b327f17fc41217a927dea7064f74604
-
 .PHONY: gen-validation
 gen-validation: checkout-signer-tool run-script
 
