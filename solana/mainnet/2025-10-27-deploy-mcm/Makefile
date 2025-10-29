@@ -33,8 +33,7 @@ step1-clone-and-patch:
 	rm -rf chainlink-ccip
 	git clone --filter=blob:none $(MCM_REPO) chainlink-ccip
 	cd chainlink-ccip && \
-		git checkout $(MCM_COMMIT) && \
-		git apply ../$(ID_PATCH)
+		git checkout $(MCM_COMMIT)
 
 # Step 2: Build and deploy the MCM program
 .PHONY: step2-build-and-deploy
@@ -43,6 +42,7 @@ step2-build-and-deploy:
 	mkdir -p chainlink-ccip/chains/solana/contracts/target/deploy/ && \
 		cp $(MCM_KEYPAIR) chainlink-ccip/chains/solana/contracts/target/deploy/mcm-keypair.json
 	cd chainlink-ccip/chains/solana/contracts && \
+		anchor keys sync && \
 		anchor build -p mcm && \
 		anchor deploy --provider.cluster $(CLUSTER) --provider.wallet $(AUTHORITY) -p mcm
 
