@@ -11,8 +11,7 @@ import {GameTypes, GameType} from "@eth-optimism-bedrock/src/dispute/lib/Types.s
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 
-/// @notice This script updates the FaultDisputeGame and PermissionedDisputeGame implementations in the
-///         DisputeGameFactory contract.
+/// @notice This script updates the respectedGameType and retires existing games in the AnchorStateRegistry.
 contract SwitchToPermissionedGame is MultisigScript {
     // TODO: Confirm expected version
     string public constant EXPECTED_VERSION = "1.4.1";
