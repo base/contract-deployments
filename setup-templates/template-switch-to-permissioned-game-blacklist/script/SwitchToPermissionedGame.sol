@@ -76,6 +76,7 @@ contract SwitchToPermissionedGame is MultisigScript {
         for (uint256 i = 0; i < gamesToBlacklist.length; i = i + 1) {
             require(anchorStateRegistry.isGameBlacklisted(gamesToBlacklist[i]), "post-110");
         }
+        require(GameType.unwrap(anchorStateRegistry.respectedGameType()) == GameType.unwrap(GameTypes.PERMISSIONED_CANNON), "post-111");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
