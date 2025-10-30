@@ -10,10 +10,10 @@ This can only be done by the "Optimism Guardian Multisig" which is a single-nest
 Because this requires searching through all dispute games, the time required for the task to execute may take some time. There are
 two options:
 
-1. If the `ADDRESSES_TO_BLACKLIST` environemnt variable is NOT set, the forge script will attempt to search for dispute games
+1. If the `ADDRESSES_TO_BLACKLIST` environment variable is NOT set, the forge script will attempt to search for dispute games
    Note: this may take 10+ minutes
 
-2. If the `ADDRESSES_TO_BLACKLIST` environemnt variable IS set, the forge script will NOT search and will just blacklist the addresses
+2. If the `ADDRESSES_TO_BLACKLIST` environment variable IS set, the forge script will NOT search and will just blacklist the addresses
    provided.
 
    There is a python script provided that can be run with `make find-dispute-games-offchain` that will use the provided
