@@ -79,10 +79,17 @@ contract SwitchToPermissionedGame is MultisigScript {
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](gamesToBlacklist.length);
+        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](gamesToBlacklist.length + 1);
+
+        calls[0] = IMulticall3.Call3Value({
+            target: address(anchorStateRegistry),
+            allowFailure: false,
+            callData: abi.encodeCall(IAnchorStateRegistry.setRespectedGameType, (GameTypes.PERMISSIONED_CANNON)),
+            value: 0
+        });
 
         for (uint256 i = 0; i < gamesToBlacklist.length; i = i + 1) {
-            calls[i] = IMulticall3.Call3Value({
+            calls[i+1] = IMulticall3.Call3Value({
                 target: address(anchorStateRegistry),
                 allowFailure: false,
                 callData: abi.encodeCall(IAnchorStateRegistry.blacklistDisputeGame, (gamesToBlacklist[i])),
