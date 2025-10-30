@@ -1,4 +1,4 @@
-# Switch to Permissioned Game and Blacklist addresses
+# Switch to Permissioned Game and Blacklist Addresses
 
 Status: PENDING
 
