@@ -40,4 +40,5 @@ find-dispute-games-offchain: pip-install
 	python3 script/fetch_dispute_games.py
 
 .PHONY: pip-install
+pip-install:
 	pip3 install -r script/requirements.txt
