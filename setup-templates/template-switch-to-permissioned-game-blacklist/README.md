@@ -4,9 +4,22 @@ Status: PENDING
 
 ## Description
 
-This task contains a single script that will blacklist fault dispute games after a provided L2 block number in the AnchorStateRegistry.
+This task contains scripts that will blacklist fault dispute games after a provided L2 block number in the AnchorStateRegistry.
 This can only be done by the "Optimism Guardian Multisig" which is a single-nested multisig controlled by the OP Security Council.
-This task may take 10+ minutes to complete.
+
+Because this requires searching through all dispute games, the time required for the task to execute may take some time. There are
+two options:
+
+1. If the ADDRESSES_TO_BLACKLIST environemnt variable is NOT set, the forge script will attempt to search for dispute games
+   Note: this may take 10+ minutes
+
+2. If the ADDRESSES_TO_BLACKLIST environemnt variable IS set, the forge script will NOT search and will just blacklist the addresses
+   provided.
+
+   There is a python script provided that can be run with `make find-dispute-games-offchain` that will use the provided
+   RPC_URL to search for the list of games to blacklist _offchain_. This typically takes a minute or two. The output
+   is the comma-separated ADDRESSES_TO_BLACKLIST environment variable that can be copied over to the `.env` file, so that
+   the forge script can directly blacklist just those addresses.
 
 ## Procedure
 
@@ -29,12 +42,16 @@ is ready".
 
 #### 3.1 Sign the transaction
 
-**If on mainnet**:
-
 Op signer:
 
 ```bash
 make sign-op
+```
+
+Base engineer:
+
+```bash
+make sign-base-<mainnet | sepolia>
 ```
 
 You will see a "Simulation link" from the output.
