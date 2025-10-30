@@ -1,4 +1,4 @@
-# Facilitator Instructions: MCM Signers Update
+# Facilitator Instructions: Signers Update MCM 1
 
 ## Overview
 
@@ -15,7 +15,7 @@ As a Facilitator, you are responsible for:
 ```bash
 cd contract-deployments
 git pull
-cd solana/<network>/<task-directory>
+cd solana/mainnet/2025-10-27-signers-update-mcm-1
 make deps
 ```
 

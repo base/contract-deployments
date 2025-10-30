@@ -1,6 +1,6 @@
 # Update Mainnet Incident Multisig Signers
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x025136190525da4d406bb571b0373022343fa734e3a30182ca977981b989e963)
 
 ## Description
 

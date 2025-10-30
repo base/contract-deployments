@@ -1,4 +1,4 @@
-# Upgrade Fault Proofs
+# Switch to Permissioned Game and Retire Games
 
 Status: PENDING
 

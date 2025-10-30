@@ -1,9 +1,9 @@
-# Facilitator Instructions: MCM Signers Update
+# Facilitator Instructions: MCM Bridge Pause/Unpause
 
 ## Overview
 
 As a Facilitator, you are responsible for:
-1. Preparing the new signers configuration
+1. Preparing the bridge pause configuration
 2. Creating the MCM proposal
 3. Committing and pushing the proposal to the repo
 4. Coordinating with Signers
@@ -15,7 +15,7 @@ As a Facilitator, you are responsible for:
 ```bash
 cd contract-deployments
 git pull
-cd solana/<network>/<task-directory>
+cd solana/devnet-alpha/2025-10-24-mcm-pause-unpause-bridge
 make deps
 ```
 
@@ -26,7 +26,7 @@ Ensure you have:
 
 ## Phase 1: Prepare and Generate Proposal
 
-### 1.1. Update .env with signers configuration
+### 1.1. Update .env with bridge pause configuration
 
 Set the following in `.env`:
 
@@ -37,13 +37,9 @@ MCM_VALID_UNTIL=<unix-timestamp>
 MCM_OVERRIDE_PREVIOUS_ROOT=false  # or true if needed
 MCM_PROPOSAL_OUTPUT=proposal.json
 
-# New signers configuration
-MCM_NEW_SIGNERS=0xADDRESS1,0xADDRESS2,0xADDRESS3
-MCM_SIGNER_GROUPS=0,0,1
-MCM_GROUP_QUORUMS=2,1
-MCM_GROUP_PARENTS=0,0
-MCM_CLEAR_SIGNERS=false  # or true if needed
-MCM_CLEAR_ROOT=false  # or true if needed
+# Bridge configuration
+BRIDGE_PROGRAM_ID=<bridge-program-id>
+PAUSED=true  # or false to unpause
 ```
 
 ### 1.2. Generate proposal
@@ -57,17 +53,15 @@ This creates the proposal file (default `proposal.json` or whatever is set in `M
 ### 1.3. Review proposal
 
 Open and review the generated proposal file to verify:
-- All new signers are included
-- Signer groups are correctly assigned
-- Group quorums are appropriate
-- Group parent relationships are correct
+- Bridge program ID is correct
+- Pause status is correct (pausing or unpausing)
 - Valid until timestamp is appropriate
 
 ### 1.4. Commit and push
 
 ```bash
 git add .
-git commit -m "Add MCM signers update proposal"
+git commit -m "Add MCM bridge pause/unpause proposal"
 git push
 ```
 
@@ -84,40 +78,48 @@ MCM_SIGNATURES_COUNT=<number-of-signatures>
 MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
 ```
 
-## Phase 3: Execute Proposal
+## Phase 3: Register Proposal
 
 ```bash
-make step3-execute-proposal
+make step3-register-proposal
 ```
 
-This command executes all the necessary steps:
+This command registers the proposal:
 - Initialize signatures account
 - Append signatures
 - Finalize signatures
 - Set root
-- Execute proposal
-- Print the new configuration
 
-## Phase 4: Verification
+## Phase 4: Execute Pause Proposal
 
-### 4.1. Verify MCM configuration
+```bash
+make step4-execute-pause
+```
 
-Check that:
-- All new signers are present
-- Old signers (if removed) are no longer present
-- Signers are in the correct groups
-- Group quorums are set correctly
-- Group parent relationships are correct
+This command executes the pause proposal
 
-### 4.2. View on Solana Explorer
+## Phase 5: Execute Unpause Proposal
+
+```bash
+make step5-execute-unpause
+```
+
+This command executes the unpause proposal
+
+## Phase 6: Verification
+
+### 6.1. View transaction on Solana Explorer
 
 Visit the Solana Explorer for your network:
 - Mainnet: https://explorer.solana.com/
 - Devnet: https://explorer.solana.com/?cluster=devnet
 
-Search for the execution transaction to verify the update.
+Search for the execution transaction and verify:
+- The transaction was successful
+- The program logs show `Instruction: SetPauseStatus` (Anchor log)
+- The pause status matches the intended action (paused or unpaused)
 
-### 4.3. Update README
+### 6.2. Update README
 
 Update the Status line in README.md to:
 

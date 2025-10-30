@@ -27,11 +27,6 @@ setup-mcm-set-pause-bridge:
 	rm -rf $(TEMPLATE_SET_PAUSE_BRIDGE)/cache $(TEMPLATE_SET_PAUSE_BRIDGE)/lib $(TEMPLATE_SET_PAUSE_BRIDGE)/out
 	cp -r $(TEMPLATE_SET_PAUSE_BRIDGE) $(SET_PAUSE_BRIDGE_DIR)
 
-# Run `make setup-mcm-set-partner-threshold-bridge network=<network>`
-setup-mcm-set-partner-threshold-bridge:
-	rm -rf $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/cache $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/lib $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE)/out
-	cp -r $(TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE) $(SET_PARTNER_THRESHOLD_BRIDGE_DIR)
-
 ##
 # Dependencies
 ##
@@ -42,7 +37,7 @@ install-eip712sign:
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@8fdb1611ffc7081ce592f8957a9806c393c6f447
+	go install github.com/base/mcm-go/cmd/mcmctl@66ad0d9e28ecc1ef0b3b1504bdc5d40da413b678
 
 .PHONY: deps
 deps: install-mcmctl install-eip712sign
@@ -78,7 +73,7 @@ sol-confirm-cmd:
 sol-confirm:
 	@echo "==> Confirming signature: $$SIG"; \
 	mkdir -p $(dir $(output)); \
-	solana confirm $$SIG -v --output json --url $(SOL_RPC_URL) >> $(output)
+	solana confirm $$SIG -v --output json --url $(SOL_RPC_URL) > $(output)
 
 ##
 # Solana Native Commands
