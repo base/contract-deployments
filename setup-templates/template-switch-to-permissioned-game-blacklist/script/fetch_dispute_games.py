@@ -1,5 +1,6 @@
 from web3 import Web3
 import sys
+import os
 from eth_hash.auto import keccak
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -7,11 +8,26 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # Configuration
 # -------------------------------
 
-# Example: replace with your Ethereum JSON-RPC endpoint
-RPC_URL = "https://ethereum-full-sepolia-k8s-prod-proxy.cbhq.net"
+try:
+    RPC_URL = os.environ['RPC_URL']
+    print(f"RPC_URL environment variable: {RPC_URL}")
+except KeyError:
+    print("RPC_URL environment variable not set.")
+    os.exit(1)
 
-# Replace with your contract address
-CONTRACT_ADDRESS = "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1"
+try:
+    DISPUTE_GAME_FACTORY = os.environ['DISPUTE_GAME_FACTORY']
+    print(f"DISPUTE_GAME_FACTORY environment variable: {DISPUTE_GAME_FACTORY}")
+except KeyError:
+    print("DISPUTE_GAME_FACTORY environment variable not set.")
+    os.exit(1)
+
+try:
+    L2_DIVERGENCE_BLOCK_NUMBER = int(os.environ['L2_DIVERGENCE_BLOCK_NUMBER'])
+    print(f"L2_DIVERGENCE_BLOCK_NUMBER environment variable: {L2_DIVERGENCE_BLOCK_NUMBER}")
+except KeyError:
+    print("L2_DIVERGENCE_BLOCK_NUMBER environment variable not set.")
+    os.exit(1)
 
 # The storage slot index where the array is stored (integer)
 ARRAY_SLOT = 104
@@ -58,7 +74,7 @@ def read_dispute_game_addresses(address, base_slot, max_elements=None, max_worke
     # 1️⃣ Read array length
     length_data = get_storage_at(address, base_slot)
     length = int.from_bytes(length_data, byteorder="big")
-    print(f"Array length: {length}")
+    print(f"Total number of dispute games: {length}")
 
     if max_elements:
         length = min(length, max_elements)
@@ -84,26 +100,26 @@ def read_dispute_game_addresses(address, base_slot, max_elements=None, max_worke
         for future in as_completed(futures):
             i, addr = future.result()
             addresses[i] = addr
-            print(f"[{i}] {addr}")
+            print(f"Dispute Game Address [{i}]: {addr}")
 
     return addresses
 
 def filter_dispute_game_addresses_by_l2_divergence_block_number(addresses, l2_divergence_block_number, max_workers=10):
     # 1️⃣ Worker function to fetch the l2 block number of a dispute game
-    def fetch_l2_block_number(i, contract_address):
-        contract = w3.eth.contract(address=contract_address, abi=abi)
+    def fetch_l2_block_number(i, DISPUTE_GAME_FACTORY):
+        contract = w3.eth.contract(address=DISPUTE_GAME_FACTORY, abi=abi)
         l2_block_number = contract.functions.l2BlockNumber().call()
-        return i, contract_address, l2_block_number
+        return i, DISPUTE_GAME_FACTORY, l2_block_number
 
 
     # 2️⃣ Launch parallel reads
     filtered_address = [None] * len(addresses)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [executor.submit(fetch_l2_block_number, i, contract_address) for i, contract_address in enumerate(addresses)]
+        futures = [executor.submit(fetch_l2_block_number, i, DISPUTE_GAME_FACTORY) for i, DISPUTE_GAME_FACTORY in enumerate(addresses)]
         for future in as_completed(futures):
-            i, contract_address, l2_block_number = future.result()
-            filtered_address[i] = (contract_address, l2_block_number)
-            print(f"[{i}] {l2_block_number}")
+            i, DISPUTE_GAME_FACTORY, l2_block_number = future.result()
+            filtered_address[i] = (DISPUTE_GAME_FACTORY, l2_block_number)
+            print(f"Dispute Game L2 Block Number: [{i}] {l2_block_number}")
 
     filtered_address = [x[0] for x in filtered_address if x is not None and x[1] >= l2_divergence_block_number]
     return filtered_address
@@ -115,9 +131,9 @@ def array_to_comma_seperated_string(array):
 # Run
 # -------------------------------
 if __name__ == "__main__":
-    print(f"Reading array from contract {CONTRACT_ADDRESS} at slot {ARRAY_SLOT}...")
-    addresses = read_dispute_game_addresses(CONTRACT_ADDRESS, ARRAY_SLOT, max_elements=5)
-    addresses = filter_dispute_game_addresses_by_l2_divergence_block_number(addresses, 1)
+    print(f"Reading array from contract {DISPUTE_GAME_FACTORY} at slot {ARRAY_SLOT}...")
+    addresses = read_dispute_game_addresses(DISPUTE_GAME_FACTORY, ARRAY_SLOT, max_elements=None)
+    addresses = filter_dispute_game_addresses_by_l2_divergence_block_number(addresses, L2_DIVERGENCE_BLOCK_NUMBER)
 
     print(f"\nFound {len(addresses)} dispute game addresses.")
-    print(f"\nAddresses: {array_to_comma_seperated_string(addresses)}")
+    print(f"\nADDRESSES_TO_BLACKLIST={array_to_comma_seperated_string(addresses)}")

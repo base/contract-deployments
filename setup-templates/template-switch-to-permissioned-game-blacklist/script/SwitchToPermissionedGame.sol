@@ -23,7 +23,8 @@ contract SwitchToPermissionedGame is MultisigScript {
     string public constant EXPECTED_VERSION = "1.4.1";
 
     address public immutable OWNER_SAFE;
-    string public immutable RAW_ADDRESSES_TO_BLACKLIST;
+    uint64 public immutable L2_DIVERGENCE_BLOCK_NUMBER;
+    string public RAW_ADDRESSES_TO_BLACKLIST;
 
     SystemConfig internal _SYSTEM_CONFIG = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
 
@@ -33,6 +34,7 @@ contract SwitchToPermissionedGame is MultisigScript {
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
         RAW_ADDRESSES_TO_BLACKLIST = vm.envString("ADDRESSES_TO_BLACKLIST");
+        L2_DIVERGENCE_BLOCK_NUMBER = uint64(vm.envUint("L2_DIVERGENCE_BLOCK_NUMBER"));
     }
 
     function setUp() public {
@@ -42,11 +44,11 @@ contract SwitchToPermissionedGame is MultisigScript {
 
         // Split by commas
         string[] memory parts = vm.split(RAW_ADDRESSES_TO_BLACKLIST, ",");
-        if (parts.length == 0) {
+        if (parts.length != 0) {
             console.log("using provided address_to_blacklist list");
             for (uint256 i; i < parts.length; i++) {
-                address_to_blacklist = vm.parseAddress(parts[i]);
-                gamesToBlacklist.push(address_to_blacklist);
+                address address_to_blacklist = vm.parseAddress(parts[i]);
+                gamesToBlacklist.push(IDisputeGame(address_to_blacklist));
             }
         } else {
             console.log("searching for addresses to blacklist");
