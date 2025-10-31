@@ -18,7 +18,7 @@ SCRIPT_NAME = FundScript
 
 .PHONY: sign
 sign:
-	$(call MULTISIG_SIGN,)
+	$(call MULTISIG_SIGN,) --sender $(SENDER)
 
 .PHONY: execute
 execute:
