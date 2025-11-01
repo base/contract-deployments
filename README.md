@@ -37,10 +37,10 @@ To execute a new task, run one of the following commands (depending on the type 
 
 - For a generic task: `make setup-task network=<network> task=<task-name>`
 - For gas increase tasks: `make setup-gas-increase network=<network>`
+- For combined gas and elasticity increase tasks: `make setup-gas-and-elasticity-increase network=<network>`
 - For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
-- For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
 
@@ -48,7 +48,7 @@ Next, `cd` into the directory that was created for you and follow the steps list
 
 > **👥 For Signers:** Please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
 
-Please note, you will need to manually create validation file(s) for your task as they are bespoke to each task and therefore not created automatically as a part of the templates. We use one validation Markdown file per multisig involved in the task, so if there's only one multisig involved in your task, then you can simply create a `VALIDATION.md` file at the root of your task containing the validation instructions, while if there are multiple multisigs involved in the task, then create a `validations/` sub-directory at the root of your task containing the corresponding validation Markdown files. If you need examples to work from, you can browse through similar past tasks in this repo and adapt them to your specific task. Also, please note that we have tooling to generate these files (like the `task-signer-tool`) which removes the manual aspect of creating these validation files, we will soon update these instructions to reflect how this process can be automated.
+Please note, for some older tasks (that have not yet been adapted to use the signer tool) you will need to manually create validation file(s) for your task as they are bespoke to each task and therefore not created automatically as a part of the templates. We use one validation Markdown file per multisig involved in the task, so if there's only one multisig involved in your task, then you can simply create a `VALIDATION.md` file at the root of your task containing the validation instructions, while if there are multiple multisigs involved in the task, then create a `validations/` sub-directory at the root of your task containing the corresponding validation Markdown files. If you need examples to work from, you can browse through similar past tasks in this repo and adapt them to your specific task. Also, please note that we have tooling to generate these files (like the `task-signer-tool`) which removes the manual aspect of creating these validation files, we will soon update these instructions to reflect how this process can be automated.
 
 ## Directory structure
 
@@ -94,6 +94,22 @@ This template is increasing the throughput on Base Chain.
 1. Go to the folder that was created using the `make setup-gas-increase network=<network>` step
 1. Fill in all TODOs (search for "TODO" in the folder) in the `.env` and `README` files. Tip: you can run `make deps` followed by `make sign-upgrade` to produce a Tenderly simulation which will help fill in several of the TODOs in the README (and also `make sign-rollback`).
 1. Check in the task when it's ready to sign and collect signatures from signers
+1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+
+## Using the combined gas limit and elasticity increase template
+
+This template is used to increase the gas limit and elasticity or roll back the upgrade (if needed).
+
+1. Ensure you have followed the instructions above in `setup`, including running `make setup-gas-and-elasticity-increase network=<network>` and then go to the folder that was created by this command.
+1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts), and the new / old gas limit and elasticity, as well the other env vars marked with a TODO, in the `.env` file.
+1. Run `make deps`.
+1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
+1. Ensure the `SENDER` variable in the `.env` file is set to a signer of `OWNER_SAFE`.
+1. Build the contracts with `forge build`.
+1. Generate the validation file for signers with `make gen-validation`.
+1. Generate the rollback validation file for signers with `make gen-validation-rollback`.
+1. Appropriately fill in both of the generated validation files 6 empty fields at the top of the generated validations files (e.g. "taskName", "scriptName", etc.).
+1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
 ## Using the fault proof upgrade template
