@@ -108,17 +108,7 @@ contract UpdateSigners is MultisigScript {
             (bool found, uint256 idx) = _findIndex(workingOwners, owner);
             require(found, "owner to remove not in working set");
 
-            address prev = SENTINEL_OWNERS;
-            if (idx > 0) {
-                uint256 j = idx;
-                while (j > 0) {
-                    j--;
-                    if (workingOwners[j] != address(0)) {
-                        prev = workingOwners[j];
-                        break;
-                    }
-                }
-            }
+            address prev = _prevInList(workingOwners, idx);
 
             calls[i] = IMulticall3.Call3Value({
                 target: OWNER_SAFE,
@@ -151,11 +141,11 @@ contract UpdateSigners is MultisigScript {
         return (false, 0);
     }
 
-    function _prevInList(address[] memory list, address owner) internal pure returns (address) {
-        for (uint256 i; i < list.length; i++) {
-            if (list[i] == owner) {
-                return i == 0 ? SENTINEL_OWNERS : list[i - 1];
-            }
+    function _prevInList(address[] memory workingOwners, uint256 idx) internal pure returns (address) {
+        if (idx == 0) return SENTINEL_OWNERS;
+        for (uint256 j = idx; j > 0; j--) {
+            address candidate = workingOwners[j - 1];
+            if (candidate != address(0)) return candidate;
         }
         return SENTINEL_OWNERS;
     }
