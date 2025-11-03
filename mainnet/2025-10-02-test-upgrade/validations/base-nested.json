@@ -1,9 +1,5 @@
 {
-  "taskName": "mainnet-safe-swap-owner",
-  "scriptName": "SwapOwner",
-  "signature": "sign()",
-  "sender": "0x6CD3850756b7894774Ab715D136F9dD02837De50",
-  "args": "",
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io SwapOwner --sig sign() --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {

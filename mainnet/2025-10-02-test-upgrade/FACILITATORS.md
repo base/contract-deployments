@@ -17,6 +17,6 @@ make deps
 SIGNATURES=AAAABBBBCCCC make execute
 ```
 
-## 3. Set status in README to `EXECUTED (tx-link)`
+## 3. Set status in README to `[EXECUTED](tx-link)`
 
 ## 4. Check in execution materials
