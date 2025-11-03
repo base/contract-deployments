@@ -1,0 +1,63 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io FundScript --sig sign(address[]) [] --sender 0xa3D3c103442F162856163d564b983ae538c6202D",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x3ce8d81d4432cfb3a1b6370f5e83f48a27c1d78dc2acd212c07a7023b8e6812d"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0x41ae597d2b175c6e7e1604908d58b70acef84be2c0e9c8b0ad97cb79a7436a3e",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000005d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000005e",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "field": "ETH Balance (wei)",
+      "before": "0x0000000000000000000000000000000000000000000000001a4e86c4783b08bb",
+      "after": "0x0000000000000000000000000000000000000000000000001a4af945d37488bb",
+      "description": "ETH balance change for this account",
+      "allowDifference": false
+    },
+    {
+      "name": "Recipient address",
+      "address": "0x49243dce94e0f5a1b08b9556bbec5a84363c3839",
+      "field": "ETH Balance (wei)",
+      "before": "0x000000000000000000000000000000000000000000000000014d2ef477566282",
+      "after": "0x0000000000000000000000000000000000000000000000000150bc731c1ce282",
+      "description": "ETH balance change for this account",
+      "allowDifference": false
+    }
+  ]
+}
