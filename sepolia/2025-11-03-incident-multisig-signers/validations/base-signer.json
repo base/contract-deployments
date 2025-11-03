@@ -1,0 +1,124 @@
+{
+  "taskName": "Update Signers",
+  "scriptName": "UpdateSigners",
+  "signature": "sign(address[])",
+  "sender": "0x0CF2F86C3338993ce10F74d6f4B095712c7efe26",
+  "args": "[]",
+  "ledgerId": 0,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "messageHash": "0xb98540173e236ab4fcebdc816cae97860faba420674242cdb6154909588905e4"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0x2b407907bc185884e63d41c514b68cde248e6a06f5591d1136d84b85485bfee8",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Updates the owner count",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Updates the execution threshold",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x1b89e6111d27169de2f97ec92e344b249dff7dd6170ee65af7a1d9dda6cf7255",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000005f1955729e3d6129fb73813e891742d473fc74f7",
+          "description": "Updates the owners mapping",
+          "allowDifference": false
+        },
+        {
+          "key": "0xa17f6b5d5c5960e10cb741113b64d7f023e3513339475444585747297bf07208",
+          "before": "0x0000000000000000000000009b43cc2ef6fa521127ade09e20efd6abbc5bf799",
+          "after": "0x000000000000000000000000644d0f5c2c55a4679b4bfe057b87ba203af9ac0d",
+          "description": "Updates the owners mapping",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb06fd2848181e1497bbaa80b8d007c335c7806a2e47211a7bba7a9af63e0ca64",
+          "before": "0x000000000000000000000000f2fb17eab635f036da7864b8e39ef8e9a03441df",
+          "after": "0x000000000000000000000000edecf2c444559210a865a22acfc6a2a25590ab1b",
+          "description": "Updates the owners mapping",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc5e3baa34a074e15c9dc99b0b81b573ebbdd07b026df6162630478f6d12892f3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000cf2f86c3338993ce10f74d6f4b095712c7efe26",
+          "description": "Updates the owners mapping",
+          "allowDifference": false
+        },
+        {
+          "key": "0xd5a3955556fe832b0d9dee1f7edb84880eee53ea4dc4e838bfa6bebc90480c2a",
+          "before": "0x000000000000000000000000644d0f5c2c55a4679b4bfe057b87ba203af9ac0d",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Updates the owners mapping",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdbe1c9b8b04b880813d25a9c5e89056031fb59c22374b4ee4da23606ff9ee5f5",
+          "before": "0x000000000000000000000000aa2489debf1ef02ab83ba6cde4419e662de9254e",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Updates the owners mapping",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdf293ebdd99010d44bfef5d86d47c7943a4e69db74a426354dc622e6d4d85761",
+          "before": "0x000000000000000000000000edecf2c444559210a865a22acfc6a2a25590ab1b",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Updates the owners mapping",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe475b9e5509f43031ff937d793c47553513dacb8de5b10e556e7da05bd6d6e54",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Updates the owners mapping",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "before": "0x0000000000000000000000000cf2f86c3338993ce10f74d6f4b095712c7efe26",
+          "after": "0x0000000000000000000000006e427c3212c0b63be0c382f97715d49b011bff33",
+          "description": "Sets the head of the owners linked list",
+          "allowDifference": false
+        }
+      ]
+    }
+  ]
+}
