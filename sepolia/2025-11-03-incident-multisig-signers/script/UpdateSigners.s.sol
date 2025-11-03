@@ -16,6 +16,7 @@ contract UpdateSigners is MultisigScript {
     address public constant SENTINEL_OWNERS = address(0x1);
 
     address public immutable OWNER_SAFE;
+    uint256 public immutable EXISTING_OWNERS_LENGTH;
     uint256 public immutable THRESHOLD;
     address[] public EXISTING_OWNERS;
 
@@ -28,6 +29,7 @@ contract UpdateSigners is MultisigScript {
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
+        EXISTING_OWNERS_LENGTH = vm.envUint("EXISTING_OWNERS_LENGTH");
 
         GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         THRESHOLD = ownerSafe.getThreshold();
@@ -44,7 +46,7 @@ contract UpdateSigners is MultisigScript {
     function setUp() external {
         require(OWNERS_TO_ADD.length > 0, "Precheck 00");
         require(OWNERS_TO_REMOVE.length > 0, "Precheck 01");
-        require(EXISTING_OWNERS.length == 14, "Precheck 02");
+        require(EXISTING_OWNERS.length == EXISTING_OWNERS_LENGTH, "Precheck 02");
 
         GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         address prevOwner = SENTINEL_OWNERS;
