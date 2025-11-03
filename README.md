@@ -39,7 +39,7 @@ To execute a new task, run one of the following commands (depending on the type 
 - For gas increase tasks: `make setup-gas-increase network=<network>`
 - For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
-- For safe management tasks: `make setup-safe-management network=<network>`
+- For changing incident multisig signers tasks: `make setup-incident-multisig-signers network=<network>`
 - For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
@@ -114,15 +114,16 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 
 ## Using the swap owner template
 
-This template is used to perform ownership management on a Gnosis Safe multisig, specifically it can swap owners on the multisig.
+This template is used to perform ownership management on the (Gnosis Safe) incident multisig, specifically it can change the owners of the multisig.
 
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-safe-management network=<network>` and go to the folder that was created by this command.
+1. Ensure you have followed the instructions above in `setup`, including running `make setup-incident-multisig-signers network=<network>` and go to the folder that was created by this command.
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced, the `OLD_SIGNER` (current owner) to remove, and the `NEW_SIGNER` (new owner) to be added in the `.env` file.
+1. Enter the directory that was generated for the task (in the first step) and then run `make deps`.
+1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced and the `SENDER` which should be the address of a current signer of the multisig.
+1. Fill in the `OwnerDiff.json` inside the task's directory with the addresses to add to, and remove from, the multisig in their respective fields.
 1. Build the contracts with `forge build`.
-1. Simulate the task with `make sign` and update the generic validations in `VALIDATION.md` with the real values.
+1. Generate the validation file for signers with `make gen-validation`.
+1. Appropriately fill in both of the generated validation files 6 empty fields at the top of the generated validations file at `validations/base-signer.json` (e.g. "taskName", "scriptName", etc.). Ensure, in particular, that the `sender` field in the validations file matches the `SENDER` env var defined in the `.env` file.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 

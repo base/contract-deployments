@@ -3,7 +3,7 @@ FOUNDRY_COMMIT ?= 3b1129b5bc43ba22a9bcf4e4323c5a9df0023140
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
-SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-swap-owner
+INCIDENT_MULTISIG_SIGNERS_DIR = $(network)/$(shell date +'%Y-%m-%d')-incident-multisig-signers
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
@@ -11,7 +11,7 @@ PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
 TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
-TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
+TEMPLATE_INCIDENT_MULTISIG_SIGNERS = setup-templates/template-incident-multisig-signers
 TEMPLATE_FUNDING = setup-templates/template-funding
 TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
 TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
@@ -43,10 +43,10 @@ setup-gas-increase:
 setup-upgrade-fault-proofs:
 	cp -r $(TEMPLATE_UPGRADE_FAULT_PROOFS) $(FAULT_PROOF_UPGRADE_DIR)
 
-# Run `make setup-safe-management network=<network>`
-setup-safe-management:
-	rm -rf $(TEMPLATE_SAFE_MANAGEMENT)/cache $(TEMPLATE_SAFE_MANAGEMENT)/lib $(TEMPLATE_SAFE_MANAGEMENT)/out
-	cp -r $(TEMPLATE_SAFE_MANAGEMENT) $(SAFE_MANAGEMENT_DIR)
+# Run `make setup-incident-multisig-signers network=<network>`
+setup-incident-multisig-signers:
+	rm -rf $(TEMPLATE_INCIDENT_MULTISIG_SIGNERS)/cache $(TEMPLATE_INCIDENT_MULTISIG_SIGNERS)/lib $(TEMPLATE_INCIDENT_MULTISIG_SIGNERS)/out
+	cp -r $(TEMPLATE_INCIDENT_MULTISIG_SIGNERS) $(INCIDENT_MULTISIG_SIGNERS_DIR)
 
 # Run `make setup-funding network=<network>`
 setup-funding:
