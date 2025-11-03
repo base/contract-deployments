@@ -51,7 +51,19 @@ contract UpdateSigners is MultisigScript {
         GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         address prevOwner = SENTINEL_OWNERS;
 
-        // Build the linked list from the current on-chain owners first.
+        for (uint256 i = OWNERS_TO_ADD.length; i > 0; i--) {
+            uint256 index = i - 1;
+            // Make sure owners to add are not already owners
+            require(!ownerSafe.isOwner(OWNERS_TO_ADD[index]), "Precheck 03");
+            // Prevent duplicates
+            require(!expectedOwner[OWNERS_TO_ADD[index]], "Precheck 04");
+
+            ownerToPrevOwner[OWNERS_TO_ADD[index]] = prevOwner;
+            ownerToNextOwner[prevOwner] = OWNERS_TO_ADD[index];
+            prevOwner = OWNERS_TO_ADD[index];
+            expectedOwner[OWNERS_TO_ADD[index]] = true;
+        }
+
         for (uint256 i; i < EXISTING_OWNERS.length; i++) {
             ownerToPrevOwner[EXISTING_OWNERS[i]] = prevOwner;
             ownerToNextOwner[prevOwner] = EXISTING_OWNERS[i];
@@ -65,15 +77,13 @@ contract UpdateSigners is MultisigScript {
             // Prevent duplicates
             require(expectedOwner[OWNERS_TO_REMOVE[i]], "Precheck 06");
             expectedOwner[OWNERS_TO_REMOVE[i]] = false;
-        }
 
-        // Validate owners to add are not already owners and mark as expected post-state owners.
-        for (uint256 i; i < OWNERS_TO_ADD.length; i++) {
-            // Make sure owners to add are not already owners
-            require(!ownerSafe.isOwner(OWNERS_TO_ADD[i]), "Precheck 03");
-            // Prevent duplicates across the adds list
-            require(!expectedOwner[OWNERS_TO_ADD[i]], "Precheck 04");
-            expectedOwner[OWNERS_TO_ADD[i]] = true;
+            // Remove from linked list to keep ownerToPrevOwner up to date
+            // Note: This works as long as the order of OWNERS_TO_REMOVE does not change during `_buildCalls()`
+            address nextOwner = ownerToNextOwner[OWNERS_TO_REMOVE[i]];
+            address prevPtr = ownerToPrevOwner[OWNERS_TO_REMOVE[i]];
+            ownerToPrevOwner[nextOwner] = prevPtr;
+            ownerToNextOwner[prevPtr] = nextOwner;
         }
     }
 
@@ -96,34 +106,8 @@ contract UpdateSigners is MultisigScript {
         IMulticall3.Call3Value[] memory calls =
             new IMulticall3.Call3Value[](OWNERS_TO_ADD.length + OWNERS_TO_REMOVE.length);
 
-        // Create a working copy of the current owners. We'll mutate this in-memory as we plan removals
-        address[] memory workingOwners = new address[](EXISTING_OWNERS.length);
-        for (uint256 i; i < EXISTING_OWNERS.length; i++) {
-            workingOwners[i] = EXISTING_OWNERS[i];
-        }
-
-        // 1) Build removal calls sequentially, deriving prev from the current working list each time
-        for (uint256 i; i < OWNERS_TO_REMOVE.length; i++) {
-            address owner = OWNERS_TO_REMOVE[i];
-            (bool found, uint256 idx) = _findIndex(workingOwners, owner);
-            require(found, "owner to remove not in working set");
-
-            address prev = _prevInList(workingOwners, idx);
-
-            calls[i] = IMulticall3.Call3Value({
-                target: OWNER_SAFE,
-                allowFailure: false,
-                callData: abi.encodeCall(OwnerManager.removeOwner, (prev, owner, THRESHOLD)),
-                value: 0
-            });
-
-            // Mark the owner as removed for subsequent predecessor computations
-            workingOwners[idx] = address(0);
-        }
-
-        // 2) Then add the new owners, keeping the threshold unchanged.
         for (uint256 i; i < OWNERS_TO_ADD.length; i++) {
-            calls[OWNERS_TO_REMOVE.length + i] = IMulticall3.Call3Value({
+            calls[i] = IMulticall3.Call3Value({
                 target: OWNER_SAFE,
                 allowFailure: false,
                 callData: abi.encodeCall(OwnerManager.addOwnerWithThreshold, (OWNERS_TO_ADD[i], THRESHOLD)),
@@ -131,23 +115,18 @@ contract UpdateSigners is MultisigScript {
             });
         }
 
+        for (uint256 i; i < OWNERS_TO_REMOVE.length; i++) {
+            calls[OWNERS_TO_ADD.length + i] = IMulticall3.Call3Value({
+                target: OWNER_SAFE,
+                allowFailure: false,
+                callData: abi.encodeCall(
+                    OwnerManager.removeOwner, (ownerToPrevOwner[OWNERS_TO_REMOVE[i]], OWNERS_TO_REMOVE[i], THRESHOLD)
+                ),
+                value: 0
+            });
+        }
+
         return calls;
-    }
-
-    function _findIndex(address[] memory arr, address needle) internal pure returns (bool, uint256) {
-        for (uint256 i; i < arr.length; i++) {
-            if (arr[i] == needle) return (true, i);
-        }
-        return (false, 0);
-    }
-
-    function _prevInList(address[] memory workingOwners, uint256 idx) internal pure returns (address) {
-        if (idx == 0) return SENTINEL_OWNERS;
-        for (uint256 j = idx; j > 0; j--) {
-            address candidate = workingOwners[j - 1];
-            if (candidate != address(0)) return candidate;
-        }
-        return SENTINEL_OWNERS;
     }
 
     function _ownerSafe() internal view override returns (address) {
