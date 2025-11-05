@@ -24,7 +24,7 @@ The values we are sending are statically defined in the `.env`.
 ```
 cd contract-deployments
 git pull
-cd mainnet/TODO
+cd mainnet/2025-11-05-increase-gas-limit
 make deps
 ```
 
@@ -198,16 +198,16 @@ Now click on the "State" tab. Verify that:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000005
-Before: TODO
-After: TODO
+Before: 0x000000000000000000000000000000000000000000000000000000000000005e
+After: 0x000000000000000000000000000000000000000000000000000000000000005f
 ```
 
 2. Verify that gas limit value is appropriately updated under "Proxy" at address `0x73a79fab69143498ed3712e519a88a918e1f4072`:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000068
-Before: TODO
-After: TODO
+Before: 0x000000000000000000000000000000000000000000000000000000000ee6b280
+After: 0x000000000000000000000000000000000000000000000000000000000bebc200
 ```
 
 #### 3.3. Extract the domain hash and the message hash to approve.
@@ -227,7 +227,7 @@ different for each signer:
 ![Screenshot 2024-03-07 at 5 49 32 PM](https://github.com/base-org/contract-deployments/assets/84420280/b6b5817f-0d05-4862-b16a-4f7f5f18f036)
 
 It will be a concatenation of `0x1901`, the domain hash, and the
-message hash: `0x1901[domain hash][message hash]`.
+message hash: `0x1901f3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea243362891827d16bf147890f005c6ff8a313d9fdba85f0e7c87817862872c975f45090e1`.
 
 Note down this value. You will need to compare it with the ones
 displayed on the Ledger screen at signing.
