@@ -17,7 +17,6 @@ contract SwitchToPermissionedGame is MultisigScript {
     string public constant EXPECTED_VERSION = "1.4.1";
 
     address public immutable OWNER_SAFE;
-    uint64 public currentRetirementTimestamp;
 
     SystemConfig internal immutable _SYSTEM_CONFIG = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
 
@@ -31,10 +30,9 @@ contract SwitchToPermissionedGame is MultisigScript {
         DisputeGameFactory dgfProxy = DisputeGameFactory(_SYSTEM_CONFIG.disputeGameFactory());
         FaultDisputeGame currentFdg = FaultDisputeGame(address(dgfProxy.gameImpls(GameTypes.CANNON)));
         anchorStateRegistry = currentFdg.anchorStateRegistry();
-        currentRetirementTimestamp = anchorStateRegistry.retirementTimestamp();
     }
 
-    // Confirm the currentRetirementTimestamp is updated to the block time and the
+    // Confirm the retirementTimestamp is updated to the block time and the
     // respectedGameType is updated to PERMISSIONED_CANNON.
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         require(anchorStateRegistry.retirementTimestamp() == block.timestamp, "post-110");
