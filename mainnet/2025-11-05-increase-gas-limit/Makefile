@@ -10,13 +10,20 @@ ifndef ROLLBACK_NONCE_OFFSET
 override ROLLBACK_NONCE_OFFSET = 1
 endif
 
-.PHONY: sign-upgrade
-sign-upgrade:
-	FROM_GAS_LIMIT=$(OLD_GAS_LIMIT) \
-	TO_GAS_LIMIT=$(NEW_GAS_LIMIT) \
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) lib/base-contracts/script/deploy/l1/SetGasLimit.sol \
-	--sig "sign(address[])" []
+SCRIPT_NAME = lib/base-contracts/script/deploy/l1/SetGasLimit.sol
+
+RPC_URL = $(L1_RPC_URL)
+
+.PHONY: gen-validation
+gen-validation: checkout-signer-tool run-script
+
+.PHONY: run-script
+run-script:
+	cd $(SIGNER_TOOL_PATH); \
+	npm ci; \
+	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
+	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
+	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
 
 .PHONY: execute-upgrade
 execute-upgrade:
