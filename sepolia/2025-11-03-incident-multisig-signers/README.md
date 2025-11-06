@@ -1,6 +1,6 @@
 # Update Sepolia Incident Multisig Signers
 
-Status: TODO[READY TO SIGN|DONE]
+Status: READY TO SIGN
 
 ## Description
 
@@ -22,7 +22,7 @@ First, check if you have node installed
 node --version
 ```
 
-If you see a version output from the above command, you can move on. Otherwise, install node
+If you see a version output from the above command, at or above version `v18.18`, you can move on. Otherwise, install (or update) node.
 
 ```bash
 brew install node
@@ -48,3 +48,5 @@ make sign-task
 Be sure to select the correct task from the list of available tasks to sign.
 
 ### 4. Send signature to facilitator
+
+You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.

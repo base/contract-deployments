@@ -3,6 +3,7 @@ include ../../Multisig.mk
 include ../.env
 include .env
 
+RPC_URL = $(L1_RPC_URL)
 SCRIPT = UpdateSigners
 
 ifndef LEDGER_ACCOUNT
