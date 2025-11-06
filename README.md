@@ -121,9 +121,10 @@ This template is used to perform ownership management on the (Gnosis Safe) incid
 1. Enter the directory that was generated for the task (in the first step) and then run `make deps`.
 1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced and the `SENDER` which should be the address of a current signer of the multisig.
 1. Fill in the `OwnerDiff.json` inside the task's directory with the addresses to add to, and remove from, the multisig in their respective fields.
+1. Ensure that the `EXISTING_OWNERS_LENGTH` constant value inside the `script/UpdateSigners.s.sol` script is set appropriately, in particular that it equals the exact number of current members of the Incident Multisig Safe (prior to running the task).
 1. Build the contracts with `forge build`.
 1. Generate the validation file for signers with `make gen-validation`.
-1. Appropriately fill in both of the generated validation files 6 empty fields at the top of the generated validations file at `validations/base-signer.json` (e.g. "taskName", "scriptName", etc.). Ensure, in particular, that the `sender` field in the validations file matches the `SENDER` env var defined in the `.env` file.
+1. Double check the `cmd` field at the top of the generated validation file at `validations/base-signer.json` and ensure that the value passed to the `--sender` flag matches the `SENDER` env var already defined in the `.env` file.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 

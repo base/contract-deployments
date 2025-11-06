@@ -48,3 +48,5 @@ make sign-task
 Be sure to select the correct task from the list of available tasks to sign.
 
 ### 4. Send signature to facilitator
+
+You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.
