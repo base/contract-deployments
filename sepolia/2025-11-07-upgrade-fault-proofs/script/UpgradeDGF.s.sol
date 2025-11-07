@@ -47,7 +47,7 @@ contract UpgradeDGF is MultisigScript {
     using stdJson for string;
 
     // TODO: Confirm expected version
-    string public constant EXPECTED_VERSION = "1.4.1";
+    string public constant EXPECTED_VERSION = "1.7.0";
     uint32 public constant CANNON = 0;
     uint32 public constant PERMISSIONED_CANNON = 1;
 

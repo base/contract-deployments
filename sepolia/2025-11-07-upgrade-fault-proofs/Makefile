@@ -28,6 +28,17 @@ deploy:
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = UpgradeDGF
 
+.PHONY: gen-validation
+gen-validation-cb: checkout-signer-tool run-script-cb
+
+.PHONY: run-script-cb
+run-script-cb:
+	cd $(SIGNER_TOOL_PATH); \
+	npm ci; \
+	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
+	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_NESTED_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" --sender 0x7f10098bd53519c739ca8a404afe127647d94774' --out ../validations/cb-signer.json;
+
 # CB
 .PHONY: sign-cb
 sign-cb:
