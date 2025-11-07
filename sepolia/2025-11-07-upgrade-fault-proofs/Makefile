@@ -39,6 +39,18 @@ run-script-cb:
 	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_NESTED_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" --sender 0x7f10098bd53519c739ca8a404afe127647d94774' --out ../validations/cb-signer.json;
 
+
+.PHONY: gen-validation
+gen-validation-cb-sc: checkout-signer-tool run-script-cb-sc
+
+.PHONY: run-script-cb-sc
+run-script-cb-sc:
+	cd $(SIGNER_TOOL_PATH); \
+	npm ci; \
+	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
+	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SC_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" --sender 0x7f10098bd53519c739ca8a404afe127647d94774' --out ../validations/cb-sc-signer.json;
+
 # CB
 .PHONY: sign-cb
 sign-cb:
