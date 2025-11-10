@@ -39,13 +39,6 @@ run-script-rollback:
 	forge script --rpc-url $(RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer-rollback.json;
 
-.PHONY: execute-upgrade
-execute-upgrade:
-	FROM_GAS_LIMIT=$(OLD_GAS_LIMIT) \
-	TO_GAS_LIMIT=$(NEW_GAS_LIMIT) \
-	forge script --rpc-url $(L1_RPC_URL) lib/base-contracts/script/deploy/l1/SetGasLimit.sol \
-	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
-
 .PHONY: execute
 execute:
 	FROM_GAS_LIMIT=$(FROM_GAS_LIMIT) \
