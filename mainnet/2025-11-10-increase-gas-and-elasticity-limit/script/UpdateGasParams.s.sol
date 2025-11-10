@@ -37,12 +37,6 @@ contract UpdateGasParams is MultisigScript {
         NEW_ELASTICITY = uint32(vm.envUint("TO_ELASTICITY"));
     }
 
-    function setUp() external view {
-        // vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Denominator(), DENOMINATOR, "Denominator mismatch");
-        // vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity(), ELASTICITY, "Elasticity mismatch");
-        // vm.assertEq(ISystemConfig(SYSTEM_CONFIG).gasLimit(), GAS_LIMIT, "Gas Limit mismatch");
-    }
-
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Denominator(), DENOMINATOR, "Denominator mismatch");
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity(), NEW_ELASTICITY, "Elasticity mismatch");
