@@ -12,6 +12,19 @@ comma_join = $(subst $(space),$(comma) ,$(strip $(foreach w,$(1),$(w))))
 # Validation helper for required variables
 require_vars = $(foreach _var,$(2),$(if $(strip $($(_var))),,$(error $(1): required variable $(_var) is not defined)))
 
+# Validation helper for execution safety: checks critical env vars before signing/executing
+# Usage: $(call check_env_vars,SENDER RPC_URL OWNER_SAFE)
+check_env_vars = $(foreach _var,$(1),$(if $(strip $($(_var))),,$(error ERROR: Required variable "$(_var)" is not set. Please check your .env file)))
+
+# Phony target to validate all required env vars before execution
+.PHONY: validate-env
+validate-env:
+	@echo "🔍 Validating environment variables..."
+	@if [ -z "$(SENDER)" ]; then echo "❌ ERROR: SENDER not set"; exit 1; fi
+	@if [ -z "$(RPC_URL)" ]; then echo "❌ ERROR: RPC_URL not set"; exit 1; fi
+	@if [ -z "$(OWNER_SAFE)" ]; then echo "❌ ERROR: OWNER_SAFE not set"; exit 1; fi
+	@echo "✅ All critical environment variables are set"
+
 # ---------- Procedures ----------
 
 # MULTISIG_SIGN: $(1)=address list (space-separated)

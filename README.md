@@ -33,20 +33,24 @@ First, install forge if you don't have it already:
 
 - Run `make install-foundry` to install [`Foundry`](https://github.com/foundry-rs/foundry/commit/3b1129b5bc43ba22a9bcf4e4323c5a9df0023140).
 
-To execute a new task, run one of the following commands (depending on the type of change you're making):
+## Creating a New Task
+
+**New to this repository?** Start with **[HOW_TO_CREATE_A_TASK.md](HOW_TO_CREATE_A_TASK.md)** for a complete step-by-step guide to creating your first deployment task.
+
+To create a new task quickly, run one of the following commands:
 
 - For a generic task: `make setup-task network=<network> task=<task-name>`
 - For gas increase tasks: `make setup-gas-increase network=<network>`
 - For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
-- For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
 > **👥 For Signers:** Please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
+> **👨‍💻 For Contributors:** Please read the [Contributing Guide](CONTRIBUTING.md) for PR guidelines and development setup.
 
 Please note, you will need to manually create validation file(s) for your task as they are bespoke to each task and therefore not created automatically as a part of the templates. We use one validation Markdown file per multisig involved in the task, so if there's only one multisig involved in your task, then you can simply create a `VALIDATION.md` file at the root of your task containing the validation instructions, while if there are multiple multisigs involved in the task, then create a `validations/` sub-directory at the root of your task containing the corresponding validation Markdown files. If you need examples to work from, you can browse through similar past tasks in this repo and adapt them to your specific task. Also, please note that we have tooling to generate these files (like the `task-signer-tool`) which removes the manual aspect of creating these validation files, we will soon update these instructions to reflect how this process can be automated.
 
