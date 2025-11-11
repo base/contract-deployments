@@ -1,4 +1,5 @@
 include ../../Makefile
+include ../../Multisig.mk
 include ../.env
 include .env
 
