@@ -108,6 +108,8 @@ This template is used to increase the gas limit and elasticity or roll back the 
 1. Build the contracts with `forge build`.
 1. Generate the validation file for signers with `make gen-validation`.
 1. Generate the rollback validation file for signers with `make gen-validation-rollback`.
+1. Double check the `cmd` field at the top of both of the generated validation files and ensure that the value passed to the `--sender` flag matches the `SENDER` env var already defined in the `.env` file.
+1. Ensure that all of the fields marked as `TODO` in the tasks's `README.md` have been properly filled out.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
