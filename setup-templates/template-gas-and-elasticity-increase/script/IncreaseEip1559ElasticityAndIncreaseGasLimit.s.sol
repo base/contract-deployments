@@ -23,8 +23,7 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
     uint32 internal immutable NEW_ELASTICITY;
     uint64 internal immutable GAS_LIMIT;
     uint64 internal immutable NEW_GAS_LIMIT;
-
-    uint32 internal constant DENOMINATOR = 50;
+    uint32 internal immutable DENOMINATOR;
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
@@ -35,6 +34,8 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
 
         ELASTICITY = uint32(vm.envUint("OLD_ELASTICITY"));
         NEW_ELASTICITY = uint32(vm.envUint("NEW_ELASTICITY"));
+
+        DENOMINATOR = ISystemConfig(SYSTEM_CONFIG).eip1559Denominator();
     }
 
     function setUp() external view {
@@ -50,34 +51,34 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
     }
 
     function _simulationOverrides() internal view override returns (Simulation.StateOverride[] memory) {
-        // Override SystemConfig state to the expected "from" values so simulations succeeds even
-        // if the chain already reflects the post-change values (e.g. during rollback simulation).
+        if (
+            GAS_LIMIT != ISystemConfig(SYSTEM_CONFIG).gasLimit()
+                || ELASTICITY != ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity()
+        ) {
+            // Override SystemConfig state to the expected "from" values so simulations succeeds even
+            // when the chain already reflects the post-change values (during rollback simulation).
 
-        // Prepare two storage overrides for SystemConfig
-        Simulation.StateOverride[] memory stateOverrides = new Simulation.StateOverride[](1);
-        Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](2);
+            // Prepare two storage overrides for SystemConfig
+            Simulation.StateOverride[] memory stateOverrides = new Simulation.StateOverride[](1);
+            Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](2);
 
-        // Load current packed gas config (slot 0x68) and replace only the lower 64 bits with GAS_LIMIT
-        bytes32 gasConfigSlotKey = bytes32(uint256(0x68));
-        uint256 gasConfigWord = uint256(vm.load(SYSTEM_CONFIG, gasConfigSlotKey));
-        uint256 updatedGasConfigWord = (gasConfigWord & ~uint256(0xffffffffffffffff)) | uint256(GAS_LIMIT);
-        storageOverrides[0] = Simulation.StorageOverride({
-            key: gasConfigSlotKey,
-            value: bytes32(updatedGasConfigWord)
-        });
+            // Load current packed gas config (slot 0x68) and replace only the lower 64 bits with GAS_LIMIT
+            bytes32 gasConfigSlotKey = bytes32(uint256(0x68));
+            uint256 gasConfigWord = uint256(vm.load(SYSTEM_CONFIG, gasConfigSlotKey));
+            uint256 updatedGasConfigWord = (gasConfigWord & ~uint256(0xffffffffffffffff)) | uint256(GAS_LIMIT);
+            storageOverrides[0] =
+                Simulation.StorageOverride({key: gasConfigSlotKey, value: bytes32(updatedGasConfigWord)});
 
-        // Deterministically set EIP-1559 params (slot 0x6a) to [ ... | elasticity (uint32) | denominator (uint32) ]
-        // Compose the full 256-bit word with only these two fields set to avoid unused high bits which can
-        // cause mismatches during validation.
-        bytes32 eip1559SlotKey = bytes32(uint256(0x6a));
-        uint256 composedEip1559Word = (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
-        storageOverrides[1] = Simulation.StorageOverride({
-            key: eip1559SlotKey,
-            value: bytes32(composedEip1559Word)
-        });
+            // Deterministically set EIP-1559 params (slot 0x6a) to [ ... | elasticity (uint32) | denominator (uint32) ]
+            // Compose the full 256-bit word with only these two fields set to avoid unused high bits which can
+            // cause mismatches during validation.
+            bytes32 eip1559SlotKey = bytes32(uint256(0x6a));
+            uint256 composedEip1559Word = (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
+            storageOverrides[1] = Simulation.StorageOverride({key: eip1559SlotKey, value: bytes32(composedEip1559Word)});
 
-        stateOverrides[0] = Simulation.StateOverride({contractAddress: SYSTEM_CONFIG, overrides: storageOverrides});
-        return stateOverrides;
+            stateOverrides[0] = Simulation.StateOverride({contractAddress: SYSTEM_CONFIG, overrides: storageOverrides});
+            return stateOverrides;
+        }
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
