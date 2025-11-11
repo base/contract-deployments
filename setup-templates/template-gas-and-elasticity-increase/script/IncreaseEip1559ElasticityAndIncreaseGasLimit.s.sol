@@ -49,15 +49,9 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).gasLimit(), NEW_GAS_LIMIT, "Gas Limit mismatch");
     }
 
-    // TODO: Confirm that these overrides work as expected once the rollback
-    //       verification is possible via the signer tool.
     function _simulationOverrides() internal view override returns (Simulation.StateOverride[] memory) {
-        // Override SystemConfig state to the expected "from" values so simulations succeed
-        // even if the live chain already reflects the post-change values (e.g. during rollback).
-        //
-        // Slots:
-        // - 0x68: packed gas config (we only override the lower 64 bits for gasLimit)
-        // - 0x6a: packed EIP-1559 params: [ ... | elasticity (uint32) | denominator (uint32) ]
+        // Override SystemConfig state to the expected "from" values so simulations succeeds even
+        // if the chain already reflects the post-change values (e.g. during rollback simulation).
 
         // Prepare two storage overrides for SystemConfig
         Simulation.StateOverride[] memory stateOverrides = new Simulation.StateOverride[](1);
@@ -72,9 +66,9 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
             value: bytes32(updatedGasConfigWord)
         });
 
-        // Deterministically set EIP-1559 params (slot 0x6a) to [elasticity | denominator]
-        // Compose the full 256-bit word with only these two fields set to avoid unused
-        // high bits causing mismatches during validation.
+        // Deterministically set EIP-1559 params (slot 0x6a) to [ ... | elasticity (uint32) | denominator (uint32) ]
+        // Compose the full 256-bit word with only these two fields set to avoid unused high bits which can
+        // cause mismatches during validation.
         bytes32 eip1559SlotKey = bytes32(uint256(0x6a));
         uint256 composedEip1559Word = (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
         storageOverrides[1] = Simulation.StorageOverride({
