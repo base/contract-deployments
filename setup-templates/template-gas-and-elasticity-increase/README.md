@@ -60,6 +60,8 @@ Be sure to select the correct task from the list of available tasks to sign (**n
 
 ### 4. Send signature to facilitator
 
+You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.
+
 ## Approving the Rollback transaction
 
 Complete the above steps for `Approving the Update transaction` before continuing below.
@@ -82,3 +84,5 @@ make sign-task
 Be sure to select the correct task from the list of available tasks to sign (ensure it **is** the rollback task).
 
 ### 4. Send signature to facilitator
+
+You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.
