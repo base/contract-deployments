@@ -26,7 +26,7 @@ deploy:
 #     └── Signers
 
 RPC_URL = $(L1_RPC_URL)
-SCRIPT_NAME = UpgradeDGF
+SCRIPT_NAME = UpgradeWithOpSmartContractManager
 
 .PHONY: gen-validation-cb
 gen-validation-cb: checkout-signer-tool run-script-cb
