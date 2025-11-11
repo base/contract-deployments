@@ -20,12 +20,28 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "value": "0x000000000000000000000000000000000000000000000000000000000000005f",
-          "description": ""
+          "description": "Override the nonce to be our expected value after initial execution."
         },
         {
           "key": "0x9f69b29f17688c4aa856cfc9038ef2e22ecb7c26eca1ab65ffc86fb6322a5089",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "value": "0x0000000000000000000000000000000000101c12000008dd0000000011e1a300",
+          "description": "Overrides gas limit 300M for the chain"
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "value": "0x0000000000000000000000000000000000000000000000000000000500000032",
+          "description": "Overrides elasticity to 5 for the chain"
         }
       ]
     }
@@ -40,6 +56,26 @@
           "before": "0x000000000000000000000000000000000000000000000000000000000000005f",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000060",
           "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x0000000000000000000000000000000000101c12000008dd0000000011e1a300",
+          "after": "0x0000000000000000000000000000000000101c12000008dd000000000ee6b280",
+          "description": "Updates gas limit from 300M to 250M for the chain",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000000000000000000000000000000000000000500000032",
+          "after": "0x0000000000000000000000000000000000000000000000000000000400000032",
+          "description": "Updates elasticity from 5 to 4 for the chain",
           "allowDifference": false
         }
       ]
