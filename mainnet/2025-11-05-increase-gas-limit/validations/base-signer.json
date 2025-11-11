@@ -62,7 +62,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
           "before": "0x000000000000000000000000000000000000000000000000000000000bebc200",
           "after": "0x000000000000000000000000000000000000000000000000000000000ee6b280",
-          "description": "Updates gas limit from 150M to 200M for the chain",
+          "description": "Updates gas limit from 200M to 250M for the chain",
           "allowDifference": false
         }
       ]
