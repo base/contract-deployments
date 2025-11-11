@@ -1,6 +1,6 @@
 # Update Gas Limit in L1 `SystemConfig`
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0xfbf7dad2372bd9596cccf28f89eb4811c1d4f613638acf2c08e0399379db0e6b)
 
 ## Objective
 
