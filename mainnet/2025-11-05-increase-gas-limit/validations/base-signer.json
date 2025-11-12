@@ -1,0 +1,71 @@
+{
+  "taskName": "Increase Gas Limit",
+  "scriptName": "lib/base-contracts/script/deploy/l1/SetGasLimit.sol",
+  "signature": "sign(address[])",
+  "sender": "0x24c3ae1aedb8142d32bb6d3b988f5910f272d53b",
+  "args": "[]",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0xfb94f308a4ac398c3ddbdd648074fdf098464b70588fc6eca141c1e3dda07b9e"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0xa79683f562763c2b664597d6c434c7dc2af6f3b8bb5ba54a6e349b4b88a1ce4e",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    },
+    {
+      "name": "L1 System Config - Mainnet",
+      "address": "0x73a79Fab69143498Ed3712e519A88a918e1f4072",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "value": "0x000000000000000000000000000000000000000000000000000000000bebc200",
+          "description": "Old gas limit"
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000005d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000005e",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x000000000000000000000000000000000000000000000000000000000bebc200",
+          "after": "0x000000000000000000000000000000000000000000000000000000000ee6b280",
+          "description": "Updates gas limit from 200M to 250M for the chain",
+          "allowDifference": false
+        }
+      ]
+    }
+  ]
+}
