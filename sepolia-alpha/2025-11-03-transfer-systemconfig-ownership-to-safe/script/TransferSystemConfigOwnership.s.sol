@@ -17,10 +17,10 @@ contract TransferSystemConfigOwnership is Script {
     function run() public {
         Simulation.StateOverride[] memory overrides;
         bytes memory data = _buildCall();
-        Simulation.logSimulationLink({_to: SYSTEM_CONFIG, _data: data, _from: msg.sender, _overrides: overrides});
+        Simulation.logSimulationLink({to: SYSTEM_CONFIG, data: data, from: msg.sender, overrides: overrides});
 
         vm.startBroadcast();
-        (bool success, ) = SYSTEM_CONFIG.call(data);
+        (bool success,) = SYSTEM_CONFIG.call(data);
         vm.stopBroadcast();
 
         require(success, "TransferSystemConfigOwnership call failed");
