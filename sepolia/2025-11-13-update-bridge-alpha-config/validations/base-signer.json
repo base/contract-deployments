@@ -1,0 +1,57 @@
+{
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateConfig --sig sign(address[]) [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
+  "ledgerId": 0,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "messageHash": "0x68cff402b3621c0d9168d65eb207276e35e83c9dfa224a5c697d8fe5a79d2d70"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0x9cfd515ce3c21234c29ee98592dbb8cd699aa75f530b7331cc2e483058ec2c49",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "OptimismPortal2 - Sepolia",
+      "address": "0x49f53e41452c74589e85ca1677426ba426459e85",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x000000000092da560000000000096c490000000000000000000000003b9aca00",
+          "after": "0x000000000092da8f00000000000186a00000000000000000000000003b9aca00",
+          "description": "Gas fee tracking for deposit tx execution on L2",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
