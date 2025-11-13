@@ -15,6 +15,11 @@ SCRIPT_NAME=UpdateConfig
 deps:
 	forge install --no-git github.com/base/bridge@$(BRIDGE_COMMIT)
 
+.PHONY: deploy
+deploy:
+	forge script DeployBridgeUpdates --rpc-url $(L2_RPC_URL) \
+	--account testnet-admin --broadcast -vvvv
+
 .PHONY: gen-validation
 gen-validation: checkout-signer-tool run-script
 
@@ -25,11 +30,6 @@ run-script:
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
-
-.PHONY: deploy
-deploy:
-	forge script DeployBridgeValidator --rpc-url $(L2_RPC_URL) \
-	--account testnet-admin --broadcast -vvvv
 
 # Execute
 .PHONY: execute

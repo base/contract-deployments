@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-Updates the `BridgeValidator` config for the testnet alpha deployment of [Base Bridge](https://github.com/base/bridge).
+Upgrades the `Bridge` contract for the testnet alpha deployment of [Base Bridge](https://github.com/base/bridge).
 
 ## Install dependencies
 

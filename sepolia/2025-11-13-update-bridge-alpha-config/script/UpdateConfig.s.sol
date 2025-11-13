@@ -15,35 +15,22 @@ interface IOptimismPortal2 {
         payable;
 }
 
-interface IBridgeValidator {
-    function reinitialize(uint256 partnerThreshold, address newOwner) external;
-}
-
 contract UpdateConfig is MultisigScript {
     using AddressAliasHelper for address;
 
     address public immutable OWNER_SAFE = vm.envAddress("OWNER_SAFE");
     address public immutable L1_PORTAL = vm.envAddress("L1_PORTAL");
-    address public immutable L2_BRIDGE_VALIDATOR_PROXY = vm.envAddress("L2_BRIDGE_VALIDATOR_PROXY");
-    address public immutable L2_BRIDGE_VALIDATOR_IMPL = vm.envAddress("L2_BRIDGE_VALIDATOR_IMPL");
-    uint256 public immutable PARTNER_THRESHOLD = vm.envUint("PARTNER_THRESHOLD");
-    address public immutable BRIDGE_VALIDATOR_OWNER = vm.envAddress("BRIDGE_VALIDATOR_OWNER");
-
+    address public immutable L2_BRIDGE_PROXY = vm.envAddress("L2_BRIDGE_PROXY");
+    address public immutable L2_BRIDGE_IMPL = vm.envAddress("L2_BRIDGE_IMPL");
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
         IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](1);
-
-        bytes memory innerData = abi.encodeCall(
-            IBridgeValidator.reinitialize, (PARTNER_THRESHOLD, BRIDGE_VALIDATOR_OWNER.applyL1ToL2Alias())
-        );
 
         address to = ERC1967FactoryConstants.ADDRESS;
         uint256 value = 0;
         uint64 gasLimit = 100_000;
         bool isCreation = false;
-        bytes memory data = abi.encodeCall(
-            ERC1967Factory.upgradeAndCall, (L2_BRIDGE_VALIDATOR_PROXY, L2_BRIDGE_VALIDATOR_IMPL, innerData)
-        );
+        bytes memory data = abi.encodeCall(ERC1967Factory.upgrade, (L2_BRIDGE_PROXY, L2_BRIDGE_IMPL));
 
         calls[0] = IMulticall3.Call3Value({
             target: L1_PORTAL,
