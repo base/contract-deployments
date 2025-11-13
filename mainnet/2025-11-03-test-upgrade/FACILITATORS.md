@@ -7,7 +7,7 @@ Guide for facilitators after collecting signatures from signers.
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2025-10-02-test-upgrade
+cd mainnet/2025-11-03-test-upgrade
 make deps
 ```
 
