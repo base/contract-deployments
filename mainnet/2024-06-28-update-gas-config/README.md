@@ -1,6 +1,6 @@
-# Update Gas Config in L1 `SystemConfig` 
+# Update Gas Config in L1 `SystemConfig`
 
-Status: READY TO SIGN
+Status: EXECUTED
 
 ## Objective
 
@@ -8,18 +8,20 @@ Because of the recently blob market fee dynamics, we had to pay extra priority f
 
 We need to make changes to the Gas Config in the L1 `SystemConfig` contract. Specifically, we need to set the `_overhead` and `_scalar` values by calling `setGasConfig`. This is an access-controlled method that only the Incident Multisig can call.
 
-This runbook implements scripts to allow our signers to sign two different calls for our Incident Multisig: 
+This runbook implements scripts to allow our signers to sign two different calls for our Incident Multisig:
+
 1. `UpdateGasConfig` -- This script will update the values according to our expected new scalar values
 2. `RollbackGasConfig` -- This script establishes a rollback call in the case we need to revert to old values
 
-> [!IMPORTANT] We have two transactions to sign. Please follow 
-> the flow for both "Approving the Update transaction" and 
+> [!IMPORTANT] We have two transactions to sign. Please follow
+> the flow for both "Approving the Update transaction" and
 > "Approving the Rollback transaction". Hopefully we only need
-> the former, but will have the latter available if needed. 
+> the former, but will have the latter available if needed.
 
 ## Approving the Update transaction
 
 ### 1. Update repo and move to the appropriate folder:
+
 ```
 cd contract-deployments
 git pull
@@ -37,11 +39,12 @@ is ready".
 
 Make sure your ledger is still unlocked and run the following.
 
-``` shell
+```shell
 make sign-update-gas-config
 ```
 
 Note: there have been reports of some folks seeing this error `Error creating signer: error opening ledger: hidapi: failed to open device`. A fix is in progress, but not yet merged. If you come across this, open a new terminal and run the following to resolve the issue:
+
 ```
 git clone git@github.com:base-org/eip712sign.git
 cd eip712sign
@@ -63,7 +66,6 @@ message hash to approve on your Ledger then verify completion:
 3. Validate and extract domain hash and message hash to approve.
 4. Validate that the transaction completed successfully
 
-
 #### 3.1. Validate integrity of the simulation.
 
 Make sure you are on the "Overview" tab of the tenderly simulation, to
@@ -75,8 +77,7 @@ validate integrity of the simulation, we need to check the following:
 3. "Sender": Check the address shown is your signer account. If not,
    you will need to determine which “number” it is in the list of
    addresses on your ledger.
-4. "Success" with a green check mark 
-
+4. "Success" with a green check mark
 
 #### 3.2. Validate correctness of the state diff.
 
@@ -114,7 +115,6 @@ different for each signer:
 
 ![Screenshot 2024-03-07 at 5 49 02 PM](https://github.com/base-org/contract-deployments/assets/84420280/1b7905f1-1350-4634-a804-7b4458d0ddc9)
 
-
 It will be a concatenation of `0x1901`, the domain hash, and the
 message hash: `0x1901[domain hash][message hash]`.
 
@@ -127,7 +127,7 @@ Once the validations are done, it's time to actually sign the
 transaction. Make sure your ledger is still unlocked and run the
 following:
 
-``` shell
+```shell
 make sign-update-gas-config
 ```
 
@@ -165,7 +165,6 @@ Facilitator will do the final execution for convenience.
 Share the `Data`, `Signer` and `Signature` with the Facilitator, and
 congrats, you are done!
 
-
 ## Approving the Rollback transaction
 
 Complete the above steps for `Approving the Update transaction` before continuing below.
@@ -173,9 +172,11 @@ Complete the above steps for `Approving the Update transaction` before continuin
 ### 1. Simulate and validate the transaction
 
 Make sure your ledger is still unlocked and run the following.
-``` shell
+
+```shell
 make sign-rollback-gas-config
 ```
+
 Once you run the make sign command successfully, you will see a "Simulation link" from the output. Once again paste this URL in your browser and click "Simulate Transaction".
 
 We will be performing 3 validations and then we'll extract the domain hash and
@@ -185,7 +186,6 @@ message hash to approve on your Ledger then verify completion:
 2. Validate correctness of the state diff.
 3. Validate and extract domain hash and message hash to approve.
 4. Validate that the transaction completed successfully
-
 
 #### 3.1. Validate integrity of the simulation.
 
@@ -198,8 +198,7 @@ validate integrity of the simulation, we need to check the following:
 3. "Sender": Check the address shown is your signer account. If not,
    you will need to determine which “number” it is in the list of
    addresses on your ledger.
-4. "Success" with a green check mark 
-
+4. "Success" with a green check mark
 
 #### 3.2. Validate correctness of the state diff.
 
@@ -222,6 +221,7 @@ After: 0x010000000000000000000000000000000000000000000000000a118b0000044d
 ```
 
 Or under Events tab there is the `ConfigUpdate` event
+
 ```
 {
 "version":"0"
@@ -229,7 +229,6 @@ Or under Events tab there is the `ConfigUpdate` event
 "data":"0x0000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000a118b0000044d"
 }
 ```
-
 
 #### 3.3. Extract the domain hash and the message hash to approve.
 
@@ -259,7 +258,7 @@ Once the validations are done, it's time to actually sign the
 transaction. Make sure your ledger is still unlocked and run the
 following:
 
-``` shell
+```shell
 make sign-rollback-gas-config
 ```
 
@@ -305,7 +304,6 @@ congrats, you are done!
 1. Collect outputs from all participating signers.
 2. Concatenate all signatures and export it as the `SIGNATURES`
    environment variable, i.e. `export
-   SIGNATURES="0x[SIGNATURE1][SIGNATURE2]..."`.
+SIGNATURES="0x[SIGNATURE1][SIGNATURE2]..."`.
 3. Run `make approve-rollback-gas-config`
 4. Run `make execute-rollback` to execute the transaction onchain.
-

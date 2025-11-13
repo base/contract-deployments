@@ -1,6 +1,6 @@
 # Upgrade Fault Proofs
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0xac0db12a427a31ccbaf4a154cf6d5acf0b83c791a4bd7f93a54c9b150b9aa668)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # Upgrade 15 - Fault Proof Upgrades for Isthmus
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x3baaa485746af0bb3d0a054a44a37c997b49b5528e0b58d351f5be05eacc2718)
 
 ## Description
 
