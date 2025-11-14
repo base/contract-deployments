@@ -15,5 +15,5 @@ endif
 	--broadcast \
 	--verify \
 	--verifier-api-key ${VERIFIER_API_KEY} \
-	-i 1 \
+	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" \
 	-vvvv
