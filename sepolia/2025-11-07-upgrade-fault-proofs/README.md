@@ -4,7 +4,7 @@ Status: PENDING
 
 ## Description
 
-This task contains two scripts. One for deploying new versions of the `FaultDisputeGame` and `PermissionedDisputeGame` contracts, and one for updating the `DisputeGameFactory` contract to reference the new dispute game contracts.
+This task contains a single script that executes the `upgrade` function of the specified OP Contracts Manager.
 
 ## Procedure
 
