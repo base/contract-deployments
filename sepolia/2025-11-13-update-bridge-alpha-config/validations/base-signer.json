@@ -1,6 +1,6 @@
 {
   "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateConfig --sig sign(address[]) [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
-  "ledgerId": 0,
+  "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
     "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
