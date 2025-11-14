@@ -32,7 +32,7 @@ contract DeployBridgeUpdates is Script {
 
     constructor() {
         BRIDGE_PROXY = vm.envAddress("L2_BRIDGE_PROXY");
-        BRIDGE_VALIDATOR_PROXY = vm.envAddress("BRIDGE_VALIDATOR_PROXY");
+        BRIDGE_VALIDATOR_PROXY = vm.envAddress("L2_BRIDGE_VALIDATOR_PROXY");
     }
 
     function setUp() public {
