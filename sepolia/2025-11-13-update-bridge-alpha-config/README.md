@@ -1,6 +1,6 @@
 # Update Base Bridge Alpha Validator Config
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xa558a18587cbc526403658624464d07e2a78170a0656e5219ebdad0846c6db2a)
 
 ## Description
 
