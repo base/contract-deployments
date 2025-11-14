@@ -63,7 +63,6 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
         );
         require(PROXY_ADMIN.getProxyImplementation(opChainAddrs.l1StandardBridge) == impls.l1StandardBridgeImpl, "06");
         require(PROXY_ADMIN.getProxyImplementation(opChainAddrs.l1ERC721Bridge) == impls.l1ERC721BridgeImpl, "07");
-        require(PROXY_ADMIN.getProxyImplementation(opChainAddrs.l1ERC721Bridge) == impls.l1ERC721BridgeImpl, "08");
 
         IDisputeGameFactory dfg = IDisputeGameFactory(_SYSTEM_CONFIG.disputeGameFactory());
         IFaultDisputeGame fdg = IFaultDisputeGame(address(dfg.gameImpls(GameTypes.CANNON)));
@@ -72,12 +71,12 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
         Claim pfdgAbsolutePrestate = pfdg.absolutePrestate();
 
         // verify FaultDisputeGame and PermissionedDisputeGame absolute prestate
-        require(Claim.unwrap(fdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "09");
-        require(Claim.unwrap(pfdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "10");
+        require(Claim.unwrap(fdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "08");
+        require(Claim.unwrap(pfdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "09");
 
         // verify FaultDisputeGame and PermissionedDisputeGame absolute vm
-        require(address(fdg.vm()) == impls.mipsImpl, "11");
-        require(address(pfdg.vm()) == impls.mipsImpl, "12");
+        require(address(fdg.vm()) == impls.mipsImpl, "10");
+        require(address(pfdg.vm()) == impls.mipsImpl, "11");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
