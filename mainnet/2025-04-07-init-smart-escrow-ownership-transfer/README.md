@@ -1,6 +1,6 @@
 # Initiate SmartEscrow Ownership Transfer
 
-Status: READY TO SIGN
+Status: PENDING
 
 ## Description
 
