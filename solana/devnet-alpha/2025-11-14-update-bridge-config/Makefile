@@ -101,4 +101,14 @@ sign:
 step10-execute-proposal:
 	@echo "==> Step 10: Executing proposal..."
 	make mcm-signatures-all
-	make mcm-proposal-all
+	make mcm-proposal-set-root
+	@echo "==> Executing operation 1 (SetPartnerOracleConfig)..."
+	make mcm-proposal-execute \
+		MCM_START_INDEX=0 \
+		MCM_OPERATION_COUNT=1 \
+		MCM_PROPOSAL_EXECUTE_ARTIFACT=artifacts/mcm-proposal-execute-op1.json
+	@echo "==> Executing operation 2 (Upgrade)..."
+	make mcm-proposal-execute \
+		MCM_START_INDEX=1 \
+		MCM_OPERATION_COUNT=1 \
+		MCM_PROPOSAL_EXECUTE_ARTIFACT=artifacts/mcm-proposal-execute-op2.json
