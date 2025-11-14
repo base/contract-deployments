@@ -1,0 +1,13 @@
+diff --git a/solana/programs/bridge/src/lib.rs b/solana/programs/bridge/src/lib.rs
+index 70cb385..274534f 100644
+--- a/solana/programs/bridge/src/lib.rs
++++ b/solana/programs/bridge/src/lib.rs
+@@ -26,7 +26,7 @@ use solana_to_base::*;
+ #[cfg(test)]
+ mod test_utils;
+ 
+-declare_id!("GaxAZQ3BSYjfG65e8mGnBnNpmhqRHDJ33aKEASHh3A3P");
++declare_id!("6YpL1h2a9u6LuNVi55vAes36xNszt2UDm3Zk1kj4WSBm");
+ 
+ #[program]
+ pub mod bridge {
