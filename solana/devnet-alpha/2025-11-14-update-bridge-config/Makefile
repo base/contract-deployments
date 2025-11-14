@@ -28,16 +28,12 @@ setup-deps: install-rust install-solana-cli install-anchor install-bun
 # MCM Bridge Config Update Workflow
 ##
 
-# Config update steps
-
 # Step 1: Create set partner oracle config proposal
 .PHONY: step1-create-set-partner-oracle-config-proposal
 step1-create-set-partner-oracle-config-proposal:
 	@echo "==> Step 1: Creating set partner oracle config MCM proposal..."
 	@make mcm-proposal-bridge-set-partner-oracle-config \
 		MCM_PROPOSAL_OUTPUT=set-partner-oracle-config-proposal.json
-
-# Upgrade steps
 
 # Step 2: Clone the bridge repo and apply the id patch
 .PHONY: step2-clone-bridge
@@ -86,13 +82,13 @@ step7-create-upgrade-proposal:
 step8-merge-proposals:
 	@echo "==> Step 8: Merging config and upgrade proposals..."
 	@jq -s '.[0] as $$config | .[1] as $$upgrade | $$config | .instructions = ($$config.instructions + $$upgrade.instructions) | .rootMetadata.postOpCount = (.rootMetadata.preOpCount + 2)' \
-		set-partner-oracle-config-proposal.json upgrade-proposal.json > proposal.json
+		set-partner-oracle-config-proposal.json upgrade-proposal.json > $(MCM_PROPOSAL_OUTPUT)
 	@echo "  → Cleaning up temporary files..."
 	@rm -f set-partner-oracle-config-proposal.json upgrade-proposal.json
-	@echo "✓ Merged proposal created: proposal.json"
-	@echo "  - Instructions count: $$(jq '.instructions | length' proposal.json)"
-	@echo "  - preOpCount: $$(jq '.rootMetadata.preOpCount' proposal.json)"
-	@echo "  - postOpCount: $$(jq '.rootMetadata.postOpCount' proposal.json)"
+	@echo "✓ Merged proposal created: $(MCM_PROPOSAL_OUTPUT)"
+	@echo "  - Instructions count: $$(jq '.instructions | length' $(MCM_PROPOSAL_OUTPUT))"
+	@echo "  - preOpCount: $$(jq '.rootMetadata.preOpCount' $(MCM_PROPOSAL_OUTPUT))"
+	@echo "  - postOpCount: $$(jq '.rootMetadata.postOpCount' $(MCM_PROPOSAL_OUTPUT))"
 
 # Step 9: Sign proposal
 .PHONY: sign
