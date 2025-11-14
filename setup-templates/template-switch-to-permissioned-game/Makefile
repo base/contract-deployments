@@ -17,6 +17,7 @@ gen-validation: checkout-signer-tool run-script
 .PHONY: run-script
 run-script:
 	cd $(SIGNER_TOOL_PATH); \
+	mkdir validations; \
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
