@@ -20,6 +20,11 @@ deploy:
 	forge script DeployBridgeUpdates --rpc-url $(L2_RPC_URL) \
 	--account testnet-admin --broadcast -vvvv
 
+.PHONY: deploy-o
+deploy-o:
+	forge script DeployRelayerOrchestrator --rpc-url $(L2_RPC_URL) \
+	--account testnet-admin --broadcast -vvvv
+
 .PHONY: gen-validation
 gen-validation: checkout-signer-tool run-script
 

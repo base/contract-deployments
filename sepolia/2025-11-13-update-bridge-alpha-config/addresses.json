@@ -1,4 +1,5 @@
 {
   "BridgeValidatorProxy": "0xC05324843aca6C2b7446F15bdB17AF4599b761E6",
-  "BridgeImpl": "0x0B02dCEb3CEfb8568cD79b2b6Bd74c29776f1978"
+  "BridgeImpl": "0x0B02dCEb3CEfb8568cD79b2b6Bd74c29776f1978",
+  "RelayerOrchestratorProxy": "0xfDa0B31c24316CA01DAa9d3E741729884C1e2ab8"
 }
