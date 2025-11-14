@@ -1,15 +1,14 @@
 # Update Gas Limit in L1 `SystemConfig`
 
-Status: [EXECUTED](https://etherscan.io/tx/0x8d5f102659ce0442a583e69709b82170b9e18e0e693a9b505155ae3bba26e7b5)
+Status: [EXECUTED](https://etherscan.io/tx/0xfbf7dad2372bd9596cccf28f89eb4811c1d4f613638acf2c08e0399379db0e6b)
 
 ## Objective
 
 We are updating the gas limit to improve TPS and reduce gas fees.
 
-This runbook invokes two scripts which allow our signers to sign two different calls for our Incident Multisig, which are both defined in the [base-org/contracts](https://github.com/base-org/contracts) repository:
+This runbook invokes the following script which allows our signers to sign the same call with two different sets of parameters for our Incident Multisig, defined in the [base-org/contracts](https://github.com/base-org/contracts) repository:
 
-1. `UpgradeGasLimit` -- This script will update the gas limit to our new limit of 180M gas
-2. `RollbackGasLimit` -- This script establishes a rollback call in the case we need to revert to gas
+`SetGasLimit` -- This script will update the gas limit to our new limit of TODO gas if invoked as part of the "upgrade" process, or revert to the old limit of TODO gas if invoked as part of the "rollback" process.
 
 The values we are sending are statically defined in the `.env`.
 
@@ -25,7 +24,7 @@ The values we are sending are statically defined in the `.env`.
 ```
 cd contract-deployments
 git pull
-cd mainnet/2025-01-22-increase-gas-limit
+cd mainnet/2025-11-05-increase-gas-limit
 make deps
 ```
 
@@ -59,7 +58,7 @@ message hash to approve on your Ledger then verify completion:
 
 #### 3.1. Validate integrity of the simulation.
 
-Make sure you are on the "Overview" tab of the tenderly simulation, to
+Make sure you are on the "Summary" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
 1. "Network": Check the network is Ethereum Mainnet.
@@ -74,20 +73,20 @@ validate integrity of the simulation, we need to check the following:
 
 Now click on the "State" tab. Verify that:
 
-1. Verify that the nonce is incremented for the Incident Multisig under the "GnosisSafeProxy" at address `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`. We should see the nonce increment from 48 to 49:
+1. Verify that the nonce is incremented for the Incident Multisig under the "GnosisSafeProxy" at address `0x14536667Cd30e52C0b458BaACcB9faDA7046E056`. We should see the nonce increment from TODO to TODO:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000005
-Before: 0x0000000000000000000000000000000000000000000000000000000000000030
-After: 0x0000000000000000000000000000000000000000000000000000000000000031
+Before: TODO
+After: TODO
 ```
 
-2. Verify that gas limit value is appropriately updated under "Proxy" at address `0x73a79fab69143498ed3712e519a88a918e1f4072`. We should see that the gas limit has been changed from 252M to 264M:
+2. Verify that gas limit value is appropriately updated under "Proxy" at address `0x73a79fab69143498ed3712e519a88a918e1f4072`. We should see that the gas limit has been changed from TODO to TODO:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000068
-Before: 0x000000000000000000000000000000000000000000000000000000000f053700
-After: 0x000000000000000000000000000000000000000000000000000000000fbc5200
+Before: TODO
+After: TODO
 ```
 
 #### 3.3. Extract the domain hash and the message hash to approve.
@@ -96,8 +95,8 @@ Now that we have verified the transaction performs the right
 operation, we need to extract the domain hash and the message hash to
 approve.
 
-Go back to the "Overview" tab, and find the
-`GnosisSafe.checkSignatures` call. This call's `data` parameter
+Go back to the "Summary" tab, and find the
+`Safe.checkSignatures` call. This call's `data` parameter
 contains both the domain hash and the message hash that will show up
 in your Ledger.
 
@@ -180,7 +179,7 @@ message hash to approve on your Ledger then verify completion:
 
 #### 3.1. Validate integrity of the simulation.
 
-Make sure you are on the "Overview" tab of the tenderly simulation, to
+Make sure you are on the "Summary" tab of the tenderly simulation, to
 validate integrity of the simulation, we need to check the following:
 
 1. "Network": Check the network is Ethereum Mainnet.
@@ -199,16 +198,16 @@ Now click on the "State" tab. Verify that:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000005
-Before: 0x0000000000000000000000000000000000000000000000000000000000000031
-After: 0x0000000000000000000000000000000000000000000000000000000000000032
+Before: 0x000000000000000000000000000000000000000000000000000000000000005e
+After: 0x000000000000000000000000000000000000000000000000000000000000005f
 ```
 
 2. Verify that gas limit value is appropriately updated under "Proxy" at address `0x73a79fab69143498ed3712e519a88a918e1f4072`:
 
 ```
 Key: 0x0000000000000000000000000000000000000000000000000000000000000068
-Before: 0x000000000000000000000000000000000000000000000000000000000fbc5200
-After: 0x000000000000000000000000000000000000000000000000000000000f053700
+Before: 0x000000000000000000000000000000000000000000000000000000000ee6b280
+After: 0x000000000000000000000000000000000000000000000000000000000bebc200
 ```
 
 #### 3.3. Extract the domain hash and the message hash to approve.
@@ -217,8 +216,8 @@ Now that we have verified the transaction performs the right
 operation, we need to extract the domain hash and the message hash to
 approve.
 
-Go back to the "Overview" tab, and find the
-`GnosisSafe.checkSignatures` call. This call's `data` parameter
+Go back to the "Summary" tab, and find the
+`Safe.checkSignatures` call. This call's `data` parameter
 contains both the domain hash and the message hash that will show up
 in your Ledger.
 
@@ -228,7 +227,7 @@ different for each signer:
 ![Screenshot 2024-03-07 at 5 49 32 PM](https://github.com/base-org/contract-deployments/assets/84420280/b6b5817f-0d05-4862-b16a-4f7f5f18f036)
 
 It will be a concatenation of `0x1901`, the domain hash, and the
-message hash: `0x1901[domain hash][message hash]`.
+message hash: `0x1901f3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea243362891827d16bf147890f005c6ff8a313d9fdba85f0e7c87817862872c975f45090e1`.
 
 Note down this value. You will need to compare it with the ones
 displayed on the Ledger screen at signing.

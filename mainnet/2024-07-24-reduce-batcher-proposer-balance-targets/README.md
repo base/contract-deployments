@@ -1,6 +1,6 @@
 # Reduce batcher / proposer target balances on `BalanceTracker`
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x08f83f3d7dd6024f8ff8766c30b5f8c4e70a9dc997391284520281422941d0a9)
 
 ## Objective
 
@@ -9,6 +9,7 @@ Upgrade the L1 `BalanceTracker` contract to modify the batcher target balance to
 ## Approving the transaction
 
 ### 1. Update repo and move to the appropriate folder:
+
 ```
 cd contract-deployments
 git pull
@@ -26,7 +27,7 @@ is ready".
 
 Make sure your ledger is still unlocked and run the following.
 
-``` shell
+```shell
 make sign
 ```
 
@@ -44,7 +45,6 @@ message hash to approve on your Ledger then verify completion:
 2. Validate the initializer variable has been incremented.
 3. Validate the two target balance values have been modified.
 
-
 #### 3.1. Validate integrity of the simulation.
 
 Make sure you are on the "Overview" tab of the tenderly simulation, to
@@ -56,8 +56,7 @@ validate integrity of the simulation, we need to check the following:
 3. "Sender": Check the address shown is your signer account. If not,
    you will need to determine which “number” it is in the list of
    addresses on your ledger.
-4. "Success" with a green check mark 
-
+4. "Success" with a green check mark
 
 #### 3.2. Validate correctness of the state diff.
 
@@ -72,7 +71,7 @@ After: 0x0000000000000000000000000000000000000000000000000000000000000019
 ```
 
 2. Verify that the implementation is appropriately updated under "Proxy" at address `0x23B597f33f6f2621F77DA117523Dffd634cDf4ea`.
-We should see that the implementation change from 0x54d194faae439fc3f8024801b0b9ebc91ebd39f5 to 0xb00fb2ead6c6150b11fc8b3a8cf7f8944c7dba7b:
+   We should see that the implementation change from 0x54d194faae439fc3f8024801b0b9ebc91ebd39f5 to 0xb00fb2ead6c6150b11fc8b3a8cf7f8944c7dba7b:
 
 ```
 Key: 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc
@@ -123,7 +122,6 @@ different for each signer:
 
 ![Screenshot 2024-03-07 at 5 49 02 PM](https://github.com/base-org/contract-deployments/assets/84420280/1b7905f1-1350-4634-a804-7b4458d0ddc9)
 
-
 It will be a concatenation of `0x1901`, the domain hash, and the
 message hash: `0x1901[domain hash][message hash]`.
 
@@ -136,7 +134,7 @@ Once the validations are done, it's time to actually sign the
 transaction. Make sure your ledger is still unlocked and run the
 following:
 
-``` shell
+```shell
 make sign
 ```
 
@@ -174,11 +172,10 @@ Facilitator will do the final execution for convenience.
 Share the `Data`, `Signer` and `Signature` with the Facilitator, and
 congrats, you are done!
 
-
 ## Execute the output
 
 1. Collect outputs from all participating signers.
 2. Concatenate all signatures and export it as the `SIGNATURES`
    environment variable, i.e. `export
-   SIGNATURES="0x[SIGNATURE1][SIGNATURE2]..."`.
+SIGNATURES="0x[SIGNATURE1][SIGNATURE2]..."`.
 3. Run `make execute`
