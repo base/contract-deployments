@@ -162,8 +162,6 @@ PROGRAM=<bridge-program-address>
 SPILL=<your-wallet-address>
 ```
 
-Note: `BUFFER` was already set in step 2.3.
-
 Then run:
 
 ```bash
@@ -218,8 +216,6 @@ git push
 
 Coordinate with Signers to collect their signatures. Each Signer will run `make sign` and provide their signature.
 
-**Note:** The `sign` command uses `MCM_PROPOSAL_OUTPUT` and `MCM_PROGRAM_ID` which were already set in Phase 1.
-
 Concatenate all signatures in the format: `0xSIG1,0xSIG2,0xSIG3`
 
 Once you have all required signatures, add to `.env`:
@@ -236,11 +232,8 @@ MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
 Add the following variables to `.env`:
 
 ```bash
-SOL_WS_URL=<websocket-url>
 AUTHORITY=<your-wallet-keypair-path>
 ```
-
-Note: `SOL_RPC_URL`, `MCM_PROGRAM_ID`, `MCM_SIGNATURES_COUNT`, and `MCM_SIGNATURES` were already set in previous phases.
 
 ### 5.2. Execute the proposal
 
@@ -285,64 +278,3 @@ Status: [EXECUTED](https://explorer.solana.com/tx/<transaction-signature>?cluste
 ```
 
 Replace `<transaction-signature>` with the execution transaction signature and `<network>` with the appropriate cluster (devnet, devnet-alpha, mainnet-beta, etc.).
-
-## Summary of Environment Variables
-
-Here's a complete list of all environment variables needed, organized by phase:
-
-### Phase 1 - Config Update Proposal
-```bash
-SOL_RPC_URL=<rpc-url>
-MCM_PROGRAM_ID=<mcm-program-id>
-MCM_MULTISIG_ID=<multisig-id>
-MCM_VALID_UNTIL=<unix-timestamp>
-MCM_OVERRIDE_PREVIOUS_ROOT=false
-MCM_PROPOSAL_OUTPUT=proposal.json
-BRIDGE_PROGRAM_ID=<bridge-program-id>
-BRIDGE_PARTNER_ORACLE_REQUIRED_THRESHOLD=<threshold-value>
-```
-
-### Phase 2 - Bridge Upgrade
-```bash
-BRIDGE_REPO=<bridge-repo-url>
-BRIDGE_COMMIT=<commit-hash>
-ID_PATCH=<path-to-id-patch-file>
-PROGRAM_BINARY=bridge/solana/target/deploy/bridge.so
-BUFFER=<buffer-address-from-step-2.3>
-NEW_BUFFER_AUTHORITY=<mcm-authority-pda>
-SET_BUFFER_AUTHORITY_SIGNATURE=<signature-from-step-2.4>
-PROGRAM=<bridge-program-address>
-SPILL=<your-wallet-address>
-```
-
-### Phase 5 - Execution
-```bash
-SOL_WS_URL=<websocket-url>
-AUTHORITY=<your-wallet-keypair-path>
-MCM_SIGNATURES_COUNT=<number-of-signatures>
-MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
-```
-
-## Troubleshooting
-
-### If buffer write fails
-- Ensure you have enough SOL in your wallet for buffer rent
-- Check that the program binary path is correct
-- Verify Solana CLI is properly configured with `solana config get`
-
-### If buffer authority transfer fails
-- Ensure the buffer address is correct
-- Verify the MCM authority PDA is correct
-- Check that you own the buffer with `solana program show <buffer-address>`
-
-### If proposal merge fails
-- Ensure both proposal files exist
-- Verify `jq` is installed on your system (`which jq`)
-- Check that both proposals have valid JSON structure
-
-### If execution fails
-- Verify all signatures are valid and correctly formatted
-- Ensure you have enough signatures to meet the threshold
-- Check that the valid until timestamp hasn't expired
-- Verify all PDAs and addresses are correct
-- Ensure the AUTHORITY wallet has enough SOL for transaction fees
