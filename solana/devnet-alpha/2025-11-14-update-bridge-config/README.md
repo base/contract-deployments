@@ -1,6 +1,8 @@
 # MCM Bridge Config Update
 
-Status: PENDING
+Status: [EXECUTED](https://explorer.solana.com/tx/21ECmKcUJMsnX9Du15tbFXXm7iJPkfqFn8nri2HyJssqZJpXmK8HWNnHxVowZFR4J9mVDfbfbkqg8rqcdSV9tQaT?cluster=devnet)
+
+SetPartnerOracleConfig: https://explorer.solana.com/tx/62PKuwNTkoJ8AsGNNiwcfL7meoPYb2Ja8wUTCPJa7c57dmQhUyAfUoo751B2aPmn8BdV2UnaizbK4nsdTLQXTmWv?cluster=devnet
 
 ## Description
 
