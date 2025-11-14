@@ -23,19 +23,12 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
     IProxyAdmin public immutable PROXY_ADMIN;
     Claim immutable CANNON_ABSOLUTE_PRESTATE;
 
-    // Only for simulation purposes before superchain config upgrade
-    SuperchainConfig testSuperchainConfig;
-
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
         PROXY_ADMIN = IProxyAdmin(vm.envAddress("PROXY_ADMIN"));
         _SYSTEM_CONFIG = ISystemConfig(vm.envAddress("SYSTEM_CONFIG"));
         OP_CONTRACT_MANAGER = IOPContractsManager(vm.envAddress("OP_CONTRACT_MANAGER"));
         CANNON_ABSOLUTE_PRESTATE = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
-
-        // This is temporary to get the simulation to pass. OP should upgrade the
-        // superchainconfig to the correct version before this task is executed.
-        testSuperchainConfig = SuperchainConfig(vm.envAddress("TEST_SUPERCHAIN_CONFIG"));
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
@@ -112,24 +105,5 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
 
     function _useMulticall() internal pure override returns (bool) {
         return false;
-    }
-
-    function _simulationOverrides()
-        internal
-        view
-        virtual
-        override
-        returns (Simulation.StateOverride[] memory overrides_)
-    {
-        overrides_ = new Simulation.StateOverride[](1);
-        // Override the `superchainConfig` state variable in the SystemConfig to point to our test one
-        // with the correct version.
-        Simulation.StorageOverride memory storageOverride = Simulation.StorageOverride(
-            bytes32(0x000000000000000000000000000000000000000000000000000000000000006c),
-            bytes32(uint256(uint160(address(testSuperchainConfig))))
-        );
-        Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](1);
-        storageOverrides[0] = storageOverride;
-        overrides_[0] = Simulation.StateOverride(address(_SYSTEM_CONFIG), storageOverrides);
     }
 }
