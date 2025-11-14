@@ -4,46 +4,43 @@ pragma solidity 0.8.15;
 import {Claim} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
 import {
     IOPContractsManager,
-    ISystemConfig
+    ISystemConfig,
+    IProxyAdmin
 } from "@eth-optimism-bedrock/interfaces/L1/IOPContractsManager.sol";
-import {
-    OPContractsManager
-} from "@eth-optimism-bedrock/src/L1/OPContractsManager.sol";
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {SuperchainConfig} from "@eth-optimism-bedrock/src/L1/SuperchainConfig.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {console} from "forge-std/console.sol";
 
 /// @notice This script deploys new versions of OP contracts using the OP Contract Manager.
 contract UpgradeWithOpSmartContractManager is MultisigScript {
-    using Strings for address;
-
     ISystemConfig internal immutable _SYSTEM_CONFIG;
     IOPContractsManager internal immutable _OP_CONTRACT_MANAGER;
     address public immutable OWNER_SAFE;
+    IProxyAdmin public immutable PROXY_ADMIN;
     Claim immutable CANNON_ABSOLUTE_PRESTATE;
+
+    // Only for simulation purposes before superchain config upgrade
+    SuperchainConfig testSuperchainConfig;
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
+        PROXY_ADMIN = IProxyAdmin(vm.envAddress("PROXY_ADMIN"));
         _SYSTEM_CONFIG = ISystemConfig(vm.envAddress("SYSTEM_CONFIG"));
-        // _OP_CONTRACT_MANAGER = IOPContractsManager(vm.envAddress("OP_CONTRACT_MANAGER"));
+        _OP_CONTRACT_MANAGER = IOPContractsManager(vm.envAddress("OP_CONTRACT_MANAGER"));
         CANNON_ABSOLUTE_PRESTATE = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
 
-        OPContractsManager currentOp = OPContractsManager(vm.envAddress("OP_CONTRACT_MANAGER"));
-
-        OPContractsManager newOP = new OPContractsManager(currentOp.opcmGameTypeAdder(), currentOp.opcmDeployer(), currentOp.opcmUpgrader(), currentOp.opcmInteropMigrator(), currentOp.opcmStandardValidator(), currentOp.superchainConfig(), currentOp.protocolVersions());
-
-        _OP_CONTRACT_MANAGER = IOPContractsManager(address(newOP));
-        console.log("hey", address(_OP_CONTRACT_MANAGER));
+        // This is temporary to get the simulation to pass. OP should upgrade the
+        // superchainconfig to the correct version before this task is executed.
+        testSuperchainConfig = SuperchainConfig(vm.envAddress("TEST_SUPERCHAIN_CONFIG"));
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {}
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
         IOPContractsManager.OpChainConfig memory baseConfig =
-            IOPContractsManager.OpChainConfig(_SYSTEM_CONFIG, CANNON_ABSOLUTE_PRESTATE, Claim.wrap(bytes32(0)));
+            IOPContractsManager.OpChainConfig(_SYSTEM_CONFIG, PROXY_ADMIN, CANNON_ABSOLUTE_PRESTATE);
 
         IOPContractsManager.OpChainConfig[] memory opChainConfigs = new IOPContractsManager.OpChainConfig[](1);
         opChainConfigs[0] = baseConfig;
@@ -62,5 +59,28 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
 
     function _ownerSafe() internal view override returns (address) {
         return OWNER_SAFE;
+    }
+
+    function _useMulticall() internal pure override returns (bool) {
+        return false;
+    }
+
+    function _simulationOverrides()
+        internal
+        view
+        virtual
+        override
+        returns (Simulation.StateOverride[] memory overrides_)
+    {
+        overrides_ = new Simulation.StateOverride[](1);
+        // Override the `superchainConfig` state variable in the SystemConfig to point to our test one
+        // with the correct version.
+        Simulation.StorageOverride memory storageOverride = Simulation.StorageOverride(
+            bytes32(0x000000000000000000000000000000000000000000000000000000000000006c),
+            bytes32(uint256(uint160(address(testSuperchainConfig))))
+        );
+        Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](1);
+        storageOverrides[0] = storageOverride;
+        overrides_[0] = Simulation.StateOverride(address(_SYSTEM_CONFIG), storageOverrides);
     }
 }
