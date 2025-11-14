@@ -1,15 +1,15 @@
 {
   "taskName": "U17 - Jovian Contracts Upgrade",
-  "scriptName": "UpgradeDGF",
+  "scriptName": "UpgradeWithOpSmartContractManager",
   "signature": "sign(address[])",
   "sender": "0x0CF2F86C3338993ce10F74d6f4B095712c7efe26",
   "args": "[0x6AF0674791925f767060Dd52f7fB20984E8639d8]",
-  "ledgerId": 0,
+  "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
     "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
     "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
-    "messageHash": "0x99b31a9d76b086c807ca55c38e6a67360835aa48ddb3785ff192fab7e695b625"
+    "messageHash": "0x89a1d4884ca278f7ea9cd1d010572686b6431a11e3f8f699c85ca974d1cdbe02"
   },
   "stateOverrides": [
     {
@@ -28,9 +28,20 @@
       "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
       "overrides": [
         {
-          "key": "0x421561ceed58c3682b00978e5804ca12719b4fad929b542e67d585c2bf0999ad",
+          "key": "0x6b6236770e801b703e7312f8dc240dea8002c5bc6a2454508de44672e2a57a35",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "overrides": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "value": "0x000000000000000000000000133c4e1c452e14196a93e60fae0d8059143bbe57",
+          "description": "Temprorary override of SuperChainConfig to v2.4.0"
         }
       ]
     }
@@ -48,10 +59,36 @@
           "allowDifference": false
         },
         {
-          "key": "0x13ddca0a98e4be5608b7fb7d31986bfcf62ecdca0cc6142643a9c6c8f5de261b",
+          "key": "0x533e011ba3bc153180d605f18ea46bf16af7f44c55a3896267c3b536cfc7e13c",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Increment approvedHashes",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "L1ERC721Bridge Proxy",
+      "address": "0x21efd066e581fa55ef105170cc04d74386a09190",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000007f1d12fb2911eb095278085f721e644c1f675696",
+          "after": "0x00000000000000000000000074f1ac50eb0be98853805d381c884f5f9abdecf9",
+          "description": "Update address of L1ERC721Bridge to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Optimism Portal Proxy",
+      "address": "0x49f53e41452c74589e85ca1677426ba426459e85",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000381e729ff983fa4bced820e7b922d79bf653b999",
+          "after": "0x0000000000000000000000007cf803296662e8c72a6c1d6450572209acf7f202",
+          "description": "Update address of Optimism Portal to new implementation",
           "allowDifference": false
         }
       ]
@@ -70,21 +107,80 @@
       ]
     },
     {
-      "name": "DisputeGameFactory",
+      "name": "AddressManager",
+      "address": "0x709c2b8ef4a9fefc629a8a2c1af424dc5bd6ad1b",
+      "changes": [
+        {
+          "key": "0x515216935740e67dfdda5cf8e248ea32b3277787818ab59153061ac875c9385e",
+          "before": "0x00000000000000000000000022d12e0faebd62d429514a65ebae32dd316c12d6",
+          "after": "0x000000000000000000000000b686f13aff1e427a1f993f29ab0f2e7383729fe0",
+          "description": "Update address of L1CrossDomainMessenger to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismMintableERC20Factory Proxy",
+      "address": "0xb1efb9650ad6d0cc1ed3ac4a0b7f1d5732696d37",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000005493f4677a186f64805fe7317d6993ba4863988f",
+          "after": "0x0000000000000000000000008ee6fb13c6c9a7e401531168e196fbf8b05ceabb",
+          "description": "Update address of OptimismMintableERC20Factory to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactory Proxy",
       "address": "0xd6e6dbf4f7ea0ac412fd8b65ed297e64bb7a06e1",
       "changes": [
         {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000033d1e8571a85a538ed3d5a4d88f46c112383439d",
+          "after": "0x00000000000000000000000074fac1d45b98bae058f8f566201c9a81b85c7d50",
+          "description": "Update address of DisputeGameFactory to new implementation",
+          "allowDifference": false
+        },
+        {
           "key": "0x4d5a9bd2e41301728d41c8e705190becb4e74abe869f75bdb405b63716a35f9e",
           "before": "0x0000000000000000000000005920bd6ab4c1b96bfd4efc56eb6cf9b018e3bf4c",
-          "after": "0x000000000000000000000000284a4cf8cb83d3377f8eadfff2414f2bfa68484b",
-          "description": "update implementation address of PermissionedDisputeGame",
+          "after": "0x000000000000000000000000a1ae4fd5541a3e7a912e45560ed60d3edc5f9a05",
+          "description": "Update address of PermissionedDisputeGame to new implementation",
           "allowDifference": false
         },
         {
           "key": "0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b",
           "before": "0x000000000000000000000000f83157709129bd03fb02e96950be288e8c2c1c67",
-          "after": "0x000000000000000000000000f0b64b080548b1f688356b9cf880076c2145f79a",
-          "description": "update implementation address of FaultDisputeGame",
+          "after": "0x000000000000000000000000ed839a2aa262eccc513308fe7b8f39088ff8e992",
+          "description": "Update address of FaultDisputeGame to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config Proxy - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000002bfe4a5bd5a41e9d848d843ebcdfa15954e9a557",
+          "after": "0x0000000000000000000000002fa28989fc559836e9d66dff3010c7f7f41c65ed",
+          "description": "Update address of SystemConfig to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "L1StandardBridge Proxy",
+      "address": "0xfd0bf71f60660e2f608ed56e1659c450eb113120",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000e32b192fb1dca88fcb1c56b3acb429e32238adcb",
+          "after": "0x00000000000000000000000061525eaacddb97d9184afc205827e6a4fd0bf62a",
+          "description": "Update address of L1StandardBridge to new implementation",
           "allowDifference": false
         }
       ]
