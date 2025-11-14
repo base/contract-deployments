@@ -74,7 +74,7 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
         require(Claim.unwrap(fdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "08");
         require(Claim.unwrap(pfdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "09");
 
-        // verify FaultDisputeGame and PermissionedDisputeGame absolute vm
+        // verify FaultDisputeGame and PermissionedDisputeGame vm
         require(address(fdg.vm()) == impls.mipsImpl, "10");
         require(address(pfdg.vm()) == impls.mipsImpl, "11");
     }
