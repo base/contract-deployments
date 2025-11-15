@@ -1,24 +1,19 @@
 {
-  "cmd": "OWNER_SAFE=0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateSigners --sig sign(address[]) [] --sender 0x0CF2F86C3338993ce10F74d6f4B095712c7efe26",
+  "cmd": "OWNER_SAFE=0x6AF0674791925f767060Dd52f7fB20984E8639d8 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateSigners --sig sign(address[]) [] --sender 0x0CF2F86C3338993ce10F74d6f4B095712c7efe26",
   "ledgerId": 0,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
-    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
-    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
-    "messageHash": "0x13908b83a2123419cecd0b5bd568078d306c2b6dd7fad87b79cdcf6d043f42ab"
+    "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xa9ffb020e4e0f33eb43b903cd2ad3bfeb70ddcdb7392af814f471ec20b5e0c58"
   },
   "stateOverrides": [
     {
-      "name": "CB Signer Safe - Sepolia",
-      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
       "overrides": [
         {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Override the threshold to 1 so the transaction simulation can occur."
-        },
-        {
-          "key": "0x49c363dddb54a640cd5c55cdf61dfa312d9abf7073bf3cdd9a9198a56f2bac34",
+          "key": "0xe65959d52463ae781d65a597378429814817b3e62cc9844fd7adc3f29a6166bf",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
         }
@@ -27,8 +22,8 @@
   ],
   "stateChanges": [
     {
-      "name": "CB Signer Safe - Sepolia",
-      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
@@ -38,16 +33,9 @@
           "allowDifference": false
         },
         {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
-          "description": "Updates the execution threshold",
-          "allowDifference": false
-        },
-        {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000000b",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
           "description": "Increments the nonce",
           "allowDifference": false
         },

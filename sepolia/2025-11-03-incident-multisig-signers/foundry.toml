@@ -8,6 +8,7 @@ optimizer = true
 optimizer_runs = 999999
 solc_version = "0.8.15"
 via-ir = false
+evm_version = "shanghai"
 remappings = [
     '@eth-optimism-bedrock/=lib/optimism/packages/contracts-bedrock/',
     '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts',
