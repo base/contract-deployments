@@ -56,33 +56,14 @@ make sign-task
 
 ### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-Be sure to select the correct task from the list of available tasks to sign (**not** the rollback task).
+Be sure to select the correct task from the list of available tasks to sign (**not** the "Base Signer Rollback" task). Copy the resulting signature and save it.
 
-### 4. Send signature to facilitator
+### 4. Rollback signing
 
-You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.
+Now, click on the "Base Signer" selection and switch over to the rollback task (called "Base Signer Rollback"). Copy the resulting signature and save it.
 
-## Approving the Rollback transaction
+### 5. Send signature to facilitator
 
-Complete the above steps for `Approving the Update transaction` before continuing below.
-
-### 1. Update repo:
-
-```bash
-cd contract-deployments
-git pull
-```
-
-### 2. Run the signing tool (NOTE: do not enter the task directory. Run this command from the project's root).
-
-```bash
-make sign-task
-```
-
-### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
-
-Be sure to select the correct task from the list of available tasks to sign (ensure it **is** the rollback task).
-
-### 4. Send signature to facilitator
+Send the two signatures to the facilitator and make sure to clearly note which one is the primary one and which one is the rollback.
 
 You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.

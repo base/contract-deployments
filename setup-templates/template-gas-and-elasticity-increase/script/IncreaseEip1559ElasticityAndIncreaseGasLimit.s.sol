@@ -38,19 +38,13 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
         DENOMINATOR = ISystemConfig(SYSTEM_CONFIG).eip1559Denominator();
     }
 
-    function setUp() external view {
-        vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Denominator(), DENOMINATOR, "Denominator mismatch");
-        vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity(), ELASTICITY, "Elasticity mismatch");
-        vm.assertEq(ISystemConfig(SYSTEM_CONFIG).gasLimit(), GAS_LIMIT, "Gas Limit mismatch");
-    }
-
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Denominator(), DENOMINATOR, "Denominator mismatch");
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity(), NEW_ELASTICITY, "Elasticity mismatch");
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).gasLimit(), NEW_GAS_LIMIT, "Gas Limit mismatch");
     }
 
-    function _simulationOverrides() internal view override returns (Simulation.StateOverride[] memory) {
+    function _simulationOverrides() internal view override returns (Simulation.StateOverride[] memory _stateOverrides) {
         if (
             GAS_LIMIT != ISystemConfig(SYSTEM_CONFIG).gasLimit()
                 || ELASTICITY != ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity()
