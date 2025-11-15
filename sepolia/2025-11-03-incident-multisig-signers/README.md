@@ -2,9 +2,12 @@
 
 Status: READY TO SIGN
 
+Safe A (3-of-14): [0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f](https://sepolia.etherscan.io/address/0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f)  
+Safe B (1-of-14): [0x6AF0674791925f767060Dd52f7fB20984E8639d8](https://sepolia.etherscan.io/address/0x6AF0674791925f767060Dd52f7fB20984E8639d8)
+
 ## Description
 
-We wish to update the owners of our Incident Multisig to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
+We are updating both Sepolia Incident Multisig Safes to reflect the current Base Chain Eng roster. The signer additions and removals are listed in [OwnerDiff.json](./OwnerDiff.json) and apply to both safes. Safe A keeps its 3-of-14 threshold, while Safe B mirrors the same owners with a 1-of-14 threshold.
 
 ## Install dependencies
 
@@ -16,13 +19,13 @@ foundryup
 
 ### 2. Install Node.js if needed
 
-First, check if you have node installed
+First, check if you have node installed:
 
 ```bash
 node --version
 ```
 
-If you see a version output from the above command, at or above version `v18.18`, you can move on. Otherwise, install (or update) node.
+If you see a version output at or above `v18.18`, you can move on. Otherwise, install (or update) node:
 
 ```bash
 brew install node
@@ -42,10 +45,13 @@ git pull
 ```bash
 make sign-task
 ```
-
 ### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
 Be sure to select the correct task from the list of available tasks to sign.
+
+Then select the Safe for which you would like to sign. Typically this will be Safe A, since Save B only requires a single signature and can thus usually be provided by the task facilitator themselves.
+   - Safe A → `validations/base-signer.json`
+   - Safe B → `validations/base-signer-safe-b.json`
 
 ### 4. Send signature to facilitator
 
