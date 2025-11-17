@@ -9,7 +9,6 @@ import {
     IDisputeGameFactory,
     IFaultDisputeGame
 } from "@eth-optimism-bedrock/interfaces/L1/IOPContractsManager.sol";
-import {SuperchainConfig} from "@eth-optimism-bedrock/src/L1/SuperchainConfig.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 import {Vm} from "forge-std/Vm.sol";
