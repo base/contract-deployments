@@ -1,0 +1,66 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "8Xirfn3KFMfaC9M9RgnL9C4dyRzK4JSYCmL8BhDR42JVA3mBirfW6YcUxz2edh86hW2QGvSiGqac4QTiw32J9Xi"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 1
+      },
+      "accountKeys": [
+        "8QPwJM6D6eGf21Y3zFfdSSD5vcp6FVKsBaXacM3wCewp",
+        "HRVcZrV3SvFy3LTj7GXWjd8RT4KrkUMFbc8EUjcsyU6F",
+        "7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY"
+      ],
+      "recentBlockhash": "5QnhJYTKtaETxndAYg6VEQYt7mNJbymaVcGvuXegvdc1",
+      "instructions": [
+        {
+          "programIdIndex": 2,
+          "accounts": [
+            1,
+            0
+          ],
+          "data": "yEyTv9RkpitE2KhkXh3CNcWuN6CrWRhXseHmYRyKWHv7jB71wCME7Gbe2AFoDQcDMg4tC1ScXe88eRNoAzwsKbbCC6x4EJixfN",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      18251463246,
+      2296800,
+      1141440
+    ],
+    "postBalances": [
+      18251458246,
+      2296800,
+      1141440
+    ],
+    "innerInstructions": [],
+    "logMessages": [
+      "Program 7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY invoke [1]",
+      "Program log: Instruction: TransferOwnership",
+      "Program 7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY consumed 4250 of 200000 compute units",
+      "Program 7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 4250
+  },
+  "blockTime": 1763405768,
+  "slot": 380732945
+}

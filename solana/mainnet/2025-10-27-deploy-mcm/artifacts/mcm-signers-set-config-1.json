@@ -1,0 +1,100 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "4WTK6nzP2XjunT7KxPVimZnbdm2iQTwgrqVxeDmooLW6VHa9bo41ks9zfdz7PxSN1oKRwvbU4JR3kEZH6XT7Mjs9"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 2
+      },
+      "accountKeys": [
+        "8QPwJM6D6eGf21Y3zFfdSSD5vcp6FVKsBaXacM3wCewp",
+        "HRVcZrV3SvFy3LTj7GXWjd8RT4KrkUMFbc8EUjcsyU6F",
+        "3Le1gdszSr6BdXAnF6P3oe7CcCmf2CjwwQoA2iLvRDJ7",
+        "6yUZwFtM6EqsHkCgK2D4eAJkGqi3bAGSefma5SHSKRop",
+        "6o2vZjD4B7XDGhRWzPCbwYL2Y6RhwVseAjyqsRtGKT8B",
+        "11111111111111111111111111111111",
+        "7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY"
+      ],
+      "recentBlockhash": "6TykttNGE82Q36wuCzDdJwEBZ3bFfJvur2TNnPRmRmbh",
+      "instructions": [
+        {
+          "programIdIndex": 6,
+          "accounts": [
+            1,
+            2,
+            3,
+            4,
+            0,
+            5
+          ],
+          "data": "23iSvsLwSCn7knRbxSMv3bBZRN2yCosVjpSo9DNtDyx2Va5qyUwvTeanSxpTGZBXbCoi6qh2wDoUcSDSGqmzAE1VuHieJR7XZXfWYACDVoPu4i4yM2gwAfQcTjVjEtdKxPa4Z52fXAfqcAW8277VC1u",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      18251502366,
+      2143680,
+      1127520,
+      1343280,
+      1252800,
+      1,
+      1141440
+    ],
+    "postBalances": [
+      18252471766,
+      2296800,
+      0,
+      1343280,
+      1252800,
+      1,
+      1141440
+    ],
+    "innerInstructions": [
+      {
+        "index": 0,
+        "instructions": [
+          {
+            "programIdIndex": 5,
+            "accounts": [
+              0,
+              1
+            ],
+            "data": "3Bxs46GMpF1QDeeT",
+            "stackHeight": 2
+          }
+        ]
+      }
+    ],
+    "logMessages": [
+      "Program 7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY invoke [1]",
+      "Program log: Instruction: SetConfig",
+      "Program 11111111111111111111111111111111 invoke [2]",
+      "Program 11111111111111111111111111111111 success",
+      "Program data: D2g7EOzxCAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAACy2aUudoQSee8DcsU0xTmk9o+MCwAA",
+      "Program 7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY consumed 19446 of 200000 compute units",
+      "Program 7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 19446
+  },
+  "blockTime": 1763404779,
+  "slot": 380730456
+}

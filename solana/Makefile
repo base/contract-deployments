@@ -90,7 +90,8 @@ sol-transfer:
 		cmd="solana transfer $(SOL_RECIPIENT) $(SOL_AMOUNT) \
 			--url $(SOL_RPC_URL) \
 			--fee-payer $(AUTHORITY) \
-			--allow-unfunded-recipient" \
+			--allow-unfunded-recipient \
+			$(if $(AUTHORITY),--keypair $(AUTHORITY))" \
 		output=$(output)
 
 # This command does not output the signature, so we cannot use make sol-confirm-cmd
@@ -99,17 +100,20 @@ sol-program-set-upgrade-authority:
 	solana program set-upgrade-authority $(SOL_PROGRAM_ID) \
 	--url $(SOL_RPC_URL) \
 	--new-upgrade-authority $(NEW_UPGRADE_AUTHORITY) \
-	--skip-new-upgrade-authority-signer-check
+	--skip-new-upgrade-authority-signer-check \
+	$(if $(AUTHORITY),--keypair $(AUTHORITY))
 
 # This command does not output the signature, so we cannot use make sol-confirm-cmd
 .PHONY: sol-write-buffer
 sol-write-buffer:
 	solana program write-buffer $(PROGRAM_BINARY) \
-	--url $(SOL_RPC_URL)
+	--url $(SOL_RPC_URL) \
+	$(if $(AUTHORITY),--keypair $(AUTHORITY))
 
 # This command does not output the signature, so we cannot use make sol-confirm-cmd
 .PHONY: sol-set-buffer-authority
 sol-set-buffer-authority:
 	solana program set-buffer-authority $(BUFFER) \
 	--new-buffer-authority $(NEW_BUFFER_AUTHORITY) \
-	--url $(SOL_RPC_URL)
+	--url $(SOL_RPC_URL) \
+	$(if $(AUTHORITY),--keypair $(AUTHORITY))
