@@ -102,7 +102,7 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
         return OWNER_SAFE;
     }
 
-    function _useMulticall() internal pure override returns (bool) {
-        return false;
+    function _useDelegateCall() internal pure override returns (bool) {
+        return true;
     }
 }
