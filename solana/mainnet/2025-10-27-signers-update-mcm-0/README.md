@@ -1,6 +1,6 @@
 # Signers Update MCM 0
 
-Status: PENDING
+Status: [EXECUTED](https://explorer.solana.com/tx/2MckFEES6ak47G1FDPWWx4Zb56Nz5QTTDtbWFUF5dnSRyyZ7E2NAiiSQKe7VeCj7vhxRfm2aWgmjfN4HHaRyiepE?cluster=mainnet)
 
 ## Description
 
