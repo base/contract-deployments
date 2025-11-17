@@ -5,7 +5,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
     "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
-    "messageHash": "0xb61b2eb4bb59bcd705aaf172c6caa1dd622cf5bd35fbaa67d0d0d9bd9a0c0898"
+    "messageHash": "0xf499c3a3e9535241bfe7ff1a97239b3b2042e314614c6c1869b56a56d878ec3d"
   },
   "stateOverrides": [
     {
@@ -29,7 +29,7 @@
           "description": "Override the threshold to 1 so the transaction simulation can occur."
         },
         {
-          "key": "0x612ab2e1430587c769e82b224707a5e70a756d03bb8938d3515bdc72c4adb07e",
+          "key": "0x779df92d36af0820632e0ba83514bd3cb1ef99f5b9e496659c11d24ab3d95b54",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
         }
@@ -60,7 +60,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xc75b371a1ae964cc781240f39c8650e713bac3098792a24e4d0aa18d48263485",
+          "key": "0x132b6656c4b15beb5c2e41642af758bc0a8f119e85c129268964c2082734d0fa",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Increment approvedHashes",
@@ -100,8 +100,8 @@
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000000a",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000c",
           "description": "Increments the nonce",
           "allowDifference": false
         }
@@ -119,7 +119,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xea1ce1e66d025647b83425bfcfca0f8665836bce6a3d8fd50541909d7c6c9bdf",
+          "key": "0x2f5145ced07ce269c6c4db5520937e13f39750363e1135f1fc5ed25c961f8a1b",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Increment approvedHashes",
@@ -206,5 +206,6 @@
         }
       ]
     }
-  ]
+  ],
+  "balanceChanges": []
 }

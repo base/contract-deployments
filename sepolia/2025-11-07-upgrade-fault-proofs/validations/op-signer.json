@@ -1,11 +1,11 @@
 {
   "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpgradeWithOpSmartContractManager --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x0CF2F86C3338993ce10F74d6f4B095712c7efe26",
-  "ledgerId": 1,
+  "ledgerId": 0,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
     "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
     "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
-    "messageHash": "0x89a1d4884ca278f7ea9cd1d010572686b6431a11e3f8f699c85ca974d1cdbe02"
+    "messageHash": "0x63012f7123ec444c2b91c33f750ad17c662f82ac30075dc2cf4be163c7b07422"
   },
   "stateOverrides": [
     {
@@ -24,7 +24,7 @@
       "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
       "overrides": [
         {
-          "key": "0x6b6236770e801b703e7312f8dc240dea8002c5bc6a2454508de44672e2a57a35",
+          "key": "0x9a696c577589e96cb3fbc50421a9a814cd6f236c810f32af46de8a295e1cbbc9",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
         }
@@ -44,7 +44,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x533e011ba3bc153180d605f18ea46bf16af7f44c55a3896267c3b536cfc7e13c",
+          "key": "0xd838681ca403c84d3748b96661bee5375d8a7d01999bc2ab6f1395c0c80e9500",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Increment approvedHashes",
@@ -170,5 +170,6 @@
         }
       ]
     }
-  ]
+  ],
+  "balanceChanges": []
 }
