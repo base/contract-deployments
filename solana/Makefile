@@ -1,24 +1,24 @@
-UPDATE_MCM_SIGNERS_DIR = $(network)/$(shell date +'%Y-%m-%d')-update-mcm-signers
-UPGRADE_BRIDGE_PROGRAM_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-bridge-program
+UPDATE_SIGNERS_MCM_DIR = $(network)/$(shell date +'%Y-%m-%d')-update-signers-mcm
+UPGRADE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-bridge
 SET_PAUSE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-set-pause-bridge
 
-TEMPLATE_UPDATE_MCM_SIGNERS = setup-templates/template-update-mcm-signers
-TEMPLATE_UPGRADE_BRIDGE_PROGRAM = setup-templates/template-upgrade-bridge-program
+TEMPLATE_UPDATE_SIGNERS_MCM = setup-templates/template-update-signers-mcm
+TEMPLATE_UPGRADE_BRIDGE = setup-templates/template-upgrade-bridge
 TEMPLATE_SET_PAUSE_BRIDGE = setup-templates/template-set-pause-bridge
 
 ##
 # Project Setup
 ##
 
-# Run `make setup-update-mcm-signers network=<network>`
-setup-update-mcm-signers:
-	rm -rf $(TEMPLATE_UPDATE_MCM_SIGNERS)/cache $(TEMPLATE_UPDATE_MCM_SIGNERS)/lib $(TEMPLATE_UPDATE_MCM_SIGNERS)/out
-	cp -r $(TEMPLATE_UPDATE_MCM_SIGNERS) $(UPDATE_MCM_SIGNERS_DIR)
+# Run `make setup-update-signers-mcm network=<network>`
+setup-update-signers-mcm:
+	rm -rf $(TEMPLATE_UPDATE_SIGNERS_MCM)/cache $(TEMPLATE_UPDATE_SIGNERS_MCM)/lib $(TEMPLATE_UPDATE_SIGNERS_MCM)/out
+	cp -r $(TEMPLATE_UPDATE_SIGNERS_MCM) $(UPDATE_SIGNERS_MCM_DIR)
 
-# Run `make setup-upgrade-bridge-program network=<network>`
-setup-upgrade-bridge-program:
-	rm -rf $(TEMPLATE_UPGRADE_BRIDGE_PROGRAM)/cache $(TEMPLATE_UPGRADE_BRIDGE_PROGRAM)/lib $(TEMPLATE_UPGRADE_BRIDGE_PROGRAM)/out
-	cp -r $(TEMPLATE_UPGRADE_BRIDGE_PROGRAM) $(UPGRADE_BRIDGE_PROGRAM_DIR)
+# Run `make setup-upgrade-bridge network=<network>`
+setup-upgrade-bridge:
+	rm -rf $(TEMPLATE_UPGRADE_BRIDGE)/cache $(TEMPLATE_UPGRADE_BRIDGE)/lib $(TEMPLATE_UPGRADE_BRIDGE)/out
+	cp -r $(TEMPLATE_UPGRADE_BRIDGE) $(UPGRADE_BRIDGE_DIR)
 
 # Run `make setup-set-pause-bridge network=<network>`
 setup-set-pause-bridge:
