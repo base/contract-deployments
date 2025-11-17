@@ -4,7 +4,7 @@ Status: PENDING
 
 ## Description
 
-This task updates the signers configuration for a Multi-Chain Multisig (MCM) instance. This includes adding or removing signers, modifying signer groups, adjusting group quorums, and updating group parent relationships.
+This task initializes the signers configuration of the multisig `0x0000000000000000000000000000000000000000000000000000000000000000` managed by the MCM program.
 
 ## Procedure for Signers
 
