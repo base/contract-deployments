@@ -1,10 +1,12 @@
-# Upgrade Contracts using OP Contracts Manager
+# U17 Jovian Upgrade
 
 Status: PENDING
 
 ## Description
 
-This task contains a single script that executes the `upgrade` function of the specified OP Contracts Manager.
+The Jovian hardfork is a proposed network upgrade for OP Stack chains, which brings several improvements to the way rollup fees are calculated as well as performing a maintenance update to the fault proof virtual machine. [More Details](https://docs.optimism.io/notices/upgrade-17).
+
+This script executes the `upgrade` function of the OP Contracts Manager to upgrade all relevant contracts.
 
 ## Procedure
 
@@ -47,6 +49,7 @@ make sign-task
 
 ### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-Be sure to select the correct task user from the list of available users to sign (**not** the "rollback" user).
+Be sure to select the correct task user from the list of available users to sign.
+After completion, the signer tool can be closed by using Ctrl + c
 
 ### 4. Send signature to facilitator

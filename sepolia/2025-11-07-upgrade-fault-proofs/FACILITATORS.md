@@ -37,8 +37,6 @@ SIGNATURES=AAAABBBBCCCC make approve-cb
 SIGNATURES=AAAABBBBCCCC make approve-cb-sc
 ```
 
-Optimism facilitator:
-
 ```bash
 SIGNATURES=AAAABBBBCCCC make approve-op
 ```
