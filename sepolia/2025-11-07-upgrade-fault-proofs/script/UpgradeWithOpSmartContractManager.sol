@@ -22,12 +22,21 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
     IProxyAdmin public immutable PROXY_ADMIN;
     Claim immutable CANNON_ABSOLUTE_PRESTATE;
 
+    address oldDelayedWethPermissioned;
+    address oldDelayedWethPermissionless;
+
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
         PROXY_ADMIN = IProxyAdmin(vm.envAddress("PROXY_ADMIN"));
         _SYSTEM_CONFIG = ISystemConfig(vm.envAddress("SYSTEM_CONFIG"));
         OP_CONTRACT_MANAGER = IOPContractsManager(vm.envAddress("OP_CONTRACT_MANAGER"));
         CANNON_ABSOLUTE_PRESTATE = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
+
+        IDisputeGameFactory dfg = IDisputeGameFactory(_SYSTEM_CONFIG.disputeGameFactory());
+        IFaultDisputeGame fdg = IFaultDisputeGame(address(dfg.gameImpls(GameTypes.CANNON)));
+        IFaultDisputeGame pfdg = IFaultDisputeGame(address(dfg.gameImpls(GameTypes.PERMISSIONED_CANNON)));
+        oldDelayedWethPermissioned = address(pfdg.weth());
+        oldDelayedWethPermissionless = address(fdg.weth());
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
@@ -49,19 +58,14 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
                 == impls.disputeGameFactoryImpl,
             "03"
         );
-        require(
-            PROXY_ADMIN.getProxyImplementation(address(_SYSTEM_CONFIG.disputeGameFactory()))
-                == impls.disputeGameFactoryImpl,
-            "04"
-        );
 
         ISystemConfig.Addresses memory opChainAddrs = _SYSTEM_CONFIG.getAddresses();
         require(
             PROXY_ADMIN.getProxyImplementation(opChainAddrs.l1CrossDomainMessenger) == impls.l1CrossDomainMessengerImpl,
-            "05"
+            "04"
         );
-        require(PROXY_ADMIN.getProxyImplementation(opChainAddrs.l1StandardBridge) == impls.l1StandardBridgeImpl, "06");
-        require(PROXY_ADMIN.getProxyImplementation(opChainAddrs.l1ERC721Bridge) == impls.l1ERC721BridgeImpl, "07");
+        require(PROXY_ADMIN.getProxyImplementation(opChainAddrs.l1StandardBridge) == impls.l1StandardBridgeImpl, "05");
+        require(PROXY_ADMIN.getProxyImplementation(opChainAddrs.l1ERC721Bridge) == impls.l1ERC721BridgeImpl, "06");
 
         IDisputeGameFactory dfg = IDisputeGameFactory(_SYSTEM_CONFIG.disputeGameFactory());
         IFaultDisputeGame fdg = IFaultDisputeGame(address(dfg.gameImpls(GameTypes.CANNON)));
@@ -70,12 +74,17 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
         Claim pfdgAbsolutePrestate = pfdg.absolutePrestate();
 
         // verify FaultDisputeGame and PermissionedDisputeGame absolute prestate
-        require(Claim.unwrap(fdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "08");
-        require(Claim.unwrap(pfdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "09");
+        require(Claim.unwrap(fdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "07");
+        require(Claim.unwrap(pfdgAbsolutePrestate) == Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), "08");
 
         // verify FaultDisputeGame and PermissionedDisputeGame vm
-        require(address(fdg.vm()) == impls.mipsImpl, "10");
-        require(address(pfdg.vm()) == impls.mipsImpl, "11");
+        require(address(fdg.vm()) == impls.mipsImpl, "09");
+        require(address(pfdg.vm()) == impls.mipsImpl, "10");
+
+        // verify DelayedWETH doesn't change
+        // https://github.com/ethereum-optimism/optimism/blob/d09c836f818c73ae139f60b717654c4e53712743/packages/contracts-bedrock/src/L1/OPContractsManager.sol#L877
+        require(address(fdg.weth()) == oldDelayedWethPermissionless, "11");
+        require(address(pfdg.weth()) == oldDelayedWethPermissioned, "12");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
