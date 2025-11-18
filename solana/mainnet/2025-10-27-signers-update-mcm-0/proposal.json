@@ -1,0 +1,117 @@
+{
+  "multisigId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "validUntil": 1763486675,
+  "instructions": [
+    {
+      "programId": "7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY",
+      "data": "ZraBEIqO38QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY=",
+      "accounts": [
+        {
+          "pubkey": "E8qJNynhqf11YpnsKRgGmBmcRqhfQBWZh2vaH9xbx5p3",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "9bWEpMR8ZsA8ah8TgEzw4g1LpTLBDiZpntzBJWEvF9UG",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "DZaZMpR6ZBNPKBqaweGnoPP3QLq3pyoRTDfBpYS1QMU2",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "11111111111111111111111111111111",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ]
+    },
+    {
+      "programId": "7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY",
+      "data": "7tH7JynxkhkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAchwd2sWip/66AxR8FDGEe3SRnQTzWkuzotlc6IiCuANDeuY8N/6mhPa0iAISZJbtG2b8Fr6X38hP0wY5s04UHVreJR3SrcV0Tb53QKDfeULARoy7YtPcNmUOiGZ9Tm77Ne2L3+eMg89oS5oryGdnipJDdZJ9rF3w=",
+      "accounts": [
+        {
+          "pubkey": "E8qJNynhqf11YpnsKRgGmBmcRqhfQBWZh2vaH9xbx5p3",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "9bWEpMR8ZsA8ah8TgEzw4g1LpTLBDiZpntzBJWEvF9UG",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "DZaZMpR6ZBNPKBqaweGnoPP3QLq3pyoRTDfBpYS1QMU2",
+          "isSigner": false,
+          "isWritable": true
+        }
+      ]
+    },
+    {
+      "programId": "7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY",
+      "data": "Mf6a4onHeD8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "accounts": [
+        {
+          "pubkey": "E8qJNynhqf11YpnsKRgGmBmcRqhfQBWZh2vaH9xbx5p3",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "9bWEpMR8ZsA8ah8TgEzw4g1LpTLBDiZpntzBJWEvF9UG",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "DZaZMpR6ZBNPKBqaweGnoPP3QLq3pyoRTDfBpYS1QMU2",
+          "isSigner": false,
+          "isWritable": true
+        }
+      ]
+    },
+    {
+      "programId": "7w7ELBSd4F6xG7GNq6BU9cnMPpQYq8fZknsk6Jb9mszY",
+      "data": "bJ6ar9RiNEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+      "accounts": [
+        {
+          "pubkey": "E8qJNynhqf11YpnsKRgGmBmcRqhfQBWZh2vaH9xbx5p3",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "9bWEpMR8ZsA8ah8TgEzw4g1LpTLBDiZpntzBJWEvF9UG",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "8HbtqBXPeS8DPfEx1r4kDyYFXuddrvZdxXXqMYyfdiKY",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "FDAHR8SdPZnWDcK6yvoCYHBf6ggTjLyomiQDQ767FH3c",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "DZaZMpR6ZBNPKBqaweGnoPP3QLq3pyoRTDfBpYS1QMU2",
+          "isSigner": false,
+          "isWritable": true
+        },
+        {
+          "pubkey": "11111111111111111111111111111111",
+          "isSigner": false,
+          "isWritable": false
+        }
+      ]
+    }
+  ],
+  "rootMetadata": {
+    "chainId": 1,
+    "multisig": "E8qJNynhqf11YpnsKRgGmBmcRqhfQBWZh2vaH9xbx5p3",
+    "preOpCount": 1,
+    "postOpCount": 5,
+    "overridePreviousRoot": false
+  }
+}
