@@ -1,10 +1,10 @@
-# MCM Bridge Pause/Unpause
+# Upgrade Bridge Program 
 
 Status: PENDING
 
 ## Description
 
-This task pauses or unpauses the Bridge program using the MCM program. This is a critical security operation that can be used to halt bridge operations in emergency situations or resume them after issues are resolved.
+This task upgrades the bridge program using the Multi-Chain Multisig (MCM) governance system.
 
 ## Procedure for Signers
 
@@ -21,7 +21,27 @@ make deps
 
 Your Ledger needs to be connected and unlocked. The **Ethereum application** needs to be opened on Ledger with the message "Application is ready".
 
-### 3. Sign the proposal
+### 3. Verify the Proposal
+
+#### 3.1. Verify Instruction 1 (BPF Loader Upgradeable - Upgrade)
+
+**Program ID:**
+
+Verify instruction 1 has program ID: `BPFLoaderUpgradeab1e11111111111111111111111`
+
+**Instruction Data:**
+
+Verify this is the Upgrade instruction (discriminant = 3):
+
+```bash
+jq -r '.instructions[0].data' proposal.json | base64 -d | xxd -p -c 256
+```
+
+Expected output: `03000000`
+
+This is the u32 little-endian representation of 3, which corresponds to the [Upgrade](https://github.com/solana-program/loader-v3/blob/main/program/src/instruction.rs#L223) instruction in BPF Loader Upgradeable.
+
+### 4. Sign the proposal
 
 ```bash
 make sign
@@ -40,7 +60,7 @@ After signing, you will see output like:
 Signature: 1234567890abcdef...
 ```
 
-### 4. Send signature to Facilitator
+### 5. Send signature to Facilitator
 
 Copy the **entire signature** and send it to the Facilitator via your secure communication channel.
 

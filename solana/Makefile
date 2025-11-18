@@ -1,29 +1,27 @@
-MCM_SIGNERS_UPDATE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-signers-update
-PROGRAM_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-program-upgrade
-SET_PAUSE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-set-pause-bridge
-SET_PARTNER_THRESHOLD_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-set-partner-threshold-bridge
+UPDATE_SIGNERS_MCM_DIR = $(network)/$(shell date +'%Y-%m-%d')-update-signers-mcm
+UPGRADE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-bridge
+SET_PAUSE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-set-pause-bridge
 
-TEMPLATE_MCM_SIGNERS_UPDATE = setup-templates/template-mcm-signers-update
-TEMPLATE_PROGRAM_UPGRADE = setup-templates/template-mcm-program-upgrade
-TEMPLATE_SET_PAUSE_BRIDGE = setup-templates/template-mcm-set-pause-bridge
-TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE = setup-templates/template-mcm-set-partner-threshold-bridge
+TEMPLATE_UPDATE_SIGNERS_MCM = setup-templates/template-update-signers-mcm
+TEMPLATE_UPGRADE_BRIDGE = setup-templates/template-upgrade-bridge
+TEMPLATE_SET_PAUSE_BRIDGE = setup-templates/template-set-pause-bridge
 
 ##
 # Project Setup
 ##
 
-# Run `make setup-mcm-signers-update network=<network>`
-setup-mcm-signers-update:
-	rm -rf $(TEMPLATE_MCM_SIGNERS_UPDATE)/cache $(TEMPLATE_MCM_SIGNERS_UPDATE)/lib $(TEMPLATE_MCM_SIGNERS_UPDATE)/out
-	cp -r $(TEMPLATE_MCM_SIGNERS_UPDATE) $(MCM_SIGNERS_UPDATE_DIR)
+# Run `make setup-update-signers-mcm network=<network>`
+setup-update-signers-mcm:
+	rm -rf $(TEMPLATE_UPDATE_SIGNERS_MCM)/cache $(TEMPLATE_UPDATE_SIGNERS_MCM)/lib $(TEMPLATE_UPDATE_SIGNERS_MCM)/out
+	cp -r $(TEMPLATE_UPDATE_SIGNERS_MCM) $(UPDATE_SIGNERS_MCM_DIR)
 
-# Run `make setup-mcm-program-upgrade network=<network>`
-setup-mcm-program-upgrade:
-	rm -rf $(TEMPLATE_PROGRAM_UPGRADE)/cache $(TEMPLATE_PROGRAM_UPGRADE)/lib $(TEMPLATE_PROGRAM_UPGRADE)/out
-	cp -r $(TEMPLATE_PROGRAM_UPGRADE) $(PROGRAM_UPGRADE_DIR)
+# Run `make setup-upgrade-bridge network=<network>`
+setup-upgrade-bridge:
+	rm -rf $(TEMPLATE_UPGRADE_BRIDGE)/cache $(TEMPLATE_UPGRADE_BRIDGE)/lib $(TEMPLATE_UPGRADE_BRIDGE)/out
+	cp -r $(TEMPLATE_UPGRADE_BRIDGE) $(UPGRADE_BRIDGE_DIR)
 
-# Run `make setup-mcm-set-pause-bridge network=<network>`
-setup-mcm-set-pause-bridge:
+# Run `make setup-set-pause-bridge network=<network>`
+setup-set-pause-bridge:
 	rm -rf $(TEMPLATE_SET_PAUSE_BRIDGE)/cache $(TEMPLATE_SET_PAUSE_BRIDGE)/lib $(TEMPLATE_SET_PAUSE_BRIDGE)/out
 	cp -r $(TEMPLATE_SET_PAUSE_BRIDGE) $(SET_PAUSE_BRIDGE_DIR)
 
