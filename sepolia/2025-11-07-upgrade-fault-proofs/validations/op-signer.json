@@ -5,7 +5,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
     "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
-    "messageHash": "0x63012f7123ec444c2b91c33f750ad17c662f82ac30075dc2cf4be163c7b07422"
+    "messageHash": "0xfb472420ca18b7ebe56d16c2efb3b593e9e5ac9df5385fa2e1eef648c21bc488"
   },
   "stateOverrides": [
     {
@@ -24,7 +24,7 @@
       "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
       "overrides": [
         {
-          "key": "0x9a696c577589e96cb3fbc50421a9a814cd6f236c810f32af46de8a295e1cbbc9",
+          "key": "0x33bc665064f9988222f9f4721074db03e0b9e5f3abdfba193c69be36e0eb02b5",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
         }
@@ -84,8 +84,8 @@
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000010",
           "description": "Increments the nonce",
           "allowDifference": false
         }
