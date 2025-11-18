@@ -1,6 +1,6 @@
 # U17 Jovian Upgrade
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x248f85399e2a23687bd9d1440b51d9677a94ff763827abcad5a2a4b457c70590)
 
 ## Description
 
