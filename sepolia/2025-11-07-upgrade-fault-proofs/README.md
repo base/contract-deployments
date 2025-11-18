@@ -1,6 +1,6 @@
 # U17 Jovian Upgrade
 
-Status: PENDING
+Status: READY TO SIGN
 
 ## Description
 

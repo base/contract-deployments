@@ -1,6 +1,6 @@
 {
   "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpgradeWithOpSmartContractManager --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x0CF2F86C3338993ce10F74d6f4B095712c7efe26",
-  "ledgerId": 0,
+  "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
     "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
