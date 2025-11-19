@@ -1,6 +1,6 @@
 # Update Mainnet Gas Params
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0xf4015a79142f5655775c4a3dac133ec820403c91443ca050227f658e8a094cd2)
 
 ## Description
 
@@ -49,6 +49,8 @@ make sign-task
 
 ### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-> [!IMPORTANT] Please run through the signing process twice. Once for "Base Signer" and once for "Base Signer Rollback"
+> [!IMPORTANT]
+>
+> Please run through the signing process twice. Once for "Base Signer" and once for "Base Signer Rollback"
 
 ### 4. After signing, you can end the signer tool process with Ctrl + C

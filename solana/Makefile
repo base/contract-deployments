@@ -1,29 +1,27 @@
-MCM_SIGNERS_UPDATE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-signers-update
-PROGRAM_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-program-upgrade
-SET_PAUSE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-set-pause-bridge
-SET_PARTNER_THRESHOLD_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-mcm-set-partner-threshold-bridge
+UPDATE_SIGNERS_MCM_DIR = $(network)/$(shell date +'%Y-%m-%d')-update-signers-mcm
+UPGRADE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-bridge
+SET_PAUSE_BRIDGE_DIR = $(network)/$(shell date +'%Y-%m-%d')-set-pause-bridge
 
-TEMPLATE_MCM_SIGNERS_UPDATE = setup-templates/template-mcm-signers-update
-TEMPLATE_PROGRAM_UPGRADE = setup-templates/template-mcm-program-upgrade
-TEMPLATE_SET_PAUSE_BRIDGE = setup-templates/template-mcm-set-pause-bridge
-TEMPLATE_SET_PARTNER_THRESHOLD_BRIDGE = setup-templates/template-mcm-set-partner-threshold-bridge
+TEMPLATE_UPDATE_SIGNERS_MCM = setup-templates/template-update-signers-mcm
+TEMPLATE_UPGRADE_BRIDGE = setup-templates/template-upgrade-bridge
+TEMPLATE_SET_PAUSE_BRIDGE = setup-templates/template-set-pause-bridge
 
 ##
 # Project Setup
 ##
 
-# Run `make setup-mcm-signers-update network=<network>`
-setup-mcm-signers-update:
-	rm -rf $(TEMPLATE_MCM_SIGNERS_UPDATE)/cache $(TEMPLATE_MCM_SIGNERS_UPDATE)/lib $(TEMPLATE_MCM_SIGNERS_UPDATE)/out
-	cp -r $(TEMPLATE_MCM_SIGNERS_UPDATE) $(MCM_SIGNERS_UPDATE_DIR)
+# Run `make setup-update-signers-mcm network=<network>`
+setup-update-signers-mcm:
+	rm -rf $(TEMPLATE_UPDATE_SIGNERS_MCM)/cache $(TEMPLATE_UPDATE_SIGNERS_MCM)/lib $(TEMPLATE_UPDATE_SIGNERS_MCM)/out
+	cp -r $(TEMPLATE_UPDATE_SIGNERS_MCM) $(UPDATE_SIGNERS_MCM_DIR)
 
-# Run `make setup-mcm-program-upgrade network=<network>`
-setup-mcm-program-upgrade:
-	rm -rf $(TEMPLATE_PROGRAM_UPGRADE)/cache $(TEMPLATE_PROGRAM_UPGRADE)/lib $(TEMPLATE_PROGRAM_UPGRADE)/out
-	cp -r $(TEMPLATE_PROGRAM_UPGRADE) $(PROGRAM_UPGRADE_DIR)
+# Run `make setup-upgrade-bridge network=<network>`
+setup-upgrade-bridge:
+	rm -rf $(TEMPLATE_UPGRADE_BRIDGE)/cache $(TEMPLATE_UPGRADE_BRIDGE)/lib $(TEMPLATE_UPGRADE_BRIDGE)/out
+	cp -r $(TEMPLATE_UPGRADE_BRIDGE) $(UPGRADE_BRIDGE_DIR)
 
-# Run `make setup-mcm-set-pause-bridge network=<network>`
-setup-mcm-set-pause-bridge:
+# Run `make setup-set-pause-bridge network=<network>`
+setup-set-pause-bridge:
 	rm -rf $(TEMPLATE_SET_PAUSE_BRIDGE)/cache $(TEMPLATE_SET_PAUSE_BRIDGE)/lib $(TEMPLATE_SET_PAUSE_BRIDGE)/out
 	cp -r $(TEMPLATE_SET_PAUSE_BRIDGE) $(SET_PAUSE_BRIDGE_DIR)
 
@@ -37,7 +35,7 @@ install-eip712sign:
 
 .PHONY: install-mcmctl
 install-mcmctl:
-	go install github.com/base/mcm-go/cmd/mcmctl@66ad0d9e28ecc1ef0b3b1504bdc5d40da413b678
+	go install github.com/base/mcm-go/cmd/mcmctl@6ea0c3170ab5fc877e304671947ced218aa219f6
 
 .PHONY: deps
 deps: install-mcmctl install-eip712sign
@@ -90,7 +88,8 @@ sol-transfer:
 		cmd="solana transfer $(SOL_RECIPIENT) $(SOL_AMOUNT) \
 			--url $(SOL_RPC_URL) \
 			--fee-payer $(AUTHORITY) \
-			--allow-unfunded-recipient" \
+			--allow-unfunded-recipient \
+			$(if $(AUTHORITY),--keypair $(AUTHORITY))" \
 		output=$(output)
 
 # This command does not output the signature, so we cannot use make sol-confirm-cmd
@@ -99,17 +98,20 @@ sol-program-set-upgrade-authority:
 	solana program set-upgrade-authority $(SOL_PROGRAM_ID) \
 	--url $(SOL_RPC_URL) \
 	--new-upgrade-authority $(NEW_UPGRADE_AUTHORITY) \
-	--skip-new-upgrade-authority-signer-check
+	--skip-new-upgrade-authority-signer-check \
+	$(if $(AUTHORITY),--keypair $(AUTHORITY))
 
 # This command does not output the signature, so we cannot use make sol-confirm-cmd
 .PHONY: sol-write-buffer
 sol-write-buffer:
 	solana program write-buffer $(PROGRAM_BINARY) \
-	--url $(SOL_RPC_URL)
+	--url $(SOL_RPC_URL) \
+	$(if $(AUTHORITY),--keypair $(AUTHORITY))
 
 # This command does not output the signature, so we cannot use make sol-confirm-cmd
 .PHONY: sol-set-buffer-authority
 sol-set-buffer-authority:
 	solana program set-buffer-authority $(BUFFER) \
 	--new-buffer-authority $(NEW_BUFFER_AUTHORITY) \
-	--url $(SOL_RPC_URL)
+	--url $(SOL_RPC_URL) \
+	$(if $(AUTHORITY),--keypair $(AUTHORITY))
