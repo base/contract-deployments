@@ -39,7 +39,7 @@ To execute a new task, run one of the following commands (depending on the type 
 - For gas increase tasks: `make setup-gas-increase network=<network>`
 - For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
-- For changing incident multisig signers tasks: `make setup-incident-multisig-signers network=<network>`
+- For safe mangement tasks: `make setup-safe-management network=<network>`
 - For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
@@ -112,11 +112,11 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 1. Check in the task when it's ready to sign and collect signatures from signers
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
-## Using the swap owner template
+## Using the safe management template
 
-This template is used to perform ownership management on the (Gnosis Safe) incident multisig, specifically it can change the owners of the multisig.
+This template is used to perform ownership management on a Gnosis Safe, like the incident multisig, specifically it can be used to change the owners of the multisig.
 
-1. Ensure you have followed the instructions above in `setup`, including running `make setup-incident-multisig-signers network=<network>` and go to the folder that was created by this command.
+1. Ensure you have followed the instructions above in `setup`, including running `make setup-safe-management network=<network>` and go to the folder that was created by this command.
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file.
 1. Enter the directory that was generated for the task (in the first step) and then run `make deps`.
 1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced and the `SENDER` which should be the address of a current signer of the multisig.
