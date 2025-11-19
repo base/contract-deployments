@@ -16,5 +16,6 @@ remappings = [
     '@base-contracts/=lib/base-contracts',
     'solady/=lib/solady/src/',
 ]
+evm_version = "prague"
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
