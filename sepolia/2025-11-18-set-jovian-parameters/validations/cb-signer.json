@@ -1,0 +1,126 @@
+{
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net SetJovianParametersScript --sig sign(address[]) [0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f, 0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
+  "ledgerId": 0,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "messageHash": "0x3ec16bbc91fd3ee7c8bd9731d99e666f0e476ec76799b6bdb468b3ffc40d0fd0"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0x98f6cfc2c4775162457aa556620165f9d3ca1497e738b4fdecff87f5b2328116",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x8edc1cfc1840fa9ef854a3f743c41fe8ca1aa29e77f34b71c732200173cfea88",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9a9a340b11831be720964539a007b72fec48bc53b0edc6c53ed1dee5612719b3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "changes": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000000000000000000000000000000000000000400000032",
+          "after": "0x0000000000000000000001380000000000000000000000000000000400000032",
+          "description": "Updates EIP 1559 params for the chain",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x000000000000000000000000c2be75506d5724086deb7245bd260cc9753911be",
+          "after": "0x000000000000000000030d40c2be75506d5724086deb7245bd260cc9753911be",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
