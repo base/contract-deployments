@@ -47,7 +47,7 @@
           "key": "0xa5855c998346b3e542ba91df8b8a8b17cf51c481a36485b6f7831bb3331db193",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Increment approvedHashes",
           "allowDifference": false
         }
       ]
@@ -73,14 +73,14 @@
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "before": "0x0000000000000000000000000000000000000000000000000000000400000032",
           "after": "0x0000000000000000000001380000000000000000000000000000000400000032",
-          "description": "Updates EIP 1559 params for the chain",
+          "description": "Sets the DA Footprint Gas Scalar to 312 (0x0138)",
           "allowDifference": false
         },
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
           "before": "0x000000000000000000000000c2be75506d5724086deb7245bd260cc9753911be",
           "after": "0x000000000000000000030d40c2be75506d5724086deb7245bd260cc9753911be",
-          "description": "<<Summary>>",
+          "description": "Sets the Min Base Fee to 200000 (0x030d40)",
           "allowDifference": false
         }
       ]

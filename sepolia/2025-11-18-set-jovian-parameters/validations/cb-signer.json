@@ -1,5 +1,5 @@
 {
-  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net SetJovianParametersScript --sig sign(address[]) [0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f, 0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net SetJovianParametersScript --sig sign(address[]) [0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f,0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
   "ledgerId": 0,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
@@ -63,7 +63,7 @@
           "key": "0x8edc1cfc1840fa9ef854a3f743c41fe8ca1aa29e77f34b71c732200173cfea88",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Increment approvedHashes",
           "allowDifference": false
         }
       ]
@@ -96,7 +96,7 @@
           "key": "0x9a9a340b11831be720964539a007b72fec48bc53b0edc6c53ed1dee5612719b3",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Increment approvedHashes",
           "allowDifference": false
         }
       ]
@@ -109,14 +109,14 @@
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "before": "0x0000000000000000000000000000000000000000000000000000000400000032",
           "after": "0x0000000000000000000001380000000000000000000000000000000400000032",
-          "description": "Updates EIP 1559 params for the chain",
+          "description": "Sets the DA Footprint Gas Scalar to 312 (0x0138)",
           "allowDifference": false
         },
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
           "before": "0x000000000000000000000000c2be75506d5724086deb7245bd260cc9753911be",
           "after": "0x000000000000000000030d40c2be75506d5724086deb7245bd260cc9753911be",
-          "description": "<<Summary>>",
+          "description": "Sets the Min Base Fee to 200000 (0x030d40)",
           "allowDifference": false
         }
       ]
