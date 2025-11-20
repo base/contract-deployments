@@ -1,6 +1,6 @@
 # Set Jovian Parameters on Base Sepolia
 
-Status: NOT YET EXECUTED
+Status: READY TO SIGN
 
 ## Description
 
