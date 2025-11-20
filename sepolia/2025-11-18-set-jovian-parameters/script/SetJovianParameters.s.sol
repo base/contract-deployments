@@ -43,11 +43,7 @@ contract SetJovianParametersScript is MultisigScript {
             DA_FOOTPRINT_GAS_SCALAR,
             "DA Footprint Gas Scalar mismatch"
         );
-        vm.assertEq(
-            ISystemConfig(SYSTEM_CONFIG).minBaseFee(),
-            MIN_BASE_FEE,
-            "Min Base Fee mismatch"
-        );
+        vm.assertEq(ISystemConfig(SYSTEM_CONFIG).minBaseFee(), MIN_BASE_FEE, "Min Base Fee mismatch");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
