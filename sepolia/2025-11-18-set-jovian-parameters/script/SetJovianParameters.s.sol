@@ -16,11 +16,18 @@ interface ISystemConfig {
 }
 
 contract SetJovianParametersScript is MultisigScript {
-    address internal OWNER_SAFE = vm.envAddress("OWNER_SAFE");
-    address internal SYSTEM_CONFIG = vm.envAddress("SYSTEM_CONFIG");
+    address internal immutable OWNER_SAFE;
+    address internal immutable SYSTEM_CONFIG;
 
-    uint16 internal DA_FOOTPRINT_GAS_SCALAR = uint16(vm.envUint("DA_FOOTPRINT_GAS_SCALAR"));
-    uint64 internal MIN_BASE_FEE = uint64(vm.envUint("MIN_BASE_FEE"));
+    uint16 internal immutable DA_FOOTPRINT_GAS_SCALAR;
+    uint64 internal immutable MIN_BASE_FEE;
+
+    constructor() {
+        OWNER_SAFE = vm.envAddress("OWNER_SAFE");
+        SYSTEM_CONFIG = vm.envAddress("SYSTEM_CONFIG");
+        DA_FOOTPRINT_GAS_SCALAR = uint16(vm.envUint("DA_FOOTPRINT_GAS_SCALAR"));
+        MIN_BASE_FEE = uint64(vm.envUint("MIN_BASE_FEE"));
+    }
 
     function setUp() external view {
         // Log current values for reference
