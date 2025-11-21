@@ -1,6 +1,6 @@
 # Set Jovian Parameters on Base Sepolia
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x153186609185f8d67714bbbf512b01a17bba4c217e59792e575845a78dc186bf)
 
 ## Description
 
