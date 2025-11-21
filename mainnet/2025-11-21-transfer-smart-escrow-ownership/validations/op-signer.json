@@ -1,0 +1,88 @@
+{
+  "cmd": "forge script --rpc-url https://mainnet.optimism.io InitOwnershipTransfer --sig sign(address[]) [0x2501c477D0A35545a387Aa4A3EEe4292A9a8B3F0] --sender 0x4d494C5F61b60752D3A10062276a0eFC22596151",
+  "ledgerId": 0,
+  "rpcUrl": "https://mainnet.optimism.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
+    "domainHash": "0xb34978142f4478f3e5633915597a756daa58a1a59a3e0234f9acd5444f1ca70e",
+    "messageHash": "0x127009fecf9fd6173bbd2460ae1425ab82eea4171fab85e25291be4676184833"
+  },
+  "stateOverrides": [
+    {
+      "name": "ProxyAdminOwner",
+      "address": "0x0a7361e734cf3f0394b0fc4a45c74e7a4ec70940",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    },
+    {
+      "name": "OP Nested Safe",
+      "address": "0x2501c477d0a35545a387aa4a3eee4292a9a8b3f0",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the owner count to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0x50a140d09108f2dc4ae4fa4c58410b4adb1e52c253a6b77a41745063b0343a59",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from `msg.sender` (`approvedHashes[msg.sender][hash] = 1`) in order for the task simulation to succeed. The key can be derived from `cast index bytes32 0x2081e6059acac8fc457c4fbf146c965234b32627571da4cf6c07c46c8d713384 $(cast index address 0x4d494C5F61b60752D3A10062276a0eFC22596151 8)` where `0x457454eeac0e072199caf2775b0b727a35d6c12a900fd9cc81ad7cdbcdf3e066` is the hash being approved and `0x6CD3850756b7894774Ab715D136F9dD02837De50` is the address of the signer."
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "ProxyAdminOwner",
+      "address": "0x0a7361e734cf3f0394b0fc4a45c74e7a4ec70940",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Increment nonce in ProxyAdminOwner",
+          "allowDifference": false
+        },
+        {
+          "key": "0xf1ebb6ce350faad6ae34a68453032b07244a441354e27a66d4c178c4e14b8490",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Register the approval (`approvedHashes[0x2501c477d0a35545a387aa4a3eee4292a9a8b3f0][0xfc9d0dfbf7b2f5f7c0f580da6cc3a640d60356073d62b1c188de9eeda54837a2] = 1`). The key can be derived from `cast index bytes32 0xfc9d0dfbf7b2f5f7c0f580da6cc3a640d60356073d62b1c188de9eeda54837a2 $(cast index address 0x2501c477d0a35545a387aa4a3eee4292a9a8b3f0 8)` where `0xfc9d0dfbf7b2f5f7c0f580da6cc3a640d60356073d62b1c188de9eeda54837a2` is the hash being approved and `0x2501c477d0a35545a387aa4a3eee4292a9a8b3f0` is the address of the nested safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OP Nested Safe",
+      "address": "0x2501c477d0a35545a387aa4a3eee4292a9a8b3f0",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x00000000000000000000000000000000000000000000000000000000000000b3",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000000b4",
+          "description": "Increment nonce in OP Nested Safe",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "SmartEscrow",
+      "address": "0xb3c2f9fc2727078ec3a2255410e83ba5b62c5b5f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000697800000000000000000000000000000000000000000000000000000",
+          "after": "0x00000006978000006926de2b8cc51c3008b3f03fe483b28b8db90e19cf076a6d",
+          "description": "Set the pending default admin for SmartEscrow to 0x8cC51c3008b3f03Fe483B28B8Db90e19cF076a6d which is the aliased address of 0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c, our ProxyAdminOwner on L1.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
