@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
 
+import {Vm} from "forge-std/Vm.sol";
+import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
+
 import {Claim} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
 import {Constants} from "@eth-optimism-bedrock/src/libraries/Constants.sol";
 import {
@@ -10,11 +13,10 @@ import {
     IProxyAdmin,
     ISuperchainConfig
 } from "@eth-optimism-bedrock/interfaces/L1/IOPContractsManager.sol";
-import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
-import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
-import {Vm} from "forge-std/Vm.sol";
+
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {console} from "forge-std/console.sol";
+
+import {MultisigScript} from "./MultisigScript.sol";
 
 /// @notice This script deploys new versions of OP contracts using the OP Contract Manager.
 contract UpgradeWithOpSmartContractManager is MultisigScript {
@@ -36,8 +38,10 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
-        IOPContractsManagerStandardValidator.ValidationInput memory input = IOPContractsManagerStandardValidator
-            .ValidationInput(PROXY_ADMIN, SYSTEM_CONFIG, Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), SYSTEM_CONFIG.l2ChainId());
+        IOPContractsManagerStandardValidator.ValidationInput memory input =
+            IOPContractsManagerStandardValidator.ValidationInput(
+                PROXY_ADMIN, SYSTEM_CONFIG, Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), SYSTEM_CONFIG.l2ChainId()
+            );
 
         IOPContractsManagerStandardValidator.ValidationOverrides memory overrides =
             IOPContractsManagerStandardValidator.ValidationOverrides(OWNER_SAFE, CHALLENGER);
@@ -75,7 +79,7 @@ contract UpgradeWithOpSmartContractManager is MultisigScript {
         ISuperchainConfig superchainConfig = ISuperchainConfig(SYSTEM_CONFIG.superchainConfig());
         IOPContractsManager.Implementations memory impls = OP_CONTRACT_MANAGER.implementations();
 
-        // If the superchain config version is not the same as the implementation version, mock the superchain config address in the SystemConfig.
+        // Mock the implementation slot of the superchain config if the version has not been upgraded yet.
         bytes32 h1 = keccak256(abi.encode(ISuperchainConfig(impls.superchainConfigImpl).version()));
         bytes32 h2 = keccak256(abi.encode(superchainConfig.version()));
         if (h1 != h2) {
