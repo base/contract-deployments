@@ -19,6 +19,8 @@ remappings = [
     "src/dispute/=lib/optimism/packages/contracts-bedrock/src/dispute",
     "src/libraries/=lib/optimism/packages/contracts-bedrock/src/libraries",
     "src/cannon/=lib/optimism/packages/contracts-bedrock/src/cannon",
+    "src/L1/=lib/optimism/packages/contracts-bedrock/src/L1",
+    "scripts/=lib/optimism/packages/contracts-bedrock/scripts",
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
