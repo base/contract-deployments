@@ -1,6 +1,6 @@
 # Update Sepolia Incident Multisig Signers
 
-Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xadffced4438bd307fe2d61cfb212e46c3f07b73ffdc833a094b2b4e21ad6cd34) (and [Safe B transaction](https://sepolia.etherscan.io/tx/0x2aa63f880ca4cf814a71197a3fa9059ff36b124cabf085a3e8e76e40b9e6c556))
+Status: [SAFE A EXECUTED](https://sepolia.etherscan.io/tx/0xadffced4438bd307fe2d61cfb212e46c3f07b73ffdc833a094b2b4e21ad6cd34) ([artefact](./records/UpdateSigners.s.sol/11155111/run-1763579592746.json)) and [SAFE B EXECUTED](https://sepolia.etherscan.io/tx/0x2aa63f880ca4cf814a71197a3fa9059ff36b124cabf085a3e8e76e40b9e6c556) ([artefact](./records/UpdateSigners.s.sol/11155111/run-1763579822181.json))
 
 Safe A (3-of-14): [0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f](https://sepolia.etherscan.io/address/0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f)  
 Safe B (1-of-14): [0x6AF0674791925f767060Dd52f7fB20984E8639d8](https://sepolia.etherscan.io/address/0x6AF0674791925f767060Dd52f7fB20984E8639d8)
