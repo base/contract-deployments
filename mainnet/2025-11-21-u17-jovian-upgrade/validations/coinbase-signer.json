@@ -1,0 +1,222 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io UpgradeWithOpSmartContractManager --sig sign(address[]) [0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110,0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
+    "messageHash": "0xcd83528c7763918cd8350544a4172f5d0fc97e579b38e9182913a9ee31882efe"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    },
+    {
+      "name": "Superchain Config - Mainnet",
+      "address": "0x95703e0982140d16f8eba6d158fccede42f04a4c",
+      "overrides": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "value": "0x000000000000000000000000b08cc720f511062537ca78bdb0ae691f04f5a957",
+          "description": "Override the SuperchainConfig implementation address so the version is the U17 expected version."
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Mainnet",
+      "address": "0x9c4a57feb77e294fd7bf5ebe9ab01caa0a90a110",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        },
+        {
+          "key": "0x956f0b7b97716c3ae73ece58ee0bdd1334ca30481111f3e5a428de727da5d7a2",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "OptimismMintableERC20Factory - Mainnet",
+      "address": "0x05cc379ebd9b30bba19c6fa282ab29218ec61d84",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000005493f4677a186f64805fe7317d6993ba4863988f",
+          "after": "0x0000000000000000000000008ee6fb13c6c9a7e401531168e196fbf8b05ceabb",
+          "description": "Update address of OptimismMintableERC20Factory to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "L1StandardBridge - Mainnet",
+      "address": "0x3154cf16ccdb4c6d922629664174b904d80f2c35",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000e32b192fb1dca88fcb1c56b3acb429e32238adcb",
+          "after": "0x00000000000000000000000061525eaacddb97d9184afc205827e6a4fd0bf62a",
+          "description": "Update address of L1StandardBridge to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edb88c4b80fdd2adff2412a7bebf9df42cb40e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000033d1e8571a85a538ed3d5a4d88f46c112383439d",
+          "after": "0x00000000000000000000000074fac1d45b98bae058f8f566201c9a81b85c7d50",
+          "description": "Update address of DisputeGameFactory to new implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x4d5a9bd2e41301728d41c8e705190becb4e74abe869f75bdb405b63716a35f9e",
+          "before": "0x000000000000000000000000e3803582fd5bcdc62720d2b80f35e8ddea94e2ec",
+          "after": "0x0000000000000000000000006f8c1ea88cb410571739d36eb00811b250574cb2",
+          "description": "Updates the PermissionedDisputeGame implementation address.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b",
+          "before": "0x000000000000000000000000e4066890367bf8a51d58377431808083a01b1e0c",
+          "after": "0x000000000000000000000000979cb7e329ba213fb9d6c5f7771ec6a3109bdc93",
+          "description": "Updates the FaultDisputeGame implementation address.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044d57e1c92a77f79988d21fa8faf74e97e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000381e729ff983fa4bced820e7b922d79bf653b999",
+          "after": "0x0000000000000000000000007cf803296662e8c72a6c1d6450572209acf7f202",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "L1ERC721Bridge - Mainnet",
+      "address": "0x608d94945a64503e642e6370ec598e519a2c1e53",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000007f1d12fb2911eb095278085f721e644c1f675696",
+          "after": "0x00000000000000000000000074f1ac50eb0be98853805d381c884f5f9abdecf9",
+          "description": "Update the address of L1ERC721Bridge to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000002bfe4a5bd5a41e9d848d843ebcdfa15954e9a557",
+          "after": "0x0000000000000000000000002fa28989fc559836e9d66dff3010c7f7f41c65ed",
+          "description": "Update the address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xaddfb37918a8ba8697fb01fce50d1a88fff5d77d0c03eaced924c8399ca2d81c",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets the approval hash for this U17 upgrade transaction.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AddressManager - Mainnet",
+      "address": "0x8efb6b5c4767b09dc9aa6af4eaa89f749522bae2",
+      "changes": [
+        {
+          "key": "0x515216935740e67dfdda5cf8e248ea32b3277787818ab59153061ac875c9385e",
+          "before": "0x00000000000000000000000022d12e0faebd62d429514a65ebae32dd316c12d6",
+          "after": "0x000000000000000000000000b686f13aff1e427a1f993f29ab0f2e7383729fe0",
+          "description": "Update address of L1CrossDomainMessenger to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000018",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x01642271b9978916cc059c2188b11d6da93e6a7b4f6eee43ab5bd2848320c4f1",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets the approval hash for this U17 upgrade transaction.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Mainnet",
+      "address": "0x9c4a57feb77e294fd7bf5ebe9ab01caa0a90a110",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
