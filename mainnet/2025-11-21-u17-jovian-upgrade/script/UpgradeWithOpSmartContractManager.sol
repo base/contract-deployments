@@ -15,7 +15,6 @@ import {
 } from "@eth-optimism-bedrock/interfaces/L1/IOPContractsManager.sol";
 
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-
 import {MultisigScript} from "./MultisigScript.sol";
 
 /// @notice This script deploys new versions of OP contracts using the OP Contract Manager.

@@ -1,5 +1,14 @@
 #### Execute the transaction
 
+## 1. Update repo:
+
+```bash
+cd contract-deployments
+git pull
+cd mainnet/2025-11-21-u17-jovian-upgrade
+make deps
+```
+
 1. IMPORTANT: Ensure op-challenger has been updated before executing.
 1. Collect outputs from all participating signers.
 1. Concatenate all signatures and export it as the `SIGNATURES`
@@ -36,6 +45,8 @@ SIGNATURES=AAAABBBBCCCC make approve-cb
 ```bash
 SIGNATURES=AAAABBBBCCCC make approve-cb-sc
 ```
+
+Optimism facilitator:
 
 ```bash
 SIGNATURES=AAAABBBBCCCC make approve-op
