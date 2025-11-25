@@ -179,7 +179,7 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 This template is used to switch Base to a Permissioned Game.
 
 1. Ensure you have followed the instructions above in `setup`.
-1. Run `mmake setup-switch-to-permissioned-game network=<network>` and go to the folder that was created by this command.
+1. Run `make setup-switch-to-permissioned-game network=<network>` and go to the folder that was created by this command.
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
 1. Run `make deps`.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.

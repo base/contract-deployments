@@ -16,11 +16,11 @@ gen-validation: checkout-signer-tool run-script
 
 .PHONY: run-script
 run-script:
-	cd $(SIGNER_TOOL_PATH); \
 	mkdir validations; \
+	cd $(SIGNER_TOOL_PATH); \
 	npm ci; \
-	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
-	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
+	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
+	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" ["$(OP_SECURITY_COUNCIL_SAFE)"] --sender $(SENDER)' --out ../validations/op-signer.json;
 
 .PHONY: approve-op

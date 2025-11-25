@@ -46,3 +46,6 @@ make sign-task
 ### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
 ### 4. Send signature to facilitator
+
+You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.
+

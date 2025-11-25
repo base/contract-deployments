@@ -13,9 +13,6 @@ import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 
 /// @notice This script updates the respectedGameType and retires existing games in the AnchorStateRegistry.
 contract SwitchToPermissionedGame is MultisigScript {
-    // TODO: Confirm expected version
-    string public constant EXPECTED_VERSION = "1.4.1";
-
     address public immutable OWNER_SAFE;
 
     SystemConfig internal immutable _SYSTEM_CONFIG = SystemConfig(vm.envAddress("SYSTEM_CONFIG"));
