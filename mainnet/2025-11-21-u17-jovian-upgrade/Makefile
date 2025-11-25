@@ -31,7 +31,7 @@ run-script-cb:
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_NESTED_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50' --out ../validations/cb-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_NESTED_SAFE_ADDR),$(CB_SIGNER_SAFE_ADDR)]" --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50' --out ../validations/coinbase-signer.json;
 
 
 .PHONY: gen-validation-cb-sc
@@ -43,7 +43,7 @@ run-script-cb-sc:
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SC_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6' --out ../validations/cb-sc-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SC_SAFE_ADDR),$(CB_SIGNER_SAFE_ADDR)]" --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6' --out ../validations/base-security-council-signer.json;
 
 .PHONY: gen-validation-op
 gen-validation-op: checkout-signer-tool run-script-op
@@ -54,7 +54,7 @@ run-script-op:
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(OP_SIGNER_SAFE_ADDR)]" --sender 0x42d27eEA1AD6e22Af6284F609847CB3Cd56B9c64' --out ../validations/op-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(OP_SIGNER_SAFE_ADDR)]" --sender 0x42d27eEA1AD6e22Af6284F609847CB3Cd56B9c64' --out ../validations/optimism-signer.json;
 
 
 # CB

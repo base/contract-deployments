@@ -15,18 +15,8 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Override the threshold to 1 so the transaction simulation can occur."
-        }
-      ]
-    },
-    {
-      "name": "Superchain Config - Mainnet",
-      "address": "0x95703e0982140d16f8eba6d158fccede42f04a4c",
-      "overrides": [
-        {
-          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-          "value": "0x000000000000000000000000b08cc720f511062537ca78bdb0ae691f04f5a957",
-          "description": "Override the SuperchainConfig implementation address so the version is the U17 expected version."
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
         }
       ]
     },
@@ -37,12 +27,14 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Override the threshold to 1 so the transaction simulation can occur."
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
         },
         {
           "key": "0x0c3a0d2f6b87b30ec81565f13e420b1a13506a18c0f35bdf7dedb7457048668d",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
         }
       ]
     }
