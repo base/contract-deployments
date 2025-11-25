@@ -8,6 +8,7 @@ SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-management
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
+SWITCH_TO_PERMISSIONED_GAME_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game
 
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
@@ -17,6 +18,7 @@ TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
 TEMPLATE_FUNDING = setup-templates/template-funding
 TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
 TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
+TEMPLATE_SWITCH_TO_PERMISSIONED_GAME = setup-templates/template-switch-to-permissioned-game
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
@@ -69,6 +71,10 @@ setup-bridge-partner-threshold:
 setup-bridge-pause:
 	rm -rf $(TEMPLATE_PAUSE_BRIDGE_BASE)/cache $(TEMPLATE_PAUSE_BRIDGE_BASE)/lib $(TEMPLATE_PAUSE_BRIDGE_BASE)/out
 	cp -r $(TEMPLATE_PAUSE_BRIDGE_BASE) $(PAUSE_BRIDGE_BASE_DIR)
+
+setup-switch-to-permissioned-game:
+	rm -rf $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/cache $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/lib $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/out
+	cp -r $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME) $(SWITCH_TO_PERMISSIONED_GAME_DIR)
 
 ##
 # Solidity Setup
