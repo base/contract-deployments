@@ -1,10 +1,10 @@
 # Signers Update MCM 1
 
-Status: PENDING
+Status: [EXECUTED](https://explorer.solana.com/tx/3Hch6HsfACH5HBSVJJH8LTPLvE8y8oEkwBgDkBMAWFuUx3YJNzzP2pNtMy2Q5k5HStxeUUFvhtVKezmT5ZTnFqqf?cluster=mainnet)
 
 ## Description
 
-This task updates the signers configuration for a Multi-Chain Multisig (MCM) instance. This includes adding or removing signers, modifying signer groups, adjusting group quorums, and updating group parent relationships.
+This task initializes the signers configuration of the multisig `0x0000000000000000000000000000000000000000000000000000000000000001` managed by the MCM program.
 
 ## Procedure for Signers
 

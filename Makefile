@@ -2,8 +2,9 @@ FOUNDRY_COMMIT ?= 3b1129b5bc43ba22a9bcf4e4323c5a9df0023140
 
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
+GAS_AND_ELASTICITY_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-and-elasticity-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
-SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-swap-owner
+SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-management
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
@@ -11,6 +12,7 @@ SWITCH_TO_PERMISSIONED_GAME_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-p
 
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
+TEMPLATE_GAS_AND_ELASTICITY_INCREASE = setup-templates/template-gas-and-elasticity-increase
 TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
 TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
 TEMPLATE_FUNDING = setup-templates/template-funding
@@ -40,6 +42,11 @@ setup-task:
 setup-gas-increase:
 	rm -rf $(TEMPLATE_GAS_INCREASE)/cache $(TEMPLATE_GAS_INCREASE)/lib $(TEMPLATE_GAS_INCREASE)/out
 	cp -r $(TEMPLATE_GAS_INCREASE) $(GAS_INCREASE_DIR)
+
+# Run `make setup-gas-increase network=<network>`
+setup-gas-and-elasticity-increase:
+	rm -rf $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/cache $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/lib $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/out
+	cp -r $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE) $(GAS_AND_ELASTICITY_INCREASE_DIR)
 
 # Run `make setup-upgrade-fault-proofs network=<network>`
 setup-upgrade-fault-proofs:
@@ -118,7 +125,7 @@ checkout-base-contracts-commit:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=63df22556bb41f6a1fd14f90da2809a7c4e5fe8a
+SIGNER_TOOL_COMMIT=2ef56d9342285d7e62d0fe5564146bbb55312b1b
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool

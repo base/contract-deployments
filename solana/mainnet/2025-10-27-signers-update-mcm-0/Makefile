@@ -3,6 +3,8 @@ include .env
 
 include ../../Makefile
 
+LEDGER_ACCOUNT=1
+
 ##
 # MCM Signers Update Workflow
 ##
