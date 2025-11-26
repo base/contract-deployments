@@ -1,6 +1,6 @@
 # Bridge Mainnet Deployment
 
-Status: PENDING
+Status: EXECUTED
 
 ## Overview
 
