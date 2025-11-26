@@ -7,13 +7,11 @@ Deploys the Base side of [Base Bridge](https://github.com/base/bridge). This sho
 1. Install dependencies
 
 ```bash
-cd mainnet/2025-10-07-base-bridge-deployment
+cd mainnet/2025-11-25-base-bridge-deployment
 make deps
 ```
 
-2. Connect and unlock Ledger
-
-3. Deploy bridge
+2. Deploy bridge
 
 ```bash
 make deploy
