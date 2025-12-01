@@ -1,0 +1,85 @@
+{
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net TransferSystemConfigOwnership --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xf8df46555f836aa7d1632c882d341c68c4f2e5f20370eb434d93e5a80d4bdcfd"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
+      "overrides": [
+        {
+          "key": "0x50802de4ab88257d6c2cb03080dbb6152422f32e00499b4a194124c931043278",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x7453d0240b1463220c6a32fe42d09c5fac86fc4ceba53bd206c0f6f4491d2cd5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Marks the Proxy Admin Owner Safe's approval hash for this transaction.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000033",
+          "before": "0x0000000000000000000000000fe884546476ddd290ec46318785046ef68a0ba9",
+          "after": "0x0000000000000000000000005dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+          "description": "Transfers SystemConfig ownership to the CB Incident Multisig Safe.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
