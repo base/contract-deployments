@@ -1,0 +1,21 @@
+diff --git a/solana/programs/bridge/src/lib.rs b/solana/programs/bridge/src/lib.rs
+index 70cb385..9a267aa 100644
+--- a/solana/programs/bridge/src/lib.rs
++++ b/solana/programs/bridge/src/lib.rs
+@@ -572,4 +572,16 @@ pub mod bridge {
+     ) -> Result<()> {
+         set_partner_config_handler(ctx, new_config)
+     }
++
++    #[derive(Accounts)]
++    pub struct Ping {}
++
++    /// This function does nothing and is only used to test our ability to upgrade the program
++    ///
++    /// # Arguments
++    /// * `ctx` - The context containing the bridge account
++    pub fn ping(_ctx: Context<Ping>) -> Result<()> {
++        msg!("Pong");
++        Ok(())
++    }
+ }
