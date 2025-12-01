@@ -32,7 +32,7 @@ step1-clone-bridge:
 	@ git clone --filter=blob:none $(BRIDGE_REPO) bridge
 	@ cd bridge && \
 		git checkout $(BRIDGE_COMMIT) && \
-		git apply ../$(PING_PATCH)
+		git apply ../$(UPGRADE_PATCH)
 	@ cd bridge/clients/ts && \
 		bun install && \
 		bun run build
