@@ -66,7 +66,7 @@ Check the proposal metadata in `proposal.json`:
 ### 4. Sign the proposal
 
 ```bash
-make sign
+make sign-pause
 ```
 
 This command will:

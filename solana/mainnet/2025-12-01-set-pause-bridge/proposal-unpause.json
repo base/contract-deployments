@@ -4,7 +4,7 @@
   "instructions": [
     {
       "programId": "HNCne2FkVaNghhjKXapxJzPaBvAKDG1Ge3gqhZyfVWLM",
-      "data": "dhmR2XLR7JEB",
+      "data": "dhmR2XLR7JEA",
       "accounts": [
         {
           "pubkey": "DMtzswCcRcsMmJasgHTNZcBHZvdBkrBe248CBdEXxpJm",
@@ -22,8 +22,8 @@
   "rootMetadata": {
     "chainId": 1,
     "multisig": "HRVcZrV3SvFy3LTj7GXWjd8RT4KrkUMFbc8EUjcsyU6F",
-    "preOpCount": 6,
-    "postOpCount": 7,
+    "preOpCount": 5,
+    "postOpCount": 6,
     "overridePreviousRoot": true
   }
 }
