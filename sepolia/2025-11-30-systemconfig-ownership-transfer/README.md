@@ -4,9 +4,9 @@ Status: READY TO SIGN
 
 ## Description
 
-This task transfer ownership of the Sepolia `SystemConfig` to the incident multisig.
+This task transfers ownership of the Sepolia `SystemConfig` to the incident multisig.
 
-The SystemConfig (`0xf272670eb55e895584501d564AfEB048bEd26194`) is currently owned by `0x0fe884546476dDd290eC46318785046ef68a0BA9` which has the double-nested ownership structure. On Mainnet, this ownership is just the incident multisig directly, which results in inconsistent task structures between Sepolia and Mainnet. This is solved in this task by calling `transferOwnership` to set the new owner to `0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f`.
+The SystemConfig (`0xf272670eb55e895584501d564AfEB048bEd26194`) is currently owned by `0x0fe884546476dDd290eC46318785046ef68a0BA9` which has a double-nested ownership structure. On Mainnet, this ownership is just the incident multisig directly, which results in inconsistent task structures between Sepolia and Mainnet. This is solved in this task by calling `transferOwnership` to set the new owner to `0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f`.
 
 ## Procedure
 
