@@ -132,7 +132,7 @@ sign:
 
 # Step 12: Register proposal (signatures + set-root)
 .PHONY: step12-register-proposal
-step10-register-proposal:
+step12-register-proposal:
 	@echo "==> Step 12: Registering MCM proposal..."
 	@make mcm-signatures-all
 	@make mcm-proposal-set-root
@@ -145,7 +145,7 @@ step13-execute-upgrade:
 	@mv artifacts/mcm-proposal-execute.json artifacts/mcm-upgrade-execute.json
 
 # Step 14: Execute rollback
-.PHONY: step12-execute-rollback
+.PHONY: step14-execute-rollback
 step14-execute-rollback:
 	@echo "==> Step 14: Executing rollback..."
 	@make mcm-proposal-execute MCM_START_INDEX=1 MCM_OPERATION_COUNT=1

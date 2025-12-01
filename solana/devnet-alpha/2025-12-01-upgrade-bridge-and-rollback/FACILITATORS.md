@@ -36,6 +36,7 @@ Set the following in `.env`:
 ```bash
 BRIDGE_REPO=<bridge-repo-url>
 BRIDGE_COMMIT=<commit-hash>
+UPGRADE_PATCH=patches/upgrade.patch
 ```
 
 Then run:
@@ -48,15 +49,16 @@ This will:
 - Remove any existing `bridge` directory
 - Clone the bridge repository
 - Checkout the specified commit
-- Apply the patch from `patch/ping.patch`
+- Apply the patch from `patches/upgrade.patch`
+- Install and build TypeScript clients
 
-### 1.2. Build the bridge program
+### 1.2. Build the bridge programs
 
 ```bash
-make step2-build-program
+make step2-build-programs
 ```
 
-This builds the bridge program using `cargo-build-sbf`. The compiled binary will be in `bridge/solana/target/deploy/bridge.so`.
+This builds the bridge programs. The compiled binary will be in `bridge/solana/target/deploy/bridge.so`.
 
 ### 1.3. Write program buffer
 
@@ -146,7 +148,7 @@ ROLLBACK_BUFFER=<rollback-buffer-address-from-output>
 ### 2.3. Transfer rollback buffer authority to MCM
 
 ```bash
-make step7b-transfer-rollback-buffer
+make step8-transfer-rollback-buffer
 ```
 
 Copy the transaction signature from the output.
@@ -162,7 +164,7 @@ SET_ROLLBACK_BUFFER_AUTHORITY_SIGNATURE=<transaction-signature>
 Then generate the artifacts:
 
 ```bash
-make step7c-generate-rollback-buffer-artifacts
+make step9-generate-rollback-buffer-artifacts
 ```
 
 This creates `artifacts/set-rollback-buffer-authority-artifacts.json`.
@@ -191,7 +193,7 @@ SPILL=<your-wallet-address>
 ### 3.2. Create merged proposal
 
 ```bash
-make step8-create-proposal
+make step10-create-proposal
 ```
 
 This creates `proposal.json` containing two instructions:
@@ -233,7 +235,7 @@ AUTHORITY=<your-wallet-keypair-path>
 ### 5.2. Register the proposal
 
 ```bash
-make step10-register-proposal
+make step12-register-proposal
 ```
 
 This command:
@@ -245,7 +247,7 @@ This command:
 ### 5.3. Execute the upgrade
 
 ```bash
-make step11-execute-upgrade
+make step13-execute-upgrade
 ```
 
 This executes instruction 0 (upgrade to patched version).
@@ -255,7 +257,7 @@ This executes instruction 0 (upgrade to patched version).
 If you need to rollback to the original version:
 
 ```bash
-make step12-execute-rollback
+make step14-execute-rollback
 ```
 
 This executes instruction 1 (rollback to original version).

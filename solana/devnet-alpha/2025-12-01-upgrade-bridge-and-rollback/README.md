@@ -1,6 +1,8 @@
 # Upgrade Bridge Program with Rollback
 
-Status: PENDING
+Status: [EXECUTED](https://explorer.solana.com/tx/556YG2KpCEMNpv4Vf82nNXt9sE3rT2ZMnRs4HXqsxmGXx76GXB7Whw4T87fTU8Q8SdePyYzjhGFb1mknX1x9jwcR?cluster=devnet)
+
+Rollback: https://explorer.solana.com/tx/XPaLXUaHRVqvhjg4fhXLp3Cdz36dQPZ6M8iBM6r2F23qReEkKasZWmBJHdm5zw42FRtn64kpC7YbVtjj3GGmdAy?cluster=devnet
 
 ## Description
 
