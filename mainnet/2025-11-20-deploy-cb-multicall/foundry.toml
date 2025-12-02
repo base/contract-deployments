@@ -7,6 +7,7 @@ fs_permissions = [{ access = "read-write", path = "./" }]
 optimizer = true
 optimizer_runs = 999999
 solc_version = "0.8.15"
+evm_version = "prague"
 via-ir = false
 remappings = [
     '@eth-optimism-bedrock/=lib/optimism/packages/contracts-bedrock/',

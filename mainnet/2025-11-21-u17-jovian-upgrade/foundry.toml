@@ -5,8 +5,7 @@ libs = ['lib']
 broadcast = 'records'
 fs_permissions = [{ access = "read-write", path = "./" }]
 optimizer = true
-optimizer_runs = 999999
-solc_version = "0.8.15"
+optimizer_runs = 200
 via-ir = false
 remappings = [
     '@eth-optimism-bedrock/=lib/optimism/packages/contracts-bedrock/',
@@ -15,6 +14,13 @@ remappings = [
     '@rari-capital/solmate/=lib/solmate/',
     '@base-contracts/=lib/base-contracts',
     'solady/=lib/solady/src/',
+    '@lib-keccak/=lib/lib-keccak/contracts/lib',
+    "interfaces/=lib/optimism/packages/contracts-bedrock/interfaces",
+    "src/dispute/=lib/optimism/packages/contracts-bedrock/src/dispute",
+    "src/libraries/=lib/optimism/packages/contracts-bedrock/src/libraries",
+    "src/cannon/=lib/optimism/packages/contracts-bedrock/src/cannon",
+    "src/L1/=lib/optimism/packages/contracts-bedrock/src/L1",
+    "scripts/=lib/optimism/packages/contracts-bedrock/scripts",
 ]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

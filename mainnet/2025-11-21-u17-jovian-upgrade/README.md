@@ -1,15 +1,12 @@
-# Set Jovian Parameters on Base Sepolia
+# U17 Jovian Upgrade
 
-Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x153186609185f8d67714bbbf512b01a17bba4c217e59792e575845a78dc186bf)
+Status: [EXECUTED](https://etherscan.io/tx/0x9b9aa2d8e857e1a28e55b124e931eac706b3ae04c1b33ba949f0366359860993)
 
 ## Description
 
-This task sets the Jovian hardfork parameters on Base Sepolia's SystemConfig contract. The parameters being set are:
+The Jovian hardfork is a proposed network upgrade for OP Stack chains, which brings several improvements to the way rollup fees are calculated as well as performing a maintenance update to the fault proof virtual machine. [More Details](https://docs.optimism.io/notices/upgrade-17).
 
-- `setDAFootprintGasScalar(312)` - Sets the data availability footprint gas scalar
-- `setMinBaseFee(200000)` - Sets the minimum base fee
-
-These parameters activate with the Jovian hardfork and affect data availability fee calculations and base fee management on the L2.
+This script executes the `upgrade` function of the OP Contracts Manager to upgrade all relevant contracts.
 
 ## Procedure
 

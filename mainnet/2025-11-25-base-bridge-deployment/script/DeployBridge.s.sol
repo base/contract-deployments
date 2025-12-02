@@ -15,6 +15,7 @@ import {Bridge} from "bridge/Bridge.sol";
 import {BridgeValidator} from "bridge/BridgeValidator.sol";
 import {CrossChainERC20} from "bridge/CrossChainERC20.sol";
 import {CrossChainERC20Factory} from "bridge/CrossChainERC20Factory.sol";
+import {TokenLib} from "bridge/libraries/TokenLib.sol";
 import {Twin} from "bridge/Twin.sol";
 
 struct Cfg {
@@ -153,7 +154,7 @@ contract DeployBridge is Script {
         require(LibString.eq(CrossChainERC20(sol).name(), "Solana"), "PC18: incorrect SOL name");
         require(LibString.eq(CrossChainERC20(sol).symbol(), "SOL"), "PC19: incorrect SOL symbol");
         require(
-            CrossChainERC20(sol).remoteToken() == CrossChainERC20Factory(factory).SOL_PUBKEY(),
+            CrossChainERC20(sol).remoteToken() == Pubkey.unwrap(TokenLib.NATIVE_SOL_PUBKEY),
             "PC20: incorrect SOL remote token"
         );
         require(CrossChainERC20(sol).decimals() == 9, "PC21: incorrect SOL decimals");
@@ -178,13 +179,15 @@ contract DeployBridge is Script {
         address bridgeValidatorImpl =
             address(new BridgeValidator({bridgeAddress: bridge, partnerValidators: cfg.partnerValidators}));
 
-        return ERC1967Factory(cfg.erc1967Factory).deployAndCall({
-            implementation: bridgeValidatorImpl,
-            admin: cfg.initialOwner,
-            data: abi.encodeCall(
-                BridgeValidator.initialize, (cfg.baseValidators, cfg.baseSignatureThreshold, cfg.partnerValidatorThreshold)
-            )
-        });
+        return ERC1967Factory(cfg.erc1967Factory)
+            .deployAndCall({
+                implementation: bridgeValidatorImpl,
+                admin: cfg.initialOwner,
+                data: abi.encodeCall(
+                    BridgeValidator.initialize,
+                    (cfg.baseValidators, cfg.baseSignatureThreshold, cfg.partnerValidatorThreshold)
+                )
+            });
     }
 
     function _deployBridge(address twinBeacon, address crossChainErc20Factory, address bridgeValidator)
@@ -198,29 +201,27 @@ contract DeployBridge is Script {
             bridgeValidator: bridgeValidator
         });
 
-        return ERC1967Factory(cfg.erc1967Factory).deployDeterministicAndCall({
-            implementation: address(bridgeImpl),
-            admin: cfg.initialOwner,
-            salt: _salt(),
-            data: abi.encodeCall(Bridge.initialize, (cfg.initialOwner, cfg.guardians))
-        });
+        return ERC1967Factory(cfg.erc1967Factory)
+            .deployDeterministicAndCall({
+                implementation: address(bridgeImpl),
+                admin: cfg.initialOwner,
+                salt: _salt(),
+                data: abi.encodeCall(Bridge.initialize, (cfg.initialOwner, cfg.guardians))
+            });
     }
 
     function _deployRelayerOrchestrator(address bridge, address bridgeValidator) private returns (address) {
         address relayerOrchestratorImpl =
             address(new RelayerOrchestrator({bridge: bridge, bridgeValidator: bridgeValidator}));
 
-        return ERC1967Factory(cfg.erc1967Factory).deploy({
-            implementation: relayerOrchestratorImpl,
-            admin: cfg.initialOwner
-        });
+        return
+            ERC1967Factory(cfg.erc1967Factory)
+                .deploy({implementation: relayerOrchestratorImpl, admin: cfg.initialOwner});
     }
 
     function _serializeAddress(string memory key, address value) private {
         vm.writeJson({
-            json: LibString.toHexStringChecksummed(value),
-            path: "addresses.json",
-            valueKey: string.concat(".", key)
+            json: LibString.toHexStringChecksummed(value), path: "addresses.json", valueKey: string.concat(".", key)
         });
     }
 

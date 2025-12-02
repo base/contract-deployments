@@ -41,8 +41,10 @@ To execute a new task, run one of the following commands (depending on the type 
 - For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
+- For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
+- For switching to a permissioned game and retiring dispute games: `make setup-switch-to-permissioned-game network=<network>`
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
@@ -129,17 +131,19 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 1. Check in the task when it's ready to sign and collect signatures from signers
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
-## Using the swap owner template
+## Using the safe management template
 
-This template is used to perform ownership management on a Gnosis Safe multisig, specifically it can swap owners on the multisig.
+This template is used to perform ownership management on a Gnosis Safe, like the incident multisig, specifically it can be used to change the owners of the multisig.
 
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-safe-management network=<network>` and go to the folder that was created by this command.
+1. Ensure you have followed the instructions above in `setup`, including running `make setup-safe-management network=<network>` and go to the folder that was created by this command.
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced, the `OLD_SIGNER` (current owner) to remove, and the `NEW_SIGNER` (new owner) to be added in the `.env` file.
+1. Enter the directory that was generated for the task (in the first step) and then run `make deps`.
+1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced and the `SENDER` which should be the address of a current signer of the multisig.
+1. Fill in the `OwnerDiff.json` inside the task's directory with the addresses to add to, and remove from, the multisig in their respective fields.
+1. Ensure that the `EXISTING_OWNERS_LENGTH` constant value inside the `script/UpdateSigners.s.sol` script is set appropriately, in particular that it equals the exact number of current members of the Incident Multisig Safe (prior to running the task).
 1. Build the contracts with `forge build`.
-1. Simulate the task with `make sign` and update the generic validations in `VALIDATION.md` with the real values.
+1. Generate the validation file for signers with `make gen-validation`.
+1. Double check the `cmd` field at the top of the generated validation file at `validations/base-signer.json` and ensure that the value passed to the `--sender` flag matches the `SENDER` env var already defined in the `.env` file.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
@@ -185,6 +189,20 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Set the `IS_PAUSED` variable to `true` or `false` in the `.env` file depending on if you intend to pause or unpause the bridge.
 1. Ensure the `--sender` flag in the `make gen-validation` command in the `Makefile` file is set to a signer for `OWNER_SAFE` in `.env`.
+1. Build the contracts with `forge build`.
+1. Generate the validation file for signers with `make gen-validation`.
+1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
+1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+
+## Using the Switch to Permissioned Game template
+
+This template is used to switch Base to a Permissioned Game.
+
+1. Ensure you have followed the instructions above in `setup`.
+1. Run `make setup-switch-to-permissioned-game network=<network>` and go to the folder that was created by this command.
+1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Run `make deps`.
+1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Build the contracts with `forge build`.
 1. Generate the validation file for signers with `make gen-validation`.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.

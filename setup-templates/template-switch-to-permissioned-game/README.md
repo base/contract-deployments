@@ -1,10 +1,10 @@
-# Update Sepolia Incident Multisig Signers
+# Switch to Permissioned Games
 
-Status: TODO[READY TO SIGN|EXECUTED]
+Status: READY TO SIGN
 
 ## Description
 
-We wish to update the owners of our Incident Multisig to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
+Switches Base to Permissioned Fault Dispute Games and retires existing games.
 
 ## Install dependencies
 
@@ -28,7 +28,7 @@ If you see a version output from the above command, you can move on. Otherwise, 
 brew install node
 ```
 
-## Approving Signers Update
+## Sign Task
 
 ### 1. Update repo:
 
@@ -45,8 +45,7 @@ make sign-task
 
 ### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-Be sure to select the correct task from the list of available tasks to sign.
-
 ### 4. Send signature to facilitator
 
 You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.
+
