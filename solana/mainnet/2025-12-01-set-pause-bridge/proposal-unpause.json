@@ -1,6 +1,6 @@
 {
   "multisigId": "0x0000000000000000000000000000000000000000000000000000000000000001",
-  "validUntil": 1796184393,
+  "validUntil": 2080184806,
   "instructions": [
     {
       "programId": "HNCne2FkVaNghhjKXapxJzPaBvAKDG1Ge3gqhZyfVWLM",
@@ -22,8 +22,8 @@
   "rootMetadata": {
     "chainId": 1,
     "multisig": "HRVcZrV3SvFy3LTj7GXWjd8RT4KrkUMFbc8EUjcsyU6F",
-    "preOpCount": 5,
-    "postOpCount": 6,
+    "preOpCount": 6,
+    "postOpCount": 7,
     "overridePreviousRoot": true
   }
 }
