@@ -102,7 +102,11 @@ MCM_SIGNATURES_COUNT=<number-of-signatures>
 MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
 ```
 
-### 3.4. Execute
+### 3.4. Add keypair
+
+Add funded keypair to `./keypairs/tester.json` or update the `AUTHORITY` env variable in `.env` to a path for a funded keypair.
+
+### 3.5. Execute
 
 Run the execution command for the desired action, providing the current nonce. This will update the proposal file to match the chain state and execute it.
 
