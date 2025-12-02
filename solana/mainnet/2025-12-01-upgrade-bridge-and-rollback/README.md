@@ -1,6 +1,8 @@
 # Upgrade Bridge Program with Rollback
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://explorer.solana.com/tx/4MWawPNfUuMquXpjjDJ8pQQ7tXrifUCQP9d96BJfJeasAGtMMmSUWK6aJJQZ2GJ5MEKvaeZBjxEwfw49YX7jaFso?cluster=mainnet)
+
+Rollback: https://explorer.solana.com/tx/3GJBmZeg4UiZSZCzjnpAUN8o7zLCbpXUuPWvvpEd5meUX1D9bjrYmYJ5ST1Qk5zDYoi7uszVTH5U7CNnxroieMc?cluster=mainnet
 
 ## Description
 
