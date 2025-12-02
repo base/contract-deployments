@@ -41,3 +41,18 @@ sign-unpause:
 		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 		--sig "sign(address[])" "[]" --sender $(SENDER); \
 	done
+
+# Execute
+.PHONY: execute-pause
+execute-pause:
+	IS_PAUSED=true forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
+
+.PHONY: execute-unpause
+execute-unpause:
+	IS_PAUSED=false forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
+
+.PHONY: check-status
+check-status:
+	cast call $(L2_BRIDGE) "paused()" --rpc-url $(L2_RPC_URL)
