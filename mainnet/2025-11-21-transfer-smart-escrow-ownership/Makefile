@@ -28,7 +28,7 @@ run-script-cb:
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--ledger-id $(LEDGER_ACCOUNT) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SIGNER_SAFE_ADDR)]" --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50' --out ../validations/cb-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SIGNER_SAFE_ADDR)]" --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50' --out ../validations/coinbase-signer.json;
 
 .PHONY: gen-validation-op
 gen-validation-op: checkout-signer-tool run-script-op
@@ -40,7 +40,7 @@ run-script-op:
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--ledger-id $(LEDGER_ACCOUNT) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(OP_SIGNER_SAFE_ADDR)]" --sender 0x4d494C5F61b60752D3A10062276a0eFC22596151' --out ../validations/op-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(OP_SIGNER_SAFE_ADDR)]" --sender 0x4d494C5F61b60752D3A10062276a0eFC22596151' --out ../validations/optimism-signer.json;
 
 .PHONY: approve-cb
 approve-cb:
