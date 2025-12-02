@@ -21,6 +21,13 @@ mcm-multisig-print-authority:
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--multisig-id $(MCM_MULTISIG_ID)
 
+.PHONY: mcm-multisig-print-status
+mcm-multisig-print-status:
+	mcmctl multisig print-status \
+		--rpc-url $(SOL_RPC_URL) \
+		--mcm-program-id $(MCM_PROGRAM_ID) \
+		--multisig-id $(MCM_MULTISIG_ID)
+
 .PHONY: mcm-signers-print-config
 mcm-signers-print-config:
 	mcmctl signers print-config \

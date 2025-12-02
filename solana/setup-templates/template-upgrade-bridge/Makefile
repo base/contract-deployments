@@ -31,14 +31,27 @@ step1-clone-bridge:
 	@ rm -rf bridge
 	@ git clone --filter=blob:none $(BRIDGE_REPO) bridge
 	@ cd bridge && \
-		git checkout $(BRIDGE_COMMIT) 
+		git checkout $(BRIDGE_COMMIT)
+	@ cd bridge/clients/ts && \
+		bun install && \
+		bun run build
+	@ cd bridge/scripts && \
+		bun install
 
-# Step 2: Build the bridge program
-.PHONY: step2-build-program
-step2-build-program:
-	@echo "==> Step 2: Building bridge program..."
-	@ cd bridge/solana && \
-		cargo-build-sbf
+# Step 2: Build the bridge programs
+.PHONY: step2-build-programs
+step2-build-programs:
+	@echo "==> Step 2: Building bridge programs..."
+	mkdir -p bridge/solana/target/deploy && \
+		cp $(BRIDGE_KEYPAIR) bridge/solana/target/deploy/bridge-keypair.json && \
+		cp $(BASE_RELAYER_KEYPAIR) bridge/solana/target/deploy/base_relayer-keypair.json && \
+	cd bridge/solana && \
+		anchor keys sync
+	cd bridge/scripts && \
+		bun cli sol build \
+		--deploy-env $(DEPLOY_ENV) \
+		--bridge-program-kp ../../$(BRIDGE_KEYPAIR) \
+		--base-relayer-program-kp ../../$(BASE_RELAYER_KEYPAIR)
 
 # Step 3: Write program buffer
 .PHONY: step3-write-buffer
