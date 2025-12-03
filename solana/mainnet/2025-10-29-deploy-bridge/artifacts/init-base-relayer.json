@@ -1,0 +1,94 @@
+{
+  "confirmationStatus": "confirmed",
+  "transaction": {
+    "signatures": [
+      "3mRjUQ4BhDVmMcvP1EEXNSa3kJKe8ttEhWvtm2yuxuY1KBWcTQRnTQFZfwau7TP22rx1eN9AZbG5tCQdYfcPqmzk"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 3
+      },
+      "accountKeys": [
+        "8QPwJM6D6eGf21Y3zFfdSSD5vcp6FVKsBaXacM3wCewp",
+        "B1viAe1PP7ihqQbDEmjKPZsrZDFNDCjvTPAwKbZQVqqi",
+        "11111111111111111111111111111111",
+        "7hzCQRKSQszgRHY6erLBDcLJQJWutMGNprn5VzKwAzYQ",
+        "g1et5VenhfJHJwsdJsDbxWZuotD5H4iELNG61kS4fb9"
+      ],
+      "recentBlockhash": "G5CoyueNyfuz5auonkVvyrBrtX4xpqv7rSz36VUirX2J",
+      "instructions": [
+        {
+          "programIdIndex": 4,
+          "accounts": [
+            0,
+            0,
+            1,
+            3,
+            4,
+            2
+          ],
+          "data": "EGobdm29j93SGg32jhwCTa3DjCZUkqM49femCXY5o9XMY3d4M4sKSxCsPqeEnpANpZkFKNw5WuV2XLG4SLafyQH38rdHU7DsPFQuQeeWqiWPZZCZka33afCFF927xn6BKq4tYZ9bDKEdfU8B2fr4JxC6toDQFzenQGqxX5yVQwSZz3GXE8yBmeKexz",
+          "stackHeight": null
+        }
+      ],
+      "addressTableLookups": []
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      9016369904,
+      0,
+      1,
+      2098391280,
+      1141440
+    ],
+    "postBalances": [
+      9014304744,
+      2060160,
+      1,
+      2098391280,
+      1141440
+    ],
+    "innerInstructions": [
+      {
+        "index": 0,
+        "instructions": [
+          {
+            "programIdIndex": 2,
+            "accounts": [
+              0,
+              1
+            ],
+            "data": "11115iFkVMXPaap7j41Z1pua1W6indKhmoyLC4E2dajkFSwB7pmsYj4q6dsMRbtw6Jp8zF",
+            "stackHeight": 2
+          }
+        ]
+      }
+    ],
+    "logMessages": [
+      "Program g1et5VenhfJHJwsdJsDbxWZuotD5H4iELNG61kS4fb9 invoke [1]",
+      "Program log: Instruction: Initialize",
+      "Program 11111111111111111111111111111111 invoke [2]",
+      "Program 11111111111111111111111111111111 success",
+      "Program g1et5VenhfJHJwsdJsDbxWZuotD5H4iELNG61kS4fb9 consumed 12870 of 200000 compute units",
+      "Program g1et5VenhfJHJwsdJsDbxWZuotD5H4iELNG61kS4fb9 success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 12870
+  },
+  "blockTime": 1764173585,
+  "slot": 382676332
+}

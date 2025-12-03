@@ -1,0 +1,79 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "PiuQG7yh9FEN9dbbsJVHDp6Hz8p2sqa6zm3wbLFtpKNQSYon78cQarWnv6aaggtYL7ZMGLkoQGoVn9ndoUZjYD1",
+      "k6aoADAQ82Hi8j5QGCR7iYU7bS4wiBbcGFJ2vVD5AbnhPxNxd6F2nmuTnJTRNH98etB6Tuat2dD1VSVeRfuYta9"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 2,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 2
+      },
+      "accountKeys": [
+        "8QPwJM6D6eGf21Y3zFfdSSD5vcp6FVKsBaXacM3wCewp",
+        "EoecJidHL2MribSmABMkxz5XTFAcMwkVwYbrpxUsTGoJ",
+        "11111111111111111111111111111111",
+        "BPFLoaderUpgradeab1e11111111111111111111111"
+      ],
+      "recentBlockhash": "72ErxaP11gFxi1FqFKMwvWhacNhvep3mtgFQxYd5gGkE",
+      "instructions": [
+        {
+          "programIdIndex": 2,
+          "accounts": [
+            0,
+            1
+          ],
+          "data": "11115958RSKhes9BK9ESGQ4fjbedBQshxLRmWqorMof4RAXMzmNsh5VA521YgtfqYXgmsd",
+          "stackHeight": null
+        },
+        {
+          "programIdIndex": 3,
+          "accounts": [
+            1,
+            0
+          ],
+          "data": "1111",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 10000,
+    "preBalances": [
+      25000000000,
+      0,
+      1,
+      1
+    ],
+    "postBalances": [
+      18265848960,
+      6734141040,
+      1,
+      1
+    ],
+    "innerInstructions": [],
+    "logMessages": [
+      "Program 11111111111111111111111111111111 invoke [1]",
+      "Program 11111111111111111111111111111111 success",
+      "Program BPFLoaderUpgradeab1e11111111111111111111111 invoke [1]",
+      "Program BPFLoaderUpgradeab1e11111111111111111111111 success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 2520
+  },
+  "blockTime": 1763404396,
+  "slot": 380729496
+}

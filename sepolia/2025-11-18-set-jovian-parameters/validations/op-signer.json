@@ -1,0 +1,90 @@
+{
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net SetJovianParametersScript --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x0CF2F86C3338993ce10F74d6f4B095712c7efe26",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xc8800a32719ca1c01589c0bfbac745a1c12df9d695611be793730ebc05bfd711"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur."
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
+      "overrides": [
+        {
+          "key": "0x1282d9c5734ef57ec21bd1b3cb2d2338c392145abc5b7d3f471a1aa90b07d789",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed."
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xa5855c998346b3e542ba91df8b8a8b17cf51c481a36485b6f7831bb3331db193",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Increment approvedHashes",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000012",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "changes": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000000000000000000000000000000000000000400000032",
+          "after": "0x0000000000000000000001380000000000000000000000000000000400000032",
+          "description": "Sets the DA Footprint Gas Scalar to 312 (0x0138)",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x000000000000000000000000c2be75506d5724086deb7245bd260cc9753911be",
+          "after": "0x000000000000000000030d40c2be75506d5724086deb7245bd260cc9753911be",
+          "description": "Sets the Min Base Fee to 200000 (0x030d40)",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

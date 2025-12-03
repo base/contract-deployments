@@ -21,6 +21,13 @@ mcm-multisig-print-authority:
 		--mcm-program-id $(MCM_PROGRAM_ID) \
 		--multisig-id $(MCM_MULTISIG_ID)
 
+.PHONY: mcm-multisig-print-status
+mcm-multisig-print-status:
+	mcmctl multisig print-status \
+		--rpc-url $(SOL_RPC_URL) \
+		--mcm-program-id $(MCM_PROGRAM_ID) \
+		--multisig-id $(MCM_MULTISIG_ID)
+
 .PHONY: mcm-signers-print-config
 mcm-signers-print-config:
 	mcmctl signers print-config \
@@ -260,6 +267,18 @@ mcm-proposal-bridge-pause:
 		--output $(MCM_PROPOSAL_OUTPUT) \
 		--bridge-program-id $(BRIDGE_PROGRAM_ID) \
 		$(if $(filter true,$(PAUSED)),--pause,--unpause)
+
+.PHONY: mcm-proposal-bridge-set-partner-oracle-config
+mcm-proposal-bridge-set-partner-oracle-config:
+	mcmctl proposal bridge set-partner-oracle-config \
+		--rpc-url $(SOL_RPC_URL) \
+		--mcm-program-id $(MCM_PROGRAM_ID) \
+		--multisig-id $(MCM_MULTISIG_ID) \
+		--valid-until $(MCM_VALID_UNTIL) \
+		$(if $(filter true,$(MCM_OVERRIDE_PREVIOUS_ROOT)),--override-previous-root) \
+		--output $(MCM_PROPOSAL_OUTPUT) \
+		--bridge-program-id $(BRIDGE_PROGRAM_ID) \
+		--required-threshold $(BRIDGE_PARTNER_ORACLE_REQUIRED_THRESHOLD)
 
 .PHONY: mcm-proposal-loader-v3-upgrade
 mcm-proposal-loader-v3-upgrade:
