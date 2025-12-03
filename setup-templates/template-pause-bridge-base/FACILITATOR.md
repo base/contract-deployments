@@ -1,8 +1,6 @@
-# Facilitator Guide
+#### Execute the transaction
 
-Guide for facilitators after collecting signatures from signers.
-
-### 1. Update repo:
+## 1. Update repo:
 
 ```bash
 cd contract-deployments

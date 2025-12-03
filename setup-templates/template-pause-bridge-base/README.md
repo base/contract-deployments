@@ -14,20 +14,6 @@ Pauses the Base side of [Base Bridge](https://github.com/base/bridge).
 foundryup
 ```
 
-### 2. Install Node.js if needed
-
-First, check if you have node installed
-
-```bash
-node --version
-```
-
-If you see a version output from the above command, you can move on. Otherwise, install node
-
-```bash
-brew install node
-```
-
 ## Sign Task
 
 ### 1. Update repo:
@@ -35,14 +21,20 @@ brew install node
 ```bash
 cd contract-deployments
 git pull
+cd <network>/<task-name>
+make deps
 ```
 
-### 2. Run the signing tool (NOTE: do not enter the task directory. Run this command from the project's root).
+### 2. Sign pause transactions
 
 ```bash
-make sign-task
+make sign-pause
 ```
 
-### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
+### 3. Sign unpause transactions
 
-### 4. Send signature to facilitator
+```bash
+make sign-unpause
+```
+
+### 4. Send all signatures to facilitator
