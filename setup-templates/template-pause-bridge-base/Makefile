@@ -26,22 +26,32 @@ run-script:
 
 .PHONY: sign-pause
 sign-pause:
+	@rm -f signatures-pause.txt
 	@for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
 		echo "Signing with nonce $$nonce"; \
 		IS_PAUSED=true SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-		--sig "sign(address[])" "[]" --sender $(SENDER); \
+		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		echo "Nonce: $$nonce" >> signatures-pause.txt; \
+		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-pause.txt || true; \
+		echo "" >> signatures-pause.txt; \
+		rm sign_output.tmp; \
 	done
 
 .PHONY: sign-unpause
 sign-unpause:
+	@rm -f signatures-unpause.txt
 	@for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
 		echo "Signing with nonce $$nonce"; \
 		IS_PAUSED=false SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-		--sig "sign(address[])" "[]" --sender $(SENDER); \
+		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		echo "Nonce: $$nonce" >> signatures-unpause.txt; \
+		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-unpause.txt || true; \
+		echo "" >> signatures-unpause.txt; \
+		rm sign_output.tmp; \
 	done
 
 # Execute
