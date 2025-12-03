@@ -194,12 +194,12 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
-## Using the Switch to Permissioned Game template
+## Using the Switch to Permissioned Game Retire/Blacklist template
 
 This template is used to switch Base to a Permissioned Game.
 
 1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-switch-to-permissioned-game network=<network>` and go to the folder that was created by this command.
+1. Run `make setup-switch-to-permissioned-game-<retire/blacklist> network=<network>` and go to the folder that was created by this command.
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
 1. Run `make deps`.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.

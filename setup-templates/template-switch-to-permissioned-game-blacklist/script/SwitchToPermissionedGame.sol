@@ -44,15 +44,17 @@ contract SwitchToPermissionedGame is MultisigScript {
 
         // Split by commas
         string[] memory parts = vm.split(RAW_ADDRESSES_TO_BLACKLIST, ",");
-        if (parts.length != 0) {
+
+        // vm.split("", ",") return [""] with size 1
+        if (parts.length == 0 || (parts.length == 1 && bytes(parts[0]).length == 0)) {
+            console.log("searching for addresses to blacklist");
+            getGamesToBlacklist(dgfProxy);
+        } else {
             console.log("using provided address_to_blacklist list");
             for (uint256 i; i < parts.length; i++) {
                 address address_to_blacklist = vm.parseAddress(parts[i]);
                 gamesToBlacklist.push(IDisputeGame(address_to_blacklist));
             }
-        } else {
-            console.log("searching for addresses to blacklist");
-            getGamesToBlacklist(dgfProxy);
         }
 
         console.log("total games to blacklist", gamesToBlacklist.length);
@@ -63,7 +65,7 @@ contract SwitchToPermissionedGame is MultisigScript {
         console.log("total games to search", totalNumGames);
 
         for (uint256 i = 0; i < totalNumGames; i = i + 1) {
-            (, , IDisputeGame game) = dgfProxy.gameAtIndex(i);
+            (,, IDisputeGame game) = dgfProxy.gameAtIndex(i);
             if (game.status() == GameStatus.IN_PROGRESS && game.l2SequenceNumber() >= L2_DIVERGENCE_BLOCK_NUMBER) {
                 // this game is in progress and challenges a block at or after the divergence block
                 gamesToBlacklist.push(game);
@@ -76,7 +78,10 @@ contract SwitchToPermissionedGame is MultisigScript {
         for (uint256 i = 0; i < gamesToBlacklist.length; i = i + 1) {
             require(anchorStateRegistry.isGameBlacklisted(gamesToBlacklist[i]), "post-110");
         }
-        require(GameType.unwrap(anchorStateRegistry.respectedGameType()) == GameType.unwrap(GameTypes.PERMISSIONED_CANNON), "post-111");
+        require(
+            GameType.unwrap(anchorStateRegistry.respectedGameType()) == GameType.unwrap(GameTypes.PERMISSIONED_CANNON),
+            "post-111"
+        );
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
@@ -90,7 +95,7 @@ contract SwitchToPermissionedGame is MultisigScript {
         });
 
         for (uint256 i = 0; i < gamesToBlacklist.length; i = i + 1) {
-            calls[i+1] = IMulticall3.Call3Value({
+            calls[i + 1] = IMulticall3.Call3Value({
                 target: address(anchorStateRegistry),
                 allowFailure: false,
                 callData: abi.encodeCall(IAnchorStateRegistry.blacklistDisputeGame, (gamesToBlacklist[i])),
