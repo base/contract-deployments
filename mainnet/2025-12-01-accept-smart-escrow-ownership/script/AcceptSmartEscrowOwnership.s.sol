@@ -14,14 +14,12 @@ contract AcceptSmartEscrowOwnership is MultisigScript {
     address internal immutable PORTAL;
     address internal immutable SMART_ESCROW;
     uint64 internal immutable L2_GAS_LIMIT;
-    uint256 internal immutable L2_FEE;
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
         PORTAL = vm.envAddress("PORTAL");
         SMART_ESCROW = vm.envAddress("SMART_ESCROW");
         L2_GAS_LIMIT = uint64(vm.envUint("L2_GAS_LIMIT"));
-        L2_FEE = vm.envUint("L2_FEE");
 
         require(OWNER_SAFE != address(0), "OWNER_SAFE env var not set");
         require(PORTAL != address(0), "PORTAL env var not set");
@@ -30,21 +28,24 @@ contract AcceptSmartEscrowOwnership is MultisigScript {
 
     function setUp() public view {
         require(L2_GAS_LIMIT > 0, "L2_GAS_LIMIT must be > 0");
-        require(L2_FEE > 0, "L2_FEE must be > 0");
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory calls) {
         calls = new IMulticall3.Call3Value[](1);
 
+        address payable target = SMART_ESCROW;
+        uint256 value = 0;
+        uint64 gasLimit = L2_GAS_LIMIT;
+        bool isCreation = false;
         bytes memory acceptData = abi.encodeCall(AccessControlDefaultAdminRules.acceptDefaultAdminTransfer, ());
 
         calls[0] = IMulticall3.Call3Value({
             target: PORTAL,
             allowFailure: false,
             callData: abi.encodeCall(
-                IOptimismPortal2.depositTransaction, (SMART_ESCROW, uint256(0), L2_GAS_LIMIT, false, acceptData)
+                IOptimismPortal2.depositTransaction, (target, value, gasLimit, isCreation, acceptData)
             ),
-            value: L2_FEE
+            value: 0
         });
     }
 
