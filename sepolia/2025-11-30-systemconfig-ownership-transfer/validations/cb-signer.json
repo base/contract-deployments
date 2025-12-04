@@ -1,5 +1,5 @@
 {
-  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net TransferSystemConfigOwnership --sig sign(address[]) [0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f,0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33",
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net TransferSystemConfigOwnership --sig sign(address[]) [0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f,0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
   "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
@@ -31,7 +31,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x733ff7993590ed6d57642dd7e74808f99ac15e248e36bee9f1959b3d242db056",
+          "key": "0x8ccc185370734884596907353e4ef357132523daccc0b39cce327c4d1036f9b7",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -67,7 +67,7 @@
           "key": "0x5afe6824c7fb79a8a3bba9076e2c014b1e75076691c5eb49c773515d1a49b79a",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Marks the Proxy Admin Owner Safe's approval hash for this transaction.",
+          "description": "Records the CB Signer Safe's approval hash for the Proxy Admin Owner multisig transaction.",
           "allowDifference": false
         }
       ]
@@ -100,7 +100,7 @@
           "key": "0xd2f9eb6b3047078658bfb1055cadc70d5db6679fb38fc2768630033dbfd1570f",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Records the CB Coordinator Safe's approval hash for the nested transaction.",
+          "description": "Stores the approval hash emitted by the CB Coordinator Safe for the nested multisig transaction.",
           "allowDifference": false
         }
       ]
@@ -113,7 +113,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000033",
           "before": "0x0000000000000000000000000fe884546476ddd290ec46318785046ef68a0ba9",
           "after": "0x0000000000000000000000005dfeb066334b67355a15dc9b67317fd2a2e1f77f",
-          "description": "Transfers SystemConfig ownership to the CB Incident Multisig Safe.",
+          "description": "Updates the SystemConfig owner to the CB Signer Safe.",
           "allowDifference": false
         }
       ]

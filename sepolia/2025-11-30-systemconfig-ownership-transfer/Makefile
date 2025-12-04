@@ -10,42 +10,77 @@ endif
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = TransferSystemConfigOwnership
 
-# Nested Safe topology for this change
-# Direct Safe: Single-level nesting (direct owner path)
-DIRECT_SAFE = 0x6AF0674791925f767060Dd52f7fB20984E8639d8
-# Nested Safe: Two-level nesting (inner -> outer)
-NESTED_INNER_SAFE = 0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f
-NESTED_OUTER_SAFE = 0x646132A1667ca7aD00d36616AFBA1A28116C770A
+# Sepolia Commands
+
+# OWNER_SAFE/
+# ├── CB_SIGNER_SAFE_ADDR/
+# │   ├── CB_NESTED_SAFE_ADDR/
+# │   │   └── Signers
+# │   └── CB_SC_SAFE_ADDR/
+# │       └── Signers
+# └── OP_SIGNER_SAFE_ADDR/
+#     └── Signers
 
 .PHONY: gen-validation
-gen-validation: gen-validation-a gen-validation-b
+gen-validation: 
+	make gen-validation-cb
+	make gen-validation-cb-sc
+	make gen-validation-op
 
-.PHONY: gen-validation-a
-gen-validation-a: checkout-signer-tool run-script-a
+.PHONY: gen-validation-cb
+gen-validation-cb: checkout-signer-tool run-script-cb
 
-.PHONY: gen-validation-b
-gen-validation-b: checkout-signer-tool run-script-b
-
-.PHONY: run-script-a
-run-script-a:
-	mkdir -p validations; \
+.PHONY: run-script-cb
+run-script-cb:
 	cd $(SIGNER_TOOL_PATH); \
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
+	--ledger-id $(LEDGER_ACCOUNT) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(DIRECT_SAFE)]" --sender $(SENDER)' \
-	--out ../validations/direct-safe-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_NESTED_SAFE_ADDR),$(CB_SIGNER_SAFE_ADDR)]" --sender $(CB_NESTED_SIGNER)' --out ../validations/cb-signer.json;
 
-.PHONY: run-script-b
-run-script-b:
-	mkdir -p validations; \
+.PHONY: gen-validation-cb-sc
+gen-validation-cb-sc: checkout-signer-tool run-script-cb-sc
+
+.PHONY: run-script-cb-sc
+run-script-cb-sc:
 	cd $(SIGNER_TOOL_PATH); \
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
+	--ledger-id $(LEDGER_ACCOUNT) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(NESTED_INNER_SAFE),$(NESTED_OUTER_SAFE)]" --sender $(SENDER)' \
-	--out ../validations/nested-safe-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SC_SAFE_ADDR),$(CB_SIGNER_SAFE_ADDR)]" --sender $(CB_SC_SIGNER)' --out ../validations/cb-sc-signer.json;
 
+.PHONY: gen-validation-op
+gen-validation-op: checkout-signer-tool run-script-op
+
+.PHONY: run-script-op
+run-script-op:
+	cd $(SIGNER_TOOL_PATH); \
+	npm ci; \
+	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
+	--ledger-id $(LEDGER_ACCOUNT) \
+	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(OP_SIGNER_SAFE_ADDR)]" --sender $(OP_SIGNER)' --out ../validations/op-signer.json;
+
+# CB
+.PHONY: approve-cb
+approve-cb:
+	$(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
+
+.PHONY: approve-cb-sc
+approve-cb-sc:
+	$(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
+
+.PHONY: approve-cb-coordinator
+approve-cb-coordinator:
+	$(call MULTISIG_APPROVE,$(CB_SIGNER_SAFE_ADDR),0x)
+
+.PHONY: approve-op
+approve-op:
+	$(call MULTISIG_APPROVE,$(OP_SIGNER_SAFE_ADDR),$(SIGNATURES))
+
+# Execute
 .PHONY: execute
 execute:
-	$(call MULTISIG_EXECUTE,$(SIGNATURES))
+	$(call MULTISIG_EXECUTE,0x)
