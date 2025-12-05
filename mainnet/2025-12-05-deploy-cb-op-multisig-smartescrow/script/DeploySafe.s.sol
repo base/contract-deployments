@@ -20,9 +20,6 @@ contract DeploySafe is Script {
     address public immutable CB_NESTED_SAFE;
     address public immutable OP_SIGNER_SAFE;
 
-    uint256 public immutable EXPECTED_OWNER_SAFE_THRESHOLD;
-    uint256 public immutable EXPECTED_OWNER_SAFE_OWNER_COUNT;
-
     constructor() {
         SAFE_IMPLEMENTATION = vm.envAddress("L1_GNOSIS_SAFE_IMPLEMENTATION");
         FALLBACK_HANDLER = vm.envAddress("L1_GNOSIS_COMPATIBILITY_FALLBACK_HANDLER");
@@ -46,12 +43,7 @@ contract DeploySafe is Script {
         vm.stopBroadcast();
         _postCheck(safe);
 
-        vm.writeFile(
-            "addresses.json",
-            string.concat(
-                "{", "\"Safe\": \"", safe.toHexString(), "}"
-            )
-        );
+        vm.writeFile("addresses.json", string.concat("{", "\"Safe\": \"", safe.toHexString(), "}"));
     }
 
     function _postCheck(address safeAddress) private view {
