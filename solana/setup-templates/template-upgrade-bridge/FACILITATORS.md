@@ -34,6 +34,9 @@ Set the following in `.env`:
 ```bash
 BRIDGE_REPO=<bridge-repo-url>
 BRIDGE_COMMIT=<commit-hash>
+BRIDGE_KEYPAIR=<path-to-bridge-keypair.json>
+BASE_RELAYER_KEYPAIR=<path-to-base-relayer-keypair.json>
+DEPLOY_ENV=<deploy-environment>
 ```
 
 Then run:
@@ -46,14 +49,21 @@ This will:
 - Remove any existing `bridge` directory
 - Clone the bridge repository
 - Checkout the specified commit
+- Install and build TypeScript clients
+- Install script dependencies
 
-### 1.2. Build the bridge program
+### 1.2. Build the bridge programs
 
 ```bash
-make step2-build-program
+make step2-build-programs
 ```
 
-This builds the bridge program using `cargo-build-sbf`. The compiled binary will be in `bridge/solana/target/deploy/bridge.so`.
+This builds the bridge programs. The compiled binary will be in `bridge/solana/target/deploy/bridge.so`.
+
+The build process:
+- Copies keypairs to the target directory
+- Synchronizes Anchor keys
+- Builds using the bridge CLI script
 
 ### 1.3. Write program buffer
 
