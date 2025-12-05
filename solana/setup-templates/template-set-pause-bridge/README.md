@@ -6,6 +6,11 @@ Status: PENDING
 
 This task pauses or unpauses the Bridge program using the MCM program. This is a critical security operation that can be used to halt bridge operations in emergency situations or resume them after issues are resolved.
 
+There are two separate workflows available:
+
+1. **Pause**: Halts all bridge operations.
+2. **Unpause**: Resumes bridge operations.
+
 ## Procedure for Signers
 
 ### 1. Update repo
@@ -23,66 +28,79 @@ Your Ledger needs to be connected and unlocked. The **Ethereum application** nee
 
 ### 3. Verify the Proposal
 
-Before signing, verify the proposal contents to ensure it matches expectations.
+Identify which action you are signing for (Pause or Unpause) and verify the corresponding proposal file.
+
+#### If Pausing (`proposal-pause.json`)
 
 **Verify proposal-level fields:**
-- `proposal.json` root field `multisigId` must match `MCM_MULTISIG_ID` from `.env`
-- `proposal.json` root field `validUntil` must match `MCM_VALID_UNTIL` from `.env`
+
+- `proposal-pause.json` root field `multisigId` must match `MCM_MULTISIG_ID` from `.env`
+- `proposal-pause.json` root field `validUntil` must match `MCM_VALID_UNTIL` from `.env`
 - The instruction `programId` must match `BRIDGE_PROGRAM_ID` from `.env`
 
-#### 3.1. Instruction 0: Bridge SetPauseStatus
+**Verify instruction data:**
 
-**Verify discriminant:**
+1. **Discriminant:**
 
-```bash
-echo -n "global:set_pause_status" | shasum -a 256 | cut -c1-16
-```
+   ```bash
+   echo -n "global:set_pause_status" | shasum -a 256 | cut -c1-16
+   ```
 
-Expected output: `761991d972d1ec91`
+   Expected output: `761991d972d1ec91`
 
-**Verify full instruction data:**
+2. **Full instruction data:**
 
-```bash
-jq -r '.instructions[0].data' proposal.json | base64 -d | xxd -p -c 256
-```
+   ```bash
+   jq -r '.instructions[0].data' proposal-pause.json | base64 -d | xxd -p -c 256
+   ```
 
-Expected output format: `761991d972d1ec91[PAUSED (1 byte)]`
+   Expected output: `761991d972d1ec9101` (ends in `01` for `true`)
 
-**Parameters:**
-- **paused** (bool, 1 byte): Whether to pause the bridge
-  - **Verify:** Must match `PAUSED` from `.env`: `true` = `01` (pause), `false` or omitted = `00` (unpause)
+#### If Unpausing (`proposal-unpause.json`)
 
-#### 3.2. Verify Proposal Metadata
+**Verify proposal-level fields:**
 
-Check the proposal metadata in `proposal.json`:
+- `proposal-unpause.json` root field `multisigId` must match `MCM_MULTISIG_ID` from `.env`
+- `proposal-unpause.json` root field `validUntil` must match `MCM_VALID_UNTIL` from `.env`
+- The instruction `programId` must match `BRIDGE_PROGRAM_ID` from `.env`
 
-- **validUntil**: Should match `MCM_VALID_UNTIL` from `.env` (Unix timestamp, typically within 7 days from now)
-- **multisig**: Should match `MCM_MULTISIG_ID` from `.env` (the MCM multisig address for this network)
-- **preOpCount**: The operation count before this proposal
-- **postOpCount**: Should be preOpCount + 1 (one instruction)
+**Verify instruction data:**
+
+1. **Discriminant:** (Same as above)
+
+2. **Full instruction data:**
+   ```bash
+   jq -r '.instructions[0].data' proposal-unpause.json | base64 -d | xxd -p -c 256
+   ```
+   Expected output: `761991d972d1ec9100` (ends in `00` for `false`)
 
 ### 4. Sign the proposal
 
+Run the signing command for the appropriate action. **Note: This process requires signing multiple times (20 times) to generate signatures for future nonces.**
+
+**To Pause:**
+
 ```bash
-make sign
+make sign-pause
+```
+
+**To Unpause:**
+
+```bash
+make sign-unpause
 ```
 
 This command will:
-1. Display the proposal hash
-2. Prompt you to sign on your Ledger
-3. Output your signature
 
-**Verify on your Ledger**: Check that the data you're signing matches the proposal hash displayed in the terminal.
+1. Iterate 20 times, incrementing the nonce (preOpCount/postOpCount).
+2. Prompt you to sign on your Ledger for each iteration.
+3. Save all signatures to a text file (`signatures-pause.txt` or `signatures-unpause.txt`).
 
-After signing, you will see output like:
-
-```
-Signature: 1234567890abcdef...
-```
+**Verify on your Ledger**: Check that the data you're signing matches the proposal hash displayed in the terminal for each iteration.
 
 ### 5. Send signature to Facilitator
 
-Copy the **entire signature** and send it to the Facilitator via your secure communication channel.
+Send the generated signature file (`signatures-pause.txt` or `signatures-unpause.txt`) to the Facilitator via your secure communication channel.
 
 **That's it!** The Facilitator will collect all signatures and execute the proposal.
 
