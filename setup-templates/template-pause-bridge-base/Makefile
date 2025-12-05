@@ -9,7 +9,7 @@ endif
 # TODO: ensure `SAFE_NONCE` matches the real `OWNER_SAFE` nonce
 SAFE_NONCE=6
 # TODO: ensure `sender` is a signer for `OWNER_SAFE`
-SENDER=0xb2d9a52e76841279EF0372c534C539a4f68f8C0B
+SENDER=0x1841CB3C2ce6870D0417844C817849da64E6e937
 
 SCRIPT_NAME=PauseBridge
 
@@ -21,20 +21,38 @@ run-script:
 	cd $(SIGNER_TOOL_PATH); \
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
-	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
+	--workdir .. --forge-cmd 'IS_PAUSED=true forge script --rpc-url $(L1_RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
 
 .PHONY: sign-pause
 sign-pause:
-	IS_PAUSED=true SAFE_NONCE=$(SAFE_NONCE) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-	--sig "sign(address[])" "[]" --sender $(SENDER)
+	@rm -f signatures-pause.txt
+	@for i in $$(seq 0 19); do \
+		nonce=$$(($(SAFE_NONCE) + $$i)); \
+		echo "Signing with nonce $$nonce"; \
+		IS_PAUSED=true SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		echo "Nonce: $$nonce" >> signatures-pause.txt; \
+		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-pause.txt || true; \
+		echo "" >> signatures-pause.txt; \
+		rm sign_output.tmp; \
+	done
 
 .PHONY: sign-unpause
 sign-unpause:
-	IS_PAUSED=false SAFE_NONCE=$(SAFE_NONCE) $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-	--sig "sign(address[])" "[]" --sender $(SENDER)
+	@rm -f signatures-unpause.txt
+	@for i in $$(seq 0 19); do \
+		nonce=$$(($(SAFE_NONCE) + $$i)); \
+		echo "Signing with nonce $$nonce"; \
+		IS_PAUSED=false SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		echo "Nonce: $$nonce" >> signatures-unpause.txt; \
+		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-unpause.txt || true; \
+		echo "" >> signatures-unpause.txt; \
+		rm sign_output.tmp; \
+	done
 
 # Execute
 .PHONY: execute-pause
