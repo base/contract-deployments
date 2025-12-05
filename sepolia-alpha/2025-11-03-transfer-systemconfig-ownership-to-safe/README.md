@@ -1,6 +1,6 @@
 # Transfer SystemConfig Ownership to Gnosis Safe
 
-Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x81552a616a1ed450c53845ee12cbcb3c7b608fde5e51f056218c7663877a2d6d)
+Status: NOT YET EXECUTED
 
 ## Description
 
