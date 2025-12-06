@@ -13,6 +13,8 @@ interface ISystemConfig {
     function setEIP1559Params(uint32 _denominator, uint32 _elasticity) external;
     function gasLimit() external view returns (uint64);
     function setGasLimit(uint64 _gasLimit) external;
+    function daFootprintGasScalar() external view returns (uint16);
+    function setDAFootprintGasScalar(uint16 _daFootprintGasScalar) external;
 }
 
 contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
@@ -24,6 +26,8 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
     uint64 internal immutable GAS_LIMIT;
     uint64 internal immutable NEW_GAS_LIMIT;
     uint32 internal immutable DENOMINATOR;
+    uint16 internal immutable DA_FOOTPRINT_GAS_SCALAR;
+    uint16 internal immutable NEW_DA_FOOTPRINT_GAS_SCALAR;
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
@@ -35,6 +39,9 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
         ELASTICITY = uint32(vm.envUint("OLD_ELASTICITY"));
         NEW_ELASTICITY = uint32(vm.envUint("NEW_ELASTICITY"));
 
+        DA_FOOTPRINT_GAS_SCALAR = uint16(vm.envUint("OLD_DA_FOOTPRINT_GAS_SCALAR"));
+        NEW_DA_FOOTPRINT_GAS_SCALAR = uint16(vm.envUint("NEW_DA_FOOTPRINT_GAS_SCALAR"));
+
         DENOMINATOR = ISystemConfig(SYSTEM_CONFIG).eip1559Denominator();
     }
 
@@ -42,12 +49,18 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Denominator(), DENOMINATOR, "Denominator mismatch");
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity(), NEW_ELASTICITY, "Elasticity mismatch");
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).gasLimit(), NEW_GAS_LIMIT, "Gas Limit mismatch");
+        vm.assertEq(
+            ISystemConfig(SYSTEM_CONFIG).daFootprintGasScalar(),
+            NEW_DA_FOOTPRINT_GAS_SCALAR,
+            "DA Footprint Gas Scalar mismatch"
+        );
     }
 
     function _simulationOverrides() internal view override returns (Simulation.StateOverride[] memory _stateOverrides) {
         if (
             GAS_LIMIT != ISystemConfig(SYSTEM_CONFIG).gasLimit()
                 || ELASTICITY != ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity()
+                || DA_FOOTPRINT_GAS_SCALAR != ISystemConfig(SYSTEM_CONFIG).daFootprintGasScalar()
         ) {
             // Override SystemConfig state to the expected "from" values so simulations succeeds even
             // when the chain already reflects the post-change values (during rollback simulation).
@@ -63,11 +76,13 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
             storageOverrides[0] =
                 Simulation.StorageOverride({key: gasConfigSlotKey, value: bytes32(updatedGasConfigWord)});
 
-            // Deterministically set EIP-1559 params (slot 0x6a) to [ ... | elasticity (uint32) | denominator (uint32) ]
+            // Deterministically set EIP-1559 params and DA Footprint Gas Scalar (slot 0x6a)
+            // Storage layout: [ ... | daFootprintGasScalar (uint16) | elasticity (uint32) | denominator (uint32) ]
             // Compose the full 256-bit word with only these two fields set to avoid unused high bits which can
             // cause mismatches during validation.
             bytes32 eip1559SlotKey = bytes32(uint256(0x6a));
-            uint256 composedEip1559Word = (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
+            uint256 composedEip1559Word =
+                (uint256(DA_FOOTPRINT_GAS_SCALAR) << 64) | (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
             storageOverrides[1] = Simulation.StorageOverride({key: eip1559SlotKey, value: bytes32(composedEip1559Word)});
 
             stateOverrides[0] = Simulation.StateOverride({contractAddress: SYSTEM_CONFIG, overrides: storageOverrides});
@@ -76,7 +91,7 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](2);
+        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](3);
 
         calls[0] = IMulticall3.Call3Value({
             target: SYSTEM_CONFIG,
@@ -89,6 +104,13 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
             target: SYSTEM_CONFIG,
             allowFailure: false,
             callData: abi.encodeCall(ISystemConfig.setGasLimit, (NEW_GAS_LIMIT)),
+            value: 0
+        });
+
+        calls[2] = IMulticall3.Call3Value({
+            target: SYSTEM_CONFIG,
+            allowFailure: false,
+            callData: abi.encodeCall(ISystemConfig.setDAFootprintGasScalar, (NEW_DA_FOOTPRINT_GAS_SCALAR)),
             value: 0
         });
 
