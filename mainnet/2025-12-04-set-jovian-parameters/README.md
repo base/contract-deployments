@@ -1,6 +1,6 @@
 # Set Jovian Parameters on Base Mainnet
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x664cd26ba172aa2613704beeec6f8333b09bceecd8aa4fa24e48d8f3b14bcff1)
 
 ## Description
 
