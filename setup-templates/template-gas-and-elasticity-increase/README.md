@@ -12,7 +12,7 @@ This runbook invokes the following script which allows our signers to sign the s
 
 ### DA Footprint Gas Scalar Formula
 
-We typically set the DA footprint gas scalar to cause base fees to rise if and only if the DA usage exceeds the L1 target blob throughput. We use the following formula:
+We typically set the DA footprint gas scalar to cause base fees to rise if and only if the DA usage exceeds the L1 target blob throughput. (Below that level of DA usage, the normal base fee rules apply.) We use the following formula:
 
 ```
 da_footprint_gas_scalar = gas_limit / (elasticity * l2_block_time * l1_target_throughput * estimation_ratio)
