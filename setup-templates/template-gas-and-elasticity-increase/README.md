@@ -24,7 +24,7 @@ Where:
 - `l2_block_time` = 2 seconds
 - `l1_target_throughput = (target_blob_count * 128,000 bytes/blob) / 12 sec/block`
 - `target_blob_count` = target number of blobs per L1 block
-- `estimation_ratio` = 1.5
+- `estimation_ratio` = 1.5 to account for differences between compression estimates and actual usage
 
 This simplifies to:
 
