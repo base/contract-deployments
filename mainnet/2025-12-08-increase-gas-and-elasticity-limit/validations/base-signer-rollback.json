@@ -1,0 +1,90 @@
+{
+  "cmd": "OLD_GAS_LIMIT=375000000 NEW_GAS_LIMIT=300000000 OLD_ELASTICITY=6 NEW_ELASTICITY=5 OLD_DA_FOOTPRINT_GAS_SCALAR=325 NEW_DA_FOOTPRINT_GAS_SCALAR=312 SAFE_NONCE=99 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0xfa00f69616f87d19da0a81f1fd29e23bfc16e3fc3571e34792257efa5a6c462d"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000063",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xebccac397e1530b5d281cfc92a0c3b0accd4a8cba14d0b71168a56045516b8ad",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "value": "0x0000000000000000000000000000000000101c12000008dd00000000165a0bc0",
+          "description": "Overrides gas limit to 375M for the chain",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "value": "0x0000000000000000000001450000000000000000000000000000000600000032",
+          "description": "Overrides elasticity to 6 and DA Footprint Gas Scalar to 312 for the chain",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000063",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000064",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x0000000000000000000000000000000000101c12000008dd00000000165a0bc0",
+          "after": "0x0000000000000000000000000000000000101c12000008dd0000000011e1a300",
+          "description": "Updates gas limit from 375M to 300M for the chain",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000001450000000000000000000000000000000600000032",
+          "after": "0x0000000000000000000001380000000000000000000000000000000500000032",
+          "description": "Sets the DA Footprint Gas Scalar to 312 (0x0138) and elasticity to 5",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
