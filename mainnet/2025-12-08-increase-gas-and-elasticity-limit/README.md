@@ -41,7 +41,9 @@ da_footprint_gas_scalar = 120,000,000 / (2 * 6 * 32,000) = 312.5 ≈ 312
 
 The values we are sending are statically defined in the `.env` file.
 
-> [!IMPORTANT] We have two transactions to sign. Please follow
+> [!IMPORTANT]
+>
+> We have two transactions to sign. Please follow
 > the flow for both "Approving the Update transaction" and
 > "Approving the Rollback transaction". Hopefully we only need
 > the former, but will have the latter available if needed.
