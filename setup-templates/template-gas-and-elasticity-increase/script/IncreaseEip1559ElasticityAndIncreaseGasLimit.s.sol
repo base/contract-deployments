@@ -76,13 +76,24 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
             storageOverrides[0] =
                 Simulation.StorageOverride({key: gasConfigSlotKey, value: bytes32(updatedGasConfigWord)});
 
-            // Deterministically set EIP-1559 params and DA Footprint Gas Scalar (slot 0x6a)
-            // Storage layout: [ ... | daFootprintGasScalar (uint16) | elasticity (uint32) | denominator (uint32) ]
-            // Compose the full 256-bit word with only these two fields set to avoid unused high bits which can
-            // cause mismatches during validation.
+            // Update EIP-1559 params and DA Footprint Gas Scalar (slot 0x6a)
+            // Storage layout (low to high bits):
+            //   - eip1559Denominator (uint32): bits 0-31
+            //   - eip1559Elasticity (uint32): bits 32-63
+            //   - operatorFeeScalar (uint32): bits 64-95
+            //   - operatorFeeConstant (uint64): bits 96-159
+            //   - daFootprintGasScalar (uint16): bits 160-175
+            // Load existing slot to preserve operatorFeeScalar and operatorFeeConstant, then update
+            // the fields we care about.
             bytes32 eip1559SlotKey = bytes32(uint256(0x6a));
-            uint256 composedEip1559Word =
-                (uint256(DA_FOOTPRINT_GAS_SCALAR) << 64) | (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
+            uint256 existingEip1559Word = uint256(vm.load(SYSTEM_CONFIG, eip1559SlotKey));
+            // Mask to preserve bits 64-159 (operatorFeeScalar and operatorFeeConstant)
+            uint256 operatorFeeMask = uint256(0xFFFFFFFFFFFFFFFFFFFFFFFF) << 64;
+            uint256 preservedOperatorFees = existingEip1559Word & operatorFeeMask;
+            uint256 composedEip1559Word = (uint256(DA_FOOTPRINT_GAS_SCALAR) << 160)
+                | preservedOperatorFees
+                | (uint256(ELASTICITY) << 32)
+                | uint256(DENOMINATOR);
             storageOverrides[1] = Simulation.StorageOverride({key: eip1559SlotKey, value: bytes32(composedEip1559Word)});
 
             stateOverrides[0] = Simulation.StateOverride({contractAddress: SYSTEM_CONFIG, overrides: storageOverrides});
