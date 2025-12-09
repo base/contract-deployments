@@ -33,7 +33,7 @@
       ]
     },
     {
-      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "name": "Mock Security Council - Sepolia",
       "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
       "overrides": [
         {
@@ -87,7 +87,7 @@
       ]
     },
     {
-      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "name": "Mock Security Council - Sepolia",
       "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
       "changes": [
         {

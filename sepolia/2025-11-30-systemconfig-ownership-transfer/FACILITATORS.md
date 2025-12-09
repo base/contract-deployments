@@ -26,7 +26,7 @@ Signer: 0xC0FFEE03
 Signature: CCCC
 ```
 
-Coinbase facilitator:
+Coinbase facilitator (mock):
 
 ```bash
 SIGNATURES=AAAABBBBCCCC make approve-cb
@@ -40,11 +40,13 @@ SIGNATURES=AAAABBBBCCCC make approve-cb-sc
 make approve-cb-coordinator
 ```
 
-Optimism facilitator:
+Optimism facilitator (mock):
 
 ```bash
 SIGNATURES=AAAABBBBCCCC make approve-op
 ```
+
+Since mock Safes are used in this Sepolia task, the same facilitator is expected handle gathering signatures for both the SC and OP from the same signer set.
 
 Once the signatures have been submitted approving the transaction for all nested Safes run:
 
