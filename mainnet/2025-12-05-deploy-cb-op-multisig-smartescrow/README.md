@@ -1,6 +1,6 @@
 # Deploy New CB and OP MultiSig for SmartEscrow
 
-Status: PENDING
+Status: READY TO SIGN
 
 ## Procedure
 
