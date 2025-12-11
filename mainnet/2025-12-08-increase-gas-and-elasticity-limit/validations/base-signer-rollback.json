@@ -1,5 +1,5 @@
 {
-  "cmd": "OLD_GAS_LIMIT=375000000 NEW_GAS_LIMIT=300000000 OLD_ELASTICITY=6 NEW_ELASTICITY=5 OLD_DA_FOOTPRINT_GAS_SCALAR=325 NEW_DA_FOOTPRINT_GAS_SCALAR=312 SAFE_NONCE=99 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "cmd": "OLD_GAS_LIMIT=375000000 NEW_GAS_LIMIT=300000000 OLD_ELASTICITY=6 NEW_ELASTICITY=5 OLD_DA_FOOTPRINT_GAS_SCALAR=195 NEW_DA_FOOTPRINT_GAS_SCALAR=312 SAFE_NONCE=99 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
@@ -44,8 +44,8 @@
         },
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
-          "value": "0x0000000000000000000001450000000000000000000000000000000600000032",
-          "description": "Overrides elasticity to 6 and DA Footprint Gas Scalar to 312 for the chain",
+          "value": "0x0000000000000000000000c30000000000000000000000000000000600000032",
+          "description": "Overrides elasticity to 6 and DA Footprint Gas Scalar to 195 for the chain",
           "allowDifference": false
         }
       ]
@@ -78,7 +78,7 @@
         },
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
-          "before": "0x0000000000000000000001450000000000000000000000000000000600000032",
+          "before": "0x0000000000000000000000c30000000000000000000000000000000600000032",
           "after": "0x0000000000000000000001380000000000000000000000000000000500000032",
           "description": "Sets the DA Footprint Gas Scalar to 312 (0x0138) and elasticity to 5",
           "allowDifference": false

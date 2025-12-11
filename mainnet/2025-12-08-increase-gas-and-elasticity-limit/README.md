@@ -8,7 +8,7 @@ We are updating the gas limit, elasticity, and DA footprint gas scalar to improv
 
 This runbook invokes the following script which allows our signers to sign the same call with two different sets of parameters for our Incident Multisig, defined in the [base-org/contracts](https://github.com/base/contracts) repository:
 
-`IncreaseEip1559ElasticityAndIncreaseGasLimitScript` -- This script will update the gas limit to our new limit of 187.5 Mgas/s, 6 elasticity, and 325 DA footprint gas scalar if invoked as part of the "upgrade" process, or revert to the old limit of 150 Mgas/s, 5 elasticity, and 312 DA footprint gas scalar if invoked as part of the "rollback" process.
+`IncreaseEip1559ElasticityAndIncreaseGasLimitScript` -- This script will update the gas limit to our new limit of 187.5 Mgas/s, 6 elasticity, and 195 DA footprint gas scalar if invoked as part of the "upgrade" process, or revert to the old limit of 150 Mgas/s, 5 elasticity, and 312 DA footprint gas scalar if invoked as part of the "rollback" process.
 
 ### DA Footprint Gas Scalar Formula
 
