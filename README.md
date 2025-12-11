@@ -37,7 +37,7 @@ To execute a new task, run one of the following commands (depending on the type 
 
 - For a generic task: `make setup-task network=<network> task=<task-name>`
 - For gas increase tasks: `make setup-gas-increase network=<network>`
-- For combined gas and elasticity increase tasks: `make setup-gas-and-elasticity-increase network=<network>`
+- For combined gas, elasticity, and DA footprint gas scalar tasks: `make setup-gas-and-elasticity-increase network=<network>`
 - For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
@@ -98,15 +98,17 @@ This template is increasing the throughput on Base Chain.
 1. Check in the task when it's ready to sign and collect signatures from signers
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
-## Using the combined gas limit and elasticity increase template
+## Using the combined gas limit, elasticity, and DA footprint gas scalar template
 
-This template is used to increase the gas limit and elasticity or roll back the upgrade (if needed).
+This template is used to update the gas limit, elasticity, and DA footprint gas scalar, or roll back the changes (if needed).
 
 1. Ensure you have followed the instructions above in `setup`, including running `make setup-gas-and-elasticity-increase network=<network>` and then go to the folder that was created by this command.
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts), and the new / old gas limit and elasticity, as well the other env vars marked with a TODO, in the `.env` file.
+1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) in the `.env` file.
 1. Run `make deps`.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Ensure the `SENDER` variable in the `.env` file is set to a signer of `OWNER_SAFE`.
+1. Set the `FROM_*` and `TO_*` values for gas limit and elasticity in the `.env` file.
+1. Calculate the DA footprint gas scalar with `make da-scalar TARGET_BLOB_COUNT=<value>` and set the `FROM_DA_FOOTPRINT_GAS_SCALAR` and `TO_DA_FOOTPRINT_GAS_SCALAR` values in the `.env` file.
 1. Build the contracts with `forge build`.
 1. Generate the validation file for signers with `make gen-validation`.
 1. Generate the rollback validation file for signers with `make gen-validation-rollback`.

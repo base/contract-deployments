@@ -1,14 +1,41 @@
-# Update Gas Limit & Elasticity in L1 `SystemConfig`
+# Update Gas Limit, Elasticity & DA Footprint Gas Scalar in L1 `SystemConfig`
 
 Status: TODO[READY TO SIGN|DONE]
 
 ## Description
 
-We are updating the gas limit and elasticity to improve TPS and reduce gas fees.
+We are updating the gas limit, elasticity, and DA footprint gas scalar to improve TPS and reduce gas fees.
 
 This runbook invokes the following script which allows our signers to sign the same call with two different sets of parameters for our Incident Multisig, defined in the [base-org/contracts](https://github.com/base/contracts) repository:
 
-`IncreaseEip1559ElasticityAndIncreaseGasLimitScript` -- This script will update the gas limit to our new limit of TODO gas and TODO elasticity if invoked as part of the "upgrade" process, or revert to the old limit of TODO gas and TODO elasticity if invoked as part of the "rollback" process.
+`IncreaseEip1559ElasticityAndIncreaseGasLimitScript` -- This script will update the gas limit to our new limit of TODO gas, TODO elasticity, and TODO DA footprint gas scalar if invoked as part of the "upgrade" process, or revert to the old limit of TODO gas, TODO elasticity, and TODO DA footprint gas scalar if invoked as part of the "rollback" process.
+
+### DA Footprint Gas Scalar Formula
+
+We typically set the DA footprint gas scalar to cause base fees to rise if and only if the DA usage exceeds the L1 target blob throughput. (Below that level of DA usage, the normal base fee rules apply.) We use the following formula:
+
+```
+da_footprint_gas_scalar = gas_limit / (elasticity * l2_block_time * l1_target_throughput * estimation_ratio)
+```
+
+Where:
+- `gas_limit` = L2 gas limit per block
+- `elasticity` = EIP-1559 elasticity multiplier
+- `l2_block_time` = 2 seconds
+- `l1_target_throughput = (target_blob_count * 128,000 bytes/blob) / 12 sec/block`
+- `target_blob_count` = target number of blobs per L1 block
+- `estimation_ratio` = 1.5 to account for differences between compression estimates and actual usage
+
+This simplifies to:
+
+```
+da_footprint_gas_scalar = gas_limit / (elasticity * target_blob_count * 32,000)
+```
+
+Example with gas_limit = 120,000,000, elasticity = 2, and target_blob_count = 6:
+```
+da_footprint_gas_scalar = 120,000,000 / (2 * 6 * 32,000) = 312.5 ≈ 312
+```
 
 The values we are sending are statically defined in the `.env` file.
 
