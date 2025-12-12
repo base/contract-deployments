@@ -1,11 +1,11 @@
 {
-  "cmd": "NEW_GAS_LIMIT=375000000 OLD_GAS_LIMIT=300000000 NEW_ELASTICITY=6 OLD_ELASTICITY=5 NEW_DA_FOOTPRINT_GAS_SCALAR=325 OLD_DA_FOOTPRINT_GAS_SCALAR=312 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "cmd": "NEW_GAS_LIMIT=375000000 OLD_GAS_LIMIT=300000000 NEW_ELASTICITY=6 OLD_ELASTICITY=5 NEW_DA_FOOTPRINT_GAS_SCALAR=325 OLD_DA_FOOTPRINT_GAS_SCALAR=312 NEW_MIN_BASE_FEE=500000 OLD_MIN_BASE_FEE=200000 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
     "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
     "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
-    "messageHash": "0x078904e595c692904bcd7d168bc2e3af2ab6b46fd1b04de80a0cbe229b556546"
+    "messageHash": "0x4b0d082d13ceb785b5585b5c632bcc7583b22f31d91f76e942b618f9e2b52cc1"
   },
   "stateOverrides": [
     {
@@ -19,7 +19,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x8eeabbb23f3bfdfab569e1cc3dd5173b8c9cd64a5281121a09af7528f936f603",
+          "key": "0xae20b1b95a3fe6df9af7a7f96b05f4ca6aa88fe2123176f38024c3c84352c7f4",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -57,6 +57,13 @@
           "before": "0x0000000000000000000001380000000000000000000000000000000500000032",
           "after": "0x0000000000000000000001450000000000000000000000000000000600000032",
           "description": "Sets the DA Footprint Gas Scalar to 325 (0x0145) and elasticity to 6",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x000000000000000000030d4095703e0982140d16f8eba6d158fccede42f04a4c",
+          "after": "0x00000000000000000007a12095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "Sets the Min Base Fee to 500000 (0x07a120)",
           "allowDifference": false
         }
       ]
