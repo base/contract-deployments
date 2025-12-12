@@ -14,6 +14,23 @@ endif
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = IncreaseEip1559ElasticityAndIncreaseGasLimitScript
 
+# Calculate the DA footprint gas scalar based on the formula:
+# da_footprint_gas_scalar = gas_limit / (elasticity * target_blob_count * 32,000)
+# Uses TO_GAS_LIMIT and TO_ELASTICITY from .env
+.PHONY: da-scalar
+da-scalar:
+ifndef TARGET_BLOB_COUNT
+	$(error TARGET_BLOB_COUNT is not set. Usage: make da-scalar TARGET_BLOB_COUNT=<value>)
+endif
+ifeq ($(TO_GAS_LIMIT),TODO)
+	$(error TO_GAS_LIMIT is not set. Please set it in .env before running this command.)
+endif
+ifeq ($(TO_ELASTICITY),TODO)
+	$(error TO_ELASTICITY is not set. Please set it in .env before running this command.)
+endif
+	@echo "$(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) ="
+	@echo "TO_DA_FOOTPRINT_GAS_SCALAR=$$(( $(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) ))"
+
 .PHONY: gen-validation
 gen-validation: checkout-signer-tool run-script
 

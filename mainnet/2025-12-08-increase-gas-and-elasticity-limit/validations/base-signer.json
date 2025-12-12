@@ -1,11 +1,11 @@
 {
-  "cmd": "NEW_GAS_LIMIT=375000000 OLD_GAS_LIMIT=300000000 NEW_ELASTICITY=6 OLD_ELASTICITY=5 NEW_DA_FOOTPRINT_GAS_SCALAR=325 OLD_DA_FOOTPRINT_GAS_SCALAR=312 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "cmd": "NEW_GAS_LIMIT=375000000 OLD_GAS_LIMIT=300000000 NEW_ELASTICITY=6 OLD_ELASTICITY=5 NEW_DA_FOOTPRINT_GAS_SCALAR=195 OLD_DA_FOOTPRINT_GAS_SCALAR=312 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
     "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
     "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
-    "messageHash": "0x078904e595c692904bcd7d168bc2e3af2ab6b46fd1b04de80a0cbe229b556546"
+    "messageHash": "0xcae13e15573f37f4c0255603291dee84df7077399abe102d5e480748e72b278d"
   },
   "stateOverrides": [
     {
@@ -19,7 +19,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x8eeabbb23f3bfdfab569e1cc3dd5173b8c9cd64a5281121a09af7528f936f603",
+          "key": "0xa3944572eb14b588707d0a0ae055bb83cbf4a8207804b207918c8e8a34e22e04",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -55,8 +55,8 @@
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "before": "0x0000000000000000000001380000000000000000000000000000000500000032",
-          "after": "0x0000000000000000000001450000000000000000000000000000000600000032",
-          "description": "Sets the DA Footprint Gas Scalar to 325 (0x0145) and elasticity to 6",
+          "after": "0x0000000000000000000000c30000000000000000000000000000000600000032",
+          "description": "Sets the DA Footprint Gas Scalar to 195 (0x00c3) and elasticity to 6",
           "allowDifference": false
         }
       ]
