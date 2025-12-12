@@ -1,11 +1,11 @@
 {
-  "cmd": "OLD_GAS_LIMIT=375000000 NEW_GAS_LIMIT=300000000 OLD_ELASTICITY=6 NEW_ELASTICITY=5 OLD_DA_FOOTPRINT_GAS_SCALAR=325 NEW_DA_FOOTPRINT_GAS_SCALAR=312 SAFE_NONCE=99 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "cmd": "OLD_GAS_LIMIT=375000000 NEW_GAS_LIMIT=300000000 OLD_ELASTICITY=6 NEW_ELASTICITY=5 OLD_DA_FOOTPRINT_GAS_SCALAR=325 NEW_DA_FOOTPRINT_GAS_SCALAR=312 OLD_MIN_BASE_FEE=500000 NEW_MIN_BASE_FEE=200000 SAFE_NONCE=99 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
     "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
     "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
-    "messageHash": "0xfa00f69616f87d19da0a81f1fd29e23bfc16e3fc3571e34792257efa5a6c462d"
+    "messageHash": "0xd50555f29203783c781467c79f8bab4b5c4780877a6a6982b55d7c77b574ae8d"
   },
   "stateOverrides": [
     {
@@ -25,7 +25,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xebccac397e1530b5d281cfc92a0c3b0accd4a8cba14d0b71168a56045516b8ad",
+          "key": "0x62ad77ced8945b33b2ce7ee1fb3f9a85e69da7da4660920b27b61bb18399a63e",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -45,7 +45,13 @@
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "value": "0x0000000000000000000001450000000000000000000000000000000600000032",
-          "description": "Overrides elasticity to 6 and DA Footprint Gas Scalar to 312 for the chain",
+          "description": "Overrides elasticity to 6 and DA Footprint Gas Scalar to 325 for the chain",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "value": "0x00000000000000000007a12095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "Overrides Min Base Fee to 500000 (0x07a120)",
           "allowDifference": false
         }
       ]
@@ -81,6 +87,13 @@
           "before": "0x0000000000000000000001450000000000000000000000000000000600000032",
           "after": "0x0000000000000000000001380000000000000000000000000000000500000032",
           "description": "Sets the DA Footprint Gas Scalar to 312 (0x0138) and elasticity to 5",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x00000000000000000007a12095703e0982140d16f8eba6d158fccede42f04a4c",
+          "after": "0x000000000000000000030d4095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "Sets the Min Base Fee to 200000 (0x030d40)",
           "allowDifference": false
         }
       ]
