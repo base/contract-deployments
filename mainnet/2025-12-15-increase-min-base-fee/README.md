@@ -1,10 +1,10 @@
-# Increase Min Base Fee in L1 `SystemConfig`
+# Increase Min Base Fee in `SystemConfig`
 
 Status: READY TO SIGN
 
 ## Description
 
-This task increases the `minBaseFee` parameter in the L1 SystemConfig contract from 200,000 wei to 500,000 wei (a 2.5x increase).
+This task increases the `minBaseFee` parameter in SystemConfig from 200,000 wei to 500,000 wei (a 2.5x increase).
 
 ## Parameters
 
