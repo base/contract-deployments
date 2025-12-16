@@ -1,0 +1,65 @@
+{
+  "cmd": "SAFE_NONCE=99 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseMinBaseFeeScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x69169e24dce98a2f6ea6f76236a0f24cbe5b07c25a53d07980f5292ac6858cf9"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000063",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0b081d4ccb3a4a82db3bad6da2cd99be08a28338996e16517b9a4a1e01578e9c",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000063",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000064",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x000000000000000000030d4095703e0982140d16f8eba6d158fccede42f04a4c",
+          "after": "0x00000000000000000007a12095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "Updates minBaseFee from 200000 wei (0x030d40) to 500000 wei (0x07a120)",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
