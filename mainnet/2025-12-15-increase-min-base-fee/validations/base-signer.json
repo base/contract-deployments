@@ -1,11 +1,11 @@
 {
-  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseMinBaseFeeScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "cmd": "SAFE_NONCE=99 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseMinBaseFeeScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
     "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
     "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
-    "messageHash": "0x82dffd55eb8ca3e7d903ba4d62adeb67e391568f89c89e1f4dcf4ab54a1a1176"
+    "messageHash": "0x69169e24dce98a2f6ea6f76236a0f24cbe5b07c25a53d07980f5292ac6858cf9"
   },
   "stateOverrides": [
     {
@@ -19,7 +19,13 @@
           "allowDifference": false
         },
         {
-          "key": "0xb819348fb01ac1a911418e201c49153bb451e1794c0386172b023ae18e70401a",
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000063",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0b081d4ccb3a4a82db3bad6da2cd99be08a28338996e16517b9a4a1e01578e9c",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -34,8 +40,8 @@
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000062",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000063",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000063",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000064",
           "description": "Increments the nonce",
           "allowDifference": false
         }
