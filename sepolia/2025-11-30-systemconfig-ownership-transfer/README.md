@@ -1,6 +1,14 @@
 # Transfer SystemConfig Ownership
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xd7279a1f08275f7c9cd77b555b27a920b0a3f5dfd0c91dc059a164457d7a7254)
+
+## Executed Transactions
+
+- [Coinbase Approval](https://sepolia.etherscan.io/tx/0xdd7e0e60d1dc1de798d025ed0e946678cebe7d07920c2fd88d7a3aa3d3ea036d) ([artefact](./records/TransferSystemConfigOwnership.s.sol/11155111/run-1765915333831.json))
+- [(Mock) Base Security Council Approval](https://sepolia.etherscan.io/tx/0xaf5ea1c6e95d0ea8ea4b1232e436c24f2871eef07fc3ea778da49475050397ff) ([artefact](./records/TransferSystemConfigOwnership.s.sol/11155111/run-1765915416897.json))
+- [Coinbase Facilitator Approval](https://sepolia.etherscan.io/tx/0x2aa48dccd2a9854c6150bf3a1608eb433eb31dac250582a918e7b0187f253f0c) ([artefact](./records/TransferSystemConfigOwnership.s.sol/11155111/run-1765915501219.json))
+- [(Mock) Optimism Approval](https://sepolia.etherscan.io/tx/0x22702afc8d60d3c3605dd2fb72b0860bb377dee23b1707c9d6a25a2e3ca0af2e) ([artefact](./records/TransferSystemConfigOwnership.s.sol/11155111/run-1765921561047.json))
+- [Execution](https://sepolia.etherscan.io/tx/0xd7279a1f08275f7c9cd77b555b27a920b0a3f5dfd0c91dc059a164457d7a7254) ([artefact](./records/TransferSystemConfigOwnership.s.sol/11155111/run-1765921633335.json))
 
 ## Description
 
