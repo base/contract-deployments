@@ -1,6 +1,10 @@
 # Update Gas Limit, Elasticity & DA Footprint Gas Scalar in L1 `SystemConfig`
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x1fd203ec603c389111e1b1f567265f770f551fc911fc991b833c8313509bd232)
+
+## Executed Transactions
+
+- [Elasticity and Gas Limit Increase](https://etherscan.io/tx/0x1fd203ec603c389111e1b1f567265f770f551fc911fc991b833c8313509bd232) ([artifact](./records/IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol/1/run-1766084929.json))
 
 ## Description
 
