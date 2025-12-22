@@ -2,6 +2,8 @@
 
 Status: READY TO SIGN
 
+Deployment: [EXECUTED](https://sepolia.basescan.org/tx/0x03b7f6fb2777fdd874c22994d28d56cab6c7b4462feebee967219cfd460a4186)
+
 ## Description
 
 Upgrades the `Bridge` contract for the testnet alpha deployment of [Base Bridge](https://github.com/base/bridge).
