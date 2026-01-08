@@ -24,7 +24,9 @@ contract ExecuteOPCMScript is MultisigScript {
     address public immutable OWNER_SAFE;
     IProxyAdmin public immutable PROXY_ADMIN;
     Claim immutable CANNON_ABSOLUTE_PRESTATE;
+    Claim immutable CANNON_KONA_ABSOLUTE_PRESTATE;
 
+    address internal immutable PROPOSER;
     address internal immutable CHALLENGER;
 
     constructor() {
@@ -32,15 +34,21 @@ contract ExecuteOPCMScript is MultisigScript {
         PROXY_ADMIN = IProxyAdmin(vm.envAddress("PROXY_ADMIN"));
         SYSTEM_CONFIG = ISystemConfig(vm.envAddress("SYSTEM_CONFIG"));
         OP_CONTRACT_MANAGER = IOPContractsManager(vm.envAddress("OP_CONTRACT_MANAGER"));
-        CANNON_ABSOLUTE_PRESTATE = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
+        CANNON_ABSOLUTE_PRESTATE = Claim.wrap(vm.envBytes32("CANNON_ABSOLUTE_PRESTATE"));
+        CANNON_KONA_ABSOLUTE_PRESTATE = Claim.wrap(vm.envBytes32("CANNON_KONA_ABSOLUTE_PRESTATE"));
+        PROPOSER = vm.envAddress("PROPOSER");
         CHALLENGER = vm.envAddress("CHALLENGER");
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
-        IOPContractsManagerStandardValidator.ValidationInput memory input =
-            IOPContractsManagerStandardValidator.ValidationInput(
-                PROXY_ADMIN, SYSTEM_CONFIG, Claim.unwrap(CANNON_ABSOLUTE_PRESTATE), SYSTEM_CONFIG.l2ChainId()
-            );
+        IOPContractsManagerStandardValidator.ValidationInputDev memory input =
+            IOPContractsManagerStandardValidator.ValidationInputDev({
+                sysCfg: SYSTEM_CONFIG,
+                cannonPrestate: Claim.unwrap(CANNON_ABSOLUTE_PRESTATE),
+                cannonKonaPrestate: Claim.unwrap(CANNON_KONA_ABSOLUTE_PRESTATE),
+                l2ChainID: SYSTEM_CONFIG.l2ChainId(),
+                proposer: PROPOSER
+            });
 
         IOPContractsManagerStandardValidator.ValidationOverrides memory overrides =
             IOPContractsManagerStandardValidator.ValidationOverrides(OWNER_SAFE, CHALLENGER);
@@ -49,8 +57,11 @@ contract ExecuteOPCMScript is MultisigScript {
     }
 
     function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IOPContractsManager.OpChainConfig memory baseConfig =
-            IOPContractsManager.OpChainConfig(SYSTEM_CONFIG, PROXY_ADMIN, CANNON_ABSOLUTE_PRESTATE);
+        IOPContractsManager.OpChainConfig memory baseConfig = IOPContractsManager.OpChainConfig({
+            systemConfigProxy: SYSTEM_CONFIG,
+            cannonPrestate: CANNON_ABSOLUTE_PRESTATE,
+            cannonKonaPrestate: CANNON_KONA_ABSOLUTE_PRESTATE
+        });
 
         IOPContractsManager.OpChainConfig[] memory opChainConfigs = new IOPContractsManager.OpChainConfig[](1);
         opChainConfigs[0] = baseConfig;
