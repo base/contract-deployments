@@ -43,7 +43,7 @@ cd contract-deployments
 git pull
 ```
 
-### 2. Run the signing tool (NOTE: do not enter the task directory. Run this command from the project's root).
+### 2. Run the signing tool
 
 ```bash
 make sign-task
