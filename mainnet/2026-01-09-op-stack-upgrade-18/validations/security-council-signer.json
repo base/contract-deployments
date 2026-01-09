@@ -1,45 +1,51 @@
 {
-  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net ExecuteOPCMScript --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8, 0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
-  "ledgerId": 1,
-  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io ExecuteOPCMScript --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd, 0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
-    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
-    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
-    "messageHash": "0x2b6ed09d1939f371236421ab268bbbecd6f11b178060fe6d9a986ab672dbe355"
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x2e3991446036380b9514e2025217e45e3d002a2f6485c3bab72f32a5b93df4d8"
   },
   "stateOverrides": [
     {
-      "name": "Proxy Admin Owner - Sepolia",
-      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Override the threshold to 1 so the transaction simulation can occur.",
           "allowDifference": false
-        }
-      ]
-    },
-    {
-      "name": "CB Coordinator Safe - Sepolia",
-      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
-      "overrides": [
+        },
         {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Override the threshold to 1 so the transaction simulation can occur.",
-          "allowDifference": false
-        }
-      ]
-    },
-    {
-      "name": "Mock Security Council - Sepolia",
-      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
-      "overrides": [
-        {
-          "key": "0xd857b38dca98a023b2702f410237285387f525286eb22f314cc2165fd507126c",
+          "key": "0xb811b325d45d18dd5e8593c25b0764afeb685dea98a5238999d9c24e8466f19b",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
           "allowDifference": false
         }
       ]
@@ -47,87 +53,21 @@
   ],
   "stateChanges": [
     {
-      "name": "Proxy Admin Owner - Sepolia",
-      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000001d",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000001e",
-          "description": "Increments the nonce",
-          "allowDifference": false
-        },
-        {
-          "key": "0xaa9f9365710009bcb0e19352bc155841be7e745b27af070da169a4e6447ff22e",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Stores approval on behalf of CB coordinator safe",
-          "allowDifference": false
-        }
-      ]
-    },
-    {
-      "name": "AnchorStateRegistry - Sepolia",
-      "address": "0x2ff5cc82dbf333ea30d8ee462178ab1707315355",
-      "changes": [
-        {
-          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-          "before": "0x000000000000000000000000eb69cc681e8d4a557b30dffbad85affd47a2cf2e",
-          "after": "0x00000000000000000000000036398155cd17cfe804f69b233edda800dd4d5aa5",
-          "description": "Update address of AnchorStateRegistry to new implementation",
-          "allowDifference": false
-        }
-      ]
-    },
-    {
-      "name": "OptimismPortal - Sepolia",
-      "address": "0x49f53e41452c74589e85ca1677426ba426459e85",
-      "changes": [
-        {
-          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-          "before": "0x0000000000000000000000007cf803296662e8c72a6c1d6450572209acf7f202",
-          "after": "0x00000000000000000000000097cebbf8959e2a5476fbe9b98a21806ec234609b",
-          "description": "Update address of OptimismPortal to new implementation",
-          "allowDifference": false
-        }
-      ]
-    },
-    {
-      "name": "CB Coordinator Safe - Sepolia",
-      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
-      "changes": [
-        {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
-          "description": "Increments the nonce",
-          "allowDifference": false
-        },
-        {
-          "key": "0xead746436a15f47d8b59b9b583217e10d051370b76caefca7151be7981e818ba",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Stores approval on behalf of SC multisig",
-          "allowDifference": false
-        }
-      ]
-    },
-    {
-      "name": "Mock Security Council - Sepolia",
-      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
-      "changes": [
-        {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "description": "Increments the nonce",
           "allowDifference": false
         }
       ]
     },
     {
-      "name": "DisputeGameFactoryProxy - Sepolia",
-      "address": "0xd6e6dbf4f7ea0ac412fd8b65ed297e64bb7a06e1",
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edb88c4b80fdd2adff2412a7bebf9df42cb40e",
       "changes": [
         {
           "key": "0x057a7f241532c73b242fd6e74e7fbd8cbc283dbc44ad194f17d900d9ac2e9251",
@@ -146,22 +86,22 @@
         {
           "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6d",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x6463dee3828677f6270d83d45408044fc5edb9082ff5cc82dbf333ea30d8ee46",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb908909f6cf47ed12f010a796527",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, vm/asr/weth packed) [word 2/4].",
           "allowDifference": false
         },
         {
           "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6e",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x2178ab1707315355d3683e4947a7769603ab6418ec02f000ce3cf30b00000000",
+          "after": "0xf562bfc26c7f4e722453c1216e49704d84ea98a4dacd95738f2fc8ec00000000",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, vm/asr/weth packed) [word 3/4].",
           "allowDifference": false
         },
         {
           "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6f",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x00000000000000000000000000000000000000000000000000014a3400000000",
-          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, l2ChainId=84532) [word 4/4].",
+          "after": "0x0000000000000000000000000000000000000000000000000000210500000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, l2ChainId=8453) [word 4/4].",
           "allowDifference": false
         },
         {
@@ -174,22 +114,22 @@
         {
           "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea6",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x6463dee3828677f6270d83d45408044fc5edb9082ff5cc82dbf333ea30d8ee46",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb908909f6cf47ed12f010a796527",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, vm/asr/weth packed) [word 2/4].",
           "allowDifference": false
         },
         {
           "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea7",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x2178ab1707315355d3683e4947a7769603ab6418ec02f000ce3cf30b00000000",
+          "after": "0xf562bfc26c7f4e722453c1216e49704d84ea98a4dacd95738f2fc8ec00000000",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, vm/asr/weth packed) [word 3/4].",
           "allowDifference": false
         },
         {
           "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea8",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x00000000000000000000000000000000000000000000000000014a3400000000",
-          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, l2ChainId=84532) [word 4/4].",
+          "after": "0x0000000000000000000000000000000000000000000000000000210500000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, l2ChainId=8453) [word 4/4].",
           "allowDifference": false
         },
         {
@@ -208,7 +148,7 @@
         },
         {
           "key": "0x4d5a9bd2e41301728d41c8e705190becb4e74abe869f75bdb405b63716a35f9e",
-          "before": "0x000000000000000000000000a1ae4fd5541a3e7a912e45560ed60d3edc5f9a05",
+          "before": "0x0000000000000000000000006f8c1ea88cb410571739d36eb00811b250574cb2",
           "after": "0x00000000000000000000000058bf355c5d4edfc723ef89d99582eccfd143266a",
           "description": "Update DisputeGameFactory.gameImpls[GameTypes.PERMISSIONED_CANNON] to the new PermissionedDisputeGameV2 implementation.",
           "allowDifference": false
@@ -237,35 +177,35 @@
         {
           "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7d",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x6463dee3828677f6270d83d45408044fc5edb9082ff5cc82dbf333ea30d8ee46",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb908909f6cf47ed12f010a796527",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, vm/asr/weth packed) [word 2/6].",
           "allowDifference": false
         },
         {
           "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7e",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x2178ab170731535532ce910d9c6c8f78dc6779c1499ab05f281a054e00000000",
+          "after": "0xf562bfc26c7f4e7264ae5250958cdeb83f6b61f913b5ac6ebe8efd4d00000000",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, vm/asr/weth packed) [word 3/6].",
           "allowDifference": false
         },
         {
           "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7f",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x00000000000000000000000000000000000000000000000000014a3403763706",
+          "after": "0x00000000000000000000000000000000000000000000000000002105642229f2",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, l2ChainId=84532 + packed data) [word 4/6].",
           "allowDifference": false
         },
         {
           "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa80",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x7c1dbe6d2430616d8f54cb774daa59998b8c52b04a38f10515c52670fcb23f3c",
+          "after": "0x38fb9de03374be34b0ed8d9de80752c58ca1e12404d16373aef756179b185f27",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, proposer packed) [word 5/6].",
           "allowDifference": false
         },
         {
           "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa81",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x4c44474f00000000000000000000000000000000000000000000000000000000",
+          "after": "0xb2994f3a00000000000000000000000000000000000000000000000000000000",
           "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, challenger packed) [word 6/6].",
           "allowDifference": false
         },
@@ -278,7 +218,7 @@
         },
         {
           "key": "0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b",
-          "before": "0x000000000000000000000000ed839a2aa262eccc513308fe7b8f39088ff8e992",
+          "before": "0x000000000000000000000000979cb7e329ba213fb9d6c5f7771ec6a3109bdc93",
           "after": "0x0000000000000000000000006ddba09bc4ccb0d6ca9fc5350580f74165707499",
           "description": "Update DisputeGameFactory.gameImpls[GameTypes.CANNON] to the new FaultDisputeGameV2 implementation.",
           "allowDifference": false
@@ -286,14 +226,80 @@
       ]
     },
     {
-      "name": "System Config - Sepolia",
-      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044d57e1c92a77f79988d21fa8faf74e97e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000007cf803296662e8c72a6c1d6450572209acf7f202",
+          "after": "0x00000000000000000000000097cebbf8959e2a5476fbe9b98a21806ec234609b",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
       "changes": [
         {
           "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
           "before": "0x0000000000000000000000002fa28989fc559836e9d66dff3010c7f7f41c65ed",
           "after": "0x000000000000000000000000d392c27b84b1ca776528f2704bc67b82a62132d2",
           "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe42d105bdf05b82daaf3dad8f3923990d6ffcbf25ef0c2e6f3978357813c2553",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores approval on behalf of CB coordinator safe",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Mainnet",
+      "address": "0x909f6cf47ed12f010a796527f562bfc26c7f4e72",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000eb69cc681e8d4a557b30dffbad85affd47a2cf2e",
+          "after": "0x00000000000000000000000036398155cd17cfe804f69b233edda800dd4d5aa5",
+          "description": "Update address of AnchorStateRegistry to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x1f9c184079e5bd8197b9c7f572f21c9720d1b5b966a6366f3fdfabd06cd07276",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores approval on behalf of SC multisig",
           "allowDifference": false
         }
       ]

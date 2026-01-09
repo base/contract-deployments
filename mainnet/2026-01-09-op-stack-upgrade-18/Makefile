@@ -5,7 +5,7 @@ include ../.env
 include .env
 
 ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 1
+override LEDGER_ACCOUNT = 0
 endif
 
 
@@ -22,7 +22,7 @@ run-script-cb:
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_NESTED_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" \
-	--sender 0x7f10098bd53519c739ca8a404afe127647d94774' --ledger-id $(LEDGER_ACCOUNT) --out ../validations/coinbase-signer.json;
+	--sender 0x6CD3850756b7894774Ab715D136F9dD02837De50' --ledger-id $(LEDGER_ACCOUNT) --out ../validations/coinbase-signer.json;
 
 
 .PHONY: gen-validation-cb-sc
@@ -35,7 +35,7 @@ run-script-cb-sc:
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SC_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" \
-	--sender 0x7f10098bd53519c739ca8a404afe127647d94774' --ledger-id $(LEDGER_ACCOUNT) --out ../validations/security-council-signer.json;
+	--sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6' --ledger-id $(LEDGER_ACCOUNT) --out ../validations/security-council-signer.json;
 
 .PHONY: gen-validation-op
 gen-validation-op: checkout-signer-tool run-script-op
@@ -47,7 +47,7 @@ run-script-op:
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" "[$(OP_SIGNER_SAFE_ADDR)]" \
-	--sender 0x0CF2F86C3338993ce10F74d6f4B095712c7efe26' --ledger-id $(LEDGER_ACCOUNT) --out ../validations/optimism-signer.json;
+	--sender 0x42d27eEA1AD6e22Af6284F609847CB3Cd56B9c64' --ledger-id $(LEDGER_ACCOUNT) --out ../validations/optimism-signer.json;
 
 # CB
 .PHONY: approve-cb
