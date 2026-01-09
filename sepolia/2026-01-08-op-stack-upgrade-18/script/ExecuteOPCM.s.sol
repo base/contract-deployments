@@ -10,7 +10,6 @@ import {
     IOPContractsManager,
     IOPContractsManagerStandardValidator,
     ISystemConfig,
-    IProxyAdmin,
     ISuperchainConfig
 } from "@eth-optimism-bedrock/interfaces/L1/IOPContractsManager.sol";
 
@@ -22,7 +21,6 @@ contract ExecuteOPCMScript is MultisigScript {
     ISystemConfig internal immutable SYSTEM_CONFIG;
     IOPContractsManager internal immutable OP_CONTRACT_MANAGER;
     address public immutable OWNER_SAFE;
-    IProxyAdmin public immutable PROXY_ADMIN;
     Claim immutable CANNON_ABSOLUTE_PRESTATE;
     Claim immutable CANNON_KONA_ABSOLUTE_PRESTATE;
 
@@ -31,7 +29,6 @@ contract ExecuteOPCMScript is MultisigScript {
 
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
-        PROXY_ADMIN = IProxyAdmin(vm.envAddress("PROXY_ADMIN"));
         SYSTEM_CONFIG = ISystemConfig(vm.envAddress("SYSTEM_CONFIG"));
         OP_CONTRACT_MANAGER = IOPContractsManager(vm.envAddress("OP_CONTRACT_MANAGER"));
         CANNON_ABSOLUTE_PRESTATE = Claim.wrap(vm.envBytes32("CANNON_ABSOLUTE_PRESTATE"));
