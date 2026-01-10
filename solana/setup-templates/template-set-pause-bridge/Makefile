@@ -60,7 +60,7 @@ step3-execute-proposal-pause:
 	@echo "==> Step 3: Executing MCM proposal..."
 	@if [ -n "$(NONCE)" ]; then \
 		echo "Updating proposal with nonce $(NONCE)..."; \
-		jq '.rootMetadata.preOpCount = $(NONCE) | .rootMetadata.postOpCount = ($(NONCE) + 1)' $(PAUSE_OUTPUT) > $(PAUSE_OUTPUT).tmp && mv $(PAUSE_OUTPUT).tmp $(PAUSE_OUTPUT); \
+			jq '.rootMetadata.preOpCount = $(NONCE) | .rootMetadata.postOpCount = ($(NONCE) + (.instructions | length))' $(PAUSE_OUTPUT) > $(PAUSE_OUTPUT).tmp && mv $(PAUSE_OUTPUT).tmp $(PAUSE_OUTPUT); \
 	fi
 	MCM_PROPOSAL_OUTPUT=$(PAUSE_OUTPUT) make mcm-all
 
@@ -69,6 +69,6 @@ step3-execute-proposal-unpause:
 	@echo "==> Step 3: Executing MCM proposal..."
 	@if [ -n "$(NONCE)" ]; then \
 		echo "Updating proposal with nonce $(NONCE)..."; \
-		jq '.rootMetadata.preOpCount = $(NONCE) | .rootMetadata.postOpCount = ($(NONCE) + 1)' $(UNPAUSE_OUTPUT) > $(UNPAUSE_OUTPUT).tmp && mv $(UNPAUSE_OUTPUT).tmp $(UNPAUSE_OUTPUT); \
+				jq '.rootMetadata.preOpCount = $(NONCE) | .rootMetadata.postOpCount = ($(NONCE) + (.instructions | length))' $(UNPAUSE_OUTPUT) > $(UNPAUSE_OUTPUT).tmp && mv $(UNPAUSE_OUTPUT).tmp $(UNPAUSE_OUTPUT); \
 	fi
 	MCM_PROPOSAL_OUTPUT=$(UNPAUSE_OUTPUT) make mcm-all

@@ -116,8 +116,8 @@ step10-create-proposal:
 		BUFFER=$(ROLLBACK_BUFFER) \
 		MCM_PROPOSAL_OUTPUT=rollback-proposal.json
 	@echo "  → Merging proposals..."
-	@jq -s '.[0] as $$upgrade | .[1] as $$rollback | $$upgrade | .instructions = ($$upgrade.instructions + $$rollback.instructions) | .rootMetadata.postOpCount = (.rootMetadata.preOpCount + 2)' \
-		upgrade-proposal.json rollback-proposal.json > proposal.json
+		@jq -s '.[0] as $$upgrade | .[1] as $$rollback | $$upgrade | .instructions = ($$upgrade.instructions + $$rollback.instructions) | .rootMetadata.postOpCount = (.rootMetadata.preOpCount + ($$upgrade.instructions | length) + ($$rollback.instructions | length))' \
+			upgrade-proposal.json rollback-proposal.json > proposal.json
 	@rm -f upgrade-proposal.json rollback-proposal.json
 	@echo "✓ Merged proposal created: proposal.json"
 	@echo "  - Instructions count: $$(jq '.instructions | length' proposal.json)"
