@@ -53,7 +53,7 @@ mcm-proposal-hash:
 
 .PHONY: mcm-sign
 mcm-sign:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
+	$(or $(shell which eip712sign),$(GOPATH)/bin/eip712sign) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 	make mcm-proposal-hash
 
 ##
