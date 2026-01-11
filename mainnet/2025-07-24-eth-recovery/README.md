@@ -33,7 +33,7 @@ We need to sign recoveries for 3 different chains. Please follow the instruction
 - [Arbitrum](./ARBITRUM_VALIDATION.md)
 - [Optimism](./OPTIMISM_VALIDATION.md)
 
-Due to the large number of recoveries for the Base chain, they are split into 5 seperate transactions
+Due to the large number of recoveries for the Base chain, they are split into 5 separate transactions
 
 - [BASE1](./BASE_VALIDATION.md)
 - [BASE2](./BASE_VALIDATION.md)

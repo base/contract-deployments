@@ -41,7 +41,6 @@ To execute a new task, run one of the following commands (depending on the type 
 - For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
-- For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
 - For switching to a permissioned game and retiring dispute games: `make setup-switch-to-permissioned-game network=<network>`
