@@ -1,0 +1,142 @@
+# Facilitator Instructions: MCM Bridge Config Update & Program Upgrade
+
+## Overview
+
+As a Facilitator, you are responsible for:
+
+1. Creating the bridge config update proposal
+2. Preparing the bridge program upgrade buffer
+3. Creating the upgrade proposal
+4. Merging both proposals into a single MCM proposal
+5. Committing and pushing the merged proposal to the repo
+6. Coordinating with Signers
+7. Collecting signatures
+8. Executing the merged proposal on-chain
+
+## Prerequisites
+
+```bash
+cd contract-deployments
+git pull
+cd solana/devnet-alpha/2025-12-22-update-bridge-config
+make setup-deps
+```
+
+Ensure you have:
+
+- Rust toolchain installed
+- Solana CLI installed and configured
+- Anchor CLI installed
+- Bun installed
+- `mcmctl` installed (via `make deps`)
+- `eip712sign` installed (via `make deps`)
+- A funded Solana wallet configured
+
+## Phase 1: Create Bridge Config Update Proposal
+
+### 1.1. Update .env for config update proposal
+
+Set the following in `.env`:
+
+```bash
+# RPC configuration
+SOL_RPC_URL=<rpc-url>
+
+# MCM configuration
+MCM_PROGRAM_ID=<mcm-program-id>
+MCM_MULTISIG_ID=<multisig-id>
+MCM_VALID_UNTIL=<unix-timestamp>
+MCM_OVERRIDE_PREVIOUS_ROOT=false  # or true if needed
+MCM_PROPOSAL_OUTPUT=proposal.json
+
+# Bridge config parameters
+BRIDGE_PROGRAM_ID=<bridge-program-id>
+BRIDGE_PARTNER_ORACLE_REQUIRED_THRESHOLD=<threshold-value>
+```
+
+### 1.2. Generate config update proposal
+
+```bash
+make step1-create-set-partner-oracle-config-proposal
+```
+
+This creates `set-partner-oracle-config-proposal.json` with the SetPartnerOracleConfig instruction.
+
+### 1.3. Review config proposal
+
+Open and review `set-partner-oracle-config-proposal.json` to verify:
+
+- Bridge program ID is correct
+- Partner oracle required threshold matches intended value
+- Valid until timestamp is appropriate
+
+## Phase 2: Coordinate with Signers and Collect Signatures
+
+Coordinate with Signers to collect their signatures. Each Signer will run `make sign` and provide their signature.
+
+Concatenate all signatures in the format: `0xSIG1,0xSIG2,0xSIG3`
+
+Once you have all required signatures, add to `.env`:
+
+```bash
+MCM_SIGNATURES_COUNT=<number-of-signatures>
+MCM_SIGNATURES=0xSIG1,0xSIG2,0xSIG3
+```
+
+## Phase 3: Execute Merged Proposal
+
+### 3.1. Add execution variables to .env
+
+Add the following variables to `.env`:
+
+```bash
+AUTHORITY=<your-wallet-keypair-path>
+```
+
+### 3.2. Execute the proposal
+
+```bash
+make step3-execute-proposal
+```
+
+This command executes all the necessary steps:
+
+- Initialize signatures account
+- Append signatures
+- Finalize signatures
+- Set root
+- Execute both operations (config update + program upgrade)
+
+## Phase 4: Verification
+
+### 4.1. Verify config update on Solana Explorer
+
+Visit the Solana Explorer for your network:
+
+- Mainnet: https://explorer.solana.com/
+- Devnet: https://explorer.solana.com/?cluster=devnet
+- Devnet-alpha: https://explorer.solana.com/?cluster=custom&customUrl=<devnet-alpha-rpc>
+
+Search for the execution transaction and verify:
+
+- The transaction was successful
+- The program logs show `Instruction: SetPartnerOracleConfig`
+- The partner oracle required threshold was updated correctly
+
+### 4.2. Verify program upgrade on Solana Explorer
+
+Search for the bridge program address (`$PROGRAM`) and verify:
+
+- The "Last Deployed Slot" is recent
+- The upgrade authority is still the MCM authority
+- The program was upgraded successfully
+
+### 4.3. Update README
+
+Update the Status line in README.md to:
+
+```markdown
+Status: [EXECUTED](https://explorer.solana.com/tx/<transaction-signature>?cluster=<network>)
+```
+
+Replace `<transaction-signature>` with the execution transaction signature and `<network>` with the appropriate cluster (devnet, devnet-alpha, mainnet-beta, etc.).
