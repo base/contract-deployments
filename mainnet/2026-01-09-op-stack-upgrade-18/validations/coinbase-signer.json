@@ -1,5 +1,5 @@
 {
-  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io ExecuteOPCMScript --sig sign(address[]) [0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110, 0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io ExecuteOPCMScript --sig sign(address[]) [0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110,0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
