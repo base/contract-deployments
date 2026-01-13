@@ -1,5 +1,5 @@
 {
-  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net ExecuteOPCMScript --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8, 0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net ExecuteOPCMScript --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8,0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
   "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
