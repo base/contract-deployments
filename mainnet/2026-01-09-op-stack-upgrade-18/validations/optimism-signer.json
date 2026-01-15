@@ -173,7 +173,7 @@
           "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7f",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x00000000000000000000000000000000000000000000000000002105642229f2",
-          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, l2ChainId=84532 + packed data) [word 4/6].",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, l2ChainId=8453 + packed data) [word 4/6].",
           "allowDifference": false
         },
         {
