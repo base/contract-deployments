@@ -1,6 +1,6 @@
 # MCM Bridge Config Update
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://solscan.io/tx/NSoJmejwabofbErRmb5VhEMLuXZRDj4TjV7Q4oEsyoeU6SzScecBZydbX6dqRH9e5w7MEkmudXzYsKhRwhvah7E?cluster=devnet)
 
 ## Description
 
