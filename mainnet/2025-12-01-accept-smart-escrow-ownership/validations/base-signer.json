@@ -1,0 +1,78 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io AcceptSmartEscrowOwnership --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x70129c7514a5fba8c013faa35eb4e84a25e6185010800c50faafc73e727c489e"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x95d2e559ecc4123c992191c982fcacdff23ac220c7a38b92ea163a056c1c3dd0",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000005f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000060",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Optimism Portal",
+      "address": "0xbeb5fc579115071764c7423a4f12edde41f106ed",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x00000000016cf17500000000000afd1d0000000000000000000000003b9aca00",
+          "after": "0x00000000016cf1890000000000030d400000000000000000000000003b9aca00",
+          "description": "Updates the portal's ResourceMetering params with the latest block number and deposit gas usage.",
+          "allowDifference": true
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "field": "ETH Balance (wei)",
+      "before": "0x0000000000000000000000000000000000000000000000001a4e86c4783b08bb",
+      "after": "0x0000000000000000000000000000000000000000000000001a4da364cf0968bb",
+      "description": "ETH balance change for this account",
+      "allowDifference": false
+    },
+    {
+      "name": "Optimism ETHLockbox",
+      "address": "0x322b47ff1fa8d5611f761e3e275c45b71b294d43",
+      "field": "ETH Balance (wei)",
+      "before": "0x000000000000000000000000000000000000000000002b0d1bc83b08a187dc11",
+      "after": "0x000000000000000000000000000000000000000000002b0d1bc91e684ab97c11",
+      "description": "ETH balance change for this account",
+      "allowDifference": true
+    }
+  ]
+}
