@@ -196,13 +196,31 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
-## Using the Switch to Permissioned Game template
+## Using the Switch to Permissioned Game Retire template
 
-This template is used to switch Base to a Permissioned Game.
+This template is used to switch Base to a Permissioned Game and retire existing games.
 
 1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-switch-to-permissioned-game network=<network>` and go to the folder that was created by this command.
+1. Run `make setup-switch-to-permissioned-game-retire network=<network>` and go to the folder that was created by this command.
 1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Set the `L2_DIVERGENCE_BLOCK_NUMBER` to the blocknumber that the chain has diverged at.
+1. Run `make deps`.
+1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
+1. Build the contracts with `forge build`.
+1. Generate the validation file for signers with `make gen-validation`.
+1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
+1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+
+## Using the Switch to Permissioned Game Blacklist template
+
+This template is used to switch Base to a Permissioned Game and blacklist existing games.
+
+1. Ensure you have followed the instructions above in `setup`.
+1. Run `make setup-switch-to-permissioned-game-blacklist network=<network>` and go to the folder that was created by this command.
+1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Set the `L2_DIVERGENCE_BLOCK_NUMBER` to the blocknumber that the chain has diverged at.
+1. The `ADDRESSES_TO_BLACKLIST` can be left blank, in which case the addresses to blacklist will be searched for onchain. This may take some time. Alternatively,
+you may run `make find-dispute-games-offchain` which will search for the addresses off-chain and `ADDRESSES_TO_BLACKLIST` can be set to the output.
 1. Run `make deps`.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Build the contracts with `forge build`.
