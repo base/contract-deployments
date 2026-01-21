@@ -107,7 +107,7 @@ You may now kill the Signer Tool process in your terminal window by running `Ctr
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2026-01-21-update-basefee-da-footprint
+cd mainnet/2026-01-20-update-basefee-da-footprint
 make deps
 make gen-validation
 make gen-validation-rollback
