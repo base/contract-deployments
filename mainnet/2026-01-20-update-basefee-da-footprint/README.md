@@ -6,7 +6,7 @@ Status: READY TO SIGN
 
 We are updating the min base fee and DA footprint gas scalar on Base mainnet.
 
-This runbook invokes the following script which allows our signers to sign the same call with two different sets of parameters for our Incident Multisig, defined in the [base-org/contracts](https://github.com/base/contracts) repository:
+This runbook invokes the following script which allows our signers to sign the same call with two different sets of parameters for our Incident Multisig, defined in the [base/contracts](https://github.com/base/contracts) repository:
 
 `SetMinBaseFeeAndDAFootprintScript` -- This script will update the min base fee from 500,000 wei to 1,000,000 wei (2x increase) and the DA footprint gas scalar from 325 to 139 (targeting 14 blobs) if invoked as part of the "upgrade" process, or revert to the old values if invoked as part of the "rollback" process.
 
