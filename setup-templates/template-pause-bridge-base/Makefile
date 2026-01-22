@@ -13,8 +13,20 @@ SENDER=0x1841CB3C2ce6870D0417844C817849da64E6e937
 
 SCRIPT_NAME=PauseBridge
 
+# Validate required configuration before execution
+.PHONY: validate-config
+validate-config:
+	@test -n "$(OP_COMMIT)" || (echo "OP_COMMIT required" && exit 1)
+	@test -n "$(BASE_CONTRACTS_COMMIT)" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
+	@test -n "$(OWNER_SAFE)" || (echo "OWNER_SAFE required" && exit 1)
+	@test -n "$(L1_PORTAL)" || (echo "L1_PORTAL required" && exit 1)
+	@test -n "$(L2_BRIDGE)" || (echo "L2_BRIDGE required" && exit 1)
+	@test -n "$(SENDER)" || (echo "SENDER required" && exit 1)
+	@test -n "$(SAFE_NONCE)" || (echo "SAFE_NONCE required" && exit 1)
+	@echo "Configuration validated successfully"
+
 .PHONY: gen-validation
-gen-validation: checkout-signer-tool run-script
+gen-validation: validate-config checkout-signer-tool run-script
 
 .PHONY: run-script
 run-script:
@@ -25,7 +37,7 @@ run-script:
 	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
 
 .PHONY: sign-pause
-sign-pause:
+sign-pause: validate-config
 	@rm -f signatures-pause.txt
 	@for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
@@ -40,7 +52,7 @@ sign-pause:
 	done
 
 .PHONY: sign-unpause
-sign-unpause:
+sign-unpause: validate-config
 	@rm -f signatures-unpause.txt
 	@for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
@@ -56,12 +68,12 @@ sign-unpause:
 
 # Execute
 .PHONY: execute-pause
-execute-pause:
+execute-pause: validate-config
 	IS_PAUSED=true forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
 
 .PHONY: execute-unpause
-execute-unpause:
+execute-unpause: validate-config
 	IS_PAUSED=false forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
 
