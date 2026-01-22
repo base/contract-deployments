@@ -14,6 +14,22 @@ endif
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = IncreaseEip1559ElasticityAndIncreaseGasLimitScript
 
+# Validate required configuration before execution
+.PHONY: validate-config
+validate-config:
+	@test -n "$(OP_COMMIT)" -a "$(OP_COMMIT)" != "TODO" || (echo "OP_COMMIT required" && exit 1)
+	@test -n "$(BASE_CONTRACTS_COMMIT)" -a "$(BASE_CONTRACTS_COMMIT)" != "TODO" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
+	@test -n "$(OWNER_SAFE)" || (echo "OWNER_SAFE required" && exit 1)
+	@test -n "$(SYSTEM_CONFIG)" || (echo "SYSTEM_CONFIG required" && exit 1)
+	@test -n "$(SENDER)" || (echo "SENDER required" && exit 1)
+	@test -n "$(FROM_GAS_LIMIT)" -a "$(FROM_GAS_LIMIT)" != "TODO" || (echo "FROM_GAS_LIMIT required" && exit 1)
+	@test -n "$(TO_GAS_LIMIT)" -a "$(TO_GAS_LIMIT)" != "TODO" || (echo "TO_GAS_LIMIT required" && exit 1)
+	@test -n "$(FROM_ELASTICITY)" -a "$(FROM_ELASTICITY)" != "TODO" || (echo "FROM_ELASTICITY required" && exit 1)
+	@test -n "$(TO_ELASTICITY)" -a "$(TO_ELASTICITY)" != "TODO" || (echo "TO_ELASTICITY required" && exit 1)
+	@test -n "$(FROM_DA_FOOTPRINT_GAS_SCALAR)" -a "$(FROM_DA_FOOTPRINT_GAS_SCALAR)" != "TODO" || (echo "FROM_DA_FOOTPRINT_GAS_SCALAR required" && exit 1)
+	@test -n "$(TO_DA_FOOTPRINT_GAS_SCALAR)" -a "$(TO_DA_FOOTPRINT_GAS_SCALAR)" != "TODO" || (echo "TO_DA_FOOTPRINT_GAS_SCALAR required" && exit 1)
+	@echo "Configuration validated successfully"
+
 # Calculate the DA footprint gas scalar based on the formula:
 # da_footprint_gas_scalar = gas_limit / (elasticity * target_blob_count * 32,000)
 # Uses TO_GAS_LIMIT and TO_ELASTICITY from .env

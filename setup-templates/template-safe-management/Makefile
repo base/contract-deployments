@@ -10,6 +10,15 @@ ifndef LEDGER_ACCOUNT
 override LEDGER_ACCOUNT = 1
 endif
 
+# Validate required configuration before execution
+.PHONY: validate-config
+validate-config:
+	@test -n "$(OP_COMMIT)" -a "$(OP_COMMIT)" != "TODO" || (echo "OP_COMMIT required" && exit 1)
+	@test -n "$(BASE_CONTRACTS_COMMIT)" -a "$(BASE_CONTRACTS_COMMIT)" != "TODO" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
+	@test -n "$(OWNER_SAFE)" -a "$(OWNER_SAFE)" != "TODO" || (echo "OWNER_SAFE required" && exit 1)
+	@test -n "$(SENDER)" -a "$(SENDER)" != "TODO" || (echo "SENDER required" && exit 1)
+	@echo "Configuration validated successfully"
+
 .PHONY: deps
 deps: new-forge-deps
 

@@ -21,6 +21,15 @@ endif
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = ExampleMultisigScript
 
+# Validate required configuration before execution
+.PHONY: validate-config
+validate-config:
+	@test -n "$(OP_COMMIT)" || (echo "OP_COMMIT required" && exit 1)
+	@test -n "$(BASE_CONTRACTS_COMMIT)" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
+	@test -n "$(OWNER_SAFE)" -a "$(OWNER_SAFE)" != "<SET_MULTISIG_ADDRESS>" || (echo "OWNER_SAFE required" && exit 1)
+	@test -n "$(TARGET)" -a "$(TARGET)" != "<SET_TARGET_ADDRESS>" || (echo "TARGET required" && exit 1)
+	@echo "Configuration validated successfully"
+
 # L2_0
 .PHONY: sign-l2-0
 sign-l2-0:

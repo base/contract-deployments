@@ -10,6 +10,17 @@ ifndef ROLLBACK_NONCE_OFFSET
 override ROLLBACK_NONCE_OFFSET = 1
 endif
 
+# Validate required configuration before execution
+.PHONY: validate-config
+validate-config:
+	@test -n "$(OP_COMMIT)" -a "$(OP_COMMIT)" != "TODO" || (echo "OP_COMMIT required" && exit 1)
+	@test -n "$(BASE_CONTRACTS_COMMIT)" -a "$(BASE_CONTRACTS_COMMIT)" != "TODO" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
+	@test -n "$(L1_SYSTEM_CONFIG_ADDRESS)" || (echo "L1_SYSTEM_CONFIG_ADDRESS required" && exit 1)
+	@test -n "$(SYSTEM_CONFIG_OWNER)" || (echo "SYSTEM_CONFIG_OWNER required" && exit 1)
+	@test -n "$(OLD_GAS_LIMIT)" -a "$(OLD_GAS_LIMIT)" != "TODO" || (echo "OLD_GAS_LIMIT required" && exit 1)
+	@test -n "$(NEW_GAS_LIMIT)" -a "$(NEW_GAS_LIMIT)" != "TODO" || (echo "NEW_GAS_LIMIT required" && exit 1)
+	@echo "Configuration validated successfully"
+
 .PHONY: sign-upgrade
 sign-upgrade:
 	FROM_GAS_LIMIT=$(OLD_GAS_LIMIT) \

@@ -8,6 +8,20 @@ ifndef LEDGER_ACCOUNT
 override LEDGER_ACCOUNT = 0
 endif
 
+# Validate required configuration before execution
+.PHONY: validate-config
+validate-config:
+	@test -n "$(OP_COMMIT)" || (echo "OP_COMMIT required" && exit 1)
+	@test -n "$(BASE_CONTRACTS_COMMIT)" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
+	@test -n "$(ABSOLUTE_PRESTATE)" || (echo "ABSOLUTE_PRESTATE required" && exit 1)
+	@test -n "$(SYSTEM_CONFIG)" || (echo "SYSTEM_CONFIG required" && exit 1)
+	@test -n "$(OWNER_SAFE)" || (echo "OWNER_SAFE required" && exit 1)
+	@test -n "$(CB_SIGNER_SAFE_ADDR)" || (echo "CB_SIGNER_SAFE_ADDR required" && exit 1)
+	@test -n "$(CB_NESTED_SAFE_ADDR)" || (echo "CB_NESTED_SAFE_ADDR required" && exit 1)
+	@test -n "$(CB_SC_SAFE_ADDR)" || (echo "CB_SC_SAFE_ADDR required" && exit 1)
+	@test -n "$(OP_SIGNER_SAFE_ADDR)" || (echo "OP_SIGNER_SAFE_ADDR required" && exit 1)
+	@echo "Configuration validated successfully"
+
 .PHONY: deploy
 deploy:
 	forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
