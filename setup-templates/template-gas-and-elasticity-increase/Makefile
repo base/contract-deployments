@@ -48,7 +48,7 @@ endif
 	@echo "TO_DA_FOOTPRINT_GAS_SCALAR=$$(( $(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) ))"
 
 .PHONY: gen-validation
-gen-validation: checkout-signer-tool run-script
+gen-validation: validate-config checkout-signer-tool run-script
 
 .PHONY: run-script
 run-script:
@@ -63,7 +63,7 @@ run-script:
 	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
 
 .PHONY: execute
-execute:
+execute: validate-config
 	NEW_GAS_LIMIT=$(TO_GAS_LIMIT) \
 	OLD_GAS_LIMIT=$(FROM_GAS_LIMIT) \
 	NEW_ELASTICITY=$(TO_ELASTICITY) \
@@ -73,7 +73,7 @@ execute:
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: gen-validation-rollback
-gen-validation-rollback: checkout-signer-tool run-script-rollback
+gen-validation-rollback: validate-config checkout-signer-tool run-script-rollback
 
 .PHONY: run-script-rollback
 run-script-rollback:
@@ -88,7 +88,7 @@ run-script-rollback:
 	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer-rollback.json;
 
 .PHONY: execute-rollback
-execute-rollback:
+execute-rollback: validate-config
 	OLD_GAS_LIMIT=$(TO_GAS_LIMIT) \
 	NEW_GAS_LIMIT=$(FROM_GAS_LIMIT) \
 	OLD_ELASTICITY=$(TO_ELASTICITY) \

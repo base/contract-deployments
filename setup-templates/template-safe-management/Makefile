@@ -27,7 +27,7 @@ new-forge-deps:
 	forge install --no-git safe-global/safe-smart-account@186a21a74b327f17fc41217a927dea7064f74604
 
 .PHONY: gen-validation
-gen-validation: checkout-signer-tool run-script
+gen-validation: validate-config checkout-signer-tool run-script
 
 .PHONY: run-script
 run-script:
@@ -39,5 +39,5 @@ run-script:
 	$(SCRIPT) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
 
 .PHONY: execute
-execute:
+execute: validate-config
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))

@@ -23,7 +23,7 @@ validate-config:
 
 # TODO: ensure `sender` is a signer for `OWNER_SAFE`
 .PHONY: gen-validation
-gen-validation:
+gen-validation: validate-config
 	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o validations/signer.json \
 	-- forge script --rpc-url $(L1_RPC_URL) SetThreshold \
 	--sig "sign(address[])" "[$(OWNER_SAFE)]" \
@@ -31,5 +31,5 @@ gen-validation:
 
 # Execute
 .PHONY: execute
-execute:
+execute: validate-config
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))

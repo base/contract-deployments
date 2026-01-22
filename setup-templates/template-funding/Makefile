@@ -26,9 +26,9 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: sign
-sign:
+sign: validate-config
 	$(call MULTISIG_SIGN,) --sender $(SENDER)
 
 .PHONY: execute
-execute:
+execute: validate-config
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))

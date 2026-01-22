@@ -32,7 +32,7 @@ validate-config:
 
 # L2_0
 .PHONY: sign-l2-0
-sign-l2-0:
+sign-l2-0: validate-config
 	$(call MULTISIG_SIGN,$(L2_0) $(L1_0))
 
 .PHONY: approve-l2-0
@@ -42,7 +42,7 @@ approve-l2-0:
 
 # L2_1
 .PHONY: sign-l2-1
-sign-l2-1:
+sign-l2-1: validate-config
 	$(call MULTISIG_SIGN,$(L2_0) $(L2_1))
 
 .PHONY: approve-l2-1
@@ -58,7 +58,7 @@ approve-l1-0:
 
 # L1_1
 .PHONY: sign-l1-1
-sign-l1-1:
+sign-l1-1: validate-config
 	$(call MULTISIG_SIGN,$(L1_1))
 
 .PHONY: approve-l1-1
@@ -67,5 +67,5 @@ approve-l1-1:
 
 # Execute
 .PHONY: execute
-execute:
+execute: validate-config
 	$(call MULTISIG_EXECUTE,0x)

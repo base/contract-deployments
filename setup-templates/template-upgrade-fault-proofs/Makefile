@@ -23,7 +23,7 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: deploy
-deploy:
+deploy: validate-config
 	forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
@@ -44,7 +44,7 @@ SCRIPT_NAME = UpgradeDGF
 
 # CB
 .PHONY: sign-cb
-sign-cb:
+sign-cb: validate-config
 	$(call MULTISIG_SIGN,$(CB_NESTED_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR))
 
 .PHONY: approve-cb
@@ -52,7 +52,7 @@ approve-cb:
 	$(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: sign-cb-sc
-sign-cb-sc:
+sign-cb-sc: validate-config
 	$(call MULTISIG_SIGN,$(CB_SC_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR))
 
 .PHONY: approve-cb-sc
@@ -61,7 +61,7 @@ approve-cb-sc:
 
 # OP
 .PHONY: sign-op
-sign-op:
+sign-op: validate-config
 	$(call MULTISIG_SIGN,$(OP_SIGNER_SAFE_ADDR))
 
 .PHONY: approve-op
@@ -70,5 +70,5 @@ approve-op:
 
 # Execute
 .PHONY: execute
-execute:
+execute: validate-config
 	$(call MULTISIG_EXECUTE,0x)

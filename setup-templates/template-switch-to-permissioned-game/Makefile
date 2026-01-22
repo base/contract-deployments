@@ -23,7 +23,7 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: gen-validation
-gen-validation: checkout-signer-tool run-script
+gen-validation: validate-config checkout-signer-tool run-script
 
 .PHONY: run-script
 run-script:
@@ -35,10 +35,10 @@ run-script:
 	$(SCRIPT_NAME) --sig "sign(address[])" ["$(OP_SECURITY_COUNCIL_SAFE)"] --sender $(SENDER)' --out ../validations/op-signer.json;
 
 .PHONY: approve-op
-approve-op:
+approve-op: validate-config
 	$(call MULTISIG_APPROVE,$(OP_SECURITY_COUNCIL_SAFE),$(SIGNATURES))
 
 # Execute
 .PHONY: execute
-execute:
+execute: validate-config
 	$(call MULTISIG_EXECUTE,0x)
