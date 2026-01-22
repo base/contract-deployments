@@ -21,7 +21,7 @@ run-script-cb:
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_NESTED_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" \
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_NESTED_SAFE_ADDR),$(CB_SIGNER_SAFE_ADDR)]" \
 	--sender 0x7f10098bd53519c739ca8a404afe127647d94774' --ledger-id $(LEDGER_ACCOUNT) --out ../validations/coinbase-signer.json;
 
 
@@ -34,7 +34,7 @@ run-script-cb-sc:
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SC_SAFE_ADDR), $(CB_SIGNER_SAFE_ADDR)]" \
+	$(SCRIPT_NAME) --sig "sign(address[])" "[$(CB_SC_SAFE_ADDR),$(CB_SIGNER_SAFE_ADDR)]" \
 	--sender 0x7f10098bd53519c739ca8a404afe127647d94774' --ledger-id $(LEDGER_ACCOUNT) --out ../validations/security-council-signer.json;
 
 .PHONY: gen-validation-op
