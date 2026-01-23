@@ -1,0 +1,66 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "4tJ2bJedAh5RxXWdDZZBHsvVEr1bXNiLvncNKXnXeE4XGfR2bNqwrmyTcsnsfxQkbbYHchZAfRGLvFKV2mogAs56"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 1
+      },
+      "accountKeys": [
+        "BEwzVVw44VLaspWByUML23hbQmo5ndM1NPQAJsvCxC6F",
+        "DiGDfmAgEk9iqJHabJa8Gw8D7aLPtpHNu18c8CLBVFk7",
+        "Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX"
+      ],
+      "recentBlockhash": "EwXtM1sheCFktcaTN3D5yQQrFndvPEkBgLYmPDreQ6D5",
+      "instructions": [
+        {
+          "programIdIndex": 2,
+          "accounts": [
+            1,
+            0
+          ],
+          "data": "8VPNxavkg2Yj38NCocv5Cq5gNj6AXt2M4QRQjqgjJnXPoyHsmdy1UZEdkZSRfz5SJ2VSjhFLhDthhbhmTLgyKHK2RaVDUvk4hdnysf8E",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      408128036020,
+      2345520,
+      1141440
+    ],
+    "postBalances": [
+      408128031020,
+      2345520,
+      1141440
+    ],
+    "innerInstructions": [],
+    "logMessages": [
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX invoke [1]",
+      "Program log: Instruction: FinalizeSignatures",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX consumed 6071 of 200000 compute units",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 6071
+  },
+  "blockTime": 1768497544,
+  "slot": 435366375
+}
