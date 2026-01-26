@@ -1,6 +1,6 @@
 # Update Min Base Fee & DA Footprint Gas Scalar in L1 `SystemConfig`
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x3be4d20dad2aa0b98938e806619a2948f7f6ac74d63181f74aa169c8ea4afc35)
 
 ## Description
 
