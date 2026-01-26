@@ -31,12 +31,6 @@
           "allowDifference": false
         },
         {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000072",
-          "description": "Override the nonce to be our expected value after initial execution.",
-          "allowDifference": false
-        },
-        {
           "key": "0xd93dc6d09a277b8f48e23455857e83289fddec897e14aafa3053bbe138e380e7",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
