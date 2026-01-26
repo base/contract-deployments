@@ -1,6 +1,6 @@
 # OP Stack Upgrade 18
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x357c790c6665a036dd658cfe5b22b8a46b084da8473e9a145f7c1cc96abe8196)
 
 ## Description
 
