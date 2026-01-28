@@ -89,7 +89,7 @@ When an emergency action (Pause) or recovery (Unpause) is required:
 
 Check the current `preOpCount` (nonce) of the multisig. You can check this on the Solana Explorer by looking at the Multisig account data, or by inspecting the error if a dry-run fails.
 
-### 3.2. aggregate Signatures
+### 3.2. Aggregate Signatures
 
 Concatenate signatures in the format: `0xSIG1,0xSIG2,0xSIG3`
 
