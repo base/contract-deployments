@@ -2,14 +2,16 @@
 pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
-import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
+
+import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
+import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
+
 import {IAnchorStateRegistry} from "@eth-optimism-bedrock/src/dispute/FaultDisputeGame.sol";
 import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
 import {DisputeGameFactory} from "@eth-optimism-bedrock/src/dispute/DisputeGameFactory.sol";
 import {FaultDisputeGame} from "@eth-optimism-bedrock/src/dispute/PermissionedDisputeGame.sol";
 import {GameTypes, GameType} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
-import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
-import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 
 /// @notice This script updates the respectedGameType and retires existing games in the AnchorStateRegistry.
 contract SwitchToPermissionedGame is MultisigScript {
@@ -39,20 +41,20 @@ contract SwitchToPermissionedGame is MultisigScript {
         );
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](2);
+    function _buildCalls() internal view override returns (Call[] memory) {
+        Call[] memory calls = new Call[](2);
 
-        calls[0] = IMulticall3.Call3Value({
+        calls[0] = Call({
+            operation: Enum.Operation.Call,
             target: address(anchorStateRegistry),
-            allowFailure: false,
-            callData: abi.encodeCall(IAnchorStateRegistry.setRespectedGameType, (GameTypes.PERMISSIONED_CANNON)),
+            data: abi.encodeCall(IAnchorStateRegistry.setRespectedGameType, (GameTypes.PERMISSIONED_CANNON)),
             value: 0
         });
 
-        calls[1] = IMulticall3.Call3Value({
+        calls[1] = Call({
+            operation: Enum.Operation.Call,
             target: address(anchorStateRegistry),
-            allowFailure: false,
-            callData: abi.encodeCall(IAnchorStateRegistry.updateRetirementTimestamp, ()),
+            data: abi.encodeCall(IAnchorStateRegistry.updateRetirementTimestamp, ()),
             value: 0
         });
 
