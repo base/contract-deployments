@@ -47,7 +47,8 @@ contract SetMinBaseFeeScript is MultisigScript {
             bytes32 minBaseFeeSlotKey = bytes32(uint256(0x6c));
             uint256 existingMinBaseFeeWord = uint256(vm.load(SYSTEM_CONFIG, minBaseFeeSlotKey));
             uint256 updatedMinBaseFeeWord = (existingMinBaseFeeWord & ((1 << 160) - 1)) | (uint256(MIN_BASE_FEE) << 160);
-            storageOverrides[0] = Simulation.StorageOverride({key: minBaseFeeSlotKey, value: bytes32(updatedMinBaseFeeWord)});
+            storageOverrides[0] =
+                Simulation.StorageOverride({key: minBaseFeeSlotKey, value: bytes32(updatedMinBaseFeeWord)});
 
             stateOverrides[0] = Simulation.StateOverride({contractAddress: SYSTEM_CONFIG, overrides: storageOverrides});
             return stateOverrides;

@@ -7,7 +7,7 @@ Guide for facilitators after collecting signatures from signers.
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/TODO
+cd mainnet/2026-01-28-update-min-base-fee
 make deps
 ```
 

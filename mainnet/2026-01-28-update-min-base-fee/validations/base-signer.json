@@ -49,7 +49,7 @@
           "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
           "before": "0x0000000000000000000f424095703e0982140d16f8eba6d158fccede42f04a4c",
           "after": "0x0000000000000000001e848095703e0982140d16f8eba6d158fccede42f04a4c",
-          "description": "Updates Min Base Fee and Superchain Config address",
+          "description": "Updates min base fee from 1M wei (0xF4240) to 2M wei (0x1E8480).",
           "allowDifference": false
         }
       ]
