@@ -1,0 +1,59 @@
+{
+  "cmd": "NEW_MIN_BASE_FEE=2000000 OLD_MIN_BASE_FEE=1000000 forge script --rpc-url https://eth-mainnet.public.blastapi.io SetMinBaseFeeScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x82d8245851a2f2423bf94988a880bd38f27376462f845ce05483f75e80d93018"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xf81fc2071b1687dd1159dd28e26ae77fee04a1b8d388330c8780bcbad62f1140",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000065",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000066",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x0000000000000000000f424095703e0982140d16f8eba6d158fccede42f04a4c",
+          "after": "0x0000000000000000001e848095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "Updates min base fee from 1M wei (0xF4240) to 2M wei (0x1E8480).",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
