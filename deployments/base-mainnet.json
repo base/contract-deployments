@@ -1,0 +1,14 @@
+{
+  "SigilCodex": {
+    "address": "0xB37F3c4B54F5c739Dd02A97c2Cd47628d622Ea3E",
+    "version": "1.0.0",
+    "verified": true,
+    "description": "NFT identity system that generates symbolic sigils on Base network."
+  },
+  "EchoCity": {
+    "address": "0x7c2Bf8342F1148d29c84e3f8c8d84e319fC5dE10",
+    "version": "1.0.0",
+    "verified": true,
+    "description": "Decentralized soundscape where users leave audio echoes pinned to coordinates."
+  }
+}

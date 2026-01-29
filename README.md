@@ -209,3 +209,7 @@ This template is used to switch Base to a Permissioned Game.
 1. Generate the validation file for signers with `make gen-validation`.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+
+## Community Deployments Added
+- **SigilCodex** — NFT identity contract deployed by @aradeaward on Base mainnet.
+- **EchoCity** — Audio mapping dApp storing metadata and IPFS hashes on Base.
