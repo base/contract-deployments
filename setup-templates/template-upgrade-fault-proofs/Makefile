@@ -1,12 +1,22 @@
 include ../../Makefile
 include ../../Multisig.mk
-
 include ../.env
+
+# Load network-specific config
+ifeq ($(NETWORK),mainnet)
+include ../../config/mainnet.env
+else ifeq ($(NETWORK),sepolia)
+include ../../config/sepolia.env
+endif
+
 include .env
 
-ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 0
-endif
+# Map config variables to script variables
+OWNER_SAFE ?= $(PROXY_ADMIN_OWNER)
+CB_SIGNER_SAFE_ADDR ?= $(CB_COORDINATOR_MULTISIG)
+CB_NESTED_SAFE_ADDR ?= $(CB_MULTISIG)
+CB_SC_SAFE_ADDR ?= $(BASE_SECURITY_COUNCIL)
+OP_SIGNER_SAFE_ADDR ?= $(OP_MULTISIG)
 
 # Validate required configuration before execution
 .PHONY: validate-config

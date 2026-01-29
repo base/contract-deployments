@@ -1,17 +1,18 @@
 include ../../Makefile
 include ../../Multisig.mk
-
 include ../.env
-include .env
 
-ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 0
+# Load network-specific config
+ifeq ($(NETWORK),mainnet)
+include ../../config/mainnet.env
+else ifeq ($(NETWORK),sepolia)
+include ../../config/sepolia.env
 endif
 
+include .env
 
 # OWNER_SAFE/
 # └── Signers
-
 
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = FundScript

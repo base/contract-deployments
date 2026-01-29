@@ -1,11 +1,18 @@
 include ../../Makefile
 include ../../Multisig.mk
 include ../.env
+
+# Load network-specific config
+ifeq ($(NETWORK),mainnet)
+include ../../config/mainnet.env
+else ifeq ($(NETWORK),sepolia)
+include ../../config/sepolia.env
+endif
+
 include .env
 
-ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 0
-endif
+# Map config variables to script variables
+OWNER_SAFE ?= $(INCIDENT_MULTISIG)
 
 ifndef ROLLBACK_NONCE_OFFSET
 override ROLLBACK_NONCE_OFFSET = 1

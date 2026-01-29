@@ -1,14 +1,18 @@
 include ../../Makefile
 include ../../Multisig.mk
 include ../.env
+
+# Load network-specific config
+ifeq ($(NETWORK),mainnet)
+include ../../config/mainnet.env
+else ifeq ($(NETWORK),sepolia)
+include ../../config/sepolia.env
+endif
+
 include .env
 
 RPC_URL = $(L1_RPC_URL)
 SCRIPT = UpdateSigners
-
-ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 1
-endif
 
 # Validate required configuration before execution
 .PHONY: validate-config

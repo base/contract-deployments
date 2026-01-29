@@ -1,10 +1,18 @@
 include ../../Makefile
 include ../.env
+
+# Load network-specific config
+ifeq ($(NETWORK),mainnet)
+include ../../config/mainnet.env
+else ifeq ($(NETWORK),sepolia)
+include ../../config/sepolia.env
+endif
+
 include .env
 
-ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 0
-endif
+# Map config variables to script variables
+L1_SYSTEM_CONFIG_ADDRESS ?= $(SYSTEM_CONFIG)
+SYSTEM_CONFIG_OWNER ?= $(INCIDENT_MULTISIG)
 
 ifndef ROLLBACK_NONCE_OFFSET
 override ROLLBACK_NONCE_OFFSET = 1
