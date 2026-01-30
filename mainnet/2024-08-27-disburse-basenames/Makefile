@@ -42,7 +42,7 @@ deps: install-eip712sign clean-lib forge-deps checkout-base-contracts-commit par
 
 .PHONY: install-eip712sign
 install-eip712sign:
-	go install github.com/base/eip712sign@v0.0.11
+	go install github.com/base/eip712sign@v0.0.15
 
 .PHONY: clean-lib
 clean-lib:
