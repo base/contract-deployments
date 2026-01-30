@@ -51,7 +51,7 @@ Expected output: `2230e7872a71d99d00`
 
 This is the discriminant (`2230e7872a71d99d`) followed by the Borsh-encoded threshold value (`00` = 0 in u8).
 
-#### 3.3. Verify Proposal Metadata
+#### 3.2. Verify Proposal Metadata
 
 Check the proposal metadata in `proposal.json`:
 
