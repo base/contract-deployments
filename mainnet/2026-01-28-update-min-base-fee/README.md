@@ -1,6 +1,6 @@
 # Update Min Base Fee in L1 `SystemConfig`
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x1d4e49864eea071c2cdd880aa6d217a27ac766cab65eb5ac9211ebed4e88b80d)
 
 ## Description
 
