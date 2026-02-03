@@ -39,7 +39,7 @@
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "value": "0x00000000000000000000008b000000000000000000000000000000060000007d",
-          "description": "",
+          "description": "Override EIP-1559 denominator to 125 (post-upgrade value) for rollback simulation",
           "allowDifference": false
         }
       ]
@@ -67,7 +67,7 @@
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "before": "0x00000000000000000000008b000000000000000000000000000000060000007d",
           "after": "0x00000000000000000000008b0000000000000000000000000000000600000032",
-          "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain",
+          "description": "Updates EIP-1559 denominator from 125 to 50 (rollback)",
           "allowDifference": false
         }
       ]
