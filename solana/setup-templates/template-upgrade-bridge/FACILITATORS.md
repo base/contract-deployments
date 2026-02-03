@@ -138,7 +138,7 @@ SPILL=<your-wallet-address>
 Then run:
 
 ```bash
-make step6-create-upgrade-proposal
+make step6-create-proposal
 ```
 
 This creates `upgrade-proposal.json` with the program upgrade instruction.
