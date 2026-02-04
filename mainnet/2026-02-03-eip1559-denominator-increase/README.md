@@ -1,10 +1,6 @@
 # Increase EIP-1559 Denominator in L1 `SystemConfig`
 
-Status: READY TO SIGN
-
-## Executed Transactions
-
-PENDING
+Status: [EXECUTED](https://etherscan.io/tx/0x30bb34595b1536556112591bfd26b9b24096dbfb37d59cc13515101a5f8b4de5)
 
 ## Description
 
