@@ -42,7 +42,9 @@ run-script:
 
 .PHONY: execute
 execute: validate-config
-	$(call MULTISIG_EXECUTE,$(SIGNATURES),NEW_DENOMINATOR=$(TO_DENOMINATOR) OLD_DENOMINATOR=$(FROM_DENOMINATOR))
+	NEW_DENOMINATOR=$(TO_DENOMINATOR) \
+	OLD_DENOMINATOR=$(FROM_DENOMINATOR) \
+	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: gen-validation-rollback
 gen-validation-rollback: validate-config checkout-signer-tool run-script-rollback
