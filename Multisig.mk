@@ -30,10 +30,10 @@ $(call require_vars,MULTISIG_APPROVE,LEDGER_ACCOUNT RPC_URL SCRIPT_NAME)
 	--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 endef
 
-# MULTISIG_EXECUTE: $(1)=signatures for run(bytes) (e.g., 0x or $(SIGNATURES))
+# MULTISIG_EXECUTE: $(1)=signatures for run(bytes) (e.g., 0x or $(SIGNATURES)), $(2)=optional env vars prefix
 define MULTISIG_EXECUTE
 $(call require_vars,MULTISIG_EXECUTE,LEDGER_ACCOUNT RPC_URL SCRIPT_NAME)
-	forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
+	$(2) forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
 	--sig "run(bytes)" $(1) \
 	--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 endef
