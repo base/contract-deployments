@@ -1,0 +1,73 @@
+{
+  "cmd": "NEW_GAS_LIMIT=375000000 NEW_ELASTICITY=6 NEW_MIN_BASE_FEE=2000000 NEW_DA_FOOTPRINT_GAS_SCALAR=139 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateGasElasticityAndMinBaseFeeScript --sig sign(address[]) [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "messageHash": "0xddbb06fb71c45846c7bd8df7a80af300649b81df374fc02aa242bdfb9f5471f3"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x86d5b71924eaf506fea81f58cbf83847498f56ee9d5eb866cada50e271fd6633",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000011",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000012",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x00000000000000000000000000000000000a118b0000044d0000000003938700",
+          "after": "0x00000000000000000000000000000000000a118b0000044d00000000165a0bc0",
+          "description": "Updates the gas limit from 60,000,000 to 375,000,000",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000001380000000000000000000000000000000400000032",
+          "after": "0x00000000000000000000008b0000000000000000000000000000000600000032",
+          "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x000000000000000000030d40c2be75506d5724086deb7245bd260cc9753911be",
+          "after": "0x0000000000000000001e8480c2be75506d5724086deb7245bd260cc9753911be",
+          "description": "Updates Min Base Fee and Superchain Config address",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
