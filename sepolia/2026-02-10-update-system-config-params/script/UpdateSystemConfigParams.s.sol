@@ -19,13 +19,13 @@ interface ISystemConfig {
     function setDAFootprintGasScalar(uint16 _daFootprintGasScalar) external;
 }
 
-contract UpdateGasElasticityAndMinBaseFeeScript is MultisigScript {
+contract UpdateSystemConfigParamsScript is MultisigScript {
     address internal immutable OWNER_SAFE;
     address internal immutable SYSTEM_CONFIG;
 
     uint64 internal immutable NEW_GAS_LIMIT;
     uint32 internal immutable NEW_ELASTICITY;
-    uint32 internal immutable DENOMINATOR;
+    uint32 internal immutable NEW_DENOMINATOR;
     uint64 internal immutable NEW_MIN_BASE_FEE;
     uint16 internal immutable NEW_DA_FOOTPRINT_GAS_SCALAR;
 
@@ -35,15 +35,13 @@ contract UpdateGasElasticityAndMinBaseFeeScript is MultisigScript {
 
         NEW_GAS_LIMIT = uint64(vm.envUint("NEW_GAS_LIMIT"));
         NEW_ELASTICITY = uint32(vm.envUint("NEW_ELASTICITY"));
+        NEW_DENOMINATOR = uint32(vm.envUint("NEW_DENOMINATOR"));
         NEW_MIN_BASE_FEE = uint64(vm.envUint("NEW_MIN_BASE_FEE"));
         NEW_DA_FOOTPRINT_GAS_SCALAR = uint16(vm.envUint("NEW_DA_FOOTPRINT_GAS_SCALAR"));
-
-        // Read the current denominator on-chain; we preserve it unchanged.
-        DENOMINATOR = ISystemConfig(SYSTEM_CONFIG).eip1559Denominator();
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
-        vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Denominator(), DENOMINATOR, "Denominator mismatch");
+        vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Denominator(), NEW_DENOMINATOR, "Denominator mismatch");
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity(), NEW_ELASTICITY, "Elasticity mismatch");
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).gasLimit(), NEW_GAS_LIMIT, "Gas Limit mismatch");
         vm.assertEq(ISystemConfig(SYSTEM_CONFIG).minBaseFee(), NEW_MIN_BASE_FEE, "Min Base Fee mismatch");
@@ -60,7 +58,7 @@ contract UpdateGasElasticityAndMinBaseFeeScript is MultisigScript {
         calls[0] = IMulticall3.Call3Value({
             target: SYSTEM_CONFIG,
             allowFailure: false,
-            callData: abi.encodeCall(ISystemConfig.setEIP1559Params, (DENOMINATOR, NEW_ELASTICITY)),
+            callData: abi.encodeCall(ISystemConfig.setEIP1559Params, (NEW_DENOMINATOR, NEW_ELASTICITY)),
             value: 0
         });
 

@@ -10,6 +10,7 @@ This task brings Base Sepolia's SystemConfig parameters to parity with Base Main
 |-----------|----------------|---------------------|
 | Gas Limit | 60,000,000 | 375,000,000 |
 | EIP-1559 Elasticity | 4 | 6 |
+| EIP-1559 Denominator | 50 | 125 |
 | Min Base Fee | 200,000 wei | 2,000,000 wei |
 | DA Footprint Gas Scalar | 312 | 139 |
 
@@ -20,7 +21,7 @@ da_footprint_gas_scalar = gas_limit / (elasticity * target_blob_count * 32,000)
                         = 375,000,000 / (6 * 14 * 32,000) = 139
 ```
 
-This runbook invokes the `UpdateGasElasticityAndMinBaseFeeScript` defined in the [base/contracts](https://github.com/base/contracts) repository. The values we are sending are statically defined in the `.env` file.
+This runbook invokes the `UpdateSystemConfigParamsScript` defined in the [base/contracts](https://github.com/base/contracts) repository. The values we are sending are statically defined in the `.env` file.
 
 ## Install dependencies
 
