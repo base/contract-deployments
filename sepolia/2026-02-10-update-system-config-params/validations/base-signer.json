@@ -1,11 +1,11 @@
 {
-  "cmd": "NEW_GAS_LIMIT=375000000 NEW_ELASTICITY=6 NEW_MIN_BASE_FEE=2000000 NEW_DA_FOOTPRINT_GAS_SCALAR=139 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateGasElasticityAndMinBaseFeeScript --sig sign(address[]) [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
+  "cmd": "NEW_GAS_LIMIT=375000000 NEW_ELASTICITY=6 NEW_DENOMINATOR=125 NEW_MIN_BASE_FEE=2000000 NEW_DA_FOOTPRINT_GAS_SCALAR=139 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateSystemConfigParamsScript --sig sign(address[]) [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
   "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
     "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
     "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
-    "messageHash": "0xddbb06fb71c45846c7bd8df7a80af300649b81df374fc02aa242bdfb9f5471f3"
+    "messageHash": "0x41dd7da37d1178899ce0fdd3c7827353d3d6dc8740c1481b1dcb30425d19d437"
   },
   "stateOverrides": [
     {
@@ -19,7 +19,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x86d5b71924eaf506fea81f58cbf83847498f56ee9d5eb866cada50e271fd6633",
+          "key": "0xae21e3a06579a6f2a68863f5054be58a7e52062d0aed65fa74ea79760cc6f48b",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -55,7 +55,7 @@
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "before": "0x0000000000000000000001380000000000000000000000000000000400000032",
-          "after": "0x00000000000000000000008b0000000000000000000000000000000600000032",
+          "after": "0x00000000000000000000008b000000000000000000000000000000060000007d",
           "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain",
           "allowDifference": false
         },
