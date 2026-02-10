@@ -1,6 +1,6 @@
 # Update SystemConfig Parameters on Base Sepolia
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x448c6318e1f6fb2f247944d4377a977158f07a56eb84a19362ecfeca770e3a06) ([artefact](./records/UpdateSystemConfigParams.s.sol/11155111/run-1770758365511.json))
 
 ## Description
 
