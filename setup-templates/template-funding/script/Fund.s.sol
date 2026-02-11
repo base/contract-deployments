@@ -2,10 +2,10 @@
 pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
-import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
 
 contract FundScript is MultisigScript {
     address internal immutable OWNER_SAFE;
@@ -45,12 +45,11 @@ contract FundScript is MultisigScript {
         require(OWNER_SAFE.balance >= TOTAL_FUNDS, "OWNER_SAFE not enough balance");
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](RECIPIENTS.length);
+    function _buildCalls() internal view override returns (Call[] memory) {
+        Call[] memory calls = new Call[](RECIPIENTS.length);
 
         for (uint256 i; i < RECIPIENTS.length; i++) {
-            calls[i] =
-                IMulticall3.Call3Value({target: RECIPIENTS[i], allowFailure: false, callData: "", value: FUNDS[i]});
+            calls[i] = Call({operation: Enum.Operation.Call, target: RECIPIENTS[i], data: "", value: FUNDS[i]});
         }
 
         return calls;

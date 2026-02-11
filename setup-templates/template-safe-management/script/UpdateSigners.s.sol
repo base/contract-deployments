@@ -3,10 +3,11 @@ pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
 import {stdJson} from "forge-std/StdJson.sol";
-import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
+import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
+
 import {GnosisSafe} from "safe-smart-account/GnosisSafe.sol";
 import {OwnerManager} from "safe-smart-account/base/OwnerManager.sol";
 
@@ -103,24 +104,23 @@ contract UpdateSigners is MultisigScript {
         }
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls =
-            new IMulticall3.Call3Value[](OWNERS_TO_ADD.length + OWNERS_TO_REMOVE.length);
+    function _buildCalls() internal view override returns (Call[] memory) {
+        Call[] memory calls = new Call[](OWNERS_TO_ADD.length + OWNERS_TO_REMOVE.length);
 
         for (uint256 i; i < OWNERS_TO_ADD.length; i++) {
-            calls[i] = IMulticall3.Call3Value({
+            calls[i] = Call({
+                operation: Enum.Operation.Call,
                 target: OWNER_SAFE,
-                allowFailure: false,
-                callData: abi.encodeCall(OwnerManager.addOwnerWithThreshold, (OWNERS_TO_ADD[i], THRESHOLD)),
+                data: abi.encodeCall(OwnerManager.addOwnerWithThreshold, (OWNERS_TO_ADD[i], THRESHOLD)),
                 value: 0
             });
         }
 
         for (uint256 i; i < OWNERS_TO_REMOVE.length; i++) {
-            calls[OWNERS_TO_ADD.length + i] = IMulticall3.Call3Value({
+            calls[OWNERS_TO_ADD.length + i] = Call({
+                operation: Enum.Operation.Call,
                 target: OWNER_SAFE,
-                allowFailure: false,
-                callData: abi.encodeCall(
+                data: abi.encodeCall(
                     OwnerManager.removeOwner, (ownerToPrevOwner[OWNERS_TO_REMOVE[i]], OWNERS_TO_REMOVE[i], THRESHOLD)
                 ),
                 value: 0
