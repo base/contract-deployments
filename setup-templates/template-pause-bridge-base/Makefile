@@ -63,7 +63,7 @@ sign-pause: validate-config
 		echo "Nonce: $$nonce" >> signatures-pause.txt; \
 		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-pause.txt || true; \
 		echo "" >> signatures-pause.txt; \
-		rm sign_output.tmp; \
+		rm -f sign_output.tmp; \
 	done
 
 .PHONY: sign-unpause
@@ -78,7 +78,7 @@ sign-unpause: validate-config
 		echo "Nonce: $$nonce" >> signatures-unpause.txt; \
 		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-unpause.txt || true; \
 		echo "" >> signatures-unpause.txt; \
-		rm sign_output.tmp; \
+		rm -f sign_output.tmp; \
 	done
 
 # Execute
