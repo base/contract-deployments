@@ -1,0 +1,59 @@
+{
+  "cmd": "NEW_MIN_BASE_FEE=5000000 OLD_MIN_BASE_FEE=2000000 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net SetMinBaseFeeScript --sig sign(address[]) [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "messageHash": "0xebb18e5aa8bce278b05af7ba268b4c68e6efa18dd58463f63e93b42ed2cbb556"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x254730a300eafec4345dc022d409eea8870ec3706f5ca337a243c35509abd161",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000012",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "changes": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x0000000000000000001e8480c2be75506d5724086deb7245bd260cc9753911be",
+          "after": "0x0000000000000000004c4b40c2be75506d5724086deb7245bd260cc9753911be",
+          "description": "Updates min base fee from 2M wei (0x1E8480) to 5M wei (0x4C4B40).",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
