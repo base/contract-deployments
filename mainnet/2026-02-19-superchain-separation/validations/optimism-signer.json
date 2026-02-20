@@ -1,0 +1,99 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io UpdateProxyAdminOwnerSigners --sig sign(address[]) [0x9BA6e03D8B90dE867373Db8cF1A58d2F7F006b3A] --sender 0x42d27eEA1AD6e22Af6284F609847CB3Cd56B9c64",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x2e5ad244d335c45fbace4ebd1736b0fad81b01591a2819baedad311ead5bce76",
+    "messageHash": "0x7f5de36359f775e1c37d61905081bc7dffd5ed6905f209a3d24fcc2ef7171014"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OP Signer Safe - Mainnet",
+      "address": "0x9ba6e03d8b90de867373db8cf1a58d2f7f006b3a",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x084f23a835476254f554ff008fb4f329b511becce8e5c2e5beb3e32ffaf3cf68",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Increments the Safe nonce from 12 to 13 after executing the swapOwner transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x32a1a1697b7d58db65fedf41799bee0099320ee6b08d854617ae83bf8f45f996",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets approvedHashes[OP Safe][txHash] = 1, recording the OP Safe's approval for this transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xad7f222f29a1b375bb6b2847405c3279f1dff83a30de9e555815353d94c2306b",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Removes OP Safe (0x9ba6e03d8b90de867373db8cf1a58d2f7f006b3a) from the owners linked list by clearing its entry.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb79e2255a19f37f0fc20cbcd8e46bdb84bf2577e147dcf50c4471a96c0623f53",
+          "before": "0x0000000000000000000000009ba6e03d8b90de867373db8cf1a58d2f7f006b3a",
+          "after": "0x00000000000000000000000020acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
+          "description": "Updates the owners linked list pointer to replace OP Safe with Security Council Safe (0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc68c82056a4782e6920506248dec06b7949eabf81d66a13e5e8ec70d4e8f4b13",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Adds Security Council Safe to the owners linked list by setting its entry to point to SENTINEL (0x1).",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OP Signer Safe - Mainnet",
+      "address": "0x9ba6e03d8b90de867373db8cf1a58d2f7f006b3a",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000071",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000072",
+          "description": "Increments the Safe nonce from 113 to 114 after the signer submits their approval.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
