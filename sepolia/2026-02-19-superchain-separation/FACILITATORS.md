@@ -1,6 +1,6 @@
 # Facilitator Instructions
 
-This document describes how to execute the Supernova Sepolia transactions after collecting signatures.
+This document describes how to execute the Superchain separation sepolia transactions after collecting signatures.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ This document describes how to execute the Supernova Sepolia transactions after 
 ```bash
 cd contract-deployments
 git pull
-cd sepolia/2026-01-17-supernova
+cd sepolia/2026-02-19-superchain-separation
 make deps
 ```
 
