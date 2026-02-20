@@ -9,6 +9,7 @@ FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 SWITCH_TO_PERMISSIONED_GAME_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game
+PAUSE_SUPERCHAIN_CONFIG_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-superchain-config
 
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
@@ -19,6 +20,7 @@ TEMPLATE_FUNDING = setup-templates/template-funding
 TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
 TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
 TEMPLATE_SWITCH_TO_PERMISSIONED_GAME = setup-templates/template-switch-to-permissioned-game
+TEMPLATE_PAUSE_SUPERCHAIN_CONFIG = setup-templates/template-pause-superchain-config
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
@@ -75,6 +77,11 @@ setup-bridge-pause:
 setup-switch-to-permissioned-game:
 	rm -rf $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/cache $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/lib $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/out
 	cp -r $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME) $(SWITCH_TO_PERMISSIONED_GAME_DIR)
+
+# Run `make setup-superchain-config-pause network=<network>`
+setup-superchain-config-pause:
+	rm -rf $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/cache $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/lib $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/out
+	cp -r $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG) $(PAUSE_SUPERCHAIN_CONFIG_DIR)
 
 ##
 # Solidity Setup

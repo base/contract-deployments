@@ -45,6 +45,7 @@ To execute a new task, run one of the following commands (depending on the type 
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
 - For switching to a permissioned game and retiring dispute games: `make setup-switch-to-permissioned-game network=<network>`
+- For pausing SuperchainConfig: `make setup-superchain-config-pause network=<network>`
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
@@ -207,5 +208,19 @@ This template is used to switch Base to a Permissioned Game.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Build the contracts with `forge build`.
 1. Generate the validation file for signers with `make gen-validation`.
+1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
+1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+
+## Using the pause SuperchainConfig template
+
+This template is used to pause or un-pause the L1 SuperchainConfig contract.
+
+1. Ensure you have followed the instructions above in `setup`.
+1. Run `make setup-superchain-config-pause network=<network>` and go to the folder that was created by this command.
+1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Run `make deps`.
+1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
+1. Build the contracts with `forge build`.
+1. Sign the pause transaction with `make sign-pause` or generate the validation file for un-pausing with `make gen-validation-unpause`.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
