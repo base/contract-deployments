@@ -22,11 +22,12 @@ sign-pause:
 		SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
-		echo "Nonce: $$nonce" >> signatures-pause.txt; \
-		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-pause.txt || true; \
-		echo "" >> signatures-pause.txt; \
-		rm sign_output.tmp; \
-	done
+		signer=$$(grep "^Signer:" sign_output.tmp | awk '{print $$2}'); \
+		sig=$$(grep "^Signature:" sign_output.tmp | awk '{print $$2}'); \
+		printf "%s," "$$signer:$$nonce:$$sig" >> signatures-pause.txt; \
+		rm -f sign_output.tmp; \
+	done; \
+	echo "" >> signatures-pause.txt
 
 # Execute
 .PHONY: execute-pause
