@@ -34,8 +34,6 @@ contract DeployDisputeGames is Script {
     Claim immutable absolutePrestate;
 
     FaultDisputeGameV2.GameConstructorParams dgParams;
-    address proposer;
-    address challenger;
 
     constructor() {
         absolutePrestate = Claim.wrap(vm.envBytes32("ABSOLUTE_PRESTATE"));
@@ -51,9 +49,6 @@ contract DeployDisputeGames is Script {
         uint256 splitDepth = currentFdg.splitDepth();
         Duration clockExtension = currentFdg.clockExtension();
         Duration maxClockDuration = currentFdg.maxClockDuration();
-
-        proposer = currentPdg.proposer();
-        challenger = currentPdg.challenger();
 
         dgParams = FaultDisputeGameV2.GameConstructorParams({
             maxGameDepth: maxGameDepth,
@@ -76,6 +71,13 @@ contract DeployDisputeGames is Script {
         require(fdg.splitDepth() == dgParams.splitDepth, "Postcheck 4");
         require(fdg.clockExtension().raw() == dgParams.clockExtension.raw(), "Postcheck 5");
         require(fdg.maxClockDuration().raw() == dgParams.maxClockDuration.raw(), "Postcheck 6");
+
+        require(pdg.gameType().raw() == GameTypes.PERMISSIONED_CANNON.raw(), "Postcheck 7");
+        require(pdg.absolutePrestate().raw() == absolutePrestate.raw(), "Postcheck 8");
+        require(pdg.maxGameDepth() == dgParams.maxGameDepth, "Postcheck 9");
+        require(pdg.splitDepth() == dgParams.splitDepth, "Postcheck 10");
+        require(pdg.clockExtension().raw() == dgParams.clockExtension.raw(), "Postcheck 11");
+        require(pdg.maxClockDuration().raw() == dgParams.maxClockDuration.raw(), "Postcheck 12");
     }
 
     function run() public {
