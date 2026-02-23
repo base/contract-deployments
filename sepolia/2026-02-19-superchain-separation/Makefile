@@ -30,20 +30,6 @@ CB_SIGNER_SENDER   := 0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f
         execute-cbsafesigners execute-systemconfig execute-feedisburser
 
 ##
-# Override checkout-op-commit to apply the patch after checkout
-##
-checkout-op-commit:
-	@[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1)
-	rm -rf lib/optimism
-	mkdir -p lib/optimism
-	cd lib/optimism && \
-		git init && \
-		git remote add origin https://github.com/ethereum-optimism/optimism.git && \
-		git fetch --depth=1 origin $(OP_COMMIT) && \
-		git reset --hard FETCH_HEAD && \
-		git apply ../../$(OP_CONTRACT_PATCH)
-
-##
 # Signer Tool Setup
 ##
 deps-signer-tool: checkout-signer-tool

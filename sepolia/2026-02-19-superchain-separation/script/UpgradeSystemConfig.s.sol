@@ -5,8 +5,8 @@ import {Vm} from "forge-std/Vm.sol";
 
 import {MultisigScript, Enum} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {SystemConfig, IResourceMetering, ISuperchainConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
-import {IProxyAdmin} from "@eth-optimism-bedrock/interfaces/universal/IProxyAdmin.sol";
+import {SystemConfig, IResourceMetering, ISuperchainConfig} from "@base-contracts/src/L1/SystemConfig.sol";
+import {IProxyAdmin} from "@base-contracts/interfaces/universal/IProxyAdmin.sol";
 
 /// @title UpgradeSystemConfig
 /// @notice Script to upgrade the SystemConfig proxy to a new implementation and reinitialize

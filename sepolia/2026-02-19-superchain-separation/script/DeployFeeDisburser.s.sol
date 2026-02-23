@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity 0.8.25;
 
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 
-import {FeeDisburser} from "../src/FeeDisburser.sol";
+import {FeeDisburser} from "@base-contracts/src/revenue-share/FeeDisburser.sol";
 
 /// @title DeployFeeDisburser
 /// @notice Deploys the FeeDisburser contract which collects fees from L2 FeeVaults and bridges them to L1.
