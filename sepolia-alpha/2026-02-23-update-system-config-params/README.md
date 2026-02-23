@@ -6,7 +6,7 @@ Status: READY TO SIGN
 
 This task brings Base Sepolia Alpha's SystemConfig parameters to parity with Base Mainnet by updating:
 
-| Parameter | From (Sepolia) | To (Mainnet parity) |
+| Parameter | From (Sepolia Alpha) | To (Mainnet parity) |
 |-----------|----------------|---------------------|
 | Gas Limit | 60,000,000 | 200,000,000 |
 | EIP-1559 Elasticity | 4 | 6 |
