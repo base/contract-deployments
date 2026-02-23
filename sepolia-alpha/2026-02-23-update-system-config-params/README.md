@@ -6,11 +6,11 @@ Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x9a0c01b65b217361cd4dcd2106b
 
 This task brings Base Sepolia Alpha's SystemConfig parameters to parity with Base Mainnet by updating:
 
-| Parameter            | From (Sepolia Alpha) | To (Mainnet parity) |
-| -------------------- | -------------------- | ------------------- |
-| Gas Limit            | 60,000,000           | 200,000,000         |
-| EIP-1559 Elasticity  | 4                    | 6                   |
-| EIP-1559 Denominator | 50                   | 125                 |
+| Parameter | From (Sepolia Alpha) | To (Mainnet parity) |
+|-----------|----------------|---------------------|
+| Gas Limit | 60,000,000 | 200,000,000 |
+| EIP-1559 Elasticity | 2 | 6 |
+| EIP-1559 Denominator | 250 | 125 |
 
 This runbook invokes the `UpdateSystemConfigParamsScript` defined in the [base/contracts](https://github.com/base/contracts) repository. The values we are sending are statically defined in the `.env` file.
 
@@ -63,7 +63,7 @@ After completion, the signer tool can be closed by using Ctrl + C.
 ```bash
 cd contract-deployments
 git pull
-cd sepolia/2026-02-10-update-system-config-params
+cd sepolia-alpha/2026-02-23-update-system-config-params
 make deps
 make gen-validation
 ```
