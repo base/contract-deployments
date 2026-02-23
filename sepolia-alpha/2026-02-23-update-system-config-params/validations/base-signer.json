@@ -7,6 +7,7 @@
     "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
     "messageHash": "0x81c45456c2727c38e1c3f4f70aa90e2850f006f089e9953eca411a999c744152"
   },
+  "skipTaskOriginValidation": true,
   "stateOverrides": [
     {
       "name": "Proxy Admin Owner - Sepolia",
