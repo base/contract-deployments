@@ -1,0 +1,66 @@
+{
+  "cmd": "NEW_GAS_LIMIT=200000000 NEW_ELASTICITY=6 NEW_DENOMINATOR=125 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateSystemConfigParamsScript --sig sign(address[]) [] --sender 0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+  "ledgerId": 0,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x093de3a8d475125e0192f7319bbc60840b1f6b5f5afd17e837647b1f25a66471",
+    "messageHash": "0x7864e092a6290a828f84f9ab872fbd95754f4d98b24b73c43b30954ced341674"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9b04b3058b89b90eacf95e14e18236dc18df01caa78ecdb3c0fd3d74c973025d",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001f",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config Proxy",
+      "address": "0x7f67dc4959cb3e532b10a99f41bdd906c46fdfde",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x0000000000000000000000000000000000000000000000000000000003938700",
+          "after": "0x000000000000000000000000000000000000000000000000000000000bebc200",
+          "description": "Increase gas limit to 200M",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x00000000000000000000000000000000000000000000000000000002000000fa",
+          "after": "0x000000000000000000000000000000000000000000000000000000060000007d",
+          "description": "Elasticity -> 6 and denominator -> 125",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
