@@ -1,6 +1,6 @@
 # Update SystemConfig Parameters on Base Sepolia Alpha
 
-Status: pending
+Status: READY TO SIGN
 
 ## Description
 
