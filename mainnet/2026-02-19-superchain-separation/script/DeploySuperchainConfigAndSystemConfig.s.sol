@@ -3,11 +3,10 @@ pragma solidity 0.8.15;
 
 import {Script} from "forge-std/Script.sol";
 
-import {Proxy} from "@eth-optimism-bedrock/src/universal/Proxy.sol";
-import {ProxyAdmin} from "@eth-optimism-bedrock/src/universal/ProxyAdmin.sol";
-import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
-
-import {SuperchainConfig} from "../src/SuperchainConfig.sol";
+import {Proxy} from "@base-contracts/src/universal/Proxy.sol";
+import {ProxyAdmin} from "@base-contracts/src/universal/ProxyAdmin.sol";
+import {SystemConfig} from "@base-contracts/src/L1/SystemConfig.sol";
+import {SuperchainConfig} from "@base-contracts/src/L1/SuperchainConfig.sol";
 
 /// @title DeploySuperchainConfigAndSystemConfig
 /// @notice Deploys a new SuperchainConfig proxy and a patched SystemConfig implementation.

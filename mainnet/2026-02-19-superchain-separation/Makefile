@@ -30,7 +30,7 @@ OP_OP_SENDER       := 0x4d494C5F61b60752D3A10062276a0eFC22596151
 ##
 # Phony Targets
 ##
-.PHONY: checkout-op-commit deps-signer-tool \
+.PHONY: deps-signer-tool \
         gen-all-validations \
         gen-validation-cb-1 gen-validation-cb-sc-1 gen-validation-op-1 \
         gen-validation-cb-2 gen-validation-cb-sc-2 gen-validation-op-2 \
@@ -45,20 +45,6 @@ OP_OP_SENDER       := 0x4d494C5F61b60752D3A10062276a0eFC22596151
 		execute-proxyadminownersigners execute-cbsafesigners execute-systemconfig \
         execute-feedisburser execute-terminate-smartescrow execute-withdraw-smartescrow \
 		execute-add-signer
-
-##
-# Override checkout-op-commit to apply the patch after checkout
-##
-checkout-op-commit:
-	@[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1)
-	rm -rf lib/optimism
-	mkdir -p lib/optimism
-	cd lib/optimism && \
-		git init && \
-		git remote add origin https://github.com/ethereum-optimism/optimism.git && \
-		git fetch --depth=1 origin $(OP_COMMIT) && \
-		git reset --hard FETCH_HEAD && \
-		git apply ../../$(OP_CONTRACT_PATCH)
 
 ##
 # Signer Tool Setup
