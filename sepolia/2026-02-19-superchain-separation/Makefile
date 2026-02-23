@@ -19,7 +19,7 @@ CB_SIGNER_SENDER   := 0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f
 ##
 # Phony Targets
 ##
-.PHONY: checkout-op-commit deps-signer-tool \
+.PHONY: deps-signer-tool \
         gen-all-validations \
         gen-validation-cb-1 gen-validation-cb-sc-1 \
         gen-validation-cb-2 gen-validation-cb-sc-2 \
