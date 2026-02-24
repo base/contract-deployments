@@ -9,6 +9,7 @@ FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 SWITCH_TO_PERMISSIONED_GAME_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game
+PAUSE_SUPERCHAIN_CONFIG_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-superchain-config
 
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
@@ -19,6 +20,7 @@ TEMPLATE_FUNDING = setup-templates/template-funding
 TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
 TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
 TEMPLATE_SWITCH_TO_PERMISSIONED_GAME = setup-templates/template-switch-to-permissioned-game
+TEMPLATE_PAUSE_SUPERCHAIN_CONFIG = setup-templates/template-pause-superchain-config
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
@@ -76,11 +78,16 @@ setup-switch-to-permissioned-game:
 	rm -rf $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/cache $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/lib $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/out
 	cp -r $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME) $(SWITCH_TO_PERMISSIONED_GAME_DIR)
 
+# Run `make setup-superchain-config-pause network=<network>`
+setup-superchain-config-pause:
+	rm -rf $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/cache $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/lib $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/out
+	cp -r $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG) $(PAUSE_SUPERCHAIN_CONFIG_DIR)
+
 ##
 # Solidity Setup
 ##
 .PHONY: deps
-deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit
+deps: install-eip712sign clean-lib forge-deps checkout-base-contracts-commit
 
 .PHONY: install-eip712sign
 install-eip712sign:
@@ -100,17 +107,6 @@ forge-deps:
 		github.com/Vectorized/solady@5ea5d9f57ed6d24a27d00934f4a3448def931415 \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
-.PHONY: checkout-op-commit
-checkout-op-commit:
-	[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1)
-	rm -rf lib/optimism
-	mkdir -p lib/optimism
-	cd lib/optimism; \
-	git init; \
-	git remote add origin https://github.com/ethereum-optimism/optimism.git; \
-	git fetch --depth=1 origin $(OP_COMMIT); \
-	git reset --hard FETCH_HEAD
-
 .PHONY: checkout-base-contracts-commit
 checkout-base-contracts-commit:
 	[ -n "$(BASE_CONTRACTS_COMMIT)" ] || (echo "BASE_CONTRACTS_COMMIT must be set in .env" && exit 1)
@@ -125,7 +121,7 @@ checkout-base-contracts-commit:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=cff3a601c6780e9fe7d303c58d59574dc1ba491b
+SIGNER_TOOL_COMMIT=32451507263738dbd28fce17efaeb5a6e222065c
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool

@@ -3,11 +3,11 @@ pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
 import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
-import {IAnchorStateRegistry} from "@eth-optimism-bedrock/src/dispute/FaultDisputeGame.sol";
-import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
-import {DisputeGameFactory} from "@eth-optimism-bedrock/src/dispute/DisputeGameFactory.sol";
-import {FaultDisputeGame} from "@eth-optimism-bedrock/src/dispute/PermissionedDisputeGame.sol";
-import {GameTypes, GameType} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
+import {IAnchorStateRegistry} from "@ebase-contracts/src/dispute/FaultDisputeGame.sol";
+import {SystemConfig} from "@ebase-contracts/src/L1/SystemConfig.sol";
+import {DisputeGameFactory} from "@ebase-contracts/src/dispute/DisputeGameFactory.sol";
+import {FaultDisputeGame} from "@ebase-contracts/src/dispute/PermissionedDisputeGame.sol";
+import {GameTypes, GameType} from "@ebase-contracts/src/dispute/lib/Types.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 
