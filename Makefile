@@ -80,7 +80,7 @@ setup-switch-to-permissioned-game:
 # Solidity Setup
 ##
 .PHONY: deps
-deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit
+deps: install-eip712sign clean-lib forge-deps checkout-base-contracts-commit
 
 .PHONY: install-eip712sign
 install-eip712sign:
@@ -99,17 +99,6 @@ forge-deps:
 		github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \
 		github.com/Vectorized/solady@5ea5d9f57ed6d24a27d00934f4a3448def931415 \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
-
-.PHONY: checkout-op-commit
-checkout-op-commit:
-	[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1)
-	rm -rf lib/optimism
-	mkdir -p lib/optimism
-	cd lib/optimism; \
-	git init; \
-	git remote add origin https://github.com/ethereum-optimism/optimism.git; \
-	git fetch --depth=1 origin $(OP_COMMIT); \
-	git reset --hard FETCH_HEAD
 
 .PHONY: checkout-base-contracts-commit
 checkout-base-contracts-commit:

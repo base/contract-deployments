@@ -3,14 +3,14 @@ pragma solidity 0.8.15;
 
 import {Script} from "forge-std/Script.sol";
 
-import {IAnchorStateRegistry, IDelayedWETH, IBigStepper} from "@eth-optimism-bedrock/src/dispute/FaultDisputeGame.sol";
+import {IAnchorStateRegistry, IDelayedWETH, IBigStepper} from "@base-contracts/src/dispute/FaultDisputeGame.sol";
 import {
     PermissionedDisputeGame, FaultDisputeGame
-} from "@eth-optimism-bedrock/src/dispute/PermissionedDisputeGame.sol";
-import {GameTypes, GameType, Duration, Claim} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
-import {LibGameType, LibDuration} from "@eth-optimism-bedrock/src/dispute/lib/LibUDT.sol";
-import {DisputeGameFactory} from "@eth-optimism-bedrock/src/dispute/DisputeGameFactory.sol";
-import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
+} from "@base-contracts/src/dispute/PermissionedDisputeGame.sol";
+import {GameTypes, GameType, Duration, Claim} from "@base-contracts/src/dispute/lib/Types.sol";
+import {LibGameType, LibDuration} from "@base-contracts/src/dispute/lib/LibUDT.sol";
+import {DisputeGameFactory} from "@base-contracts/src/dispute/DisputeGameFactory.sol";
+import {SystemConfig} from "@base-contracts/src/L1/SystemConfig.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {console} from "forge-std/console.sol";
 

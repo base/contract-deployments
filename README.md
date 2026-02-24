@@ -2,17 +2,17 @@
 
 # contract-deployments
 
-This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base-org/contracts](https://github.com/base-org/contracts).
+This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base/contracts](https://github.com/base/contracts).
 
 This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network.
 
 <!-- Badge row 1 - status -->
 
-[![GitHub contributors](https://img.shields.io/github/contributors/base-org/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/w/base-org/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
-[![GitHub Stars](https://img.shields.io/github/stars/base-org/contract-deployments.svg)](https://github.com/base/contract-deployments/stargazers)
+[![GitHub contributors](https://img.shields.io/github/contributors/base/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/w/base/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
+[![GitHub Stars](https://img.shields.io/github/stars/base/contract-deployments.svg)](https://github.com/base/contract-deployments/stargazers)
 ![GitHub repo size](https://img.shields.io/github/repo-size/base/contract-deployments)
-[![GitHub](https://img.shields.io/github/license/base-org/contract-deployments?color=blue)](https://github.com/base/contract-deployments/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/github/license/base/contract-deployments?color=blue)](https://github.com/base/contract-deployments/blob/main/LICENSE)
 
 <!-- Badge row 2 - links and profiles -->
 
@@ -24,8 +24,8 @@ This repo is structured with each network having a high-level directory which co
 
 <!-- Badge row 3 - detailed status -->
 
-[![GitHub pull requests by-label](https://img.shields.io/github/issues-pr-raw/base-org/contract-deployments)](https://github.com/base/contract-deployments/pulls)
-[![GitHub Issues](https://img.shields.io/github/issues-raw/base-org/contract-deployments.svg)](https://github.com/base/contract-deployments/issues)
+[![GitHub pull requests by-label](https://img.shields.io/github/issues-pr-raw/base/contract-deployments)](https://github.com/base/contract-deployments/pulls)
+[![GitHub Issues](https://img.shields.io/github/issues-raw/base/contract-deployments.svg)](https://github.com/base/contract-deployments/issues)
 
 ## Setup
 
@@ -56,10 +56,9 @@ Please note, for some older tasks (that have not yet been adapted to use the sig
 
 Each task will have a directory structure similar to the following:
 
-- **inputs/** any input JSON files
 - **records/** Foundry will autogenerate files here from running commands
 - **script/** place to store any one-off Foundry scripts
-- **src/** place to store any one-off smart contracts (long-lived contracts should go in [base-org/contracts](https://github.com/base-org/contracts))
+- **src/** place to store any one-off smart contracts (long-lived contracts should go in [base/contracts](https://github.com/base/contracts))
 - **.env** place to store environment variables specific to this task
 
 ## Using the incident response template
@@ -83,7 +82,7 @@ To add new incident response scripts:
 
 This template can be used to do contract calls, upgrades, or one-off deployments.
 
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file
 1. Run `make deps`
 1. Put scripts in the `script` directory (see examples that are part of the template, for example, there is a file `BasicScript.s.sol`). See note below if running a task that requires a multisig to sign.
 1. Call scripts from the Makefile (see examples in the template Makefile that's copied over).
@@ -103,7 +102,7 @@ This template is increasing the throughput on Base Chain.
 This template is used to update the gas limit, elasticity, and DA footprint gas scalar, or roll back the changes (if needed).
 
 1. Ensure you have followed the instructions above in `setup`, including running `make setup-gas-and-elasticity-increase network=<network>` and then go to the folder that was created by this command.
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) in the `.env` file.
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) in the `.env` file.
 1. Run `make deps`.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Ensure the `SENDER` variable in the `.env` file is set to a signer of `OWNER_SAFE`.
@@ -123,7 +122,7 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 
 1. Ensure you have followed the instructions above in `setup`
 1. Go to the folder that was created using the `make setup-upgrade-fault-proofs network=<network>` step
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file
 1. Run `make deps`
 1. Add the new absolute prestate to the `.env` file. This can be found in the op-program prestates [releases.json](https://github.com/ethereum-optimism/superchain-registry/blob/main/validation/standard/standard-prestates.toml) file.
 1. NOTE: If this task is for mainnet, the directory should work as-is. If this task is for testnet, you will need to follow the following steps:
@@ -138,7 +137,7 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 This template is used to perform ownership management on a Gnosis Safe, like the incident multisig, specifically it can be used to change the owners of the multisig.
 
 1. Ensure you have followed the instructions above in `setup`, including running `make setup-safe-management network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base-org/contracts) you intend to use in the `.env` file.
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
 1. Enter the directory that was generated for the task (in the first step) and then run `make deps`.
 1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced and the `SENDER` which should be the address of a current signer of the multisig.
 1. Fill in the `OwnerDiff.json` inside the task's directory with the addresses to add to, and remove from, the multisig in their respective fields.
@@ -155,7 +154,7 @@ This template is used to fund addresses from a Gnosis Safe.
 
 1. Ensure you have followed the instructions above in `setup`.
 1. Run `make setup-funding network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
 1. Run `make deps`.
 1. Specify the `SAFE`, which is the safe that will fund the addresses in the `.env` file.
 1. Specify the `recipients` and `funds` arrays (in 1e18 units) in the `funding.json` file.
@@ -170,7 +169,7 @@ This template is used to update the partner threshold in [Base Bridge](https://g
 
 1. Ensure you have followed the instructions above in `setup`.
 1. Run `make setup-bridge-partner-threshold network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
 1. Run `make deps`.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Set the `NEW_THRESHOLD` variable in the `.env` file.
@@ -186,7 +185,7 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 
 1. Ensure you have followed the instructions above in `setup`.
 1. Run `make setup-bridge-pause network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
 1. Run `make deps`.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Set the `IS_PAUSED` variable to `true` or `false` in the `.env` file depending on if you intend to pause or unpause the bridge.
@@ -202,7 +201,7 @@ This template is used to switch Base to a Permissioned Game.
 
 1. Ensure you have followed the instructions above in `setup`.
 1. Run `make setup-switch-to-permissioned-game network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
 1. Run `make deps`.
 1. Ensure only the Sepolia or Mainnet variables are in the `.env` file depending on what network this task is for.
 1. Build the contracts with `forge build`.
