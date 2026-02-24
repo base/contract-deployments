@@ -5,12 +5,12 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
     "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
-    "messageHash": "0x5ca37d00f7d0df535834a8b68a4e779506c4c7a441529a1e177c7f0cb2934b54"
+    "messageHash": "0xd11c65e825a3804142d6862992aee34f71dcb9de01deeeefb5965e03fc1b5f9d"
   },
   "stateOverrides": [
     {
       "name": "CB Coordinator Safe - Sepolia",
-      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -22,10 +22,10 @@
     },
     {
       "name": "Mock Security Council - Sepolia",
-      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
       "overrides": [
         {
-          "key": "0x702902f63b1078a0505b08e0b590b58ce50a5070582692b51432ff3caf78a2ce",
+          "key": "0x115e4bfd4caa8c90517855dce75687429134b1ad0cb92e79b819efa7019890f1",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -36,7 +36,7 @@
   "stateChanges": [
     {
       "name": "CB Coordinator Safe - Sepolia",
-      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
@@ -54,9 +54,9 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
-          "description": "Increments the Safe nonce from 12 to 13 after executing the batch transaction.",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Increments the Safe nonce from 14 to 15 after executing the batch transaction.",
           "allowDifference": false
         },
         {
@@ -106,6 +106,13 @@
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000007f10098bd53519c739ca8a404afe127647d94774",
           "description": "Owners linked list: Adds CB EOA 0x420c8fe1ddb0593c71487445576c87c17f177179 pointing to next owner 0x7f10098bd53519c739ca8a404afe127647d94774.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x88b62050d77081a126f6451f75b4d85257f7c53d7523af5710b8441f46127cd5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores an approval on behalf of the security council.",
           "allowDifference": false
         },
         {
@@ -161,7 +168,7 @@
           "key": "0xdd723b4c2a66aea3d2ac26f837bd1e7dea4ce6cca7e4fa76af2185076784453f",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000ee316db0edaee45347dfc498795a01311f085225",
-          "description": "Owners linked list: Adds CB EOA 0x644d0f5c2c55a4679b4bfe057b87ba203af9ac0d pointing to next owner 0xee316db0edaee45347dfc498795a01311f085225.",
+          "description": "Updates the owners mapping",
           "allowDifference": false
         },
         {
@@ -170,24 +177,17 @@
           "after": "0x000000000000000000000000644d0f5c2c55a4679b4bfe057b87ba203af9ac0d",
           "description": "Owners linked list: Updates SENTINEL to point to new head 0x644d0f5c2c55a4679b4bfe057b87ba203af9ac0d. Previously pointed to Security Council Safe (0x6af0674791925f767060dd52f7fb20984e8639d8) which was removed.",
           "allowDifference": false
-        },
-        {
-          "key": "0xf3aa271d21eaaf6daebcc4d693356bcef736af5355d69a1850df66741b852cf8",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Stores an approval on behalf of the security council.",
-          "allowDifference": false
         }
       ]
     },
     {
       "name": "Mock Security Council - Sepolia",
-      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001b",
           "description": "Increments the nonce",
           "allowDifference": false
         }

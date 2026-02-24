@@ -5,12 +5,12 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
     "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
-    "messageHash": "0xcfafcfd7085f44d9c20b2ca09f835b2b06bdfc7daac8a73a633526955e65bf80"
+    "messageHash": "0xab72b75550a11e6038cf3f2d4fe69e4ab793d7e9db4123d839c6fb20f499194a"
   },
   "stateOverrides": [
     {
       "name": "CB Signer Safe - Sepolia",
-      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -19,7 +19,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x7fcf6bceeaab6195ad48fb5535c38d6f000762d9eb187f9251777ca839949886",
+          "key": "0x379c87bdc6abb85fdbe8fe138f62367fcf94860df0efa04c17b2aee632868bd2",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -28,7 +28,7 @@
     },
     {
       "name": "CB Coordinator Safe - Sepolia",
-      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -42,20 +42,20 @@
   "stateChanges": [
     {
       "name": "CB Signer Safe - Sepolia",
-      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000010",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000011",
-          "description": "Increments the Safe nonce from 16 to 17 after signing the nested transaction to CB Coordinator Safe.",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "description": "Increments the Safe nonce from 20 to 21 after signing the nested transaction to CB Coordinator Safe.",
           "allowDifference": false
         }
       ]
     },
     {
       "name": "CB Coordinator Safe - Sepolia",
-      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
@@ -73,9 +73,9 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
-          "description": "Increments the Safe nonce from 12 to 13 after executing the batch transaction.",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Increments the Safe nonce from 14 to 15 after executing the batch transaction.",
           "allowDifference": false
         },
         {
@@ -142,7 +142,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xa5021e3ff458a9c5efc97cc82aa4311380380fd1b083aa4f0623072a5165d41b",
+          "key": "0xa7dd5b70d010b556cca61241e9486087b6178ec9d74f960e07f6f590f7b61ad4",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Stores an approval from the CB nested safe.",
