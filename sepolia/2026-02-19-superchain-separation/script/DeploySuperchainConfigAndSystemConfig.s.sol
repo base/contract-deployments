@@ -21,10 +21,10 @@ contract DeploySuperchainConfigAndSystemConfig is Script {
     address public immutable OWNER_SAFE = vm.envAddress("OWNER_SAFE");
 
     /// @notice The guardian address that can pause and perform dispute game operations.
-    address public immutable GUARDIAN = vm.envAddress("SECURITY_COUNCIL");
+    address public immutable GUARDIAN = vm.envAddress("CB_SIGNER_SAFE_ADDR");
 
     /// @notice The incident responder address that can only pause.
-    address public immutable INCIDENT_RESPONDER = vm.envAddress("INCIDENT_MULTISIG");
+    address public immutable INCIDENT_RESPONDER = vm.envAddress("CB_SIGNER_SAFE_ADDR");
 
     function run() external {
         vm.startBroadcast();
@@ -33,7 +33,7 @@ contract DeploySuperchainConfigAndSystemConfig is Script {
         SuperchainConfig superchainConfigImpl = new SuperchainConfig(GUARDIAN, INCIDENT_RESPONDER);
 
         // Deploy SuperchainConfig proxy
-        Proxy superchainConfigProxy = new Proxy(address(this));
+        Proxy superchainConfigProxy = new Proxy(msg.sender);
         superchainConfigProxy.upgradeTo(address(superchainConfigImpl));
         superchainConfigProxy.changeAdmin(PROXY_ADMIN);
 
