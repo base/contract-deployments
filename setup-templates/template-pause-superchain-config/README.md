@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-Pauses/unpauses the L1 SuperchainConfig contract, which halts OptimismPortal deposits/withdrawals for Base mainnet.
+Pauses deposits/withdrawals Base.
 
 ## Install dependencies
 
@@ -31,4 +31,6 @@ make deps
 make sign-pause
 ```
 
-### 3. Send all signatures to facilitator
+This will output your signature batch to a `signatures-pause.txt` file.
+
+### 3. Send the contents of `signatures-pause.txt` to facilitator

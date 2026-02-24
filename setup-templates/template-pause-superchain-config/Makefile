@@ -2,19 +2,15 @@ include ../../Makefile
 include ../.env
 include .env
 
-ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 0
-endif
-
-# Get first owner from INCIDENT_SAFE
-SENDER := $(shell cast call $(INCIDENT_SAFE) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | head -1 | tr -d '[]' | cut -d',' -f1)
+# Get first owner from INCIDENT_MULTISIG
+SENDER := $(shell cast call $(INCIDENT_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | head -1 | tr -d '[]' | cut -d',' -f1)
 
 SCRIPT_NAME=PauseSuperchainConfig
 
 .PHONY: sign-pause
 sign-pause:
 	@rm -f signatures-pause.txt
-	@start_nonce=$$(cast call $(INCIDENT_SAFE) "nonce()" --rpc-url $(L1_RPC_URL) | xargs printf "%d"); \
+	@start_nonce=$$(cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL) | xargs printf "%d"); \
 	echo "Starting nonce: $$start_nonce"; \
 	for i in $$(seq 0 19); do \
 		nonce=$$(($$start_nonce + $$i)); \
@@ -44,5 +40,5 @@ check-status:
 
 .PHONY: check-nonce
 check-nonce:
-	@echo "Incident Safe: $(INCIDENT_SAFE)"
-	@cast call $(INCIDENT_SAFE) "nonce()" --rpc-url $(L1_RPC_URL)
+	@echo "Incident Safe: $(INCIDENT_MULTISIG)"
+	@cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL)

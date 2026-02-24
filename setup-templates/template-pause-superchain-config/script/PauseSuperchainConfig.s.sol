@@ -16,7 +16,7 @@ interface ISuperchainConfig {
 }
 
 contract PauseSuperchainConfig is MultisigScript {
-    address public immutable INCIDENT_SAFE = vm.envAddress("INCIDENT_SAFE");
+    address public immutable INCIDENT_MULTISIG = vm.envAddress("INCIDENT_MULTISIG");
     address public immutable SYSTEM_CONFIG = vm.envAddress("SYSTEM_CONFIG");
 
     function _buildCalls() internal view override returns (Call[] memory) {
@@ -41,6 +41,6 @@ contract PauseSuperchainConfig is MultisigScript {
     }
 
     function _ownerSafe() internal view override returns (address) {
-        return INCIDENT_SAFE;
+        return INCIDENT_MULTISIG;
     }
 }
