@@ -20,8 +20,8 @@ contract DeploySuperchainConfigAndSystemConfig is Script {
     /// @notice The Safe that owns the ProxyAdmin.
     address public immutable OWNER_SAFE = vm.envAddress("OWNER_SAFE");
 
-    /// @notice The guardian address that can pause and perform dispute game operations.
-    address public immutable GUARDIAN = vm.envAddress("CB_SC_SAFE_ADDR");
+    /// @notice The guardian address that can pause and perform dispute game operations (should be the same as the owner safe which is our top level 2-of-2).
+    address public immutable GUARDIAN = vm.envAddress("OWNER_SAFE");
 
     /// @notice The incident responder address that can only pause.
     address public immutable INCIDENT_RESPONDER = vm.envAddress("INCIDENT_MULTISIG");
