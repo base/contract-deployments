@@ -2,6 +2,7 @@
   "cmd": "SAFE_NONCE_0X646132A1667CA7AD00D36616AFBA1A28116C770A=15 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpgradeSystemConfig --sig sign(address[]) [0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
   "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
     "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
