@@ -5,12 +5,12 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
     "domainHash": "0x2e5ad244d335c45fbace4ebd1736b0fad81b01591a2819baedad311ead5bce76",
-    "messageHash": "0x7f5de36359f775e1c37d61905081bc7dffd5ed6905f209a3d24fcc2ef7171014"
+    "messageHash": "0x4d1c90985d451650298a8044f4414ed7a7bd58faa58906bb3e29ae40f4f2c1bb"
   },
   "stateOverrides": [
     {
       "name": "Proxy Admin Owner - Mainnet",
-      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -22,7 +22,7 @@
     },
     {
       "name": "OP Signer Safe - Mainnet",
-      "address": "0x9ba6e03d8b90de867373db8cf1a58d2f7f006b3a",
+      "address": "0x9BA6e03D8B90dE867373Db8cF1A58d2F7F006b3A",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -31,7 +31,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x084f23a835476254f554ff008fb4f329b511becce8e5c2e5beb3e32ffaf3cf68",
+          "key": "0xf74051f18591c85a4a0017b106d71ea94cd5743291d5cfacfc6ba537ead40a06",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -42,17 +42,17 @@
   "stateChanges": [
     {
       "name": "Proxy Admin Owner - Mainnet",
-      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
-          "description": "Increments the Safe nonce from 12 to 13 after executing the swapOwner transaction.",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Increments the Safe nonce from 13 to 14 after executing the swapOwner transaction.",
           "allowDifference": false
         },
         {
-          "key": "0x32a1a1697b7d58db65fedf41799bee0099320ee6b08d854617ae83bf8f45f996",
+          "key": "0x7aa433313675d2977eaae6d96569ce810db740a6bd89321cda525bba26cbaf6f",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Sets approvedHashes[OP Safe][txHash] = 1, recording the OP Safe's approval for this transaction.",
@@ -83,13 +83,13 @@
     },
     {
       "name": "OP Signer Safe - Mainnet",
-      "address": "0x9ba6e03d8b90de867373db8cf1a58d2f7f006b3a",
+      "address": "0x9BA6e03D8B90dE867373Db8cF1A58d2F7F006b3A",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000071",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000072",
-          "description": "Increments the Safe nonce from 113 to 114 after the signer submits their approval.",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000073",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000074",
+          "description": "Increments the Safe nonce from 115 to 116 after the signer submits their approval.",
           "allowDifference": false
         }
       ]

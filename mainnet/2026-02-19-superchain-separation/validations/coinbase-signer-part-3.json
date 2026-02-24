@@ -1,0 +1,129 @@
+{
+  "cmd": "SAFE_NONCE_0X9855054731540A48B28990B63DCF4F33D8AE46A1=28 SAFE_NONCE_0X7BB41C3008B3F03FE483B28B8DB90E19CF07595C=14 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpgradeSystemConfig --sig sign(address[]) [0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x88aac3dc27cc1618ec43a87b3df21482acd24d172027ba3fbb5a5e625d895a0b",
+    "messageHash": "0x25b83e002889b1d8b63bf4bea24b8753827538e612aff238597e2fca1336e2c5"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc68c82056a4782e6920506248dec06b7949eabf81d66a13e5e8ec70d4e8f4b13",
+          "value": "0x0000000000000000000000009855054731540a48b28990b63dcf4f33d8ae46a1",
+          "description": "Point security council to existing head of owners list",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "value": "0x00000000000000000000000020acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
+          "description": "This is owners[1] -> security council (adding security council to head of linked list).",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2ed3d34a82e11d9075de78b8932cd10a24f89c4dd92afc1e907d5bbad8de3d8c",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79Fab69143498Ed3712e519A88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "description": "Increments the _initialized version from 3 to 4 as part of the SystemConfig upgrade re-initialization.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x0000000000000000004c4b4095703e0982140d16f8eba6d158fccede42f04a4c",
+          "after": "0x0000000000000000004c4b40650396210dd29aaddd3d94b5127cfa1490e82fc1",
+          "description": "Updates Superchain Config address",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000d392c27b84b1ca776528f2704bc67b82a62132d2",
+          "after": "0x000000000000000000000000a963e271b5a5d24ac654216ca676547a0da84a51",
+          "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xba4434e5525b4bcf4c35e7aba6c4bb21b02949d21df6e785a1abc8c308655449",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets approvedHashes[CB Coordinator Safe][txHash] = 1, recording the CB Coordinator Safe's approval for this transaction.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

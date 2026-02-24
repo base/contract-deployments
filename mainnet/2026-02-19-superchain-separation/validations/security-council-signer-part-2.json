@@ -1,16 +1,16 @@
 {
-  "cmd": "SAFE_NONCE_0X20ACF55A3DCFE07FC4CECACFA1628F788EC8A4DD=5 SAFE_NONCE_0X9855054731540A48B28990B63DCF4F33D8AE46A1=26 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpdateCBSafeSigners --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6",
+  "cmd": "SAFE_NONCE_0X20ACF55A3DCFE07FC4CECACFA1628F788EC8A4DD=6 SAFE_NONCE_0X9855054731540A48B28990B63DCF4F33D8AE46A1=27 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpdateCBSafeSigners --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
     "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
     "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
-    "messageHash": "0x7154e24460ea33c5b171dfc4afdea3d8dbf68aeeeda39ddefb156e2a843ff580"
+    "messageHash": "0xd7c720dc818ccd2f2217474bb6f8583f7f664d8fc6b4f2da62ce4553d2a7732b"
   },
   "stateOverrides": [
     {
       "name": "Security Council Safe - Mainnet",
-      "address": "0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -20,12 +20,12 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000006",
           "description": "Override the nonce to be our expected value after initial execution.",
           "allowDifference": false
         },
         {
-          "key": "0x20e68b4998d5b9dcd509344b3da5ccb127c8777b46427794ec01b23b3134f849",
+          "key": "0xd5db630c3b2710b7cd19c73f96bc5fb0167896436e5ac8d3ec887993dd98fa2c",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -34,7 +34,7 @@
     },
     {
       "name": "CB Coordinator Safe - Mainnet",
-      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -44,7 +44,7 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "value": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "value": "0x000000000000000000000000000000000000000000000000000000000000001b",
           "description": "Override the nonce to be our expected value after initial execution.",
           "allowDifference": false
         }
@@ -54,20 +54,20 @@
   "stateChanges": [
     {
       "name": "Security Council Safe - Mainnet",
-      "address": "0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000006",
-          "description": "Increments the Safe nonce from 5 to 6 after the signer submits their approval.",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000007",
+          "description": "Increments the Safe nonce from 6 to 7 after the signer submits their approval.",
           "allowDifference": false
         }
       ]
     },
     {
       "name": "CB Coordinator Safe - Mainnet",
-      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
@@ -85,9 +85,9 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000001a",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000001b",
-          "description": "Increments the Safe nonce from 26 to 27 after executing the UpdateCBSafeSigners transaction.",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "description": "Increments the Safe nonce from 27 to 28 after executing the UpdateCBSafeSigners transaction.",
           "allowDifference": false
         },
         {
@@ -95,13 +95,6 @@
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Adds EOA signer to owners linked list by setting its entry to point to SENTINEL (0x1), marking it as the last owner.",
-          "allowDifference": false
-        },
-        {
-          "key": "0x2147295fdb477f732b4c1cdbe7372bb22db8dfb3d987f35032751f057d24cd71",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Stores approval on behalf of SC Safe.",
           "allowDifference": false
         },
         {
@@ -158,6 +151,13 @@
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000006cd3850756b7894774ab715d136f9dd02837de50",
           "description": "Adds EOA signer to owners linked list, setting its entry to point to next owner (0x6cd3850756b7894774ab715d136f9dd02837de50).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xfabcf704e62a1cc99ee758de3edd11a4234df4f0bf03420e74085bec5df5faa9",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores approval on behalf of SC Safe.",
           "allowDifference": false
         }
       ]

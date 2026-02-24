@@ -10,7 +10,7 @@
   "stateOverrides": [
     {
       "name": "CB Signer Safe - Optimism",
-      "address": "0x6e1dfd5c1e22a4677663a81d24c6ba03561ef0f6",
+      "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -29,28 +29,8 @@
   ],
   "stateChanges": [
     {
-      "name": "Governance Token - Optimism",
-      "address": "0x4200000000000000000000000000000000000042",
-      "changes": [
-        {
-          "key": "0x9c7ffc2d159d7a0a8143e9bb815194a3d0239701011646f61c42aefd6122e68c",
-          "before": "0x0000000000000000000000000000000000000000000766c7cfe16d7e0d200000",
-          "after": "0x00000000000000000000000000000000000000000003b363e7f0b6bf06900000",
-          "description": "Decreases SmartEscrow's (0xb3c2f9fc2727078ec3a2255410e83ba5b62c5b5f) OP token balance from 8,947,848 OP to 4,473,924 OP as vested tokens are released to the beneficiary.",
-          "allowDifference": true
-        },
-        {
-          "key": "0xa25c112a98bc980e2e953a0c73e7bfb4ea80467bb8f79b4fb803243e3595db67",
-          "before": "0x0000000000000000000000000000000000000000002a303fb9d34d5f1c0b0000",
-          "after": "0x0000000000000000000000000000000000000000002de3a3a1c4041e229b0000",
-          "description": "Increases the beneficiary's (0x635fb974f09b269bc750bf96338c29cf41430125) OP token balance by 4,473,924 OP, receiving the vested tokens released during termination.",
-          "allowDifference": true
-        }
-      ]
-    },
-    {
       "name": "CB Signer Safe - Optimism",
-      "address": "0x6e1dfd5c1e22a4677663a81d24c6ba03561ef0f6",
+      "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
@@ -63,15 +43,8 @@
     },
     {
       "name": "SmartEscrow - Optimism",
-      "address": "0xb3c2f9fc2727078ec3a2255410e83ba5b62c5b5f",
+      "address": "0xb3C2f9fC2727078EC3A2255410e83BA5B62c5B5f",
       "changes": [
-        {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000002a303fcdf2bcb0685c0000",
-          "after": "0x0000000000000000000000000000000000000000002de3a3b5e3736f6eec0000",
-          "description": "Increases totalAmountReleased from 51,002,735 OP to 55,476,659 OP, tracking the cumulative 4,473,924 OP released to the beneficiary during termination.",
-          "allowDifference": false
-        },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",

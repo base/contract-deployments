@@ -10,7 +10,7 @@
   "stateOverrides": [
     {
       "name": "Owner Safe - Optimism",
-      "address": "0x0a7361e734cf3f0394b0fc4a45c74e7a4ec70940",
+      "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -22,7 +22,7 @@
     },
     {
       "name": "CB Signer Safe - Optimism",
-      "address": "0x6e1dfd5c1e22a4677663a81d24c6ba03561ef0f6",
+      "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -46,7 +46,7 @@
     },
     {
       "name": "SmartEscrow - Optimism",
-      "address": "0xb3c2f9fc2727078ec3a2255410e83ba5b62c5b5f",
+      "address": "0xb3C2f9fC2727078EC3A2255410e83BA5B62c5B5f",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
@@ -60,7 +60,7 @@
   "stateChanges": [
     {
       "name": "Owner Safe - Optimism",
-      "address": "0x0a7361e734cf3f0394b0fc4a45c74e7a4ec70940",
+      "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
@@ -84,15 +84,15 @@
       "changes": [
         {
           "key": "0x9c7ffc2d159d7a0a8143e9bb815194a3d0239701011646f61c42aefd6122e68c",
-          "before": "0x0000000000000000000000000000000000000000000766c7cfe16d7e0d200000",
+          "before": "0x00000000000000000000000000000000000000000003b363e7f0b6bf06900000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "description": "Decreases SmartEscrow's (0xb3c2f9fc2727078ec3a2255410e83ba5b62c5b5f) OP token balance to 0 as all remaining unvested tokens are withdrawn to the benefactor. Note: The 'before' value reflects current state; after part-5 executes, the actual balance will be ~4,473,924 OP.",
           "allowDifference": true
         },
         {
           "key": "0xcac14c40c8d3847e740432064e9977516347ef1cecdd901d8d3a7d24e118edde",
-          "before": "0x000000000000000000000000000000000000000001ae577902e80b80e9414e71",
-          "after": "0x000000000000000000000000000000000000000001b5be40d2c978fef6614e71",
+          "before": "0x000000000000000000000000000000000000000001972e3df849a1834d414e71",
+          "after": "0x0000000000000000000000000000000000000000019ae1a1e03a584253d14e71",
           "description": "Increases the benefactor's (Owner Safe: 0x0a7361e734cf3f0394b0fc4a45c74e7a4ec70940) OP token balance, receiving the unvested tokens withdrawn from the SmartEscrow contract. Note: The actual amount will be ~4,473,924 OP after part-5 executes.",
           "allowDifference": true
         }
@@ -100,7 +100,7 @@
     },
     {
       "name": "CB Signer Safe - Optimism",
-      "address": "0x6e1dfd5c1e22a4677663a81d24c6ba03561ef0f6",
+      "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",

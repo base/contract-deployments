@@ -1,0 +1,129 @@
+{
+  "cmd": "SAFE_NONCE_0X20ACF55A3DCFE07FC4CECACFA1628F788EC8A4DD=7 SAFE_NONCE_0X7BB41C3008B3F03FE483B28B8DB90E19CF07595C=14 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpgradeSystemConfig --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x945ec69093efab7bb92adf9807bffd2de934ac4dce482f3bb84ac054bfefca3f"
+  },
+  "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000007",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xcf899dd0f58bbf4b390f37a32cbf43878d478daea8ca9c94ce7961a148feb9ea",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc68c82056a4782e6920506248dec06b7949eabf81d66a13e5e8ec70d4e8f4b13",
+          "value": "0x0000000000000000000000009855054731540a48b28990b63dcf4f33d8ae46a1",
+          "description": "Point Security Council Safe to existing head of owners list (CB Coordinator Safe).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "value": "0x00000000000000000000000020acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
+          "description": "This is owners[SENTINEL] -> Security Council Safe (adding Security Council Safe to head of linked list).",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000007",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79Fab69143498Ed3712e519A88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "description": "Increments the _initialized version from 3 to 4 as part of the SystemConfig upgrade re-initialization.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x0000000000000000004c4b4095703e0982140d16f8eba6d158fccede42f04a4c",
+          "after": "0x0000000000000000004c4b40650396210dd29aaddd3d94b5127cfa1490e82fc1",
+          "description": "Updates Superchain Config address",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000d392c27b84b1ca776528f2704bc67b82a62132d2",
+          "after": "0x000000000000000000000000a963e271b5a5d24ac654216ca676547a0da84a51",
+          "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x79df9842b77e27241c86ae27380aa3504506d576cb6ee59db811401722ab9e91",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets approvedHashes[Security Council Safe][txHash] = 1, recording the Security Council Safe's approval for this transaction.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

@@ -5,6 +5,7 @@ import {Vm} from "forge-std/Vm.sol";
 
 import {MultisigScript, Enum} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+import {IGnosisSafe} from "@base-contracts/script/universal/IGnosisSafe.sol";
 import {SystemConfig, IResourceMetering, ISuperchainConfig} from "@base-contracts/src/L1/SystemConfig.sol";
 import {IProxyAdmin} from "@base-contracts/interfaces/universal/IProxyAdmin.sol";
 
@@ -27,6 +28,15 @@ contract UpgradeSystemConfig is MultisigScript {
 
     /// @notice The new SuperchainConfig address to set during reinitialization.
     address public immutable NEW_SUPERCHAIN_CONFIG = vm.envAddress("NEW_SUPERCHAIN_CONFIG");
+
+    /// @notice The security council Safe that becomes an owner of OWNER_SAFE after step 1.
+    address public immutable SECURITY_COUNCIL = vm.envAddress("CB_SC_SAFE_ADDR");
+
+    /// @notice Safe's owners linked list base storage slot: mapping(address => address) at slot 2.
+    bytes32 internal constant SAFE_OWNERS_BASE_SLOT = bytes32(uint256(2));
+
+    /// @notice Sentinel address used by Safe's linked list implementation.
+    address internal constant SENTINEL = address(0x1);
 
     /// @notice Validates the post-upgrade state.
     /// @dev Verifies that:
@@ -96,6 +106,32 @@ contract UpgradeSystemConfig is MultisigScript {
         });
 
         return calls;
+    }
+
+    /// @notice Overrides the OWNER_SAFE state to include SECURITY_COUNCIL as an owner
+    ///         when step 1 (UpdateProxyAdminOwnerSigners) hasn't been executed yet.
+    ///         This allows pre-generating SC validation files before step 1 runs on-chain.
+    function _simulationOverrides() internal view override returns (Simulation.StateOverride[] memory) {
+        if (IGnosisSafe(OWNER_SAFE).isOwner(SECURITY_COUNCIL)) {
+            return new Simulation.StateOverride[](0);
+        }
+
+        // Insert SECURITY_COUNCIL at the head of OWNER_SAFE's owners linked list:
+        //   SENTINEL -> SECURITY_COUNCIL -> old_head -> ...
+        bytes32 sentinelSlot = keccak256(abi.encode(SENTINEL, SAFE_OWNERS_BASE_SLOT));
+        address currentHead = address(uint160(uint256(vm.load(OWNER_SAFE, sentinelSlot))));
+        bytes32 scSlot = keccak256(abi.encode(SECURITY_COUNCIL, SAFE_OWNERS_BASE_SLOT));
+
+        Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](2);
+        storageOverrides[0] = Simulation.StorageOverride({
+            key: sentinelSlot,
+            value: bytes32(uint256(uint160(SECURITY_COUNCIL)))
+        });
+        storageOverrides[1] = Simulation.StorageOverride({key: scSlot, value: bytes32(uint256(uint160(currentHead)))});
+
+        Simulation.StateOverride[] memory overrides = new Simulation.StateOverride[](1);
+        overrides[0] = Simulation.StateOverride({contractAddress: OWNER_SAFE, overrides: storageOverrides});
+        return overrides;
     }
 
     /// @notice Returns the Safe address that will execute this transaction.

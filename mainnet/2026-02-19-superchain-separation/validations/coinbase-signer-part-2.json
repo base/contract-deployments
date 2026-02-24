@@ -1,16 +1,16 @@
 {
-  "cmd": "SAFE_NONCE_0X9C4A57FEB77E294FD7BF5EBE9AB01CAA0A90A110=6 SAFE_NONCE_0X9855054731540A48B28990B63DCF4F33D8AE46A1=26 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpdateCBSafeSigners --sig sign(address[]) [0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
+  "cmd": "SAFE_NONCE_0X9C4A57FEB77E294FD7BF5EBE9AB01CAA0A90A110=7 SAFE_NONCE_0X9855054731540A48B28990B63DCF4F33D8AE46A1=27 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpdateCBSafeSigners --sig sign(address[]) [0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
     "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
     "domainHash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
-    "messageHash": "0xcf218ba5d243072a2ee37f449c5fde85ca0d6f6629545e6f5fa8a257603b01d5"
+    "messageHash": "0x0442c61c7fc3ac5dda4f0b10c07954282e9df8e895d274900c8cb9b3f0adb072"
   },
   "stateOverrides": [
     {
       "name": "CB Coordinator Safe - Mainnet",
-      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -20,15 +20,15 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "value": "0x000000000000000000000000000000000000000000000000000000000000001a",
-          "description": "Override the nonce to 26, the expected value after Part 1 (UpdateProxyAdminOwnerSigners) executes.",
+          "value": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "description": "Override the nonce to 27, the expected value after Part 1 (UpdateProxyAdminOwnerSigners) executes.",
           "allowDifference": false
         }
       ]
     },
     {
       "name": "CB Signer Safe - Mainnet",
-      "address": "0x9c4a57feb77e294fd7bf5ebe9ab01caa0a90a110",
+      "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
       "overrides": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
@@ -38,12 +38,12 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000006",
-          "description": "Override the nonce to 6, the expected value after Part 1 (UpdateProxyAdminOwnerSigners) executes.",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000007",
+          "description": "Override the nonce to 7, the expected value after Part 1 (UpdateProxyAdminOwnerSigners) executes.",
           "allowDifference": false
         },
         {
-          "key": "0x02096db9dce13194ab343de91965eb80e6976f198a5bbec4430338949271d2fb",
+          "key": "0x314a92beef78881e1e0297326a7a68563f4a7cf184570d7c08396763f32eb604",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Sets approvedHashes[msg.sender][txHash] = 1 to simulate an approval from the signer, allowing the transaction simulation to succeed.",
           "allowDifference": false
@@ -54,7 +54,7 @@
   "stateChanges": [
     {
       "name": "CB Coordinator Safe - Mainnet",
-      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
@@ -72,9 +72,9 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000001a",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000001b",
-          "description": "Increments the Safe nonce from 26 to 27 after executing the UpdateCBSafeSigners transaction.",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "description": "Increments the Safe nonce from 27 to 28 after executing the UpdateCBSafeSigners transaction.",
           "allowDifference": false
         },
         {
@@ -96,6 +96,13 @@
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000b011a32ed8b4f70d9943a2199f539bbecd7b62f7",
           "description": "Adds EOA signer to owners linked list, setting its entry to point to next owner (0xb011a32ed8b4f70d9943a2199f539bbecd7b62f7).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x805c8fe6c374d506404de2868e0b31ae6b921cd2462f27b5646e9cdbef1ba947",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores approval on behalf of CB Safe.",
           "allowDifference": false
         },
         {
@@ -139,25 +146,18 @@
           "after": "0x0000000000000000000000006cd3850756b7894774ab715d136f9dd02837de50",
           "description": "Adds EOA signer to owners linked list, setting its entry to point to next owner (0x6cd3850756b7894774ab715d136f9dd02837de50).",
           "allowDifference": false
-        },
-        {
-          "key": "0xfc3210f35f35f3bd1bd9c69b0b63bcfe5c94eefb24b5d3ec1c36a82d273ec2f7",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Stores approval on behalf of CB Safe.",
-          "allowDifference": false
         }
       ]
     },
     {
       "name": "CB Signer Safe - Mainnet",
-      "address": "0x9c4a57feb77e294fd7bf5ebe9ab01caa0a90a110",
+      "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000006",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000007",
-          "description": "Increments the Safe nonce from 6 to 7 after the signer submits their approval.",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000007",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "description": "Increments the Safe nonce from 7 to 8 after the signer submits their approval.",
           "allowDifference": false
         }
       ]
