@@ -5,7 +5,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
     "domainHash": "0x88aac3dc27cc1618ec43a87b3df21482acd24d172027ba3fbb5a5e625d895a0b",
-    "messageHash": "0x25b83e002889b1d8b63bf4bea24b8753827538e612aff238597e2fca1336e2c5"
+    "messageHash": "0x03fda21411d9502362d43b049059f93cc737158756ff30686d5102a25977c6f2"
   },
   "stateOverrides": [
     {
@@ -55,7 +55,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x2ed3d34a82e11d9075de78b8932cd10a24f89c4dd92afc1e907d5bbad8de3d8c",
+          "key": "0xc684d136668f11eb9679104054d0bdbde45d28d4b8ca596defa8d986a363aa10",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -78,14 +78,14 @@
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
           "before": "0x0000000000000000004c4b4095703e0982140d16f8eba6d158fccede42f04a4c",
-          "after": "0x0000000000000000004c4b40650396210dd29aaddd3d94b5127cfa1490e82fc1",
+          "after": "0x0000000000000000004c4b40b535ff7f118260a952ce65e7ff41b1743de8ee6c",
           "description": "Updates Superchain Config address",
           "allowDifference": false
         },
         {
           "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
           "before": "0x000000000000000000000000d392c27b84b1ca776528f2704bc67b82a62132d2",
-          "after": "0x000000000000000000000000a963e271b5a5d24ac654216ca676547a0da84a51",
+          "after": "0x0000000000000000000000000507aaa21c678976fcdc7e804836acd6ebc17a44",
           "description": "Update address of SystemConfig to new implementation.",
           "allowDifference": false
         }
@@ -103,7 +103,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xba4434e5525b4bcf4c35e7aba6c4bb21b02949d21df6e785a1abc8c308655449",
+          "key": "0x98a1c6ec6ae3c99ac8db82641b5b617d0c4b915a4d9c855e6617788a467f3654",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Sets approvedHashes[CB Coordinator Safe][txHash] = 1, recording the CB Coordinator Safe's approval for this transaction.",
