@@ -1,0 +1,93 @@
+{
+  "cmd": "NEW_GAS_LIMIT=200000000 NEW_ELASTICITY=6 NEW_DENOMINATOR=125 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateSystemConfigParamsScript --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x0CF2F86C3338993ce10F74d6f4B095712c7efe26",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xe111c6aeb4651d4cc342f7872cf42cb551065f1b2bdd8057ede07ef2d6caa636"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0x1211bf12f55f859c06c19fdc02a8da83f9e3c4427768601b2e03837963013097",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001f",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9b04b3058b89b90eacf95e14e18236dc18df01caa78ecdb3c0fd3d74c973025d",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates approval of sender",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "SystemConfig",
+      "address": "0x7F67DC4959cb3E532B10A99F41bDD906C46FdFdE",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x0000000000000000000000000000000000000000000000000000000003938700",
+          "after": "0x000000000000000000000000000000000000000000000000000000000bebc200",
+          "description": "Increases gas limit",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x00000000000000000000000000000000000000000000000000000002000000fa",
+          "after": "0x000000000000000000000000000000000000000000000000000000060000007d",
+          "description": "Updates elasticity/denominator",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "skipTaskOriginValidation": true,
+  "balanceChanges": []
+}
