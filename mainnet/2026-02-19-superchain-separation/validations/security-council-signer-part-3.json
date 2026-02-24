@@ -21,7 +21,7 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000007",
-          "description": "Override the nonce to be our expected value after initial execution.",
+          "description": "Override the nonce to 7, the expected value after Parts 1-2 (UpdateProxyAdminOwnerSigners and UpdateCBSafeSigners) execute.",
           "allowDifference": false
         },
         {
@@ -45,19 +45,19 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "value": "0x000000000000000000000000000000000000000000000000000000000000000e",
-          "description": "Override the nonce to be our expected value after initial execution.",
+          "description": "Override the nonce to 14, the expected value after Part 1 (UpdateProxyAdminOwnerSigners) executes.",
           "allowDifference": false
         },
         {
           "key": "0xc68c82056a4782e6920506248dec06b7949eabf81d66a13e5e8ec70d4e8f4b13",
           "value": "0x0000000000000000000000009855054731540a48b28990b63dcf4f33d8ae46a1",
-          "description": "Point Security Council Safe to existing head of owners list (CB Coordinator Safe).",
+          "description": "Simulates the post-Part-1 state where Security Council Safe points to CB Coordinator Safe (0x9855054731540a48b28990b63dcf4f33d8ae46a1) in the owners linked list.",
           "allowDifference": false
         },
         {
           "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
           "value": "0x00000000000000000000000020acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
-          "description": "This is owners[SENTINEL] -> Security Council Safe (adding Security Council Safe to head of linked list).",
+          "description": "Simulates the post-Part-1 state where SENTINEL points to Security Council Safe (0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd) as head of the owners linked list.",
           "allowDifference": false
         }
       ]
@@ -72,7 +72,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000007",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000008",
-          "description": "Increments the nonce",
+          "description": "Increments the Safe nonce from 7 to 8 after the Security Council Safe submits its approval.",
           "allowDifference": false
         }
       ]
@@ -92,14 +92,14 @@
           "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
           "before": "0x0000000000000000004c4b4095703e0982140d16f8eba6d158fccede42f04a4c",
           "after": "0x0000000000000000004c4b40b535ff7f118260a952ce65e7ff41b1743de8ee6c",
-          "description": "Updates Superchain Config address",
+          "description": "Updates the SuperchainConfig address stored in SystemConfig from OP's shared SuperchainConfig (0x95703e09...) to Base's own SuperchainConfig (0xb535ff7f...).",
           "allowDifference": false
         },
         {
           "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
           "before": "0x000000000000000000000000d392c27b84b1ca776528f2704bc67b82a62132d2",
           "after": "0x0000000000000000000000000507aaa21c678976fcdc7e804836acd6ebc17a44",
-          "description": "Update address of SystemConfig to new implementation.",
+          "description": "Updates the EIP-1967 implementation address of the SystemConfig proxy from old (0xd392c27b...) to new (0x0507aaa2...).",
           "allowDifference": false
         }
       ]
@@ -112,7 +112,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
           "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
-          "description": "Increments the nonce",
+          "description": "Increments the Safe nonce from 14 to 15 after executing the upgradeAndCall transaction.",
           "allowDifference": false
         },
         {

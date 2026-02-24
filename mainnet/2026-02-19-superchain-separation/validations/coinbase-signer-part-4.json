@@ -21,7 +21,7 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000008",
-          "description": "Override the nonce to be our expected value after initial execution.",
+          "description": "Override the nonce to 8, the expected value after Parts 1-2 (UpdateProxyAdminOwnerSigners and UpdateCBSafeSigners) execute.",
           "allowDifference": false
         },
         {
@@ -55,7 +55,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000008",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000009",
-          "description": "Increments the nonce",
+          "description": "Increments the Safe nonce from 8 to 9 after executing the UpgradeFeeDisburser deposit transaction.",
           "allowDifference": false
         }
       ]

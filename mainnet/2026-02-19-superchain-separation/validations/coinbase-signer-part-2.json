@@ -102,7 +102,7 @@
           "key": "0x805c8fe6c374d506404de2868e0b31ae6b921cd2462f27b5646e9cdbef1ba947",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Stores approval on behalf of CB Safe.",
+          "description": "Sets approvedHashes[CB Signer Safe][txHash] = 1, recording the CB Signer Safe's approval for the UpdateCBSafeSigners transaction.",
           "allowDifference": false
         },
         {

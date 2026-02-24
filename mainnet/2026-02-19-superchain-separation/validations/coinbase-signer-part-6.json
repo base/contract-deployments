@@ -33,7 +33,7 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000004",
-          "description": "Override the nonce to 4 to simulate the state after parts 1-5 have been executed.",
+          "description": "Override the nonce to 4, the expected value after Part 5 (TerminateSmartEscrow) executes.",
           "allowDifference": false
         },
         {

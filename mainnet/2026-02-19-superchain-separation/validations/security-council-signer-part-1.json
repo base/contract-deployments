@@ -121,7 +121,7 @@
           "key": "0xdbd7c5f04bc1b069effa0e376df1a8c35fb1f8061444f5bd6f4887bc55d6d568",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Sets approvedHashes[SC Signer Safe][txHash] = 1, recording the SC Signer Safe's approval for the nested transaction to the Proxy Admin Owner.",
+          "description": "Sets approvedHashes[Security Council Safe][txHash] = 1, recording the Security Council Safe's approval for the nested transaction to the Proxy Admin Owner.",
           "allowDifference": false
         }
       ]

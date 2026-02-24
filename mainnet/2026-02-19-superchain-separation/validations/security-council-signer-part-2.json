@@ -21,7 +21,7 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000006",
-          "description": "Override the nonce to be our expected value after initial execution.",
+          "description": "Override the nonce to 6, the expected value after Part 1 (UpdateProxyAdminOwnerSigners) executes.",
           "allowDifference": false
         },
         {
@@ -45,7 +45,7 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "value": "0x000000000000000000000000000000000000000000000000000000000000001b",
-          "description": "Override the nonce to be our expected value after initial execution.",
+          "description": "Override the nonce to 27, the expected value after Part 1 (UpdateProxyAdminOwnerSigners) executes.",
           "allowDifference": false
         }
       ]
@@ -157,7 +157,7 @@
           "key": "0xfabcf704e62a1cc99ee758de3edd11a4234df4f0bf03420e74085bec5df5faa9",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Stores approval on behalf of SC Safe.",
+          "description": "Sets approvedHashes[Security Council Safe][txHash] = 1, recording the Security Council Safe's approval for the UpdateCBSafeSigners transaction.",
           "allowDifference": false
         }
       ]
