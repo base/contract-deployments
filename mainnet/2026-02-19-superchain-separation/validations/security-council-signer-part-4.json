@@ -2,6 +2,7 @@
   "cmd": "SAFE_NONCE_0X20ACF55A3DCFE07FC4CECACFA1628F788EC8A4DD=8 forge script --rpc-url https://eth-mainnet.public.blastapi.io AddSecurityCouncilSigner --sig sign(address[]) [] --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
     "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",

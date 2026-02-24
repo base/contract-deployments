@@ -2,6 +2,7 @@
   "cmd": "SAFE_NONCE_0X9855054731540A48B28990B63DCF4F33D8AE46A1=28 SAFE_NONCE_0X7BB41C3008B3F03FE483B28B8DB90E19CF07595C=14 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpgradeSystemConfig --sig sign(address[]) [0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
     "domainHash": "0x88aac3dc27cc1618ec43a87b3df21482acd24d172027ba3fbb5a5e625d895a0b",

@@ -2,6 +2,7 @@
   "cmd": "forge script --rpc-url https://mainnet.optimism.io TerminateSmartEscrow --sig sign(address[]) [] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
   "ledgerId": 0,
   "rpcUrl": "https://mainnet.optimism.io",
+  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
     "domainHash": "0x4ac8f60706331537a33c4a4cbda024cb722855e6b160a3e8b28ab487510598b1",

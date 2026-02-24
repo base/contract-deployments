@@ -2,6 +2,7 @@
   "cmd": "SAFE_NONCE_0X9C4A57FEB77E294FD7BF5EBE9AB01CAA0A90A110=7 SAFE_NONCE_0X9855054731540A48B28990B63DCF4F33D8AE46A1=27 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpdateCBSafeSigners --sig sign(address[]) [0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
     "domainHash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
