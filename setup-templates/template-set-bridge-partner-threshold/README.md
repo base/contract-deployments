@@ -1,6 +1,6 @@
-# Pause Base Bridge
+# Set Bridge Partner Threshold
 
-Status: READY TO SIGN
+Status: TEMPLATE
 
 ## Description
 
