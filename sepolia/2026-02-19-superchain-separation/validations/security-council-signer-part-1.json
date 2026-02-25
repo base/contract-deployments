@@ -2,7 +2,6 @@
   "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateCBSafeSigners --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
   "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
-  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
     "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
