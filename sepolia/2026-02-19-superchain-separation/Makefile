@@ -50,7 +50,7 @@ $(shell echo $(1) | tr '[:lower:]' '[:upper:]')
 endef
 
 .PHONY: sign-as-task-creator
-sign-as-task-creator:
+sign-as-task-creator: deps-signer-tool
 	cd $(SIGNER_TOOL_PATH) && \
 		npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder $(CURDIR) \
