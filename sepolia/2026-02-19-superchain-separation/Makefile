@@ -48,6 +48,29 @@ define ADDR_UPPER
 $(shell echo $(1) | tr '[:lower:]' '[:upper:]')
 endef
 
+.PHONY: sign-as-task-creator
+sign-as-task-creator:
+	cd $(SIGNER_TOOL_PATH) && \
+		npx tsx scripts/genTaskOriginSig.ts sign \
+		--task-folder .. \
+		--signature-path ../../signatures/2026-02-19-superchain-separation
+
+.PHONY: sign-as-base-facilitator
+sign-as-base-facilitator:
+	cd $(SIGNER_TOOL_PATH) && \
+		npx tsx scripts/genTaskOriginSig.ts sign \
+		--task-folder .. \
+		--signature-path ../../signatures/2026-02-19-superchain-separation \
+		--facilitator base
+
+.PHONY: sign-as-sc-facilitator
+sign-as-sc-facilitator:
+	cd $(SIGNER_TOOL_PATH) && \
+		npx tsx scripts/genTaskOriginSig.ts sign \
+		--task-folder .. \
+		--signature-path ../../signatures/2026-02-19-superchain-separation \
+		--facilitator security-council
+
 # Part 1: UpdateCBSafeSigners
 .PHONY: gen-validation-cb-1
 gen-validation-cb-1: deps-signer-tool
