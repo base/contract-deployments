@@ -110,13 +110,6 @@ forge-deps:
 .PHONY: checkout-base-contracts-commit
 checkout-base-contracts-commit:
 	[ -n "$(BASE_CONTRACTS_COMMIT)" ] || (echo "BASE_CONTRACTS_COMMIT must be set in .env" && exit 1)
-# rm -rf lib/base-contracts
-# mkdir -p lib/base-contracts
-# cd lib/base-contracts; \
-# git init; \
-# git remote add origin https://github.com/base/contracts.git; \
-# git fetch --depth=1 origin $(BASE_CONTRACTS_COMMIT); \
-# git reset --hard FETCH_HEAD
 	forge install --no-git github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
 
 ##
