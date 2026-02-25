@@ -3,6 +3,7 @@
   "ledgerId": 0,
   "rpcUrl": "https://mainnet.optimism.io",
   "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
     "domainHash": "0xb34978142f4478f3e5633915597a756daa58a1a59a3e0234f9acd5444f1ca70e",

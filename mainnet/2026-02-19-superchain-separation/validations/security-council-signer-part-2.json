@@ -3,6 +3,7 @@
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
     "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",

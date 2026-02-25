@@ -3,6 +3,7 @@
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
     "domainHash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
@@ -60,7 +61,7 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "before": "0x000000000000000000000000000000000000000000000000000000000000000d",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
           "description": "Increments the Safe nonce from 13 to 14 after executing the swapOwner transaction.",
           "allowDifference": false
         },
