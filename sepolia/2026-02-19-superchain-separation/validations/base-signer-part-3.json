@@ -61,5 +61,10 @@
       ]
     }
   ],
-  "balanceChanges": []
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "jack.chuma@coinbase.com"
+    }
+  }
 }
