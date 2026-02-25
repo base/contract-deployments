@@ -48,14 +48,14 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "before": "0x000000000000000000000000000000000000000000000000000000000000001f",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000020",
-          "description": "Increments the nonce",
+          "description": "Increments the Safe nonce from 31 to 32 after executing the SystemConfig upgrade transaction.",
           "allowDifference": false
         },
         {
           "key": "0x6a9a7471a4f33ffcbc9870cff486eeb8b369ae31fca40796b66c635a84b26e08",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Stores an approval from the CB Coordinator Safe for the SystemConfig upgrade transaction hash.",
+          "description": "Stores an approval from the Mock Security Council Safe for the SystemConfig upgrade transaction hash.",
           "allowDifference": false
         }
       ]
@@ -88,7 +88,7 @@
           "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
           "before": "0x0000000000000000004c4b40c2be75506d5724086deb7245bd260cc9753911be",
           "after": "0x0000000000000000004c4b40e4401eb53ae90a5335a51fe1828d7becf7a63508",
-          "description": "Updates Superchain Config address",
+          "description": "Updates the SuperchainConfig address in the packed storage slot from the OP Superchain's shared SuperchainConfig (0xc2be75506d5724086deb7245bd260cc9753911be) to Base's own SuperchainConfig proxy (0xe4401eb53ae90a5335a51fe1828d7becf7a63508). The gasLimit (5,000,000) in the upper bytes is unchanged.",
           "allowDifference": false
         },
         {

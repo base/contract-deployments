@@ -55,7 +55,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
-          "description": "Increments the nonce",
+          "description": "Increments the Safe nonce from 21 to 22 after executing the FeeDisburser upgrade deposit transaction via OptimismPortal.",
           "allowDifference": false
         }
       ]

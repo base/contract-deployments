@@ -168,7 +168,7 @@
           "key": "0xdd723b4c2a66aea3d2ac26f837bd1e7dea4ce6cca7e4fa76af2185076784453f",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000ee316db0edaee45347dfc498795a01311f085225",
-          "description": "Updates the owners mapping",
+          "description": "Owners linked list: Adds CB EOA 0x644d0f5c2c55a4679b4bfe057b87ba203af9ac0d pointing to next owner 0xee316db0edaee45347dfc498795a01311f085225.",
           "allowDifference": false
         },
         {
@@ -188,7 +188,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
           "before": "0x000000000000000000000000000000000000000000000000000000000000001a",
           "after": "0x000000000000000000000000000000000000000000000000000000000000001b",
-          "description": "Increments the nonce",
+          "description": "Increments the Safe nonce from 26 to 27 after executing the batch transaction to update CB Coordinator Safe signers.",
           "allowDifference": false
         }
       ]

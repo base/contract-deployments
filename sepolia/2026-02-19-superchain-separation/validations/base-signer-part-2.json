@@ -94,7 +94,7 @@
           "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
           "before": "0x0000000000000000004c4b40c2be75506d5724086deb7245bd260cc9753911be",
           "after": "0x0000000000000000004c4b40e4401eb53ae90a5335a51fe1828d7becf7a63508",
-          "description": "Updates Superchain Config address",
+          "description": "Updates the SuperchainConfig address in the packed storage slot from the OP Superchain's shared SuperchainConfig (0xc2be75506d5724086deb7245bd260cc9753911be) to Base's own SuperchainConfig proxy (0xe4401eb53ae90a5335a51fe1828d7becf7a63508). The gasLimit (5,000,000) in the upper bytes is unchanged.",
           "allowDifference": false
         },
         {
