@@ -7,6 +7,7 @@ include .env
 ##
 # Configuration
 ##
+SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
 
 # Sender addresses for validation generation
@@ -30,10 +31,10 @@ define GEN_VALIDATION
 	cd $(SIGNER_TOOL_PATH) && \
 		bun run scripts/genValidationFile.ts \
 			--rpc-url $(RPC_URL) \
-			--workdir .. \
+			--workdir $(CURDIR) \
 			--forge-cmd '$(5)forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
 			--ledger-id $(LEDGER_ACCOUNT) \
-			--out ../validations/$(4)
+			--out $(CURDIR)/validations/$(4)
 endef
 
 # Helper to get current nonce for a safe
@@ -52,23 +53,23 @@ endef
 sign-as-task-creator:
 	cd $(SIGNER_TOOL_PATH) && \
 		npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder .. \
-		--signature-path ../../signatures/2026-02-19-superchain-separation
+		--task-folder $(CURDIR) \
+		--signature-path $(CURDIR)/../signatures/2026-02-19-superchain-separation
 
 .PHONY: sign-as-base-facilitator
 sign-as-base-facilitator:
 	cd $(SIGNER_TOOL_PATH) && \
 		npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder .. \
-		--signature-path ../../signatures/2026-02-19-superchain-separation \
+		--task-folder $(CURDIR) \
+		--signature-path $(CURDIR)/../signatures/2026-02-19-superchain-separation \
 		--facilitator base
 
 .PHONY: sign-as-sc-facilitator
 sign-as-sc-facilitator:
 	cd $(SIGNER_TOOL_PATH) && \
 		npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder .. \
-		--signature-path ../../signatures/2026-02-19-superchain-separation \
+		--task-folder $(CURDIR) \
+		--signature-path $(CURDIR)/../signatures/2026-02-19-superchain-separation \
 		--facilitator security-council
 
 # Part 1: UpdateCBSafeSigners
