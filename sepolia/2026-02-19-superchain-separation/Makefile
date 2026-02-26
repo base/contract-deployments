@@ -136,35 +136,42 @@ endif
 # Approvals - UpdateCBSafeSigners
 ##
 .PHONY: approve-cbsafesigners-cb
+approve-cbsafesigners-cb: SCRIPT_NAME = UpdateCBSafeSigners
 approve-cbsafesigners-cb:
-	SCRIPT_NAME=UpdateCBSafeSigners $(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: approve-cbsafesigners-sc
+approve-cbsafesigners-sc: SCRIPT_NAME = UpdateCBSafeSigners
 approve-cbsafesigners-sc:
-	SCRIPT_NAME=UpdateCBSafeSigners $(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
 
 ##
 # Approvals - UpgradeSystemConfig
 ##
 .PHONY: approve-systemconfig-cb
+approve-systemconfig-cb: SCRIPT_NAME = UpgradeSystemConfig
 approve-systemconfig-cb:
-	SCRIPT_NAME=UpgradeSystemConfig $(call MULTISIG_APPROVE,$(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: approve-systemconfig-sc
+approve-systemconfig-sc: SCRIPT_NAME = UpgradeSystemConfig
 approve-systemconfig-sc:
-	SCRIPT_NAME=UpgradeSystemConfig $(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
 
 ##
 # Execute
 ##
 .PHONY: execute-cbsafesigners
+execute-cbsafesigners: SCRIPT_NAME = UpdateCBSafeSigners
 execute-cbsafesigners:
-	SCRIPT_NAME=UpdateCBSafeSigners $(call MULTISIG_EXECUTE,0x)
+	$(call MULTISIG_EXECUTE,0x)
 
 .PHONY: execute-systemconfig
+execute-systemconfig: SCRIPT_NAME = UpgradeSystemConfig
 execute-systemconfig:
-	SCRIPT_NAME=UpgradeSystemConfig $(call MULTISIG_EXECUTE,0x)
+	$(call MULTISIG_EXECUTE,0x)
 
 .PHONY: execute-feedisburser
+execute-feedisburser: SCRIPT_NAME = UpgradeFeeDisburser
 execute-feedisburser:
-	SCRIPT_NAME=UpgradeFeeDisburser $(call MULTISIG_EXECUTE,$(SIGNATURES))
+	$(call MULTISIG_EXECUTE,$(SIGNATURES))
