@@ -1,6 +1,10 @@
 # Sepolia OP Stack Separation
 
-Status: READY TO SIGN
+Status: EXECUTED
+
+[Step 1](https://sepolia.etherscan.io/tx/0x172e6bef6e1cf87fc13739f9b8ca56ac0801aeec59fa04420aaa6457bcdc27a3)
+[Step 2](https://sepolia.etherscan.io/tx/0x60c05a9ee8f30a8c1fc0f739ae9be01e755045c976ae0b78ee2c3f1ba9eeaed8)
+[Step 3](https://sepolia.etherscan.io/tx/0x3c056f12475a39854ef1b525fc61e27237b79c7ba4120b07ef327c9ec1c8391f)
 
 ## Description
 
