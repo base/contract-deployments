@@ -1,0 +1,114 @@
+{
+  "confirmationStatus": "finalized",
+  "transaction": {
+    "signatures": [
+      "NSoJmejwabofbErRmb5VhEMLuXZRDj4TjV7Q4oEsyoeU6SzScecBZydbX6dqRH9e5w7MEkmudXzYsKhRwhvah7E"
+    ],
+    "message": {
+      "header": {
+        "numRequiredSignatures": 1,
+        "numReadonlySignedAccounts": 0,
+        "numReadonlyUnsignedAccounts": 5
+      },
+      "accountKeys": [
+        "BEwzVVw44VLaspWByUML23hbQmo5ndM1NPQAJsvCxC6F",
+        "7BrnaHaHtFDshmyrZFi28r9vzxTqcmTjSZcf7KdLHRhL",
+        "9mYamYp9qGXSC5whTmfH92RG2BdBpwSP3DwaczyFieDN",
+        "F1HSdZSs7CWSNBV4jqa977hLcuxn6fcdg8R5JuoFvM2q",
+        "DBKy3Bb6kFS2HH2JXZ1DhaR1KvZ6z6nTVyu4HJuvnd1S",
+        "6YpL1h2a9u6LuNVi55vAes36xNszt2UDm3Zk1kj4WSBm",
+        "2N9nKVFPHsBVazniiYNxECB2nPLcwjk3dHAJH9tkr2xQ",
+        "EkPiugm4hAm5pMPSoM9aTtDNxUdDXLcaVgttUQvksqkj",
+        "Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX"
+      ],
+      "recentBlockhash": "9GNLoSXFaQ9B7pDy2h7V41Hy3vt5UxUKfi8dFMtFpcoS",
+      "instructions": [
+        {
+          "programIdIndex": 8,
+          "accounts": [
+            1,
+            4,
+            2,
+            5,
+            6,
+            0,
+            6,
+            3,
+            7,
+            5
+          ],
+          "data": "3XtzmXSf21G7ZgSaukdCPnKeKSpmU4LsofeemapAhJezh47KjzKQdAh5tmeJ3rjtfzTnoZ3r2QWW3R3Ur4VV6k4Wr5RwujDJbtQaHTRvoxAcHD9BvcTNp67FdiDLPGu4eh2hmrTg55uzpMmn",
+          "stackHeight": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "err": null,
+    "status": {
+      "Ok": null
+    },
+    "fee": 5000,
+    "preBalances": [
+      408129418020,
+      4134240,
+      1252800,
+      4565760,
+      1343280,
+      1141440,
+      0,
+      6127959840,
+      1141440
+    ],
+    "postBalances": [
+      408129413020,
+      4134240,
+      1252800,
+      4565760,
+      1343280,
+      1141440,
+      0,
+      6127959840,
+      1141440
+    ],
+    "innerInstructions": [
+      {
+        "index": 0,
+        "instructions": [
+          {
+            "programIdIndex": 5,
+            "accounts": [
+              6,
+              3,
+              7,
+              5
+            ],
+            "data": "SF38x7kbGQVM",
+            "stackHeight": 2
+          }
+        ]
+      }
+    ],
+    "logMessages": [
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX invoke [1]",
+      "Program log: Instruction: Execute",
+      "Program 6YpL1h2a9u6LuNVi55vAes36xNszt2UDm3Zk1kj4WSBm invoke [2]",
+      "Program log: Instruction: SetPartnerOracleConfig",
+      "Program 6YpL1h2a9u6LuNVi55vAes36xNszt2UDm3Zk1kj4WSBm consumed 8802 of 171219 compute units",
+      "Program 6YpL1h2a9u6LuNVi55vAes36xNszt2UDm3Zk1kj4WSBm success",
+      "Program data: 3Q/UHSP8/04MAAAAAAAAAFJw9BMpTsJAnaNQ2SDcXQ5pG2X7hoV33jo1m3m+5rSsCQAAACIw54cqcdmdAA==",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX consumed 43259 of 200000 compute units",
+      "Program Ea5qsVs2kwQXi7LMAh3Qg5YKpuPQbW7oqvYaPXUwBwoX success"
+    ],
+    "preTokenBalances": [],
+    "postTokenBalances": [],
+    "rewards": [],
+    "loadedAddresses": {
+      "writable": [],
+      "readonly": []
+    },
+    "computeUnitsConsumed": 43259
+  },
+  "blockTime": 1768497571,
+  "slot": 435366445
+}

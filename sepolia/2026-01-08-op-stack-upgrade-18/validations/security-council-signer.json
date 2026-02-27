@@ -1,0 +1,303 @@
+{
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net ExecuteOPCMScript --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8,0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0x2b6ed09d1939f371236421ab268bbbecd6f11b178060fe6d9a986ab672dbe355"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock Security Council - Sepolia",
+      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
+      "overrides": [
+        {
+          "key": "0xd857b38dca98a023b2702f410237285387f525286eb22f314cc2165fd507126c",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476ddd290ec46318785046ef68a0ba9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001e",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xaa9f9365710009bcb0e19352bc155841be7e745b27af070da169a4e6447ff22e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores approval on behalf of CB coordinator safe",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Sepolia",
+      "address": "0x2ff5cc82dbf333ea30d8ee462178ab1707315355",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000eb69cc681e8d4a557b30dffbad85affd47a2cf2e",
+          "after": "0x00000000000000000000000036398155cd17cfe804f69b233edda800dd4d5aa5",
+          "description": "Update address of AnchorStateRegistry to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Sepolia",
+      "address": "0x49f53e41452c74589e85ca1677426ba426459e85",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000007cf803296662e8c72a6c1d6450572209acf7f202",
+          "after": "0x00000000000000000000000097cebbf8959e2a5476fbe9b98a21806ec234609b",
+          "description": "Update address of OptimismPortal to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132a1667ca7ad00d36616afba1a28116c770a",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xead746436a15f47d8b59b9b583217e10d051370b76caefca7151be7981e818ba",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores approval on behalf of SC multisig",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock Security Council - Sepolia",
+      "address": "0x6af0674791925f767060dd52f7fb20984e8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactoryProxy - Sepolia",
+      "address": "0xd6e6dbf4f7ea0ac412fd8b65ed297e64bb7a06e1",
+      "changes": [
+        {
+          "key": "0x057a7f241532c73b242fd6e74e7fbd8cbc283dbc44ad194f17d900d9ac2e9251",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000006ddba09bc4ccb0d6ca9fc5350580f74165707499",
+          "description": "Set DisputeGameFactory.gameImpls[GameTypes.CANNON_KONA] to the new FaultDisputeGameV2 implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6c",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0323914d3050e80c3d09da528be54794fde60cd26849cd3410dde0da7cd7d4fa",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, absolutePrestate) [word 1/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6d",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb9082ff5cc82dbf333ea30d8ee46",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, vm/asr/weth packed) [word 2/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x2178ab1707315355d3683e4947a7769603ab6418ec02f000ce3cf30b00000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, vm/asr/weth packed) [word 3/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000014a3400000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, l2ChainId=84532) [word 4/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x033c000916b4a88cfffeceddd6cf0f4be3897a89195941e5a7c3f8209b4dbb6e",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, absolutePrestate) [word 1/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb9082ff5cc82dbf333ea30d8ee46",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, vm/asr/weth packed) [word 2/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea7",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x2178ab1707315355d3683e4947a7769603ab6418ec02f000ce3cf30b00000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, vm/asr/weth packed) [word 3/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000014a3400000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, l2ChainId=84532) [word 4/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000074fac1d45b98bae058f8f566201c9a81b85c7d50",
+          "after": "0x000000000000000000000000c040f392e52cb6970ca8e110c280fe24e07c5e2c",
+          "description": "Update DisputeGameFactory proxy implementation (EIP-1967 implementation slot).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x4702e508fba4ecc1593cbc19e848c196ab454e49b730050083694dc1976387d5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000011c37937e080000",
+          "description": "Set DisputeGameFactory.initBonds[GameTypes.CANNON_KONA] (copied from GameTypes.CANNON).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x4d5a9bd2e41301728d41c8e705190becb4e74abe869f75bdb405b63716a35f9e",
+          "before": "0x000000000000000000000000a1ae4fd5541a3e7a912e45560ed60d3edc5f9a05",
+          "after": "0x00000000000000000000000058bf355c5d4edfc723ef89d99582eccfd143266a",
+          "description": "Update DisputeGameFactory.gameImpls[GameTypes.PERMISSIONED_CANNON] to the new PermissionedDisputeGameV2 implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x5843af22e99e7c98370145a5056245c244ce8ee852f4ef5e6d6a8e410a18cf41",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000000f9",
+          "description": "Set DisputeGameFactory.gameArgs[GameTypes.CANNON] length to 124 bytes (permissionless args).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9960260aaa22d230a3b999f6243d727fef99faebfaa949c961ad27031f2529b8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000000f9",
+          "description": "Set DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] length to 124 bytes (permissionless args).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7c",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x033c000916b4a88cfffeceddd6cf0f4be3897a89195941e5a7c3f8209b4dbb6e",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, absolutePrestate) [word 1/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7d",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb9082ff5cc82dbf333ea30d8ee46",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, vm/asr/weth packed) [word 2/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x2178ab170731535532ce910d9c6c8f78dc6779c1499ab05f281a054e00000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, vm/asr/weth packed) [word 3/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000014a3403763706",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, l2ChainId=84532 + packed data) [word 4/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa80",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x7c1dbe6d2430616d8f54cb774daa59998b8c52b04a38f10515c52670fcb23f3c",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, proposer packed) [word 5/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa81",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x4c44474f00000000000000000000000000000000000000000000000000000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, challenger packed) [word 6/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc073f36c05b6a60b24c30a48974b549770d8fa354751fb3170c9dfd8ca536add",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000149",
+          "description": "Set DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] length to 164 bytes (permissioned args).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b",
+          "before": "0x000000000000000000000000ed839a2aa262eccc513308fe7b8f39088ff8e992",
+          "after": "0x0000000000000000000000006ddba09bc4ccb0d6ca9fc5350580f74165707499",
+          "description": "Update DisputeGameFactory.gameImpls[GameTypes.CANNON] to the new FaultDisputeGameV2 implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000002fa28989fc559836e9d66dff3010c7f7f41c65ed",
+          "after": "0x000000000000000000000000d392c27b84b1ca776528f2704bc67b82a62132d2",
+          "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

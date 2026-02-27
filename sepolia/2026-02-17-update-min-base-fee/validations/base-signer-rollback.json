@@ -1,0 +1,77 @@
+{
+  "cmd": "OLD_MIN_BASE_FEE=5000000 NEW_MIN_BASE_FEE=2000000 SAFE_NONCE=19 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net SetMinBaseFeeScript --sig sign(address[]) [] --sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "messageHash": "0xa78690fa367e9f2a3e4020635f4d9e83e4b91e1cd66cfb13ccd830bfbb2a9f90"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x389220615a0d342f31a03f4dfb871150e1e83a732d447252231497b142d80959",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "overrides": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "value": "0x0000000000000000004c4b40c2be75506d5724086deb7245bd260cc9753911be",
+          "description": "Overrides min base fee to 5M wei (0x4C4B40) so rollback simulation succeeds.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564afeb048bed26194",
+      "changes": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x0000000000000000004c4b40c2be75506d5724086deb7245bd260cc9753911be",
+          "after": "0x0000000000000000001e8480c2be75506d5724086deb7245bd260cc9753911be",
+          "description": "Updates min base fee from 5M wei (0x4C4B40) to 2M wei (0x1E8480).",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

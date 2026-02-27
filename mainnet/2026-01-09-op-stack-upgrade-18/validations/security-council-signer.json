@@ -1,0 +1,309 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io ExecuteOPCMScript --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd,0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x2e3991446036380b9514e2025217e45e3d002a2f6485c3bab72f32a5b93df4d8"
+  },
+  "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb811b325d45d18dd5e8593c25b0764afeb685dea98a5238999d9c24e8466f19b",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edb88c4b80fdd2adff2412a7bebf9df42cb40e",
+      "changes": [
+        {
+          "key": "0x057a7f241532c73b242fd6e74e7fbd8cbc283dbc44ad194f17d900d9ac2e9251",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000006ddba09bc4ccb0d6ca9fc5350580f74165707499",
+          "description": "Set DisputeGameFactory.gameImpls[GameTypes.CANNON_KONA] to the new FaultDisputeGameV2 implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6c",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0323914d3050e80c3d09da528be54794fde60cd26849cd3410dde0da7cd7d4fa",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, absolutePrestate) [word 1/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6d",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb908909f6cf47ed12f010a796527",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, vm/asr/weth packed) [word 2/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xf562bfc26c7f4e722453c1216e49704d84ea98a4dacd95738f2fc8ec00000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, vm/asr/weth packed) [word 3/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b73ac310b89e68a7b6e4e9957853449e5de490806bc3c532970c3daac958a6f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000210500000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] (permissionless args, l2ChainId=8453) [word 4/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x033c000916b4a88cfffeceddd6cf0f4be3897a89195941e5a7c3f8209b4dbb6e",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, absolutePrestate) [word 1/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb908909f6cf47ed12f010a796527",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, vm/asr/weth packed) [word 2/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea7",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xf562bfc26c7f4e722453c1216e49704d84ea98a4dacd95738f2fc8ec00000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, vm/asr/weth packed) [word 3/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000210500000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.CANNON] (permissionless args, l2ChainId=8453) [word 4/4].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000074fac1d45b98bae058f8f566201c9a81b85c7d50",
+          "after": "0x000000000000000000000000c040f392e52cb6970ca8e110c280fe24e07c5e2c",
+          "description": "Update DisputeGameFactory proxy implementation (EIP-1967 implementation slot).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x4702e508fba4ecc1593cbc19e848c196ab454e49b730050083694dc1976387d5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000011c37937e080000",
+          "description": "Set DisputeGameFactory.initBonds[GameTypes.CANNON_KONA] (copied from GameTypes.CANNON).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x4d5a9bd2e41301728d41c8e705190becb4e74abe869f75bdb405b63716a35f9e",
+          "before": "0x0000000000000000000000006f8c1ea88cb410571739d36eb00811b250574cb2",
+          "after": "0x00000000000000000000000058bf355c5d4edfc723ef89d99582eccfd143266a",
+          "description": "Update DisputeGameFactory.gameImpls[GameTypes.PERMISSIONED_CANNON] to the new PermissionedDisputeGameV2 implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x5843af22e99e7c98370145a5056245c244ce8ee852f4ef5e6d6a8e410a18cf41",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000000f9",
+          "description": "Set DisputeGameFactory.gameArgs[GameTypes.CANNON] length to 124 bytes (permissionless args).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9960260aaa22d230a3b999f6243d727fef99faebfaa949c961ad27031f2529b8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000000f9",
+          "description": "Set DisputeGameFactory.gameArgs[GameTypes.CANNON_KONA] length to 124 bytes (permissionless args).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7c",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x033c000916b4a88cfffeceddd6cf0f4be3897a89195941e5a7c3f8209b4dbb6e",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, absolutePrestate) [word 1/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7d",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x6463dee3828677f6270d83d45408044fc5edb908909f6cf47ed12f010a796527",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, vm/asr/weth packed) [word 2/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xf562bfc26c7f4e7264ae5250958cdeb83f6b61f913b5ac6ebe8efd4d00000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, vm/asr/weth packed) [word 3/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa7f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000002105642229f2",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, l2ChainId=8453 + packed data) [word 4/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa80",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x38fb9de03374be34b0ed8d9de80752c58ca1e12404d16373aef756179b185f27",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, proposer packed) [word 5/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9afb513dc3306e3bc370fea0bac86eaae93221c831ccaae670c9d4101fb0fa81",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xb2994f3a00000000000000000000000000000000000000000000000000000000",
+          "description": "Store DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] (permissioned args, challenger packed) [word 6/6].",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc073f36c05b6a60b24c30a48974b549770d8fa354751fb3170c9dfd8ca536add",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000149",
+          "description": "Set DisputeGameFactory.gameArgs[GameTypes.PERMISSIONED_CANNON] length to 164 bytes (permissioned args).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b",
+          "before": "0x000000000000000000000000979cb7e329ba213fb9d6c5f7771ec6a3109bdc93",
+          "after": "0x0000000000000000000000006ddba09bc4ccb0d6ca9fc5350580f74165707499",
+          "description": "Update DisputeGameFactory.gameImpls[GameTypes.CANNON] to the new FaultDisputeGameV2 implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044d57e1c92a77f79988d21fa8faf74e97e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000007cf803296662e8c72a6c1d6450572209acf7f202",
+          "after": "0x00000000000000000000000097cebbf8959e2a5476fbe9b98a21806ec234609b",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000002fa28989fc559836e9d66dff3010c7f7f41c65ed",
+          "after": "0x000000000000000000000000d392c27b84b1ca776528f2704bc67b82a62132d2",
+          "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bb41c3008b3f03fe483b28b8db90e19cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe42d105bdf05b82daaf3dad8f3923990d6ffcbf25ef0c2e6f3978357813c2553",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores approval on behalf of CB coordinator safe",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Mainnet",
+      "address": "0x909f6cf47ed12f010a796527f562bfc26c7f4e72",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000eb69cc681e8d4a557b30dffbad85affd47a2cf2e",
+          "after": "0x00000000000000000000000036398155cd17cfe804f69b233edda800dd4d5aa5",
+          "description": "Update address of AnchorStateRegistry to new implementation",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540a48b28990b63dcf4f33d8ae46a1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x1f9c184079e5bd8197b9c7f572f21c9720d1b5b966a6366f3fdfabd06cd07276",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores approval on behalf of SC multisig",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

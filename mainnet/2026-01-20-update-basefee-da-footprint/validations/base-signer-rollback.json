@@ -1,0 +1,90 @@
+{
+  "cmd": "OLD_MIN_BASE_FEE=1000000 NEW_MIN_BASE_FEE=500000 OLD_DA_FOOTPRINT_GAS_SCALAR=139 NEW_DA_FOOTPRINT_GAS_SCALAR=325 SAFE_NONCE=101 forge script --rpc-url https://eth-mainnet.public.blastapi.io SetMinBaseFeeAndDAFootprintScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0xe6a4877f8bfe62c2fb0c1cddea889b965505d503d8007c523fc5db7fc68cad6c"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000065",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x7bc8740e5864df47e4bc6f78c0d254bd65dad26e2ceabbb8364f7bbdb5c0b428",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "overrides": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "value": "0x00000000000000000000008b0000000000000000000000000000000600000032",
+          "description": "",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "value": "0x0000000000000000000f424095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000065",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000066",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x00000000000000000000008b0000000000000000000000000000000600000032",
+          "after": "0x0000000000000000000001450000000000000000000000000000000600000032",
+          "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x0000000000000000000f424095703e0982140d16f8eba6d158fccede42f04a4c",
+          "after": "0x00000000000000000007a12095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "Updates Min Base Fee and Superchain Config address",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

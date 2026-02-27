@@ -13,7 +13,7 @@ This task contains a single script that can be used to fund addresses from a Gno
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<date>safe-swap-owner
+cd <network>/<date>-funding
 make deps
 ```
 

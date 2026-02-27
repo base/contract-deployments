@@ -1,0 +1,77 @@
+{
+  "cmd": "OLD_MIN_BASE_FEE=5000000 NEW_MIN_BASE_FEE=2000000 SAFE_NONCE=104 forge script --rpc-url https://eth-mainnet.public.blastapi.io SetMinBaseFeeScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x5fb75649784c7985d9ab466f3fe5937a74f309f7868c77594f2260fdf15b4f9e"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x3dc6b9d0cf3ce395987a1645e7ce7647b6141537dd995a2446c20b48a670c29a",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "overrides": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "value": "0x0000000000000000004c4b4095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "Overrides min base fee to 5M wei (0x4C4B40) so rollback simulation succeeds.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667cd30e52c0b458baaccb9fada7046e056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000069",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79fab69143498ed3712e519a88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x0000000000000000004c4b4095703e0982140d16f8eba6d158fccede42f04a4c",
+          "after": "0x0000000000000000001e848095703e0982140d16f8eba6d158fccede42f04a4c",
+          "description": "Updates min base fee from 5M wei (0x4C4B40) to 2M wei (0x1E8480).",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
