@@ -2,6 +2,16 @@ include ../../Makefile
 include ../.env
 include .env
 
+# Load network-specific config
+ifeq ($(NETWORK),mainnet)
+include ../../config/mainnet.env
+else ifeq ($(NETWORK),sepolia)
+include ../../config/sepolia.env
+endif
+
+export INCIDENT_MULTISIG
+export SYSTEM_CONFIG
+
 # Get first owner from INCIDENT_MULTISIG
 SENDER := $(shell cast call $(INCIDENT_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | head -1 | tr -d '[]' | cut -d',' -f1)
 

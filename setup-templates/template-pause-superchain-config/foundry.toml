@@ -8,14 +8,18 @@ optimizer = true
 optimizer_runs = 999999
 solc_version = "0.8.15"
 via-ir = false
+evm_version = "shanghai"
 remappings = [
     '@eth-optimism-bedrock/=lib/optimism/packages/contracts-bedrock/',
     '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts',
     '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts',
     '@rari-capital/solmate/=lib/solmate/',
-    '@base-contracts/=lib/base-contracts',
+    '@base-contracts/=lib/contracts',
     '@solady/=lib/solady/src/',
     '@lib-keccak=lib/lib-keccak/contracts/lib/'
 ]
+
+[lint]
+lint_on_build = false
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
