@@ -1,0 +1,153 @@
+name: Validate Templates
+
+on:
+  pull_request:
+    paths:
+      - 'setup-templates/**'
+      - 'Makefile'
+      - 'Multisig.mk'
+      - 'config/**'
+  push:
+    branches: [main, master]
+    paths:
+      - 'setup-templates/**'
+      - 'Makefile'
+      - 'Multisig.mk'
+      - 'config/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Known-good default commit for github.com/base/contracts.
+  # Used when a template's .env does not pin BASE_CONTRACTS_COMMIT.
+  # Update this value when a newer base-contracts commit is validated.
+  CI_DEFAULT_BASE_CONTRACTS_COMMIT: be7c7a642e430fa64b04b63203839f8c81f48466
+
+jobs:
+  validate-template:
+    name: ${{ matrix.template }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        template:
+          - template-generic
+          - template-funding
+          - template-gas-increase
+          - template-gas-and-elasticity-increase
+          - template-safe-management
+          - template-upgrade-fault-proofs
+          - template-pause-bridge-base
+          - template-pause-superchain-config
+          - template-set-bridge-partner-threshold
+          - template-switch-to-permissioned-game
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Foundry ──────────────────────────────────────────────────────
+      - name: Extract Foundry commit from Makefile
+        id: foundry
+        run: |
+          FOUNDRY_COMMIT=$(grep '^FOUNDRY_COMMIT' Makefile | head -1 | sed 's/^[^=]*=[[:space:]]*//')
+          if [ -z "$FOUNDRY_COMMIT" ]; then
+            echo "::error::Could not extract FOUNDRY_COMMIT from Makefile"
+            exit 1
+          fi
+          echo "commit=$FOUNDRY_COMMIT" >> "$GITHUB_OUTPUT"
+          echo "Foundry commit: $FOUNDRY_COMMIT"
+
+      - name: Cache Foundry toolchain
+        id: cache-foundry
+        uses: actions/cache@v4
+        with:
+          path: ~/.foundry/bin
+          key: foundry-${{ runner.os }}-${{ steps.foundry.outputs.commit }}
+
+      - name: Install Foundry
+        run: |
+          if [ "${{ steps.cache-foundry.outputs.cache-hit }}" != "true" ]; then
+            curl -L https://foundry.paradigm.xyz | bash
+            ~/.foundry/bin/foundryup --commit ${{ steps.foundry.outputs.commit }}
+          fi
+          echo "$HOME/.foundry/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Foundry installation
+        run: forge --version
+
+      # ── Determine BASE_CONTRACTS_COMMIT ──────────────────────────────
+      - name: Determine BASE_CONTRACTS_COMMIT
+        id: base-contracts
+        working-directory: setup-templates/${{ matrix.template }}
+        run: |
+          COMMIT=""
+          if [ -f .env ]; then
+            COMMIT=$(grep '^BASE_CONTRACTS_COMMIT=' .env | head -1 | sed 's/^[^=]*=//' | tr -d '[:space:]')
+          fi
+
+          # Use the value from .env only if it looks like a valid hex commit hash
+          if [[ "$COMMIT" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+            echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
+            echo "::notice::${{ matrix.template }}: Using BASE_CONTRACTS_COMMIT from .env: $COMMIT"
+          else
+            echo "commit=$CI_DEFAULT_BASE_CONTRACTS_COMMIT" >> "$GITHUB_OUTPUT"
+            echo "::notice::${{ matrix.template }}: Using CI default BASE_CONTRACTS_COMMIT: $CI_DEFAULT_BASE_CONTRACTS_COMMIT"
+          fi
+
+      # ── Dependencies ─────────────────────────────────────────────────
+      - name: Install forge dependencies
+        working-directory: setup-templates/${{ matrix.template }}
+        run: |
+          echo "::group::Installing shared forge dependencies"
+          forge install --no-git \
+            github.com/foundry-rs/forge-std \
+            github.com/OpenZeppelin/openzeppelin-contracts@v4.9.3 \
+            github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@v4.7.3 \
+            github.com/rari-capital/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
+            github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \
+            github.com/Vectorized/solady@5ea5d9f57ed6d24a27d00934f4a3448def931415 \
+            github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
+          echo "::endgroup::"
+
+      - name: Install base-contracts
+        working-directory: setup-templates/${{ matrix.template }}
+        run: |
+          BASE_COMMIT="${{ steps.base-contracts.outputs.commit }}"
+          echo "::group::Installing base-contracts @ ${BASE_COMMIT}"
+          forge install --no-git "github.com/base/contracts@${BASE_COMMIT}"
+          echo "::endgroup::"
+
+          # forge install creates lib/contracts/ (derived from the repo name).
+          # Most templates remap @base-contracts/ → lib/base-contracts/.
+          # Only template-pause-superchain-config maps to lib/contracts/.
+          # Rename the directory to match each template's foundry.toml remappings.
+          if grep -q '@base-contracts/=lib/base-contracts' foundry.toml; then
+            echo "Renaming lib/contracts → lib/base-contracts (to match remappings)"
+            mv lib/contracts lib/base-contracts
+          else
+            echo "Using lib/contracts/ as-is (matches remappings)"
+          fi
+
+      # ── Validation ───────────────────────────────────────────────────
+      - name: Check Solidity formatting
+        working-directory: setup-templates/${{ matrix.template }}
+        run: |
+          echo "==> forge fmt --check script/ (${{ matrix.template }})"
+          if ! forge fmt --check script/; then
+            echo ""
+            echo "::error::Formatting check failed for ${{ matrix.template }}. Run 'forge fmt script/' in the template directory to fix."
+            exit 1
+          fi
+
+      - name: Build (forge build)
+        working-directory: setup-templates/${{ matrix.template }}
+        run: |
+          echo "==> forge build (${{ matrix.template }})"
+          if ! forge build; then
+            echo ""
+            echo "::error::Compilation failed for ${{ matrix.template }}. Check imports, types, and dependency versions."
+            exit 1
+          fi
