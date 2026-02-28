@@ -2,13 +2,6 @@ include ../../Makefile
 include ../.env
 include .env
 
-# Load network-specific config
-ifeq ($(NETWORK),mainnet)
-include ../../config/mainnet.env
-else ifeq ($(NETWORK),sepolia)
-include ../../config/sepolia.env
-endif
-
 export INCIDENT_MULTISIG
 export SYSTEM_CONFIG
 
