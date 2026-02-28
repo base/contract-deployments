@@ -110,17 +110,6 @@ jobs:
           forge install --no-git "github.com/base/contracts@${BASE_COMMIT}"
           echo "::endgroup::"
 
-          # forge install creates lib/contracts/ (derived from the repo name).
-          # Most templates remap @base-contracts/ → lib/base-contracts/.
-          # Only template-pause-superchain-config maps to lib/contracts/.
-          # Rename the directory to match each template's foundry.toml remappings.
-          if grep -q '@base-contracts/=lib/base-contracts' foundry.toml; then
-            echo "Renaming lib/contracts → lib/base-contracts (to match remappings)"
-            mv lib/contracts lib/base-contracts
-          else
-            echo "Using lib/contracts/ as-is (matches remappings)"
-          fi
-
       # ── Validation ───────────────────────────────────────────────────
       - name: Check Solidity formatting
         working-directory: setup-templates/${{ matrix.template }}
