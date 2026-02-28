@@ -62,6 +62,31 @@ Each task will have a directory structure similar to the following:
 - **src/** place to store any one-off smart contracts (long-lived contracts should go in [base/contracts](https://github.com/base/contracts))
 - **.env** place to store environment variables specific to this task
 
+## CI — Template Validation
+
+A GitHub Actions workflow automatically validates all 10 setup-templates on every pull request that modifies `setup-templates/`, the root `Makefile`, `Multisig.mk`, or `config/`. It also runs on pushes to `main`/`master` to catch post-merge regressions.
+
+**What CI checks for each template:**
+
+1. **Solidity formatting** — `forge fmt --check script/` ensures formatting consistency.
+2. **Compilation** — `forge build` verifies that imports resolve, types are correct, and all dependencies are present.
+
+Templates are validated in parallel using a matrix strategy, so failures are isolated per-template with clear error messages identifying the template and failure type.
+
+**How it works:**
+
+- Foundry is installed at the exact commit pinned in the root `Makefile` (`FOUNDRY_COMMIT`).
+- For each template, `BASE_CONTRACTS_COMMIT` is read from the template's `.env`; if not set, a CI-provided default is used.
+- All shared forge dependencies (forge-std, OpenZeppelin, solmate, solady, etc.) and the base-contracts library are installed per template.
+
+**What CI does NOT do:**
+
+- Does not run `forge script` (requires RPC URLs, env vars, and hardware wallets).
+- Does not run `forge test` (no test files exist in templates).
+- Does not validate Makefile targets (they depend on network state).
+
+> See [`.github/workflows/validate-templates.yml`](.github/workflows/validate-templates.yml) for the full workflow definition.
+
 ## Using the incident response template
 
 This template contains scripts that will help us respond to incidents efficiently.
