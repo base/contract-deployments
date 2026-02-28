@@ -2,18 +2,8 @@ name: Validate Templates
 
 on:
   pull_request:
-    paths:
-      - 'setup-templates/**'
-      - 'Makefile'
-      - 'Multisig.mk'
-      - 'config/**'
   push:
-    branches: [main, master]
-    paths:
-      - 'setup-templates/**'
-      - 'Makefile'
-      - 'Multisig.mk'
-      - 'config/**'
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
