@@ -9,29 +9,53 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  # Known-good default commit for github.com/base/contracts.
-  # Used when a template's .env does not pin BASE_CONTRACTS_COMMIT.
-  # Update this value when a newer base-contracts commit is validated.
-  CI_DEFAULT_BASE_CONTRACTS_COMMIT: be7c7a642e430fa64b04b63203839f8c81f48466
-
 jobs:
   validate-template:
     name: ${{ matrix.template }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        template:
-          - template-generic
-          - template-funding
-          - template-gas-increase
-          - template-gas-and-elasticity-increase
-          - template-safe-management
-          - template-upgrade-fault-proofs
-          - template-pause-bridge-base
-          - template-pause-superchain-config
-          - template-set-bridge-partner-threshold
-          - template-switch-to-permissioned-game
+        include:
+          - template: template-generic
+            setup_target: "setup-task"
+            setup_args: "network=sepolia task=ci-test"
+            task_dir_suffix: ci-test
+          - template: template-funding
+            setup_target: "setup-funding"
+            setup_args: "network=sepolia"
+            task_dir_suffix: funding
+          - template: template-gas-increase
+            setup_target: "setup-gas-increase"
+            setup_args: "network=sepolia"
+            task_dir_suffix: increase-gas-limit
+          - template: template-gas-and-elasticity-increase
+            setup_target: "setup-gas-and-elasticity-increase"
+            setup_args: "network=sepolia"
+            task_dir_suffix: increase-gas-and-elasticity-limit
+          - template: template-safe-management
+            setup_target: "setup-safe-management"
+            setup_args: "network=sepolia"
+            task_dir_suffix: safe-management
+          - template: template-upgrade-fault-proofs
+            setup_target: "setup-upgrade-fault-proofs"
+            setup_args: "network=sepolia"
+            task_dir_suffix: upgrade-fault-proofs
+          - template: template-pause-bridge-base
+            setup_target: "setup-bridge-pause"
+            setup_args: "network=sepolia"
+            task_dir_suffix: pause-bridge-base
+          - template: template-pause-superchain-config
+            setup_target: "setup-superchain-config-pause"
+            setup_args: "network=sepolia"
+            task_dir_suffix: pause-superchain-config
+          - template: template-set-bridge-partner-threshold
+            setup_target: "setup-bridge-partner-threshold"
+            setup_args: "network=sepolia"
+            task_dir_suffix: pause-bridge-base
+          - template: template-switch-to-permissioned-game
+            setup_target: "setup-switch-to-permissioned-game"
+            setup_args: "network=sepolia"
+            task_dir_suffix: switch-to-permissioned-game
       fail-fast: false
 
     steps:
@@ -68,51 +92,21 @@ jobs:
       - name: Verify Foundry installation
         run: forge --version
 
-      # ── Determine BASE_CONTRACTS_COMMIT ──────────────────────────────
-      - name: Determine BASE_CONTRACTS_COMMIT
-        id: base-contracts
-        working-directory: setup-templates/${{ matrix.template }}
+      # ── Setup & Dependencies ────────────────────────────────────────
+      - name: Create sample task from template
+        id: setup
         run: |
-          COMMIT=""
-          if [ -f .env ]; then
-            COMMIT=$(grep '^BASE_CONTRACTS_COMMIT=' .env | head -1 | sed 's/^[^=]*=//' | tr -d '[:space:]')
-          fi
+          make ${{ matrix.setup_target }} ${{ matrix.setup_args }}
+          TASK_DIR="sepolia/$(date +'%Y-%m-%d')-${{ matrix.task_dir_suffix }}"
+          echo "task_dir=$TASK_DIR" >> "$GITHUB_OUTPUT"
 
-          # Use the value from .env only if it looks like a valid hex commit hash
-          if [[ "$COMMIT" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
-            echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
-            echo "::notice::${{ matrix.template }}: Using BASE_CONTRACTS_COMMIT from .env: $COMMIT"
-          else
-            echo "commit=$CI_DEFAULT_BASE_CONTRACTS_COMMIT" >> "$GITHUB_OUTPUT"
-            echo "::notice::${{ matrix.template }}: Using CI default BASE_CONTRACTS_COMMIT: $CI_DEFAULT_BASE_CONTRACTS_COMMIT"
-          fi
-
-      # ── Dependencies ─────────────────────────────────────────────────
-      - name: Install forge dependencies
-        working-directory: setup-templates/${{ matrix.template }}
-        run: |
-          echo "::group::Installing shared forge dependencies"
-          forge install --no-git \
-            github.com/foundry-rs/forge-std \
-            github.com/OpenZeppelin/openzeppelin-contracts@v4.9.3 \
-            github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@v4.7.3 \
-            github.com/rari-capital/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
-            github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \
-            github.com/Vectorized/solady@5ea5d9f57ed6d24a27d00934f4a3448def931415 \
-            github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
-          echo "::endgroup::"
-
-      - name: Install base-contracts
-        working-directory: setup-templates/${{ matrix.template }}
-        run: |
-          BASE_COMMIT="${{ steps.base-contracts.outputs.commit }}"
-          echo "::group::Installing base-contracts @ ${BASE_COMMIT}"
-          forge install --no-git "github.com/base/contracts@${BASE_COMMIT}"
-          echo "::endgroup::"
+      - name: Install dependencies
+        working-directory: ${{ steps.setup.outputs.task_dir }}
+        run: make deps
 
       # ── Validation ───────────────────────────────────────────────────
       - name: Check Solidity formatting
-        working-directory: setup-templates/${{ matrix.template }}
+        working-directory: ${{ steps.setup.outputs.task_dir }}
         run: |
           echo "==> forge fmt --check script/ (${{ matrix.template }})"
           if ! forge fmt --check script/; then
@@ -122,7 +116,7 @@ jobs:
           fi
 
       - name: Build (forge build)
-        working-directory: setup-templates/${{ matrix.template }}
+        working-directory: ${{ steps.setup.outputs.task_dir }}
         run: |
           echo "==> forge build (${{ matrix.template }})"
           if ! forge build; then
