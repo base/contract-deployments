@@ -90,10 +90,8 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
             // Mask to preserve bits 64-159 (operatorFeeScalar and operatorFeeConstant)
             uint256 operatorFeeMask = uint256(0xFFFFFFFFFFFFFFFFFFFFFFFF) << 64;
             uint256 preservedOperatorFees = existingEip1559Word & operatorFeeMask;
-            uint256 composedEip1559Word = (uint256(DA_FOOTPRINT_GAS_SCALAR) << 160)
-                | preservedOperatorFees
-                | (uint256(ELASTICITY) << 32)
-                | uint256(DENOMINATOR);
+            uint256 composedEip1559Word = (uint256(DA_FOOTPRINT_GAS_SCALAR) << 160) | preservedOperatorFees
+                | (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
             storageOverrides[1] = Simulation.StorageOverride({key: eip1559SlotKey, value: bytes32(composedEip1559Word)});
 
             stateOverrides[0] = Simulation.StateOverride({contractAddress: SYSTEM_CONFIG, overrides: storageOverrides});
