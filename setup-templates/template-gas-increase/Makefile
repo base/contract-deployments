@@ -12,6 +12,7 @@ override ROLLBACK_NONCE_OFFSET = 1
 endif
 
 RPC_URL = $(L1_RPC_URL)
+# SCRIPT_NAME can be a Solidity file path (not just a class name); forge accepts both.
 SCRIPT_NAME = lib/base-contracts/script/deploy/l1/SetGasLimit.sol
 
 # Validate required configuration before execution
@@ -25,6 +26,8 @@ validate-config:
 	@test -n "$(NEW_GAS_LIMIT)" -a "$(NEW_GAS_LIMIT)" != "TODO" || (echo "NEW_GAS_LIMIT required" && exit 1)
 	@echo "Configuration validated successfully"
 
+# NOTE: sign-upgrade and sign-rollback use inline eip712sign instead of MULTISIG_SIGN
+# because the Solidity script uses sign() (no args) rather than sign(address[]).
 .PHONY: sign-upgrade
 sign-upgrade: validate-config
 	FROM_GAS_LIMIT=$(OLD_GAS_LIMIT) \

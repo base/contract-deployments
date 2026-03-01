@@ -12,6 +12,9 @@ SENDER := $(shell cast call $(INCIDENT_MULTISIG) "getOwners()(address[])" --rpc-
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = PauseSuperchainConfig
 
+# NOTE: sign-pause uses inline eip712sign instead of MULTISIG_SIGN because it
+# pre-signs 20 future nonces in a loop for incident response readiness.
+# The MULTISIG_SIGN macro does not support batch nonce-loop signing.
 .PHONY: sign-pause
 sign-pause:
 	@rm -f signatures-pause.txt

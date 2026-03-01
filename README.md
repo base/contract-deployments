@@ -101,6 +101,33 @@ Templates are validated in parallel using a matrix strategy, so failures are iso
 
 > See [`.github/workflows/validate-templates.yml`](.github/workflows/validate-templates.yml) for the full workflow definition.
 
+## Multisig macro convention
+
+All task templates use three global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
+
+| Macro | Purpose | Solidity signature |
+|---|---|---|
+| `MULTISIG_SIGN` | Sign a transaction with Ledger via `eip712sign` | `sign(address[])` |
+| `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy) | `approve(address[],bytes)` |
+| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain | `run(bytes)` |
+
+Every template Makefile should include `Multisig.mk` and define at least two variables for the macros to work:
+
+```makefile
+include ../../Makefile
+include ../../Multisig.mk
+include ../.env
+include .env
+
+RPC_URL = $(L1_RPC_URL)       # or $(L2_RPC_URL)
+SCRIPT_NAME = MyScript         # class name or .sol file path
+```
+
+Templates should use these macros rather than inline `forge script` / `eip712sign` invocations. The known exceptions are:
+
+- **Batch nonce-loop signing** (pause templates) — The incident-response pause templates pre-sign 20 future nonces in a loop, which `MULTISIG_SIGN` does not support. Their `sign-*` targets retain inline `eip712sign`; only the `execute-*` targets use `MULTISIG_EXECUTE`.
+- **Non-standard signing signatures** — If a Solidity script uses a function signature other than `sign(address[])` (e.g., `sign()` with no arguments), the sign targets use inline `eip712sign` while execute targets still use `MULTISIG_EXECUTE`.
+
 ## Using the incident response template
 
 This template contains scripts that will help us respond to incidents efficiently.

@@ -1,3 +1,15 @@
+# Multisig.mk — Global macros for multisig sign / approve / execute workflows.
+#
+# Every task template should `include ../../Multisig.mk` and define at minimum:
+#   RPC_URL     — the RPC endpoint (typically $(L1_RPC_URL) or $(L2_RPC_URL))
+#   SCRIPT_NAME — the Forge script class name or .sol file path
+#
+# The three macros below (MULTISIG_SIGN, MULTISIG_APPROVE, MULTISIG_EXECUTE)
+# are the canonical way to invoke multisig operations. Templates should use
+# these macros instead of inline forge script / eip712sign commands unless
+# the signing pattern is incompatible (e.g., batch nonce-loop signing for
+# incident response, or non-standard function signatures).
+#
 # ---------- Common fragments ----------
 
 LEDGER_HD_PATH = "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"
