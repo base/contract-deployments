@@ -4,19 +4,16 @@ pragma solidity 0.8.15;
 import {Vm} from "forge-std/Vm.sol";
 import {stdJson} from "forge-std/StdJson.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {GnosisSafe} from "safe-smart-account/GnosisSafe.sol";
 import {OwnerManager} from "safe-smart-account/base/OwnerManager.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
 
 contract UpdateSigners is MultisigScript {
     using stdJson for string;
 
     address public constant SENTINEL_OWNERS = address(0x1);
-
-    // TODO: replace with the current number of members of the incident multisig
-    uint256 public constant EXISTING_OWNERS_LENGTH = TODO;
 
     address public immutable OWNER_SAFE;
     uint256 public immutable THRESHOLD;
@@ -47,7 +44,6 @@ contract UpdateSigners is MultisigScript {
     function setUp() external {
         require(OWNERS_TO_ADD.length > 0, "Precheck 00");
         require(OWNERS_TO_REMOVE.length > 0, "Precheck 01");
-        require(EXISTING_OWNERS.length == EXISTING_OWNERS_LENGTH, "Precheck 02");
 
         GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         address prevOwner = SENTINEL_OWNERS;
@@ -103,24 +99,23 @@ contract UpdateSigners is MultisigScript {
         }
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls =
-            new IMulticall3.Call3Value[](OWNERS_TO_ADD.length + OWNERS_TO_REMOVE.length);
+    function _buildCalls() internal view override returns (Call[] memory) {
+        Call[] memory calls = new Call[](OWNERS_TO_ADD.length + OWNERS_TO_REMOVE.length);
 
         for (uint256 i; i < OWNERS_TO_ADD.length; i++) {
-            calls[i] = IMulticall3.Call3Value({
+            calls[i] = Call({
+                operation: Enum.Operation.Call,
                 target: OWNER_SAFE,
-                allowFailure: false,
-                callData: abi.encodeCall(OwnerManager.addOwnerWithThreshold, (OWNERS_TO_ADD[i], THRESHOLD)),
+                data: abi.encodeCall(OwnerManager.addOwnerWithThreshold, (OWNERS_TO_ADD[i], THRESHOLD)),
                 value: 0
             });
         }
 
         for (uint256 i; i < OWNERS_TO_REMOVE.length; i++) {
-            calls[OWNERS_TO_ADD.length + i] = IMulticall3.Call3Value({
+            calls[OWNERS_TO_ADD.length + i] = Call({
+                operation: Enum.Operation.Call,
                 target: OWNER_SAFE,
-                allowFailure: false,
-                callData: abi.encodeCall(
+                data: abi.encodeCall(
                     OwnerManager.removeOwner, (ownerToPrevOwner[OWNERS_TO_REMOVE[i]], OWNERS_TO_REMOVE[i], THRESHOLD)
                 ),
                 value: 0
