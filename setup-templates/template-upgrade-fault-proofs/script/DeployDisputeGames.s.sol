@@ -4,9 +4,7 @@ pragma solidity 0.8.15;
 import {Script} from "forge-std/Script.sol";
 
 import {IAnchorStateRegistry, IDelayedWETH, IBigStepper} from "@base-contracts/src/dispute/FaultDisputeGame.sol";
-import {
-    PermissionedDisputeGame, FaultDisputeGame
-} from "@base-contracts/src/dispute/PermissionedDisputeGame.sol";
+import {PermissionedDisputeGame, FaultDisputeGame} from "@base-contracts/src/dispute/PermissionedDisputeGame.sol";
 import {GameTypes, GameType, Duration, Claim} from "@base-contracts/src/dispute/lib/Types.sol";
 import {LibGameType, LibDuration} from "@base-contracts/src/dispute/lib/LibUDT.sol";
 import {DisputeGameFactory} from "@base-contracts/src/dispute/DisputeGameFactory.sol";

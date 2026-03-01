@@ -2,9 +2,10 @@
 pragma solidity 0.8.28;
 
 import {Vm} from "forge-std/Vm.sol";
-import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
+
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
 
 interface IOptimismPortal2 {
     function depositTransaction(address _to, uint256 _value, uint64 _gasLimit, bool _isCreation, bytes memory _data)
@@ -22,8 +23,8 @@ contract SetThreshold is MultisigScript {
     address public immutable L2_BRIDGE_VALIDATOR = vm.envAddress("L2_BRIDGE_VALIDATOR");
     uint256 public immutable NEW_THRESHOLD = vm.envUint("NEW_THRESHOLD");
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](1);
+    function _buildCalls() internal view override returns (Call[] memory) {
+        Call[] memory calls = new Call[](1);
 
         address to = L2_BRIDGE_VALIDATOR;
         uint256 value = 0;
@@ -31,10 +32,10 @@ contract SetThreshold is MultisigScript {
         bool isCreation = false;
         bytes memory data = abi.encodeCall(IBridgeValidator.setPartnerThreshold, (NEW_THRESHOLD));
 
-        calls[0] = IMulticall3.Call3Value({
+        calls[0] = Call({
+            operation: Enum.Operation.Call,
             target: L1_PORTAL,
-            allowFailure: false,
-            callData: abi.encodeCall(IOptimismPortal2.depositTransaction, (to, value, gasLimit, isCreation, data)),
+            data: abi.encodeCall(IOptimismPortal2.depositTransaction, (to, value, gasLimit, isCreation, data)),
             value: value
         });
 
