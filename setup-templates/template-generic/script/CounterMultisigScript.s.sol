@@ -32,10 +32,7 @@ contract CounterMultisigScript is MultisigScript {
         IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](1);
 
         calls[0] = IMulticall3.Call3Value({
-            target: TARGET,
-            allowFailure: false,
-            callData: abi.encodeCall(ITest.increment, ()),
-            value: 0
+            target: TARGET, allowFailure: false, callData: abi.encodeCall(ITest.increment, ()), value: 0
         });
 
         return calls;
