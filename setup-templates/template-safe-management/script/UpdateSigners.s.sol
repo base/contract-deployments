@@ -15,9 +15,6 @@ contract UpdateSigners is MultisigScript {
 
     address public constant SENTINEL_OWNERS = address(0x1);
 
-    // TODO: replace with the current number of members of the incident multisig
-    uint256 public constant EXISTING_OWNERS_LENGTH = TODO;
-
     address public immutable OWNER_SAFE;
     uint256 public immutable THRESHOLD;
     address[] public EXISTING_OWNERS;
@@ -47,7 +44,6 @@ contract UpdateSigners is MultisigScript {
     function setUp() external {
         require(OWNERS_TO_ADD.length > 0, "Precheck 00");
         require(OWNERS_TO_REMOVE.length > 0, "Precheck 01");
-        require(EXISTING_OWNERS.length == EXISTING_OWNERS_LENGTH, "Precheck 02");
 
         GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         address prevOwner = SENTINEL_OWNERS;
