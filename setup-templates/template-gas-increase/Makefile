@@ -1,4 +1,5 @@
 include ../../Makefile
+include ../../Multisig.mk
 include ../.env
 include .env
 
@@ -9,6 +10,9 @@ SYSTEM_CONFIG_OWNER ?= $(INCIDENT_MULTISIG)
 ifndef ROLLBACK_NONCE_OFFSET
 override ROLLBACK_NONCE_OFFSET = 1
 endif
+
+RPC_URL = $(L1_RPC_URL)
+SCRIPT_NAME = lib/base-contracts/script/deploy/l1/SetGasLimit.sol
 
 # Validate required configuration before execution
 .PHONY: validate-config
@@ -33,8 +37,7 @@ sign-upgrade: validate-config
 execute-upgrade: validate-config
 	FROM_GAS_LIMIT=$(OLD_GAS_LIMIT) \
 	TO_GAS_LIMIT=$(NEW_GAS_LIMIT) \
-	forge script --rpc-url $(L1_RPC_URL) lib/base-contracts/script/deploy/l1/SetGasLimit.sol \
-	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: sign-rollback
 sign-rollback: validate-config
@@ -50,5 +53,4 @@ execute-rollback: validate-config
 	FROM_GAS_LIMIT=$(NEW_GAS_LIMIT) \
 	TO_GAS_LIMIT=$(OLD_GAS_LIMIT) \
 	SAFE_NONCE=$(shell expr $$(cast call $(SYSTEM_CONFIG_OWNER) "nonce()" --rpc-url $(L1_RPC_URL) | cast to-dec) + $(ROLLBACK_NONCE_OFFSET)) \
-	forge script --rpc-url $(L1_RPC_URL) lib/base-contracts/script/deploy/l1/SetGasLimit.sol \
-	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast
+	$(call MULTISIG_EXECUTE,$(SIGNATURES))

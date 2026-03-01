@@ -1,4 +1,5 @@
 include ../../Makefile
+include ../../Multisig.mk
 include ../.env
 include .env
 
@@ -8,7 +9,8 @@ export SYSTEM_CONFIG
 # Get first owner from INCIDENT_MULTISIG
 SENDER := $(shell cast call $(INCIDENT_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | head -1 | tr -d '[]' | cut -d',' -f1)
 
-SCRIPT_NAME=PauseSuperchainConfig
+RPC_URL = $(L1_RPC_URL)
+SCRIPT_NAME = PauseSuperchainConfig
 
 .PHONY: sign-pause
 sign-pause:
@@ -31,8 +33,7 @@ sign-pause:
 # Execute
 .PHONY: execute-pause
 execute-pause:
-	forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
+	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: check-status
 check-status:

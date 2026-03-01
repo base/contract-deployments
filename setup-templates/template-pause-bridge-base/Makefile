@@ -1,4 +1,5 @@
 include ../../Makefile
+include ../../Multisig.mk
 include ../.env
 include .env
 
@@ -13,7 +14,8 @@ endif
 # TODO: ensure `sender` is a signer for `OWNER_SAFE`
 SENDER=0x1841CB3C2ce6870D0417844C817849da64E6e937
 
-SCRIPT_NAME=PauseBridge
+RPC_URL = $(L1_RPC_URL)
+SCRIPT_NAME = PauseBridge
 
 # Validate required configuration before execution
 .PHONY: validate-config
@@ -71,13 +73,11 @@ sign-unpause: validate-config
 # Execute
 .PHONY: execute-pause
 execute-pause: validate-config
-	IS_PAUSED=true forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
+	IS_PAUSED=true $(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: execute-unpause
 execute-unpause: validate-config
-	IS_PAUSED=false forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-	--sig "run(bytes)" $(SIGNATURES) --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"  --broadcast -vvvv
+	IS_PAUSED=false $(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: check-status
 check-status:
