@@ -78,7 +78,7 @@ Each task will have a directory structure similar to the following:
 
 ## CI — Template Validation
 
-A GitHub Actions workflow automatically validates all 10 setup-templates on every pull request that modifies `setup-templates/`, the root `Makefile`, `Multisig.mk`, or `config/`. It also runs on pushes to `main`/`master` to catch post-merge regressions.
+A GitHub Actions workflow automatically validates all 10 setup-templates on every pull request and on pushes to `main`.
 
 **What CI checks for each template:**
 
@@ -89,15 +89,15 @@ Templates are validated in parallel using a matrix strategy, so failures are iso
 
 **How it works:**
 
-- Foundry is installed at the exact commit pinned in the root `Makefile` (`FOUNDRY_COMMIT`).
-- For each template, `BASE_CONTRACTS_COMMIT` is read from the template's `.env`; if not set, a CI-provided default is used.
-- All shared forge dependencies (forge-std, OpenZeppelin, solmate, solady, etc.) and the base-contracts library are installed per template.
+- Foundry stable is installed via the `foundry-rs/foundry-toolchain` GitHub Action.
+- For each template, the corresponding `make setup-*` target creates a task directory from the template.
+- `make deps` installs all dependencies (including base-contracts at the commit pinned in the template's `.env`).
 
 **What CI does NOT do:**
 
 - Does not run `forge script` (requires RPC URLs, env vars, and hardware wallets).
 - Does not run `forge test` (no test files exist in templates).
-- Does not validate Makefile targets (they depend on network state).
+- Does not run signing or execution targets (they depend on network state and hardware wallets).
 
 > See [`.github/workflows/validate-templates.yml`](.github/workflows/validate-templates.yml) for the full workflow definition.
 
