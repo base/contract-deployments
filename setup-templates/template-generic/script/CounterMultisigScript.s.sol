@@ -2,7 +2,6 @@
 pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
-import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";

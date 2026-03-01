@@ -2,10 +2,10 @@
 pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
-import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 
+import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
 
 interface ISystemConfig {
     function eip1559Elasticity() external view returns (uint32);
@@ -99,27 +99,27 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
         }
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](3);
+    function _buildCalls() internal view override returns (Call[] memory) {
+        Call[] memory calls = new Call[](3);
 
-        calls[0] = IMulticall3.Call3Value({
+        calls[0] = Call({
+            operation: Enum.Operation.Call,
             target: SYSTEM_CONFIG,
-            allowFailure: false,
-            callData: abi.encodeCall(ISystemConfig.setEIP1559Params, (DENOMINATOR, NEW_ELASTICITY)),
+            data: abi.encodeCall(ISystemConfig.setEIP1559Params, (DENOMINATOR, NEW_ELASTICITY)),
             value: 0
         });
 
-        calls[1] = IMulticall3.Call3Value({
+        calls[1] = Call({
+            operation: Enum.Operation.Call,
             target: SYSTEM_CONFIG,
-            allowFailure: false,
-            callData: abi.encodeCall(ISystemConfig.setGasLimit, (NEW_GAS_LIMIT)),
+            data: abi.encodeCall(ISystemConfig.setGasLimit, (NEW_GAS_LIMIT)),
             value: 0
         });
 
-        calls[2] = IMulticall3.Call3Value({
+        calls[2] = Call({
+            operation: Enum.Operation.Call,
             target: SYSTEM_CONFIG,
-            allowFailure: false,
-            callData: abi.encodeCall(ISystemConfig.setDAFootprintGasScalar, (NEW_DA_FOOTPRINT_GAS_SCALAR)),
+            data: abi.encodeCall(ISystemConfig.setDAFootprintGasScalar, (NEW_DA_FOOTPRINT_GAS_SCALAR)),
             value: 0
         });
 
