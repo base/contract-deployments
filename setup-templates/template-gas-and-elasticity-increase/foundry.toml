@@ -17,4 +17,7 @@ remappings = [
     '@solady/=lib/solady/src/'
 ]
 
+[lint]
+lint_on_build = false
+
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
