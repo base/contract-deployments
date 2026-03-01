@@ -58,6 +58,7 @@ Please note, for some older tasks (that have not yet been adapted to use the sig
 Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
 
 The network `.env` files contain:
+
 - **Network metadata** — `NETWORK`, `L1_RPC_URL`, `L2_RPC_URL`, `L1_CHAIN_ID`, `L2_CHAIN_ID`, `LEDGER_ACCOUNT`
 - **Admin addresses** — multisig addresses, proposer, challenger, batch sender, etc.
 - **L1 contract addresses** — proxy admin, bridges, dispute game factories, system config, etc.
@@ -103,13 +104,14 @@ Templates are validated in parallel using a matrix strategy, so failures are iso
 
 ## Multisig macro convention
 
-All task templates use three global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
+All task templates use two global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
 
-| Macro | Purpose | Solidity signature |
-|---|---|---|
-| `MULTISIG_SIGN` | Sign a transaction with Ledger via `eip712sign` | `sign(address[])` |
+| Macro              | Purpose                                       | Solidity signature         |
+| ------------------ | --------------------------------------------- | -------------------------- |
 | `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy) | `approve(address[],bytes)` |
-| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain | `run(bytes)` |
+| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain      | `run(bytes)`               |
+
+Signing is handled externally by the task-signing-tool.
 
 Every template Makefile should include `Multisig.mk` and define at least two variables for the macros to work:
 
@@ -123,10 +125,7 @@ RPC_URL = $(L1_RPC_URL)       # or $(L2_RPC_URL)
 SCRIPT_NAME = MyScript         # class name or .sol file path
 ```
 
-Templates should use these macros rather than inline `forge script` / `eip712sign` invocations. The known exceptions are:
-
-- **Batch nonce-loop signing** (pause templates) — The incident-response pause templates pre-sign 20 future nonces in a loop, which `MULTISIG_SIGN` does not support. Their `sign-*` targets retain inline `eip712sign`; only the `execute-*` targets use `MULTISIG_EXECUTE`.
-- **Non-standard signing signatures** — If a Solidity script uses a function signature other than `sign(address[])` (e.g., `sign()` with no arguments), the sign targets use inline `eip712sign` while execute targets still use `MULTISIG_EXECUTE`.
+Templates should use these macros rather than inline `forge script` / `eip712sign` invocations. The known exceptions are the incident-response pause templates, which pre-sign 20 future nonces in a loop using inline `eip712sign`; only their `execute-*` targets use `MULTISIG_EXECUTE`.
 
 ## Using the incident response template
 

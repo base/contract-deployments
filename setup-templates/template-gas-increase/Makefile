@@ -26,8 +26,6 @@ validate-config:
 	@test -n "$(NEW_GAS_LIMIT)" -a "$(NEW_GAS_LIMIT)" != "TODO" || (echo "NEW_GAS_LIMIT required" && exit 1)
 	@echo "Configuration validated successfully"
 
-# NOTE: sign-upgrade and sign-rollback use inline eip712sign instead of MULTISIG_SIGN
-# because the Solidity script uses sign() (no args) rather than sign(address[]).
 .PHONY: sign-upgrade
 sign-upgrade: validate-config
 	FROM_GAS_LIMIT=$(OLD_GAS_LIMIT) \

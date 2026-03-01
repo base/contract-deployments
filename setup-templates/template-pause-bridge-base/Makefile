@@ -40,9 +40,6 @@ run-script:
 	--workdir .. --forge-cmd 'IS_PAUSED=true forge script --rpc-url $(L1_RPC_URL) \
 	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
 
-# NOTE: sign-pause and sign-unpause use inline eip712sign instead of MULTISIG_SIGN
-# because they pre-sign 20 future nonces in a loop for incident response readiness.
-# The MULTISIG_SIGN macro does not support batch nonce-loop signing.
 .PHONY: sign-pause
 sign-pause: validate-config
 	@rm -f signatures-pause.txt

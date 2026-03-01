@@ -1,14 +1,12 @@
-# Multisig.mk — Global macros for multisig sign / approve / execute workflows.
+# Multisig.mk — Global macros for multisig approve / execute workflows.
 #
 # Every task template should `include ../../Multisig.mk` and define at minimum:
 #   RPC_URL     — the RPC endpoint (typically $(L1_RPC_URL) or $(L2_RPC_URL))
 #   SCRIPT_NAME — the Forge script class name or .sol file path
 #
-# The three macros below (MULTISIG_SIGN, MULTISIG_APPROVE, MULTISIG_EXECUTE)
-# are the canonical way to invoke multisig operations. Templates should use
-# these macros instead of inline forge script / eip712sign commands unless
-# the signing pattern is incompatible (e.g., batch nonce-loop signing for
-# incident response, or non-standard function signatures).
+# The two macros below (MULTISIG_APPROVE, MULTISIG_EXECUTE) are the canonical
+# way to invoke multisig operations. Signing is handled externally by the
+# task-signing-tool.
 #
 # ---------- Common fragments ----------
 
@@ -25,14 +23,6 @@ comma_join = $(subst $(space),$(comma) ,$(strip $(foreach w,$(1),$(w))))
 require_vars = $(foreach _var,$(2),$(if $(strip $($(_var))),,$(error $(1): required variable $(_var) is not defined)))
 
 # ---------- Procedures ----------
-
-# MULTISIG_SIGN: $(1)=address list (space-separated)
-define MULTISIG_SIGN
-$(call require_vars,MULTISIG_SIGN,LEDGER_ACCOUNT RPC_URL SCRIPT_NAME) \
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths $(LEDGER_HD_PATH) -- \
-	forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
-	--sig "sign(address[])" "[$(call comma_join,$(1))]"
-endef
 
 # MULTISIG_APPROVE: $(1)=address list (space-separated), $(2)=signatures (e.g., 0x or $(SIGNATURES))
 define MULTISIG_APPROVE
