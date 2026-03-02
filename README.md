@@ -58,6 +58,7 @@ Please note, for some older tasks (that have not yet been adapted to use the sig
 Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
 
 The network `.env` files contain:
+
 - **Network metadata** — `NETWORK`, `L1_RPC_URL`, `L2_RPC_URL`, `L1_CHAIN_ID`, `L2_CHAIN_ID`, `LEDGER_ACCOUNT`
 - **Admin addresses** — multisig addresses, proposer, challenger, batch sender, etc.
 - **L1 contract addresses** — proxy admin, bridges, dispute game factories, system config, etc.
@@ -100,6 +101,31 @@ Templates are validated in parallel using a matrix strategy, so failures are iso
 - Does not run signing or execution targets (they depend on network state and hardware wallets).
 
 > See [`.github/workflows/validate-templates.yml`](.github/workflows/validate-templates.yml) for the full workflow definition.
+
+## Multisig macro convention
+
+All task templates use two global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
+
+| Macro              | Purpose                                       | Solidity signature         |
+| ------------------ | --------------------------------------------- | -------------------------- |
+| `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy) | `approve(address[],bytes)` |
+| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain      | `run(bytes)`               |
+
+Signing is handled externally by the task-signing-tool.
+
+Every template Makefile should include `Multisig.mk` and define at least two variables for the macros to work:
+
+```makefile
+include ../../Makefile
+include ../../Multisig.mk
+include ../.env
+include .env
+
+RPC_URL = $(L1_RPC_URL)       # or $(L2_RPC_URL)
+SCRIPT_NAME = MyScript         # class name or .sol file path
+```
+
+Templates should use these macros rather than inline `forge script` / `eip712sign` invocations. The known exceptions are the incident-response pause templates, which pre-sign 20 future nonces in a loop using inline `eip712sign`; only their `execute-*` targets use `MULTISIG_EXECUTE`.
 
 ## Using the incident response template
 

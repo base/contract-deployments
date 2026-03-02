@@ -4,7 +4,7 @@ include ../.env
 include .env
 
 RPC_URL = $(L1_RPC_URL)
-SCRIPT = UpdateSigners
+SCRIPT_NAME = UpdateSigners
 
 # Validate required configuration before execution
 .PHONY: validate-config
@@ -31,7 +31,7 @@ run-script:
 	npm ci; \
 	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
 	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
-	$(SCRIPT) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
+	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
 
 .PHONY: execute
 execute: validate-config
