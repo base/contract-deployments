@@ -1,0 +1,102 @@
+name: Validate Templates
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-template:
+    name: ${{ matrix.template }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - template: template-generic
+            setup_target: "setup-task"
+            setup_args: "network=sepolia task=ci-test"
+            task_dir_suffix: ci-test
+          - template: template-funding
+            setup_target: "setup-funding"
+            setup_args: "network=sepolia"
+            task_dir_suffix: funding
+          - template: template-gas-increase
+            setup_target: "setup-gas-increase"
+            setup_args: "network=sepolia"
+            task_dir_suffix: increase-gas-limit
+          - template: template-gas-and-elasticity-increase
+            setup_target: "setup-gas-and-elasticity-increase"
+            setup_args: "network=sepolia"
+            task_dir_suffix: increase-gas-and-elasticity-limit
+          - template: template-safe-management
+            setup_target: "setup-safe-management"
+            setup_args: "network=sepolia"
+            task_dir_suffix: safe-management
+          - template: template-upgrade-fault-proofs
+            setup_target: "setup-upgrade-fault-proofs"
+            setup_args: "network=sepolia"
+            task_dir_suffix: upgrade-fault-proofs
+          - template: template-pause-bridge-base
+            setup_target: "setup-bridge-pause"
+            setup_args: "network=sepolia"
+            task_dir_suffix: pause-bridge-base
+          - template: template-pause-superchain-config
+            setup_target: "setup-superchain-config-pause"
+            setup_args: "network=sepolia"
+            task_dir_suffix: pause-superchain-config
+          - template: template-set-bridge-partner-threshold
+            setup_target: "setup-bridge-partner-threshold"
+            setup_args: "network=sepolia"
+            task_dir_suffix: pause-bridge-base
+          - template: template-switch-to-permissioned-game
+            setup_target: "setup-switch-to-permissioned-game"
+            setup_args: "network=sepolia"
+            task_dir_suffix: switch-to-permissioned-game
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Foundry ──────────────────────────────────────────────────────
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@82dee4ba654bd2146511f85f0d013af94670c4de # v1.4.0
+        with:
+          version: stable
+
+      # ── Setup & Dependencies ────────────────────────────────────────
+      - name: Create sample task from template
+        id: setup
+        run: |
+          make ${{ matrix.setup_target }} ${{ matrix.setup_args }}
+          TASK_DIR="sepolia/$(date +'%Y-%m-%d')-${{ matrix.task_dir_suffix }}"
+          echo "task_dir=$TASK_DIR" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        working-directory: ${{ steps.setup.outputs.task_dir }}
+        run: make deps
+
+      # ── Validation ───────────────────────────────────────────────────
+      - name: Check Solidity formatting
+        working-directory: ${{ steps.setup.outputs.task_dir }}
+        run: |
+          echo "==> forge fmt --check script/ (${{ matrix.template }})"
+          if ! forge fmt --check script/; then
+            echo ""
+            echo "::error::Formatting check failed for ${{ matrix.template }}. Run 'forge fmt script/' in the template directory to fix."
+            exit 1
+          fi
+
+      - name: Build (forge build)
+        working-directory: ${{ steps.setup.outputs.task_dir }}
+        run: |
+          echo "==> forge build (${{ matrix.template }})"
+          if ! forge build; then
+            echo ""
+            echo "::error::Compilation failed for ${{ matrix.template }}. Check imports, types, and dependency versions."
+            exit 1
+          fi

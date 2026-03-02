@@ -1,19 +1,6 @@
 include ../../Makefile
 include ../../Multisig.mk
 include ../.env
-
-# Validate NETWORK is set
-ifeq ($(filter $(NETWORK),mainnet sepolia),)
-$(error NETWORK must be set to 'mainnet' or 'sepolia')
-endif
-
-# Load network-specific config
-ifeq ($(NETWORK),mainnet)
-include ../../config/mainnet.env
-else ifeq ($(NETWORK),sepolia)
-include ../../config/sepolia.env
-endif
-
 include .env
 
 RPC_URL = $(L1_RPC_URL)

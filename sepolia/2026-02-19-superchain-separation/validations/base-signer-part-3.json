@@ -1,0 +1,70 @@
+{
+  "cmd": "SAFE_NONCE_0X5DFEB066334B67355A15DC9B67317FD2A2E1F77F=21 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpgradeFeeDisburser --sig sign(address[]) [] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "messageHash": "0x7a1d70954f4b843ce63aa8f6aff95084eee836fb9df9183caf104ddc64dedd36"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xa2e8dd0b3fdbca6b030ccd2621ca9f28c4edec8cfdae9f755b83251e1697bb92",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "OptimismPortal - Sepolia",
+      "address": "0x49f53e41452C74589E85cA1677426Ba426459e85",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x00000000009d98e90000000000096c490000000000000000000000003b9aca00",
+          "after": "0x00000000009d99bf00000000000186a00000000000000000000000003b9aca00",
+          "description": "Updates the ResourceMetering parameters (prevBlockNum, prevBoughtGas, prevBaseFee).",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "description": "Increments the Safe nonce from 21 to 22 after executing the FeeDisburser upgrade deposit transaction via OptimismPortal.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "jack.chuma@coinbase.com"
+    }
+  }
+}

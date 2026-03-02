@@ -1,0 +1,209 @@
+{
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateCBSafeSigners --sig sign(address[]) [0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+    "domainHash": "0x0127bbb910536860a0757a9c0ffcdf9e4452220f566ed83af1f27f9e833f0e23",
+    "messageHash": "0xab72b75550a11e6038cf3f2d4fe69e4ab793d7e9db4123d839c6fb20f499194a"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x379c87bdc6abb85fdbe8fe138f62367fcf94860df0efa04c17b2aee632868bd2",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Signer Safe - Sepolia",
+      "address": "0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "description": "Increments the Safe nonce from 20 to 21 after signing the nested transaction to CB Coordinator Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Updates the owner count from 2 to 13. Removes Security Council Safe and CB Nested Safe (-2), adds 13 CB EOAs as direct signers (+13).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Updates the Safe execution threshold from 1 to 3-of-13 after all owner modifications are complete.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Increments the Safe nonce from 14 to 15 after executing the batch transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x1b89e6111d27169de2f97ec92e344b249dff7dd6170ee65af7a1d9dda6cf7255",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Owners linked list: Sets 0xee316db0edaee45347dfc498795a01311f085225 to point to SENTINEL, marking it as the tail of the list.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2146980ccf4a7741c01fd860f90d2fab597ba25316f4b73d17092ab48b2eb5ce",
+          "before": "0x0000000000000000000000005dfeb066334b67355a15dc9b67317fd2a2e1f77f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Owners linked list: Clears the entry that previously pointed to CB Nested Safe (0x5dfeb066334b67355a15dc9b67317fd2a2e1f77f), removing it as an owner.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x4bf34efa2cf5d17da7425df2ee4f6191d734167ae5ba396b1eaa05b9d92099f6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000b2d9a52e76841279ef0372c534c539a4f68f8c0b",
+          "description": "Owners linked list: Adds CB EOA 0x5f1955729e3d6129fb73813e891742d473fc74f7 pointing to next owner 0xb2d9a52e76841279ef0372c534c539a4f68f8c0b.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x50acbb719f16147a2c8ee75d12507825fd23cf8249e700977d21095d26e2750b",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000005f1955729e3d6129fb73813e891742d473fc74f7",
+          "description": "Owners linked list: Adds CB EOA 0x9986ccaf9e3de0ffef82a0f7fa3a06d5afe07252 pointing to next owner 0x5f1955729e3d6129fb73813e891742d473fc74f7.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x563d4ddf297b5a92e03dce553dc56572bfee245f134f6db63397742b674f94dd",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000009986ccaf9e3de0ffef82a0f7fa3a06d5afe07252",
+          "description": "Owners linked list: Adds CB EOA 0xe45ac81ea7f53dea5f0bd6caa0733dd5c02d3b60 pointing to next owner 0x9986ccaf9e3de0ffef82a0f7fa3a06d5afe07252.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x789d0a937d11245f00c7805a1652391bdbf3de0209dd993a5d6bc0ea4964bd5e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000e45ac81ea7f53dea5f0bd6caa0733dd5c02d3b60",
+          "description": "Owners linked list: Adds CB EOA 0x7f10098bd53519c739ca8a404afe127647d94774 pointing to next owner 0xe45ac81ea7f53dea5f0bd6caa0733dd5c02d3b60.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x7a83097f5b56a04accdbc8d4b0501bec3106db0d2c2ea1a63e7cbbf0fa91372d",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000007f10098bd53519c739ca8a404afe127647d94774",
+          "description": "Owners linked list: Adds CB EOA 0x420c8fe1ddb0593c71487445576c87c17f177179 pointing to next owner 0x7f10098bd53519c739ca8a404afe127647d94774.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x917c3b0ca176e18dc93b76b7fcfca717fb0dcb74c9b02c1a4ef75f3b382fd6c9",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Owners linked list: Clears the previous tail pointer (was pointing to SENTINEL). CB Nested Safe is no longer the last owner.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xa17f6b5d5c5960e10cb741113b64d7f023e3513339475444585747297bf07208",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000420c8fe1ddb0593c71487445576c87c17f177179",
+          "description": "Owners linked list: Adds CB EOA 0x931e24b032511d8dd029aedeb44837fac251f3d8 pointing to next owner 0x420c8fe1ddb0593c71487445576c87c17f177179.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xa7dd5b70d010b556cca61241e9486087b6178ec9d74f960e07f6f590f7b61ad4",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores an approval from the CB nested safe.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb06fd2848181e1497bbaa80b8d007c335c7806a2e47211a7bba7a9af63e0ca64",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000931e24b032511d8dd029aedeb44837fac251f3d8",
+          "description": "Owners linked list: Adds CB EOA 0x0cf2f86c3338993ce10f74d6f4b095712c7efe26 pointing to next owner 0x931e24b032511d8dd029aedeb44837fac251f3d8.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb7148df08fba2104e13e2db097b95b457295019a50d577cc90c6010aba3100d1",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000cf2f86c3338993ce10f74d6f4b095712c7efe26",
+          "description": "Owners linked list: Adds CB EOA 0x6e427c3212c0b63be0c382f97715d49b011bff33 pointing to next owner 0x0cf2f86c3338993ce10f74d6f4b095712c7efe26.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc5e3baa34a074e15c9dc99b0b81b573ebbdd07b026df6162630478f6d12892f3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000006e427c3212c0b63be0c382f97715d49b011bff33",
+          "description": "Owners linked list: Adds CB EOA 0xedecf2c444559210a865a22acfc6a2a25590ab1b pointing to next owner 0x6e427c3212c0b63be0c382f97715d49b011bff33.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc737cf9e0b995a0b7c95319fd1b2a1daedbcafc9b244731b97e04bbf2a8067f3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000edecf2c444559210a865a22acfc6a2a25590ab1b",
+          "description": "Owners linked list: Adds CB EOA 0x4ffd98b5eea905ec25aa3daf180552f67873ed78 pointing to next owner 0xedecf2c444559210a865a22acfc6a2a25590ab1b.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdbe1c9b8b04b880813d25a9c5e89056031fb59c22374b4ee4da23606ff9ee5f5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000004ffd98b5eea905ec25aa3daf180552f67873ed78",
+          "description": "Owners linked list: Adds CB EOA 0xee316db0edaee45347dfc498795a01311f085225 pointing to next owner 0x4ffd98b5eea905ec25aa3daf180552f67873ed78.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdd723b4c2a66aea3d2ac26f837bd1e7dea4ce6cca7e4fa76af2185076784453f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000ee316db0edaee45347dfc498795a01311f085225",
+          "description": "Owners linked list: Adds CB EOA 0x644d0f5c2c55a4679b4bfe057b87ba203af9ac0d pointing to next owner 0xee316db0edaee45347dfc498795a01311f085225.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "before": "0x0000000000000000000000006af0674791925f767060dd52f7fb20984e8639d8",
+          "after": "0x000000000000000000000000644d0f5c2c55a4679b4bfe057b87ba203af9ac0d",
+          "description": "Owners linked list: Updates SENTINEL to point to new head 0x644d0f5c2c55a4679b4bfe057b87ba203af9ac0d. Previously pointed to Security Council Safe (0x6af0674791925f767060dd52f7fb20984e8639d8) which was removed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "jack.chuma@coinbase.com"
+    }
+  }
+}

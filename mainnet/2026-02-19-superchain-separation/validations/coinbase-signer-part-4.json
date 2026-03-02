@@ -1,0 +1,67 @@
+{
+  "cmd": "SAFE_NONCE_0X9C4A57FEB77E294FD7BF5EBE9AB01CAA0A90A110=8 forge script --rpc-url https://eth-mainnet.public.blastapi.io UpgradeFeeDisburser --sig sign(address[]) [] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+    "domainHash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
+    "messageHash": "0x2688fbdc2a8590867b05fc001c18c14c29069b218452d835e430f7984713aa82"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Mainnet",
+      "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "description": "Override the nonce to 8, the expected value after Parts 1-2 (UpdateProxyAdminOwnerSigners and UpdateCBSafeSigners) execute.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x22c0feaaeed4185d82f924f457252f81dbadc69cc524f14c36b23023cbe4657a",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000001764b3c000000000004bdd00000000000000000000000003b9aca00",
+          "after": "0x0000000001764b3d00000000000186a00000000000000000000000003b9aca00",
+          "description": "Updates the ResourceMetering parameters (prevBlockNum, prevBoughtGas, prevBaseFee).",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Mainnet",
+      "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "description": "Increments the Safe nonce from 8 to 9 after executing the UpgradeFeeDisburser deposit transaction.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

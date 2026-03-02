@@ -82,11 +82,16 @@ setup-switch-to-permissioned-game-blacklist:
 	rm -rf $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST)/cache $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST)/lib $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST)/out
 	cp -r $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST) $(SWITCH_TO_PERMISSIONED_GAME_BLACKLIST_DIR)
 
+# Run `make setup-superchain-config-pause network=<network>`
+setup-superchain-config-pause:
+	rm -rf $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/cache $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/lib $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/out
+	cp -r $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG) $(PAUSE_SUPERCHAIN_CONFIG_DIR)
+
 ##
 # Solidity Setup
 ##
 .PHONY: deps
-deps: install-eip712sign clean-lib forge-deps checkout-op-commit checkout-base-contracts-commit
+deps: install-eip712sign clean-lib forge-deps checkout-base-contracts-commit
 
 .PHONY: install-eip712sign
 install-eip712sign:
@@ -103,35 +108,18 @@ forge-deps:
 		github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@v4.7.3 \
 		github.com/rari-capital/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
 		github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \
-		github.com/Vectorized/solady@5ea5d9f57ed6d24a27d00934f4a3448def931415 \
+		github.com/Vectorized/solady@502cc1ea718e6fa73b380635ee0868b0740595f0 \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
-
-.PHONY: checkout-op-commit
-checkout-op-commit:
-	[ -n "$(OP_COMMIT)" ] || (echo "OP_COMMIT must be set in .env" && exit 1)
-	rm -rf lib/optimism
-	mkdir -p lib/optimism
-	cd lib/optimism; \
-	git init; \
-	git remote add origin https://github.com/ethereum-optimism/optimism.git; \
-	git fetch --depth=1 origin $(OP_COMMIT); \
-	git reset --hard FETCH_HEAD
 
 .PHONY: checkout-base-contracts-commit
 checkout-base-contracts-commit:
 	[ -n "$(BASE_CONTRACTS_COMMIT)" ] || (echo "BASE_CONTRACTS_COMMIT must be set in .env" && exit 1)
-	rm -rf lib/base-contracts
-	mkdir -p lib/base-contracts
-	cd lib/base-contracts; \
-	git init; \
-	git remote add origin https://github.com/base/contracts.git; \
-	git fetch --depth=1 origin $(BASE_CONTRACTS_COMMIT); \
-	git reset --hard FETCH_HEAD
+	forge install --no-git github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
 
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=cff3a601c6780e9fe7d303c58d59574dc1ba491b
+SIGNER_TOOL_COMMIT=69fa90b41996e9c1f15e77d7e8e4dda5ac51d007
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool

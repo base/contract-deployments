@@ -1,0 +1,133 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io UpdateProxyAdminOwnerSigners --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd,0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0xae5cb7595360cf94f0ccdedafd32df84bb5f3fcbeb03ddd3b796455bdd718aca"
+  },
+  "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xf2c78c90abfd8ec97343cf355a4ca2dc9b0d4348e57729db34c8fb0280862866",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "description": "Increments the Safe nonce from 5 to 6 after the signer submits their approval.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Increments the Safe nonce from 13 to 14 after executing the swapOwner transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x40f18e1e92745b4511e8f96e7d41ff580ab32c07e37860843c4074d834967b02",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets approvedHashes[CB Coordinator Safe][txHash] = 1, recording the CB Coordinator Safe's approval for this transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xad7f222f29a1b375bb6b2847405c3279f1dff83a30de9e555815353d94c2306b",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Removes OP Safe (0x9ba6e03d8b90de867373db8cf1a58d2f7f006b3a) from the owners linked list by clearing its entry.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb79e2255a19f37f0fc20cbcd8e46bdb84bf2577e147dcf50c4471a96c0623f53",
+          "before": "0x0000000000000000000000009ba6e03d8b90de867373db8cf1a58d2f7f006b3a",
+          "after": "0x00000000000000000000000020acf55a3dcfe07fc4cecacfa1628f788ec8a4dd",
+          "description": "Updates the owners linked list pointer to replace OP Safe with Security Council Safe (0x20acf55a3dcfe07fc4cecacfa1628f788ec8a4dd).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc68c82056a4782e6920506248dec06b7949eabf81d66a13e5e8ec70d4e8f4b13",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Adds Security Council Safe to the owners linked list by setting its entry to point to SENTINEL (0x1).",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "description": "Increments the Safe nonce from 26 to 27 after executing the nested approval transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdbd7c5f04bc1b069effa0e376df1a8c35fb1f8061444f5bd6f4887bc55d6d568",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets approvedHashes[Security Council Safe][txHash] = 1, recording the Security Council Safe's approval for the nested transaction to the Proxy Admin Owner.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

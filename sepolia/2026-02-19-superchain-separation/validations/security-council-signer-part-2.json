@@ -1,0 +1,110 @@
+{
+  "cmd": "SAFE_NONCE_0X6AF0674791925F767060DD52F7FB20984E8639D8=27 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpgradeSystemConfig --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x7f10098bd53519c739ca8a404afe127647d94774",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0x2b63bc685e33e1dcabae1816d54b9a2df7576fc940ca8ef936bf4d509987bac2"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x28c69686a380aa7edd6e31990118ed1f61cfeadf883b0b49da4bc412a020be66",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000020",
+          "description": "Increments the Safe nonce from 31 to 32 after executing the SystemConfig upgrade transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x6a9a7471a4f33ffcbc9870cff486eeb8b369ae31fca40796b66c635a84b26e08",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Stores an approval from the Mock Security Council Safe for the SystemConfig upgrade transaction hash.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "description": "Increments the Safe nonce from 27 to 28 after executing the SystemConfig upgrade via the Proxy Admin Owner.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564AfEB048bEd26194",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "description": "Increments the contract initialization version from 3 to 4 during the SystemConfig re-initialization with the new SuperchainConfig address.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006c",
+          "before": "0x0000000000000000004c4b40c2be75506d5724086deb7245bd260cc9753911be",
+          "after": "0x0000000000000000004c4b40e4401eb53ae90a5335a51fe1828d7becf7a63508",
+          "description": "Updates the SuperchainConfig address in the packed storage slot from the OP Superchain's shared SuperchainConfig (0xc2be75506d5724086deb7245bd260cc9753911be) to Base's own SuperchainConfig proxy (0xe4401eb53ae90a5335a51fe1828d7becf7a63508). The gasLimit (5,000,000) in the upper bytes is unchanged.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000d392c27b84b1ca776528f2704bc67b82a62132d2",
+          "after": "0x000000000000000000000000ee364de73e1827f5e31a18c70a40f1f78c075b84",
+          "description": "Updates the ERC-1967 implementation slot to point to the new SystemConfig implementation.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "jack.chuma@coinbase.com"
+    }
+  }
+}

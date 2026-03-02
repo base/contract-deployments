@@ -1,0 +1,82 @@
+{
+  "cmd": "SAFE_NONCE_0X20ACF55A3DCFE07FC4CECACFA1628F788EC8A4DD=8 forge script --rpc-url https://eth-mainnet.public.blastapi.io AddSecurityCouncilSigner --sig sign(address[]) [] --sender 0x5ff5C78ff194acc24C22DAaDdE4D639ebF18ACC6",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x9a22cfa78b9681ad2313bf8eea2d76890598722faecc6606db8585be6bf3773c"
+  },
+  "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "description": "Override the nonce to 8, the expected value after Parts 1-3 (UpdateProxyAdminOwnerSigners, UpdateCBSafeSigners, and UpgradeSystemConfig) execute.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xefc76de8fcb1bee05c91a2b10f082422b19ab2a075386e7c7f7c903b4764a3e6",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "description": "Updates the owner count from 10 to 11 after adding the new Security Council signer (0xbDE1845c879942fC326F247Ad708677733Dd5594).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "description": "Updates the execution threshold to 8 (8-of-11 required for execution).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "description": "Increments the Safe nonce from 8 to 9 after executing the AddSecurityCouncilSigner transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdc949e6be273b76165696c06fd11bc8f9fbb299f447694327fef95e141060cb7",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000005ff5c78ff194acc24c22daadde4d639ebf18acc6",
+          "description": "Adds new Security Council signer (0xbDE1845c879942fC326F247Ad708677733Dd5594) to the owners linked list, setting its entry to point to the previous head owner (0x5ff5c78ff194acc24c22daadde4d639ebf18acc6).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "before": "0x0000000000000000000000005ff5c78ff194acc24c22daadde4d639ebf18acc6",
+          "after": "0x000000000000000000000000bde1845c879942fc326f247ad708677733dd5594",
+          "description": "Updates SENTINEL pointer (head of owners linked list) from previous head (0x5ff5c78ff194acc24c22daadde4d639ebf18acc6) to new Security Council signer (0xbde1845c879942fc326f247ad708677733dd5594).",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

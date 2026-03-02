@@ -1,0 +1,112 @@
+{
+  "cmd": "forge script --rpc-url https://mainnet.optimism.io WithdrawSmartEscrow --sig sign(address[]) [0x2501c477D0A35545a387Aa4A3EEe4292A9a8B3F0] --sender 0x4d494C5F61b60752D3A10062276a0eFC22596151",
+  "ledgerId": 0,
+  "rpcUrl": "https://mainnet.optimism.io",
+  "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
+    "domainHash": "0xb34978142f4478f3e5633915597a756daa58a1a59a3e0234f9acd5444f1ca70e",
+    "messageHash": "0xc9fbbcf00cf495a33d225de432b703da92afcfb957a5d5bf8f4b464951a1f128"
+  },
+  "stateOverrides": [
+    {
+      "name": "Owner Safe - Optimism",
+      "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Optimism Signer Safe - Optimism",
+      "address": "0x2501c477D0A35545a387Aa4A3EEe4292A9a8B3F0",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x6373fa2b96c36fad8b6c8c7d34cc60d0c387311d71db13c007bc4c82da70685d",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "SmartEscrow - Optimism",
+      "address": "0xb3C2f9fC2727078EC3A2255410e83BA5B62c5B5f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Overrides contractTerminated from false (0) to true (1), marking the SmartEscrow contract as permanently terminated.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Owner Safe - Optimism",
+      "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Increments the Safe nonce from 2 to 3 after executing the WithdrawSmartEscrow transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb1c95fcac4fdae1ba0795d84c4fcffb6e0c71dec884cdedbdde2ed87bdc4541f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets approvedHashes[Optimism Signer Safe][txHash] = 1, recording the Optimism Signer Safe's (0x2501c477d0a35545a387aa4a3eee4292a9a8b3f0) approval for this transaction.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Optimism Signer Safe - Optimism",
+      "address": "0x2501c477D0A35545a387Aa4A3EEe4292A9a8B3F0",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x00000000000000000000000000000000000000000000000000000000000000b6",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000000b7",
+          "description": "Increments the Safe nonce from 182 to 183 after the Optimism Signer Safe submits its approval for the WithdrawSmartEscrow transaction.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Governance Token - Optimism",
+      "address": "0x4200000000000000000000000000000000000042",
+      "changes": [
+        {
+          "key": "0x9c7ffc2d159d7a0a8143e9bb815194a3d0239701011646f61c42aefd6122e68c",
+          "before": "0x00000000000000000000000000000000000000000003b363e7f0b6bf06900000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Decreases SmartEscrow's (0xb3c2f9fc2727078ec3a2255410e83ba5b62c5b5f) OP token balance to 0 as all remaining unvested tokens are withdrawn to the benefactor. Note: The 'before' value reflects current state; after part-5 executes, the actual balance will be ~4,473,924 OP.",
+          "allowDifference": true
+        },
+        {
+          "key": "0xcac14c40c8d3847e740432064e9977516347ef1cecdd901d8d3a7d24e118edde",
+          "before": "0x000000000000000000000000000000000000000001972e3df849a1834d414e71",
+          "after": "0x0000000000000000000000000000000000000000019ae1a1e03a584253d14e71",
+          "description": "Increases the benefactor's (Owner Safe: 0x0a7361e734cf3f0394b0fc4a45c74e7a4ec70940) OP token balance, receiving the unvested tokens withdrawn from the SmartEscrow contract. Note: The actual amount will be ~4,473,924 OP after part-5 executes.",
+          "allowDifference": true
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}

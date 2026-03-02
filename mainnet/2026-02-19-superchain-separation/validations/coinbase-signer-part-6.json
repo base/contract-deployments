@@ -1,0 +1,118 @@
+{
+  "cmd": "SAFE_NONCE_0X6E1DFD5C1E22A4677663A81D24C6BA03561EF0F6=4 forge script --rpc-url https://mainnet.optimism.io WithdrawSmartEscrow --sig sign(address[]) [0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
+  "ledgerId": 0,
+  "rpcUrl": "https://mainnet.optimism.io",
+  "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
+    "domainHash": "0x4ac8f60706331537a33c4a4cbda024cb722855e6b160a3e8b28ab487510598b1",
+    "messageHash": "0xe47bca5a208fb4739ae2381f86cb91d5386307481a7381c8381fe0e5f99186bb"
+  },
+  "stateOverrides": [
+    {
+      "name": "Owner Safe - Optimism",
+      "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Optimism",
+      "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "description": "Override the nonce to 4, the expected value after Part 5 (TerminateSmartEscrow) executes.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x3d9213bb9c16b3af7b48531e517a418f86c1ed190cf932410b9396a84c06eb31",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "SmartEscrow - Optimism",
+      "address": "0xb3C2f9fC2727078EC3A2255410e83BA5B62c5B5f",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Overrides contractTerminated from false (0) to true (1), marking the SmartEscrow contract as permanently terminated.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Owner Safe - Optimism",
+      "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Increments the Safe nonce from 2 to 3 after executing the WithdrawSmartEscrow transaction.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdaefa18710789b315c073a0a6715e936e4dd091921c4de5bca445545fd20e45a",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets approvedHashes[CB Signer Safe][txHash] = 1, recording the CB Signer Safe's (0x6e1dfd5c1e22a4677663a81d24c6ba03561ef0f6) approval for this transaction.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Governance Token - Optimism",
+      "address": "0x4200000000000000000000000000000000000042",
+      "changes": [
+        {
+          "key": "0x9c7ffc2d159d7a0a8143e9bb815194a3d0239701011646f61c42aefd6122e68c",
+          "before": "0x00000000000000000000000000000000000000000003b363e7f0b6bf06900000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Decreases SmartEscrow's (0xb3c2f9fc2727078ec3a2255410e83ba5b62c5b5f) OP token balance to 0 as all remaining unvested tokens are withdrawn to the benefactor. Note: The 'before' value reflects current state; after part-5 executes, the actual balance will be ~4,473,924 OP.",
+          "allowDifference": true
+        },
+        {
+          "key": "0xcac14c40c8d3847e740432064e9977516347ef1cecdd901d8d3a7d24e118edde",
+          "before": "0x000000000000000000000000000000000000000001972e3df849a1834d414e71",
+          "after": "0x0000000000000000000000000000000000000000019ae1a1e03a584253d14e71",
+          "description": "Increases the benefactor's (Owner Safe: 0x0a7361e734cf3f0394b0fc4a45c74e7a4ec70940) OP token balance, receiving the unvested tokens withdrawn from the SmartEscrow contract. Note: The actual amount will be ~4,473,924 OP after part-5 executes.",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Optimism",
+      "address": "0x6e1DFd5C1E22A4677663A81D24C6BA03561ef0f6",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "description": "Increments the Safe nonce from 4 to 5 after the CB Signer Safe submits its approval for the WithdrawSmartEscrow transaction.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
