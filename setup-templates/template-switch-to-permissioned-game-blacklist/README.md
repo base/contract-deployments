@@ -16,8 +16,7 @@ two options:
 2. If the `ADDRESSES_TO_BLACKLIST` environment variable IS set, the forge script will NOT search and will just blacklist the addresses
    provided.
 
-   There is a python script provided that can be run with `make find-dispute-games-offchain` that will use the provided
-   RPC_URL to search for the list of games to blacklist _offchain_. This typically takes a minute or two. The output
+   There is a python script at https://github.com/base/dispute-game-tool that can be run with `make find-dispute-games-offchain` that will use the provided RPC_URL to search for the list of games to blacklist _offchain_. This typically takes a minute or two. The output
    is the comma-separated `ADDRESSES_TO_BLACKLIST` environment variable that can be copied over to the `.env` file, so that
    the forge script can directly blacklist just those addresses.
 
