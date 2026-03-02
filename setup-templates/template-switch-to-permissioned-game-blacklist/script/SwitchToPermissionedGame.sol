@@ -5,14 +5,15 @@ import {Vm} from "forge-std/Vm.sol";
 import {stdJson} from "forge-std/StdJson.sol";
 import {IMulticall3} from "forge-std/interfaces/IMulticall3.sol";
 import {console} from "forge-std/console.sol";
-import {IAnchorStateRegistry} from "@eth-optimism-bedrock/src/dispute/FaultDisputeGame.sol";
-import {SystemConfig} from "@eth-optimism-bedrock/src/L1/SystemConfig.sol";
-import {IDisputeGame, GameStatus} from "@eth-optimism-bedrock/src/dispute/AnchorStateRegistry.sol";
-import {IDisputeGameFactory} from "@eth-optimism-bedrock/interfaces/dispute/IDisputeGameFactory.sol";
-import {FaultDisputeGame} from "@eth-optimism-bedrock/src/dispute/PermissionedDisputeGame.sol";
-import {GameTypes, GameType} from "@eth-optimism-bedrock/src/dispute/lib/Types.sol";
+import {IAnchorStateRegistry} from "@base-contracts/src/dispute/FaultDisputeGame.sol";
+import {SystemConfig} from "@base-contracts/src/L1/SystemConfig.sol";
+import {IDisputeGame, GameStatus} from "@base-contracts/src/dispute/AnchorStateRegistry.sol";
+import {IDisputeGameFactory} from "@base-contracts/interfaces/dispute/IDisputeGameFactory.sol";
+import {FaultDisputeGame} from "@base-contracts/src/dispute/PermissionedDisputeGame.sol";
+import {GameTypes, GameType} from "@base-contracts/src/dispute/lib/Types.sol";
 import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
 
 /// @notice This script updates the FaultDisputeGame and PermissionedDisputeGame implementations in the
 ///         DisputeGameFactory contract.
@@ -84,21 +85,21 @@ contract SwitchToPermissionedGame is MultisigScript {
         );
     }
 
-    function _buildCalls() internal view override returns (IMulticall3.Call3Value[] memory) {
-        IMulticall3.Call3Value[] memory calls = new IMulticall3.Call3Value[](gamesToBlacklist.length + 1);
+    function _buildCalls() internal view override returns (Call[] memory) {
+        Call[] memory calls = new Call[](gamesToBlacklist.length + 1);
 
-        calls[0] = IMulticall3.Call3Value({
+        calls[0] = Call({
+            operation: Enum.Operation.Call,
             target: address(anchorStateRegistry),
-            allowFailure: false,
-            callData: abi.encodeCall(IAnchorStateRegistry.setRespectedGameType, (GameTypes.PERMISSIONED_CANNON)),
+            data: abi.encodeCall(IAnchorStateRegistry.setRespectedGameType, (GameTypes.PERMISSIONED_CANNON)),
             value: 0
         });
 
         for (uint256 i = 0; i < gamesToBlacklist.length; i = i + 1) {
-            calls[i + 1] = IMulticall3.Call3Value({
+            calls[i + 1] = Call({
+                operation: Enum.Operation.Call,
                 target: address(anchorStateRegistry),
-                allowFailure: false,
-                callData: abi.encodeCall(IAnchorStateRegistry.blacklistDisputeGame, (gamesToBlacklist[i])),
+                data: abi.encodeCall(IAnchorStateRegistry.blacklistDisputeGame, (gamesToBlacklist[i])),
                 value: 0
             });
         }
