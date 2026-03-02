@@ -10,6 +10,7 @@ SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pau
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 SWITCH_TO_PERMISSIONED_GAME_RETIRE_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game-retire
 SWITCH_TO_PERMISSIONED_GAME_BLACKLIST_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game-blacklist
+PAUSE_SUPERCHAIN_CONFIG_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-superchain-config
 
 TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
@@ -21,6 +22,7 @@ TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge
 TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
 TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_RETIRE = setup-templates/template-switch-to-permissioned-game-retire
 TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST = setup-templates/template-switch-to-permissioned-game-blacklist
+TEMPLATE_PAUSE_SUPERCHAIN_CONFIG = setup-templates/template-pause-superchain-config
 
 ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
