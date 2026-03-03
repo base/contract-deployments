@@ -22,7 +22,7 @@ TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
 TEMPLATE_SWITCH_TO_PERMISSIONED_GAME = setup-templates/template-switch-to-permissioned-game
 TEMPLATE_PAUSE_SUPERCHAIN_CONFIG = setup-templates/template-pause-superchain-config
 
-ifndef $(GOPATH)
+ifndef GOPATH
     GOPATH=$(shell go env GOPATH)
     export GOPATH
 endif
