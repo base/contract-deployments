@@ -1,6 +1,14 @@
 # Mainnet OP Stack Separation
 
-Status: READY TO SIGN
+Status: EXECUTED
+
+[UpdateProxyAdminOwnerSigners](https://etherscan.io/tx/0x00de17d8f1f65c5baa6cfb5ea313309ac6be1ca858035c5a4956727e7ff357e3)
+[UpdateCBSafeSigners](https://etherscan.io/tx/0x17d10687b8d9e0f7ce68b65e5cbc23bbceb7ac494a99746a6a2f979cd7206e4f)
+[UpgradeSystemConfig](https://etherscan.io/tx/0xa2dc938704977d2f3d0765832e79e1239d97aa6912efadc21a9705ef7dca42eb)
+[UpgradeFeeDisburser](https://etherscan.io/tx/0xdc700942c3b4e05e2ee2f6519cb8ed4e5ff626dc70f48c91931b1b3f3593f5b6)
+[TerminateSmartEscrow](https://optimistic.etherscan.io/tx/0x75ddb1f30d7fc14a4cea7ab7364cf34001b01863fee954c239564dbcfacbb178)
+WithdrawSmartEscrow: PENDING
+[AddSecurityCouncilSigner](https://etherscan.io/tx/0x117b78c970396446c891ba82439351555c537f04d0d90222a9d523975bfe599b)
 
 ## Description
 
