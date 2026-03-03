@@ -161,85 +161,102 @@ endif
 # Approvals - UpdateProxyAdminOwnerSigners
 ##
 .PHONY: approve-proxyadminowner-signers-cb
+approve-proxyadminowner-signers-cb: SCRIPT_NAME = UpdateProxyAdminOwnerSigners
 approve-proxyadminowner-signers-cb:
-	SCRIPT_NAME=UpdateProxyAdminOwnerSigners $(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: approve-proxyadminowner-signers-sc
+approve-proxyadminowner-signers-sc: SCRIPT_NAME = UpdateProxyAdminOwnerSigners
 approve-proxyadminowner-signers-sc:
-	SCRIPT_NAME=UpdateProxyAdminOwnerSigners $(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR) $(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: approve-proxyadminowner-signers-op
+approve-proxyadminowner-signers-op: SCRIPT_NAME = UpdateProxyAdminOwnerSigners
 approve-proxyadminowner-signers-op:
-	SCRIPT_NAME=UpdateProxyAdminOwnerSigners $(call MULTISIG_APPROVE,$(OP_SIGNER_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(OP_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: approve-proxyadminowner-signers-cb-coord
+approve-proxyadminowner-signers-cb-coord: SCRIPT_NAME = UpdateProxyAdminOwnerSigners
 approve-proxyadminowner-signers-cb-coord:
-	SCRIPT_NAME=UpdateProxyAdminOwnerSigners $(call MULTISIG_APPROVE,$(CB_SIGNER_SAFE_ADDR),0x)
+	$(call MULTISIG_APPROVE,$(CB_SIGNER_SAFE_ADDR),0x)
 
 ##
 # Approvals - UpdateCBSafeSigners
 ##
 .PHONY: approve-cbsafesigners-cb
+approve-cbsafesigners-cb: SCRIPT_NAME = UpdateCBSafeSigners
 approve-cbsafesigners-cb:
-	SCRIPT_NAME=UpdateCBSafeSigners $(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_NESTED_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: approve-cbsafesigners-sc
+approve-cbsafesigners-sc: SCRIPT_NAME = UpdateCBSafeSigners
 approve-cbsafesigners-sc:
-	SCRIPT_NAME=UpdateCBSafeSigners $(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
 
 ##
 # Approvals - UpgradeSystemConfig
 ##
 .PHONY: approve-systemconfig-cb
+approve-systemconfig-cb: SCRIPT_NAME = UpgradeSystemConfig
 approve-systemconfig-cb:
-	SCRIPT_NAME=UpgradeSystemConfig $(call MULTISIG_APPROVE,$(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: approve-systemconfig-sc
+approve-systemconfig-sc: SCRIPT_NAME = UpgradeSystemConfig
 approve-systemconfig-sc:
-	SCRIPT_NAME=UpgradeSystemConfig $(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
 
 ##
 # Approvals - WithdrawSmartEscrow
 ##
 .PHONY: approve-withdraw-smartescrow-cb
 approve-withdraw-smartescrow-cb: RPC_URL = $(OP_RPC_URL)
+approve-withdraw-smartescrow-cb: SCRIPT_NAME = WithdrawSmartEscrow
 approve-withdraw-smartescrow-cb:
-	SCRIPT_NAME=WithdrawSmartEscrow $(call MULTISIG_APPROVE,$(CB_SAFE_ON_OP),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(CB_SAFE_ON_OP),$(SIGNATURES))
 
 .PHONY: approve-withdraw-smartescrow-op
 approve-withdraw-smartescrow-op: RPC_URL = $(OP_RPC_URL)
+approve-withdraw-smartescrow-op: SCRIPT_NAME = WithdrawSmartEscrow
 approve-withdraw-smartescrow-op:
-	SCRIPT_NAME=WithdrawSmartEscrow $(call MULTISIG_APPROVE,$(OP_SAFE_ON_OP),$(SIGNATURES))
+	$(call MULTISIG_APPROVE,$(OP_SAFE_ON_OP),$(SIGNATURES))
 
 ##
 # Execute
 ##
 .PHONY: execute-proxyadminownersigners
+execute-proxyadminownersigners: SCRIPT_NAME = UpdateProxyAdminOwnerSigners
 execute-proxyadminownersigners:
-	SCRIPT_NAME=UpdateProxyAdminOwnerSigners $(call MULTISIG_EXECUTE,0x)
+	$(call MULTISIG_EXECUTE,0x)
 
 .PHONY: execute-cbsafesigners
+execute-cbsafesigners: SCRIPT_NAME = UpdateCBSafeSigners
 execute-cbsafesigners:
-	SCRIPT_NAME=UpdateCBSafeSigners $(call MULTISIG_EXECUTE,0x)
+	$(call MULTISIG_EXECUTE,0x)
 
 .PHONY: execute-systemconfig
+execute-systemconfig: SCRIPT_NAME = UpgradeSystemConfig
 execute-systemconfig:
-	SCRIPT_NAME=UpgradeSystemConfig $(call MULTISIG_EXECUTE,0x)
+	$(call MULTISIG_EXECUTE,0x)
 
 .PHONY: execute-feedisburser
+execute-feedisburser: SCRIPT_NAME = UpgradeFeeDisburser
 execute-feedisburser:
-	SCRIPT_NAME=UpgradeFeeDisburser $(call MULTISIG_EXECUTE,$(SIGNATURES))
+	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: execute-terminate-smartescrow
 execute-terminate-smartescrow: RPC_URL = $(OP_RPC_URL)
+execute-terminate-smartescrow: SCRIPT_NAME = TerminateSmartEscrow
 execute-terminate-smartescrow:
-	SCRIPT_NAME=TerminateSmartEscrow $(call MULTISIG_EXECUTE,$(SIGNATURES))
+	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: execute-withdraw-smartescrow
 execute-withdraw-smartescrow: RPC_URL = $(OP_RPC_URL)
+execute-withdraw-smartescrow: SCRIPT_NAME = WithdrawSmartEscrow
 execute-withdraw-smartescrow:
-	SCRIPT_NAME=WithdrawSmartEscrow $(call MULTISIG_EXECUTE,0x)
+	$(call MULTISIG_EXECUTE,0x)
 
 .PHONY: execute-add-signer
+execute-add-signer: SCRIPT_NAME = AddSecurityCouncilSigner
 execute-add-signer:
-	SCRIPT_NAME=AddSecurityCouncilSigner $(call MULTISIG_EXECUTE,$(SIGNATURES))
+	$(call MULTISIG_EXECUTE,$(SIGNATURES))
