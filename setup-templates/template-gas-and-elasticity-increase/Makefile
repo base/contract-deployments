@@ -65,7 +65,7 @@ execute: validate-config
 # transaction targets the correct future nonce.
 .PHONY: gen-validation-rollback
 gen-validation-rollback: validate-config deps-signer-tool
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer-rollback.json,OLD_GAS_LIMIT=$(TO_GAS_LIMIT) NEW_GAS_LIMIT=$(FROM_GAS_LIMIT) OLD_ELASTICITY=$(TO_ELASTICITY) NEW_ELASTICITY=$(FROM_ELASTICITY) OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) NEW_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) SAFE_NONCE=$(shell expr $$(cast call $(OWNER_SAFE) "nonce()" --rpc-url $(RPC_URL) | cast to-dec) + $(ROLLBACK_NONCE_OFFSET)) )
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer-rollback.json,OLD_GAS_LIMIT=$(TO_GAS_LIMIT) NEW_GAS_LIMIT=$(FROM_GAS_LIMIT) OLD_ELASTICITY=$(TO_ELASTICITY) NEW_ELASTICITY=$(FROM_ELASTICITY) OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) NEW_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) SAFE_NONCE=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) )
 
 .PHONY: execute-rollback
 execute-rollback: validate-config
@@ -75,5 +75,5 @@ execute-rollback: validate-config
 	NEW_ELASTICITY=$(FROM_ELASTICITY) \
 	OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) \
 	NEW_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) \
-	SAFE_NONCE=$(shell expr $$(cast call $(OWNER_SAFE) "nonce()" --rpc-url $(RPC_URL) | cast to-dec) + $(ROLLBACK_NONCE_OFFSET)) \
+	SAFE_NONCE=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) \
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))

@@ -9,7 +9,7 @@ L1_PORTAL ?= $(OPTIMISM_PORTAL)
 
 # Auto-fetch SAFE_NONCE from chain if not explicitly set (e.g., via .env)
 ifndef SAFE_NONCE
-SAFE_NONCE := $(shell cast call $(OWNER_SAFE) "nonce()(uint256)" --rpc-url $(L1_RPC_URL) | cast to-dec)
+SAFE_NONCE := $(call GET_NONCE,$(OWNER_SAFE))
 endif
 # TODO: ensure `sender` is a signer for `OWNER_SAFE`
 SENDER=0x1841CB3C2ce6870D0417844C817849da64E6e937
