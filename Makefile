@@ -8,7 +8,8 @@ SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-management
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
-SWITCH_TO_PERMISSIONED_GAME_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game
+SWITCH_TO_PERMISSIONED_GAME_RETIRE_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game-retire
+SWITCH_TO_PERMISSIONED_GAME_BLACKLIST_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game-blacklist
 PAUSE_SUPERCHAIN_CONFIG_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-superchain-config
 
 TEMPLATE_GENERIC = setup-templates/template-generic
@@ -19,7 +20,8 @@ TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
 TEMPLATE_FUNDING = setup-templates/template-funding
 TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
 TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
-TEMPLATE_SWITCH_TO_PERMISSIONED_GAME = setup-templates/template-switch-to-permissioned-game
+TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_RETIRE = setup-templates/template-switch-to-permissioned-game-retire
+TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST = setup-templates/template-switch-to-permissioned-game-blacklist
 TEMPLATE_PAUSE_SUPERCHAIN_CONFIG = setup-templates/template-pause-superchain-config
 
 ifndef $(GOPATH)
@@ -74,9 +76,13 @@ setup-bridge-pause:
 	rm -rf $(TEMPLATE_PAUSE_BRIDGE_BASE)/cache $(TEMPLATE_PAUSE_BRIDGE_BASE)/lib $(TEMPLATE_PAUSE_BRIDGE_BASE)/out
 	cp -r $(TEMPLATE_PAUSE_BRIDGE_BASE) $(PAUSE_BRIDGE_BASE_DIR)
 
-setup-switch-to-permissioned-game:
-	rm -rf $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/cache $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/lib $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/out
-	cp -r $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME) $(SWITCH_TO_PERMISSIONED_GAME_DIR)
+setup-switch-to-permissioned-game-retire:
+	rm -rf $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_RETIRE)/cache $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_RETIRE)/lib $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_RETIRE)/out
+	cp -r $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_RETIRE) $(SWITCH_TO_PERMISSIONED_GAME_RETIRE_DIR)
+
+setup-switch-to-permissioned-game-blacklist:
+	rm -rf $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST)/cache $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST)/lib $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST)/out
+	cp -r $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME_BLACKLIST) $(SWITCH_TO_PERMISSIONED_GAME_BLACKLIST_DIR)
 
 # Run `make setup-superchain-config-pause network=<network>`
 setup-superchain-config-pause:

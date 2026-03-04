@@ -52,10 +52,14 @@ jobs:
             setup_target: "setup-bridge-partner-threshold"
             setup_args: "network=sepolia"
             task_dir_suffix: pause-bridge-base
-          - template: template-switch-to-permissioned-game
-            setup_target: "setup-switch-to-permissioned-game"
+          - template: template-switch-to-permissioned-game-retire
+            setup_target: "setup-switch-to-permissioned-game-retire"
             setup_args: "network=sepolia"
-            task_dir_suffix: switch-to-permissioned-game
+            task_dir_suffix: switch-to-permissioned-game-retire
+          - template: template-switch-to-permissioned-game-blacklist
+            setup_target: "setup-switch-to-permissioned-game-blacklist"
+            setup_args: "network=sepolia"
+            task_dir_suffix: switch-to-permissioned-game-blacklist
       fail-fast: false
 
     steps:
