@@ -65,7 +65,10 @@ $(shell cast call $(1) "nonce()" --rpc-url $(RPC_URL) | cast to-dec)
 endef
 
 # ADDR_UPPER: Convert an address to uppercase (for env var construction).
+# Used to build per-Safe nonce override env vars passed to forge scripts,
+# e.g. SAFE_NONCE_$(call ADDR_UPPER,$(SAFE_ADDR))=$(NONCE_VALUE)
+# See mainnet/2026-02-19-superchain-separation for real-world usage.
 # $(1)=address
 define ADDR_UPPER
-$(shell echo $(1) | tr '[:lower:]' '[:upper:]')
+$(shell echo "$(1)" | tr '[:lower:]' '[:upper:]')
 endef
