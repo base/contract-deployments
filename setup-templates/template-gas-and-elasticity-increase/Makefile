@@ -47,18 +47,8 @@ endif
 	@echo "TO_DA_FOOTPRINT_GAS_SCALAR=$$(( $(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) ))"
 
 .PHONY: gen-validation
-gen-validation: validate-config checkout-signer-tool run-script
-
-.PHONY: run-script
-run-script:
-	cd $(SIGNER_TOOL_PATH); \
-	npm ci; \
-	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
-	--workdir .. --forge-cmd 'NEW_GAS_LIMIT=$(TO_GAS_LIMIT) \
-	OLD_GAS_LIMIT=$(FROM_GAS_LIMIT) NEW_ELASTICITY=$(TO_ELASTICITY) OLD_ELASTICITY=$(FROM_ELASTICITY) \
-	NEW_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) OLD_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) \
-	forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
+gen-validation: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,NEW_GAS_LIMIT=$(TO_GAS_LIMIT) OLD_GAS_LIMIT=$(FROM_GAS_LIMIT) NEW_ELASTICITY=$(TO_ELASTICITY) OLD_ELASTICITY=$(FROM_ELASTICITY) NEW_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) OLD_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) )
 
 .PHONY: execute
 execute: validate-config
@@ -71,19 +61,8 @@ execute: validate-config
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: gen-validation-rollback
-gen-validation-rollback: validate-config checkout-signer-tool run-script-rollback
-
-.PHONY: run-script-rollback
-run-script-rollback:
-	cd $(SIGNER_TOOL_PATH); \
-	npm ci; \
-	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
-	--workdir .. --forge-cmd 'OLD_GAS_LIMIT=$(TO_GAS_LIMIT) \
-	NEW_GAS_LIMIT=$(FROM_GAS_LIMIT) OLD_ELASTICITY=$(TO_ELASTICITY) NEW_ELASTICITY=$(FROM_ELASTICITY) \
-	OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) NEW_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) \
-	SAFE_NONCE=$(shell expr $$(cast call $(OWNER_SAFE) "nonce()" --rpc-url $(RPC_URL) | cast to-dec) + $(ROLLBACK_NONCE_OFFSET)) \
-	forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer-rollback.json;
+gen-validation-rollback: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer-rollback.json,OLD_GAS_LIMIT=$(TO_GAS_LIMIT) NEW_GAS_LIMIT=$(FROM_GAS_LIMIT) OLD_ELASTICITY=$(TO_ELASTICITY) NEW_ELASTICITY=$(FROM_ELASTICITY) OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) NEW_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) SAFE_NONCE=$(shell expr $$(cast call $(OWNER_SAFE) "nonce()" --rpc-url $(RPC_URL) | cast to-dec) + $(ROLLBACK_NONCE_OFFSET)) )
 
 .PHONY: execute-rollback
 execute-rollback: validate-config

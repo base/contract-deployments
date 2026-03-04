@@ -18,15 +18,8 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: gen-validation
-gen-validation: validate-config checkout-signer-tool run-script
-
-.PHONY: run-script
-run-script:
-	cd $(SIGNER_TOOL_PATH); \
-	npm ci; \
-	bun run scripts/genValidationFile.ts --rpc-url $(RPC_URL) \
-	--workdir .. --forge-cmd 'forge script --rpc-url $(RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" ["$(OP_SECURITY_COUNCIL_SAFE)"] --sender $(SENDER)' --out ../validations/op-signer.json;
+gen-validation: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(OP_SECURITY_COUNCIL_SAFE),$(SENDER),op-signer.json,)
 
 .PHONY: approve-op
 approve-op: validate-config

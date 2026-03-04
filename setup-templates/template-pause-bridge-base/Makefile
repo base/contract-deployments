@@ -30,15 +30,8 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: gen-validation
-gen-validation: validate-config checkout-signer-tool run-script
-
-.PHONY: run-script
-run-script:
-	cd $(SIGNER_TOOL_PATH); \
-	npm ci; \
-	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
-	--workdir .. --forge-cmd 'IS_PAUSED=true forge script --rpc-url $(L1_RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
+gen-validation: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,IS_PAUSED=true )
 
 .PHONY: sign-pause
 sign-pause: validate-config
