@@ -60,6 +60,9 @@ execute: validate-config
 	OLD_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) \
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
+# Generate rollback validation file with swapped old/new values and nonce offset.
+# SAFE_NONCE is set to current_nonce + ROLLBACK_NONCE_OFFSET so the rollback
+# transaction targets the correct future nonce.
 .PHONY: gen-validation-rollback
 gen-validation-rollback: validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer-rollback.json,OLD_GAS_LIMIT=$(TO_GAS_LIMIT) NEW_GAS_LIMIT=$(FROM_GAS_LIMIT) OLD_ELASTICITY=$(TO_ELASTICITY) NEW_ELASTICITY=$(FROM_ELASTICITY) OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) NEW_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) SAFE_NONCE=$(shell expr $$(cast call $(OWNER_SAFE) "nonce()" --rpc-url $(RPC_URL) | cast to-dec) + $(ROLLBACK_NONCE_OFFSET)) )
