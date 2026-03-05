@@ -15,7 +15,7 @@ As a Facilitator, you are responsible for:
 ```bash
 cd contract-deployments
 git pull
-cd solana/devnet/2025-10-22-mcm-upgrade
+cd solana/devnet/2025-10-24-mcm-program-upgrade
 make deps
 ```
 
