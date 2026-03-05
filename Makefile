@@ -129,6 +129,11 @@ checkout-signer-tool:
 	git fetch --depth=1 origin $(SIGNER_TOOL_COMMIT); \
 	git reset --hard FETCH_HEAD
 
+# Checkout and install signer-tool dependencies (used as a prerequisite by gen-validation targets)
+.PHONY: deps-signer-tool
+deps-signer-tool: checkout-signer-tool
+	cd $(SIGNER_TOOL_PATH) && npm ci
+
 .PHONY: sign-task
 sign-task: checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH); \

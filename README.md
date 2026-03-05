@@ -104,12 +104,20 @@ Templates are validated in parallel using a matrix strategy, so failures are iso
 
 ## Multisig macro convention
 
-All task templates use two global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
+All task templates use global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
 
-| Macro              | Purpose                                       | Solidity signature         |
-| ------------------ | --------------------------------------------- | -------------------------- |
-| `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy) | `approve(address[],bytes)` |
-| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain      | `run(bytes)`               |
+| Macro              | Purpose                                                        | Key arguments                                                  |
+| ------------------ | -------------------------------------------------------------- | -------------------------------------------------------------- |
+| `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy)                  | `(address_list, signatures)`                                   |
+| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain                       | `(signatures)`                                                 |
+| `GEN_VALIDATION`   | Generate a validation JSON file for signers via the signer-tool | `(script_name, safe_addr, sender, output_file, env_vars)`     |
+
+Two helper macros are also available for tasks that need nonce offset calculations or address manipulation:
+
+| Macro        | Purpose                                                 | Key arguments    |
+| ------------ | ------------------------------------------------------- | ---------------- |
+| `GET_NONCE`  | Fetch the current nonce of a Safe contract on-chain     | `(safe_address)` |
+| `ADDR_UPPER` | Convert an address to uppercase (for env var construction) | `(address)`     |
 
 Signing is handled externally by the task-signing-tool.
 
@@ -125,7 +133,14 @@ RPC_URL = $(L1_RPC_URL)       # or $(L2_RPC_URL)
 SCRIPT_NAME = MyScript         # class name or .sol file path
 ```
 
-Templates should use these macros rather than inline `forge script` / `eip712sign` invocations. The known exceptions are the incident-response pause templates, which pre-sign 20 future nonces in a loop using inline `eip712sign`; only their `execute-*` targets use `MULTISIG_EXECUTE`.
+Templates that generate validation files should use `GEN_VALIDATION` with the `deps-signer-tool` prerequisite (which checks out and installs the signer-tool):
+
+```makefile
+gen-validation: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
+```
+
+Templates should use these macros rather than inline `forge script` / `eip712sign` / `bun run` invocations. The known exceptions are the incident-response pause templates, which pre-sign 20 future nonces in a loop using inline `eip712sign`; only their `execute-*` targets use `MULTISIG_EXECUTE`.
 
 ## Using the incident response template
 
@@ -254,7 +269,7 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 1. Run `make deps`.
 1. Fill in any task-specific variables in the `.env` file that have per-network comments (e.g., `L2_BRIDGE`), using the value for your target network.
 1. Set the `IS_PAUSED` variable to `true` or `false` in the `.env` file depending on if you intend to pause or unpause the bridge.
-1. Ensure the `--sender` flag in the `make gen-validation` command in the `Makefile` file is set to a signer for `OWNER_SAFE` in `.env`.
+1. Ensure the `SENDER` variable in the Makefile is set to a signer for `OWNER_SAFE`.
 1. Build the contracts with `forge build`.
 1. Generate the validation file for signers with `make gen-validation`.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.

@@ -23,15 +23,8 @@ new-forge-deps:
 	forge install --no-git safe-global/safe-smart-account@186a21a74b327f17fc41217a927dea7064f74604
 
 .PHONY: gen-validation
-gen-validation: validate-config checkout-signer-tool run-script
-
-.PHONY: run-script
-run-script:
-	cd $(SIGNER_TOOL_PATH); \
-	npm ci; \
-	bun run scripts/genValidationFile.ts --rpc-url $(L1_RPC_URL) \
-	--workdir .. --forge-cmd 'forge script --rpc-url $(L1_RPC_URL) \
-	$(SCRIPT_NAME) --sig "sign(address[])" [] --sender $(SENDER)' --out ../validations/base-signer.json;
+gen-validation: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
 
 .PHONY: execute
 execute: validate-config

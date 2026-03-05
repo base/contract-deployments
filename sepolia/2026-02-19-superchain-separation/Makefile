@@ -32,7 +32,7 @@ define GEN_VALIDATION
 		bun run scripts/genValidationFile.ts \
 			--rpc-url $(RPC_URL) \
 			--workdir $(CURDIR) \
-			--forge-cmd '$(5)forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
+			--forge-cmd '$(if $(5),$(5) )forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
 			--ledger-id $(LEDGER_ACCOUNT) \
 			--out $(CURDIR)/validations/$(4)
 endef
@@ -86,14 +86,14 @@ gen-validation-cb-sc-1: deps-signer-tool
 .PHONY: gen-validation-cb-2
 gen-validation-cb-2: deps-signer-tool
 	$(eval CB_PARENT_NONCE := $(shell expr $(call GET_NONCE,$(CB_SIGNER_SAFE_ADDR)) + 1))
-	$(call GEN_VALIDATION,UpgradeSystemConfig,$(CB_SIGNER_SAFE_ADDR),$(CB_SIGNER_SENDER),coinbase-signer-part-2.json,SAFE_NONCE_$(call ADDR_UPPER,$(CB_SIGNER_SAFE_ADDR))=$(CB_PARENT_NONCE) )
+	$(call GEN_VALIDATION,UpgradeSystemConfig,$(CB_SIGNER_SAFE_ADDR),$(CB_SIGNER_SENDER),coinbase-signer-part-2.json,SAFE_NONCE_$(call ADDR_UPPER,$(CB_SIGNER_SAFE_ADDR))=$(CB_PARENT_NONCE))
 
 # SC uses CB_SC_SAFE_ADDR which has Part 1 tx pending - needs nonce+1
 .PHONY: gen-validation-cb-sc-2
 gen-validation-cb-sc-2: deps-signer-tool
 	$(eval SC_NONCE := $(shell expr $(call GET_NONCE,$(CB_SC_SAFE_ADDR)) + 1))
 	@echo "Using nonce override for CB_SC_SAFE_ADDR: $(SC_NONCE)"
-	$(call GEN_VALIDATION,UpgradeSystemConfig,$(CB_SC_SAFE_ADDR),$(CB_NESTED_SENDER),security-council-signer-part-2.json,SAFE_NONCE_$(call ADDR_UPPER,$(CB_SC_SAFE_ADDR))=$(SC_NONCE) )
+	$(call GEN_VALIDATION,UpgradeSystemConfig,$(CB_SC_SAFE_ADDR),$(CB_NESTED_SENDER),security-council-signer-part-2.json,SAFE_NONCE_$(call ADDR_UPPER,$(CB_SC_SAFE_ADDR))=$(SC_NONCE))
 
 # Part 3: UpgradeFeeDisburser
 # Uses CB_NESTED_SAFE_ADDR which has Part 1 tx pending - needs nonce+1
@@ -101,7 +101,7 @@ gen-validation-cb-sc-2: deps-signer-tool
 gen-validation-cb-3: deps-signer-tool
 	$(eval CB_NESTED_NONCE := $(shell expr $(call GET_NONCE,$(CB_NESTED_SAFE_ADDR)) + 1))
 	@echo "Using nonce override for CB_NESTED_SAFE_ADDR: $(CB_NESTED_NONCE)"
-	$(call GEN_VALIDATION,UpgradeFeeDisburser,,$(CB_NESTED_SENDER),coinbase-signer-part-3.json,SAFE_NONCE_$(call ADDR_UPPER,$(CB_NESTED_SAFE_ADDR))=$(CB_NESTED_NONCE) )
+	$(call GEN_VALIDATION,UpgradeFeeDisburser,,$(CB_NESTED_SENDER),coinbase-signer-part-3.json,SAFE_NONCE_$(call ADDR_UPPER,$(CB_NESTED_SAFE_ADDR))=$(CB_NESTED_NONCE))
 
 ##
 # Deployments

@@ -39,3 +39,36 @@ $(call require_vars,MULTISIG_EXECUTE,LEDGER_ACCOUNT RPC_URL SCRIPT_NAME) \
 	--sig "run(bytes)" $(1) \
 	--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 endef
+
+# ---------- Validation file generation ----------
+
+# GEN_VALIDATION: Generate a validation JSON file for multisig signing.
+# $(1)=script_name, $(2)=safe_addr (comma-separated, or empty for []),
+# $(3)=sender, $(4)=output_file, $(5)=env_vars (optional prefix)
+define GEN_VALIDATION
+$(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
+	cd $(SIGNER_TOOL_PATH) && \
+		bun run scripts/genValidationFile.ts \
+			--rpc-url $(RPC_URL) \
+			--workdir $(CURDIR) \
+			--forge-cmd '$(if $(5),$(5) )forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
+			--ledger-id $(LEDGER_ACCOUNT) \
+			--out $(CURDIR)/validations/$(4)
+endef
+
+# ---------- Helpers ----------
+
+# GET_NONCE: Fetch the current nonce of a Safe contract.
+# $(1)=safe_address
+define GET_NONCE
+$(shell cast call $(1) "nonce()" --rpc-url $(RPC_URL) | cast to-dec)
+endef
+
+# ADDR_UPPER: Convert an address to uppercase (for env var construction).
+# Used to build per-Safe nonce override env vars passed to forge scripts,
+# e.g. SAFE_NONCE_$(call ADDR_UPPER,$(SAFE_ADDR))=$(NONCE_VALUE)
+# See mainnet/2026-02-19-superchain-separation for real-world usage.
+# $(1)=address
+define ADDR_UPPER
+$(shell echo "$(1)" | tr '[:lower:]' '[:upper:]')
+endef
