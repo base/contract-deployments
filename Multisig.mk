@@ -51,7 +51,7 @@ $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 		bun run scripts/genValidationFile.ts \
 			--rpc-url $(RPC_URL) \
 			--workdir $(CURDIR) \
-			--forge-cmd '$(5)forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
+			--forge-cmd '$(if $(5),$(5) )forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
 			--ledger-id $(LEDGER_ACCOUNT) \
 			--out $(CURDIR)/validations/$(4)
 endef

@@ -31,7 +31,7 @@ validate-config:
 
 .PHONY: gen-validation
 gen-validation: validate-config deps-signer-tool
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,IS_PAUSED=true )
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,IS_PAUSED=true)
 
 .PHONY: sign-pause
 sign-pause: validate-config
