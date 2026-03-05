@@ -44,7 +44,7 @@ PROGRAM_BINARY=<path-to-.so-file>
 ### 1.3. Write buffer
 
 ```bash
-make write-buffer
+make step2-write-buffer
 ```
 
 This will output a buffer address. Copy it.
@@ -62,7 +62,7 @@ SPILL=<your-wallet-address>
 Then transfer buffer authority to MCM:
 
 ```bash
-make transfer-buffer
+make step3-transfer-buffer
 ```
 
 The buffer is now controlled by the MCM authority.
@@ -84,7 +84,7 @@ MCM_PROPOSAL_OUTPUT=proposal.json
 ### 2.2. Generate proposal
 
 ```bash
-make mcm-proposal
+make step4-create-proposal
 ```
 
 This creates the proposal file (default `proposal.json` or whatever is set in `MCM_PROPOSAL_OUTPUT`).
