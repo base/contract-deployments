@@ -142,6 +142,25 @@ gen-validation: validate-config deps-signer-tool
 
 Templates should use these macros rather than inline `forge script` / `eip712sign` / `bun run` invocations. The known exceptions are the incident-response pause templates, which pre-sign 20 future nonces in a loop using inline `eip712sign`; only their `execute-*` targets use `MULTISIG_EXECUTE`.
 
+## Task origin signing
+
+The root Makefile provides three targets for generating cryptographic attestations (sigstore bundles) that prove who created and facilitated a task. These are inherited by all task Makefiles via `include ../../Makefile`.
+
+| Target                         | Purpose                                          |
+| ------------------------------ | ------------------------------------------------ |
+| `make sign-as-task-creator`    | Attest authorship of the task (run after setup)  |
+| `make sign-as-base-facilitator`| Attest Base team facilitation                    |
+| `make sign-as-sc-facilitator`  | Attest Security Council facilitation             |
+
+Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
+
+| Variable        | Default                                           | Description                        |
+| --------------- | ------------------------------------------------- | ---------------------------------- |
+| `TASK_NAME`     | `$(notdir $(CURDIR))` (directory basename)        | Name used to locate signature dir  |
+| `SIGNATURE_DIR` | `$(CURDIR)/../signatures/$(TASK_NAME)`            | Directory where signatures are stored |
+
+All three targets depend on `deps-signer-tool`, which checks out and installs the [task-signing-tool](https://github.com/base/task-signing-tool) automatically.
+
 ## Using the incident response template
 
 This template contains scripts that will help us respond to incidents efficiently.
