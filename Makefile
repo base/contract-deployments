@@ -140,7 +140,9 @@ sign-task: checkout-signer-tool
 	npm ci; \
 	npm run dev
 
-# Task origin signature variables (auto-derived, overridable)
+# Task origin signature variables (auto-derived, overridable).
+# These targets are designed to be invoked from task subdirectories
+# (e.g. sepolia/2026-02-19-superchain-separation/) that include this Makefile.
 TASK_NAME ?= $(notdir $(CURDIR))
 SIGNATURE_DIR ?= $(CURDIR)/../signatures/$(TASK_NAME)
 
