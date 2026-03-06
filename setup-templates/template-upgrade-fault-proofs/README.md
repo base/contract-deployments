@@ -6,25 +6,6 @@ Status: PENDING
 
 This task contains two scripts. One for deploying new versions of the `FaultDisputeGame` and `PermissionedDisputeGame` contracts, and one for updating the `DisputeGameFactory` contract to reference the new dispute game contracts.
 
-## Task Origin Signing
-
-After setting up the task, generate cryptographic attestations (sigstore bundles) to prove who created and facilitated the task. These signatures are stored in `<network>/signatures/<task-name>/`.
-
-### Task creator (run after task setup):
-```bash
-make sign-as-task-creator
-```
-
-### Base facilitator:
-```bash
-make sign-as-base-facilitator
-```
-
-### Security Council facilitator:
-```bash
-make sign-as-sc-facilitator
-```
-
 ## Procedure
 
 ### 1. Update repo:

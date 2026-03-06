@@ -8,25 +8,6 @@ This is the base template for creating new multisig operations. It provides a st
 
 Use this template when you need to create a new task that doesn't fit one of the specialized templates (gas increase, fault proof upgrade, etc.).
 
-## Task Origin Signing
-
-After setting up the task, generate cryptographic attestations (sigstore bundles) to prove who created and facilitated the task. These signatures are stored in `<network>/signatures/<task-name>/`.
-
-### Task creator (run after task setup):
-```bash
-make sign-as-task-creator
-```
-
-### Base facilitator:
-```bash
-make sign-as-base-facilitator
-```
-
-### Security Council facilitator:
-```bash
-make sign-as-sc-facilitator
-```
-
 ## Setup
 
 ### 1. Create a new task directory
