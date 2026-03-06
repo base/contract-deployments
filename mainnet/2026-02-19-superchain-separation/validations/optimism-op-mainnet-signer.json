@@ -39,18 +39,6 @@
           "allowDifference": false
         }
       ]
-    },
-    {
-      "name": "SmartEscrow - Optimism",
-      "address": "0xb3C2f9fC2727078EC3A2255410e83BA5B62c5B5f",
-      "overrides": [
-        {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Overrides contractTerminated from false (0) to true (1), marking the SmartEscrow contract as permanently terminated.",
-          "allowDifference": false
-        }
-      ]
     }
   ],
   "stateChanges": [
