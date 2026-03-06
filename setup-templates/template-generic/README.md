@@ -100,6 +100,25 @@ SIGNATURES=<collected-signatures> make approve-l1-1
 make execute
 ```
 
+## Task Origin Signing
+
+After setting up the task, generate cryptographic attestations (sigstore bundles) to prove who created and facilitated the task. These signatures are stored in `<network>/signatures/<task-name>/`.
+
+### Task creator (run after task setup):
+```bash
+make sign-as-task-creator
+```
+
+### Base facilitator:
+```bash
+make sign-as-base-facilitator
+```
+
+### Security Council facilitator:
+```bash
+make sign-as-sc-facilitator
+```
+
 ## Ledger Setup
 
 Your Ledger needs to be connected and unlocked. The Ethereum application needs to be opened on Ledger with the message "Application is ready".

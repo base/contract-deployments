@@ -6,6 +6,25 @@ Status: TODO[READY TO SIGN|EXECUTED]
 
 We wish to update the owners of our Incident Multisig to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
 
+## Task Origin Signing
+
+After setting up the task, generate cryptographic attestations (sigstore bundles) to prove who created and facilitated the task. These signatures are stored in `<network>/signatures/<task-name>/`.
+
+### Task creator (run after task setup):
+```bash
+make sign-as-task-creator
+```
+
+### Base facilitator:
+```bash
+make sign-as-base-facilitator
+```
+
+### Security Council facilitator:
+```bash
+make sign-as-sc-facilitator
+```
+
 ## Install dependencies
 
 ### 1. Update foundry

@@ -140,6 +140,33 @@ sign-task: checkout-signer-tool
 	npm ci; \
 	npm run dev
 
+# Task origin signature variables (auto-derived, overridable)
+TASK_NAME ?= $(notdir $(CURDIR))
+SIGNATURE_DIR ?= $(CURDIR)/../signatures/$(TASK_NAME)
+
+.PHONY: sign-as-task-creator
+sign-as-task-creator: deps-signer-tool
+	cd $(SIGNER_TOOL_PATH) && \
+		npx tsx scripts/genTaskOriginSig.ts sign \
+		--task-folder $(CURDIR) \
+		--signature-path $(SIGNATURE_DIR)
+
+.PHONY: sign-as-base-facilitator
+sign-as-base-facilitator: deps-signer-tool
+	cd $(SIGNER_TOOL_PATH) && \
+		npx tsx scripts/genTaskOriginSig.ts sign \
+		--task-folder $(CURDIR) \
+		--signature-path $(SIGNATURE_DIR) \
+		--facilitator base
+
+.PHONY: sign-as-sc-facilitator
+sign-as-sc-facilitator: deps-signer-tool
+	cd $(SIGNER_TOOL_PATH) && \
+		npx tsx scripts/genTaskOriginSig.ts sign \
+		--task-folder $(CURDIR) \
+		--signature-path $(SIGNATURE_DIR) \
+		--facilitator security-council
+
 ##
 # Solidity Testing
 ##
