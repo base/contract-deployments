@@ -14,16 +14,19 @@ TEMPLATE_SET_PAUSE_BRIDGE = setup-templates/template-set-pause-bridge
 setup-update-signers-mcm:
 	rm -rf $(TEMPLATE_UPDATE_SIGNERS_MCM)/cache $(TEMPLATE_UPDATE_SIGNERS_MCM)/lib $(TEMPLATE_UPDATE_SIGNERS_MCM)/out
 	cp -r $(TEMPLATE_UPDATE_SIGNERS_MCM) $(UPDATE_SIGNERS_MCM_DIR)
+	mkdir -p $(network)/signatures/$(notdir $(UPDATE_SIGNERS_MCM_DIR))
 
 # Run `make setup-upgrade-bridge network=<network>`
 setup-upgrade-bridge:
 	rm -rf $(TEMPLATE_UPGRADE_BRIDGE)/cache $(TEMPLATE_UPGRADE_BRIDGE)/lib $(TEMPLATE_UPGRADE_BRIDGE)/out
 	cp -r $(TEMPLATE_UPGRADE_BRIDGE) $(UPGRADE_BRIDGE_DIR)
+	mkdir -p $(network)/signatures/$(notdir $(UPGRADE_BRIDGE_DIR))
 
 # Run `make setup-set-pause-bridge network=<network>`
 setup-set-pause-bridge:
 	rm -rf $(TEMPLATE_SET_PAUSE_BRIDGE)/cache $(TEMPLATE_SET_PAUSE_BRIDGE)/lib $(TEMPLATE_SET_PAUSE_BRIDGE)/out
 	cp -r $(TEMPLATE_SET_PAUSE_BRIDGE) $(SET_PAUSE_BRIDGE_DIR)
+	mkdir -p $(network)/signatures/$(notdir $(SET_PAUSE_BRIDGE_DIR))
 
 ##
 # Dependencies
