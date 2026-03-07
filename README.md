@@ -47,6 +47,8 @@ To execute a new task, run one of the following commands (depending on the type 
 - For switching to a permissioned game and retiring dispute games: `make setup-switch-to-permissioned-game network=<network>`
 - For pausing SuperchainConfig: `make setup-superchain-config-pause network=<network>`
 
+Each `setup-*` command also creates a matching `<network>/signatures/<task-dir-basename>/` directory for [task origin signing](#task-origin-signing). The parent `signatures/` directory is created automatically via `mkdir -p` for networks that do not yet have one.
+
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
 > **👥 For Signers:** Please read the [Signer Guide](SIGNER.md) for step-by-step instructions on using the validation UI.
@@ -152,7 +154,7 @@ The root Makefile provides three targets for generating cryptographic attestatio
 | `make sign-as-base-facilitator`| Attest Base team facilitation                    |
 | `make sign-as-sc-facilitator`  | Attest Security Council facilitation             |
 
-Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
+Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. This directory is created automatically when you run any `setup-*` target (in both the root and Solana Makefiles), so it is ready for the signing tool when you invoke one of the targets below. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
 
 | Variable        | Default                                           | Description                        |
 | --------------- | ------------------------------------------------- | ---------------------------------- |
