@@ -96,6 +96,7 @@ setup-superchain-config-pause:
 ##
 # Solidity Setup
 ##
+# Pinned tag for openzeppelin-contracts-upgradeable, installed via clone-oz-upgradeable.
 OZ_UPGRADEABLE_TAG=v4.7.3
 
 .PHONY: deps
@@ -118,6 +119,14 @@ forge-deps:
 		github.com/Vectorized/solady@502cc1ea718e6fa73b380635ee0868b0740595f0 \
 		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
+# Clone openzeppelin-contracts-upgradeable at the pinned tag without submodules.
+# This replaces `forge install --no-git` for this dependency because forge's
+# internal `git clone --recursive` populates the transitive lib/openzeppelin-contracts
+# submodule from master before checking out the tag. Git does not remove the
+# already-populated submodule directory on checkout, leaving an orphaned,
+# non-deterministic directory that changes day-to-day as master receives new commits.
+# Using --no-recurse-submodules avoids this entirely and ensures byte-identical
+# output across runs.
 .PHONY: clone-oz-upgradeable
 clone-oz-upgradeable:
 	rm -rf lib/openzeppelin-contracts-upgradeable
