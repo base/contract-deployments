@@ -120,6 +120,7 @@ forge-deps:
 
 .PHONY: clone-oz-upgradeable
 clone-oz-upgradeable:
+	rm -rf lib/openzeppelin-contracts-upgradeable
 	git clone --no-recurse-submodules --depth 1 --branch $(OZ_UPGRADEABLE_TAG) \
 		https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable.git \
 		lib/openzeppelin-contracts-upgradeable
