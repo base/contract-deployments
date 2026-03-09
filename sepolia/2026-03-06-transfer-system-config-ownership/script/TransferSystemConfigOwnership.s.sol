@@ -8,10 +8,12 @@ import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.so
 import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
 
 contract TransferSystemConfigOwnership is MultisigScript {
+    address internal immutable OWNER_SAFE;
     address internal immutable NEW_OWNER;
     address internal immutable SYSTEM_CONFIG;
 
     constructor() {
+        OWNER_SAFE = vm.envAddress("OWNER_SAFE");
         NEW_OWNER = vm.envAddress("NEW_OWNER");
         SYSTEM_CONFIG = vm.envAddress("SYSTEM_CONFIG");
     }
@@ -35,7 +37,6 @@ contract TransferSystemConfigOwnership is MultisigScript {
     }
 
     function _ownerSafe() internal view override returns (address) {
-        OwnableUpgradeable systemConfig = OwnableUpgradeable(SYSTEM_CONFIG);
-        return systemConfig.owner();
+        return OWNER_SAFE;
     }
 }
