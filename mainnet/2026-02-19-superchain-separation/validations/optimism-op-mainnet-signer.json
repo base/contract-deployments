@@ -7,7 +7,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x0a7361e734cf3f0394B0FC4a45C74E7a4Ec70940",
     "domainHash": "0xb34978142f4478f3e5633915597a756daa58a1a59a3e0234f9acd5444f1ca70e",
-    "messageHash": "0xc9fbbcf00cf495a33d225de432b703da92afcfb957a5d5bf8f4b464951a1f128"
+    "messageHash": "0x53dfd07347c4bc0d7f114f7bf1904d03e0dd469942a3289fdf6b91a656478c69"
   },
   "stateOverrides": [
     {
@@ -33,7 +33,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x6373fa2b96c36fad8b6c8c7d34cc60d0c387311d71db13c007bc4c82da70685d",
+          "key": "0xa9f390a6c9b0489bb7634fcf6fe7b1bae27056f6b3572645eb72dce819c6ede7",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -68,9 +68,9 @@
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x00000000000000000000000000000000000000000000000000000000000000b6",
-          "after": "0x00000000000000000000000000000000000000000000000000000000000000b7",
-          "description": "Increments the Safe nonce from 182 to 183 after the Optimism Signer Safe submits its approval for the WithdrawSmartEscrow transaction.",
+          "before": "0x00000000000000000000000000000000000000000000000000000000000000b7",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000000b8",
+          "description": "Increments the Safe nonce from 183 to 184 after the Optimism Signer Safe submits its approval for the WithdrawSmartEscrow transaction.",
           "allowDifference": false
         }
       ]
