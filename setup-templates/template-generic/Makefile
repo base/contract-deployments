@@ -15,23 +15,10 @@ validate-config:
 	@test -n "$(TARGET)" -a "$(TARGET)" != "<SET_TARGET_ADDRESS>" || (echo "TARGET required" && exit 1)
 	@echo "Configuration validated successfully"
 
-# L2_0
-.PHONY: approve-l2-0
-approve-l2-0:
-	$(call MULTISIG_APPROVE,$(L2_0) $(L1_0),$(SIGNATURES))
-
-
-# L2_1
-.PHONY: approve-l2-1
-approve-l2-1:
-	$(call MULTISIG_APPROVE,$(L2_0) $(L2_1),$(SIGNATURES))
-
-
 # L1_0
 .PHONY: approve-l1-0
 approve-l1-0:
-	$(call MULTISIG_APPROVE,$(L1_0),0x)
-
+	$(call MULTISIG_APPROVE,$(L1_0),$(SIGNATURES))
 
 # L1_1
 .PHONY: approve-l1-1

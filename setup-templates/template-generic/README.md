@@ -37,8 +37,7 @@ Edit `.env` and set all required variables:
 | `BASE_CONTRACTS_COMMIT` | Yes | Git commit hash for base/contracts |
 | `TARGET` | Yes | Target contract address for the operation |
 | `OWNER_SAFE` | Yes | Top-level Gnosis Safe address |
-| `L1_0`, `L1_1` | Depends | First-level nested safe addresses (if using nested safes) |
-| `L2_0`, `L2_1` | Depends | Second-level nested safe addresses (if using nested safes) |
+| `L1_0`, `L1_1` | Depends | Child safe addresses under OWNER_SAFE (if using nested safes) |
 
 ### 4. Validate configuration
 
@@ -57,29 +56,21 @@ Edit `script/BasicScript.s.sol` or `script/CounterMultisigScript.s.sol` to imple
 
 ## Safe Hierarchy
 
-This template supports nested safe structures for multi-party signing:
+This template supports a single-nested safe structure for multi-party signing:
 
 ```
 OWNER_SAFE/
 ├── L1_0/
-│   ├── L2_0/
-│   │   └── Signers
-│   └── L2_1/
-│       └── Signers
+│   └── Signers
 └── L1_1/
     └── Signers
 ```
 
 ## Signing Flow
 
-### For signers at L2_0:
+### For signers at L1_0:
 ```bash
-make sign-l2-0
-```
-
-### For signers at L2_1:
-```bash
-make sign-l2-1
+make sign-l1-0
 ```
 
 ### For signers at L1_1:
@@ -89,8 +80,6 @@ make sign-l1-1
 
 ### For approving nested safes:
 ```bash
-SIGNATURES=<collected-signatures> make approve-l2-0
-SIGNATURES=<collected-signatures> make approve-l2-1
 SIGNATURES=<collected-signatures> make approve-l1-0
 SIGNATURES=<collected-signatures> make approve-l1-1
 ```
@@ -106,5 +95,5 @@ Your Ledger needs to be connected and unlocked. The Ethereum application needs t
 
 To use a different Ledger account index:
 ```bash
-LEDGER_ACCOUNT=1 make sign-l2-0
+LEDGER_ACCOUNT=1 make sign-l1-0
 ```
