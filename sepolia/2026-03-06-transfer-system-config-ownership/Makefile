@@ -3,12 +3,9 @@ include ../../Multisig.mk
 include ../.env
 include .env
 
-ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 1
-endif
-
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = TransferSystemConfigOwnership
+SENDER := $(shell cast call $(OWNER_SAFE) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | head -1 | tr -d '[]' | cut -d',' -f1)
 
 .PHONY: validate-config
 validate-config:

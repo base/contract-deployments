@@ -37,14 +37,6 @@ cd sepolia/2026-03-06-transfer-system-config-ownership
 make deps
 ```
 
-## Generate validation file
-
-```bash
-make gen-validation
-```
-
-This produces `validations/coinbase-signer.json`.
-
 ## Sign the transaction
 
 ### 1. Run the signing tool from the project root
@@ -56,7 +48,7 @@ make sign-task
 
 ### 2. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-Select the correct task user from the list of available users and sign the transaction using `validations/coinbase-signer.json`.
+Select the correct task user from the list of available users and sign the transaction.
 
 ### 3. Send the signature to the facilitator
 

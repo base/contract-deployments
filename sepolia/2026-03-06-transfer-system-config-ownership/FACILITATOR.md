@@ -1,6 +1,22 @@
+# Facilitator Guide
+
+Guide for facilitators after collecting signatures from signers.
+
+## Generate validation file
+
+```bash
+cd contract-deployments
+git pull
+cd sepolia/2026-03-06-transfer-system-config-ownership
+make deps
+make gen-validation
+```
+
+This produces `validations/coinbase-signer.json`, which signers should use in the signing UI.
+
 ## Execute the transaction
 
-### 1. Update repo
+### 1. Update repo:
 
 ```bash
 cd contract-deployments
