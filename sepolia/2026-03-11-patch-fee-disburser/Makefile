@@ -3,6 +3,7 @@ include ../../Multisig.mk
 include ../.env
 include .env
 
+SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
 
 # Sender address for validation generation (parent of OWNER_SAFE)
