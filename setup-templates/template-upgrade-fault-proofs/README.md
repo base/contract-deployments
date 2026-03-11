@@ -186,7 +186,7 @@ SIGNATURES=AAAABBBB make approve-op
 
 #### If on mainnet, execute the transaction
 
-Once the signatures have been submitted approving the transaction for all nested Safes run:
+Once the signatures have been submitted approving the transaction for all child Safes run:
 
 ```bash
 make execute
