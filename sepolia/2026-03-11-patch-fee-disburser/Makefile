@@ -11,6 +11,7 @@ SENDER := $(shell cast call $(OWNER_SAFE) "getOwners()(address[])" --rpc-url $(L
 .PHONY: apply-patches
 apply-patches:
 	cd lib/contracts && patch -p1 < ../../patch/ifee-vault-withdraw.patch
+	cd lib/contracts && patch -p1 < ../../patch/fee-disburser-semver.patch
 
 .PHONY: deps
 deps: install-eip712sign clean-lib forge-deps clone-oz-upgradeable checkout-base-contracts-commit apply-patches
