@@ -1,99 +1,57 @@
-# Generic Multisig Script Template
+# FeeDisburser Patch
 
-Status: TEMPLATE
+Status: READY TO SIGN
 
 ## Description
 
-This is the base template for creating new multisig operations. It provides a starting point with the standard file structure and Makefile targets needed for signing and executing transactions via Gnosis Safe multisigs.
+Our latest deployment of the `FeeDisburser` contract is using an interface that is incompatible with our current FeeVault deployments on Base. This patch upgrade fixes the interface.
 
-Use this template when you need to create a new task that doesn't fit one of the specialized templates (gas increase, fault proof upgrade, etc.).
+## Procedure
 
-## Setup
+### Install dependencies
 
-### 1. Create a new task directory
-
-From the repository root:
+#### 1. Update foundry
 
 ```bash
-make setup-task network=<network> task=<task-name>
+foundryup
 ```
 
-This copies the template to `<network>/<date>-<task-name>/`.
+#### 2. Install Node.js if needed
 
-### 2. Install dependencies
+First, check if you have node installed:
 
 ```bash
-cd <network>/<date>-<task-name>
-make deps
+node --version
 ```
 
-### 3. Configure environment
-
-Edit `.env` and set all required variables:
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `OP_COMMIT` | Yes | Git commit hash for ethereum-optimism/optimism |
-| `BASE_CONTRACTS_COMMIT` | Yes | Git commit hash for base/contracts |
-| `TARGET` | Yes | Target contract address for the operation |
-| `OWNER_SAFE` | Yes | Top-level Gnosis Safe address |
-| `L1_0`, `L1_1` | Depends | Child safe addresses under OWNER_SAFE (if using nested safes) |
-
-### 4. Validate configuration
+If you see a version output from the above command, you can move on. Otherwise, install node:
 
 ```bash
-make validate-config
+brew install node
 ```
 
-### 5. Implement your script
+### Approve the transaction
 
-Edit `script/BasicScript.s.sol` or `script/CounterMultisigScript.s.sol` to implement your specific operation. The script should:
+#### 1. Update repo
 
-1. Read configuration from environment variables in the constructor
-2. Implement `_buildCalls()` to return the multicall operations
-3. Implement `_postCheck()` to validate the transaction succeeded
-4. Implement `_ownerSafe()` to return the safe address
-
-## Safe Hierarchy
-
-This template supports a single-nested safe structure for multi-party signing:
-
-```
-OWNER_SAFE/
-├── L1_0/
-│   └── Signers
-└── L1_1/
-    └── Signers
-```
-
-## Signing Flow
-
-### For signers at L1_0:
 ```bash
-make sign-l1-0
+cd contract-deployments
+git pull
 ```
 
-### For signers at L1_1:
+#### 2. Run the signing tool
+
 ```bash
-make sign-l1-1
+make sign-task
 ```
 
-### For approving nested safes:
-```bash
-SIGNATURES=<collected-signatures> make approve-l1-0
-SIGNATURES=<collected-signatures> make approve-l1-1
-```
+#### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-### Final execution:
-```bash
-make execute
-```
+- Select the correct signer role from the list of available users to sign.
+- After completion, close the signer tool with `Ctrl + C`.
 
-## Ledger Setup
+#### 4. Send signature to facilitator
 
-Your Ledger needs to be connected and unlocked. The Ethereum application needs to be opened on Ledger with the message "Application is ready".
+Copy the signature output and send it to the designated facilitator via the agreed communication channel. The facilitator will collect all signatures and execute the transaction.
 
-To use a different Ledger account index:
-```bash
-LEDGER_ACCOUNT=1 make sign-l1-0
-```
+For facilitator instructions, see [FACILITATORS.md](./FACILITATORS.md).
