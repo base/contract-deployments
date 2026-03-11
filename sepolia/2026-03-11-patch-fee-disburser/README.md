@@ -53,5 +53,3 @@ make sign-task
 #### 4. Send signature to facilitator
 
 Copy the signature output and send it to the designated facilitator via the agreed communication channel. The facilitator will collect all signatures and execute the transaction.
-
-For facilitator instructions, see [FACILITATORS.md](./FACILITATORS.md).
