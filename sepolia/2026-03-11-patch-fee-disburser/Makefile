@@ -23,12 +23,9 @@ deps: install-eip712sign clean-lib forge-deps clone-oz-upgradeable checkout-base
 deploy-fee-disburser:
 	forge script script/DeployFeeDisburser.s.sol:DeployFeeDisburser \
 		--rpc-url $(L2_RPC_URL) \
+		--broadcast \
+		--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" \
 		-vvvv
-# forge script script/DeployFeeDisburser.s.sol:DeployFeeDisburser \
-# 	--rpc-url $(L2_RPC_URL) \
-# 	--broadcast \
-# 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" \
-# 	-vvvv
 
 ##
 # Upgrade FeeDisburser (via L1 deposit transaction)
