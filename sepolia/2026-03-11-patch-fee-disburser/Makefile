@@ -32,7 +32,7 @@ deploy-fee-disburser:
 ##
 .PHONY: gen-validation-upgrade
 gen-validation-upgrade: deps-signer-tool
-	$(call GEN_VALIDATION,UpgradeFeeDisburser,,$(SENDER),coinbase-signer.json,)
+	$(call GEN_VALIDATION,UpgradeFeeDisburser,,$(SENDER),base-signer.json,)
 
 .PHONY: execute-upgrade-feedisburser
 execute-upgrade-feedisburser: SCRIPT_NAME = UpgradeFeeDisburser
