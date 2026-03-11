@@ -2,6 +2,8 @@
   "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io UpgradeFeeDisburser --sig sign(address[]) [] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
     "domainHash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
