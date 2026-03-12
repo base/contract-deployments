@@ -1,6 +1,6 @@
 # Pause SuperchainConfig
 
-Status: READY TO SIGN
+Status: SIGNED
 
 ## Description
 
