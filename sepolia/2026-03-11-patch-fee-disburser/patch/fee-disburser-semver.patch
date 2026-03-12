@@ -1,0 +1,15 @@
+diff --git a/src/revenue-share/FeeDisburser.sol b/src/revenue-share/FeeDisburser.sol
+--- a/src/revenue-share/FeeDisburser.sol
++++ b/src/revenue-share/FeeDisburser.sol
+@@ -131,9 +131,9 @@ contract FeeDisburser is ISemver {
+         emit FeesReceived(msg.sender, msg.value);
+     }
+ 
+-    /// @custom:semver 1.0.0
++    /// @custom:semver 1.0.0+fee-vault-withdraw-compat
+     function version() external pure virtual returns (string memory) {
+-        return "1.0.0";
++        return "1.0.0+fee-vault-withdraw-compat";
+     }
+ 
+     ////////////////////////////////////////////////////////////////
