@@ -1,0 +1,66 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io UpgradeFeeDisburser --sig sign(address[]) [] --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+    "domainHash": "0xfb308368b8deca582e84a807d31c1bfcec6fda754061e2801b4d6be5cb52a8ac",
+    "messageHash": "0xd1023f4dba0b6ffbeb42d431ab320be78a2f45473304354fb917b70148c68dd9"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Mainnet",
+      "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x519d43638472ac4a58b8219e319082b3740cb171ea7d8ba1ebbce34fa70e37bc",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x000000000177eab6000000000007e1760000000000000000000000003b9aca00",
+          "after": "0x000000000177eac800000000000186a00000000000000000000000003b9aca00",
+          "description": "Updates the ResourceMetering parameters (prevBlockNum, prevBoughtGas, prevBaseFee).",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Mainnet",
+      "address": "0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "jack.chuma@coinbase.com"
+    }
+  }
+}
