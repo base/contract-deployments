@@ -1,6 +1,6 @@
 # FeeDisburser Patch
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x5e5d2180515dd7788829d18d611798b121a69290a8310f9d59c093e39fca0f78)
 
 ## Description
 
