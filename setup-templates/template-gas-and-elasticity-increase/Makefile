@@ -16,7 +16,6 @@ SCRIPT_NAME = IncreaseEip1559ElasticityAndIncreaseGasLimitScript
 # Validate required configuration before execution
 .PHONY: validate-config
 validate-config:
-	@test -n "$(OP_COMMIT)" -a "$(OP_COMMIT)" != "TODO" || (echo "OP_COMMIT required" && exit 1)
 	@test -n "$(BASE_CONTRACTS_COMMIT)" -a "$(BASE_CONTRACTS_COMMIT)" != "TODO" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
 	@test -n "$(OWNER_SAFE)" || (echo "OWNER_SAFE required" && exit 1)
 	@test -n "$(SYSTEM_CONFIG)" || (echo "SYSTEM_CONFIG required" && exit 1)

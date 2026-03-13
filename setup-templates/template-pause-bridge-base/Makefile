@@ -20,7 +20,6 @@ SCRIPT_NAME = PauseBridge
 # Validate required configuration before execution
 .PHONY: validate-config
 validate-config:
-	@test -n "$(OP_COMMIT)" || (echo "OP_COMMIT required" && exit 1)
 	@test -n "$(BASE_CONTRACTS_COMMIT)" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
 	@test -n "$(OWNER_SAFE)" || (echo "OWNER_SAFE required" && exit 1)
 	@test -n "$(L1_PORTAL)" || (echo "L1_PORTAL required" && exit 1)

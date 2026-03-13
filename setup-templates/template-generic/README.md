@@ -33,7 +33,6 @@ Edit `.env` and set all required variables:
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `OP_COMMIT` | Yes | Git commit hash for ethereum-optimism/optimism |
 | `BASE_CONTRACTS_COMMIT` | Yes | Git commit hash for base/contracts |
 | `TARGET` | Yes | Target contract address for the operation |
 | `OWNER_SAFE` | Yes | Top-level Gnosis Safe address |
