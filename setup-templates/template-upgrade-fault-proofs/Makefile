@@ -12,7 +12,6 @@ OP_SIGNER_SAFE_ADDR ?= $(OP_MULTISIG)
 # Validate required configuration before execution
 .PHONY: validate-config
 validate-config:
-	@test -n "$(OP_COMMIT)" || (echo "OP_COMMIT required" && exit 1)
 	@test -n "$(BASE_CONTRACTS_COMMIT)" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
 	@test -n "$(ABSOLUTE_PRESTATE)" || (echo "ABSOLUTE_PRESTATE required" && exit 1)
 	@test -n "$(SYSTEM_CONFIG)" || (echo "SYSTEM_CONFIG required" && exit 1)

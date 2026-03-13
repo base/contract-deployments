@@ -18,7 +18,6 @@ SCRIPT_NAME = lib/base-contracts/script/deploy/l1/SetGasLimit.sol
 # Validate required configuration before execution
 .PHONY: validate-config
 validate-config:
-	@test -n "$(OP_COMMIT)" -a "$(OP_COMMIT)" != "TODO" || (echo "OP_COMMIT required" && exit 1)
 	@test -n "$(BASE_CONTRACTS_COMMIT)" -a "$(BASE_CONTRACTS_COMMIT)" != "TODO" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
 	@test -n "$(L1_SYSTEM_CONFIG_ADDRESS)" || (echo "L1_SYSTEM_CONFIG_ADDRESS required" && exit 1)
 	@test -n "$(SYSTEM_CONFIG_OWNER)" || (echo "SYSTEM_CONFIG_OWNER required" && exit 1)

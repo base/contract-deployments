@@ -316,7 +316,7 @@ This template is used to pause or un-pause the L1 SuperchainConfig contract.
 
 1. Ensure you have followed the instructions above in `setup`.
 1. Run `make setup-superchain-config-pause network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Optimism code](https://github.com/ethereum-optimism/optimism) and [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
 1. Run `make deps`.
 1. Fill in any task-specific variables in the `.env` file that have per-network comments, using the value for your target network.
 1. Build the contracts with `forge build`.
