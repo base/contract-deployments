@@ -7,7 +7,7 @@ Status: EXECUTED
 [UpgradeSystemConfig](https://etherscan.io/tx/0xa2dc938704977d2f3d0765832e79e1239d97aa6912efadc21a9705ef7dca42eb)
 [UpgradeFeeDisburser](https://etherscan.io/tx/0xdc700942c3b4e05e2ee2f6519cb8ed4e5ff626dc70f48c91931b1b3f3593f5b6)
 [TerminateSmartEscrow](https://optimistic.etherscan.io/tx/0x75ddb1f30d7fc14a4cea7ab7364cf34001b01863fee954c239564dbcfacbb178)
-WithdrawSmartEscrow: PENDING
+[WithdrawSmartEscrow](https://optimistic.etherscan.io/tx/0xa3754486278c1a51c380a4507c05106e42f072af34be414c3c3abeca95f67e5b)
 [AddSecurityCouncilSigner](https://etherscan.io/tx/0x117b78c970396446c891ba82439351555c537f04d0d90222a9d523975bfe599b)
 
 ## Description
