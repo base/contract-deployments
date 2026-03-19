@@ -112,7 +112,7 @@ clean-lib:
 
 .PHONY: forge-deps
 forge-deps:
-	forge install --no-git github.com/foundry-rs/forge-std \
+	forge install --no-git github.com/foundry-rs/forge-std@0844d7e1fc5e60d77b68e469bff60265f236c398 \
 		github.com/OpenZeppelin/openzeppelin-contracts@v4.9.3 \
 		github.com/rari-capital/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
 		github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \

@@ -1,6 +1,6 @@
 # Transfer SystemConfig Ownership
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xbecc51d4a88eda31d43327e6dea56d74f442c6090358b697fdbad0bef02fa43c)
 
 ## Description
 
