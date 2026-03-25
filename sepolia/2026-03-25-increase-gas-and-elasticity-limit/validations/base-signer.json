@@ -1,0 +1,71 @@
+{
+  "cmd": "OWNER_SAFE=0x646132A1667ca7aD00d36616AFBA1A28116C770A SYSTEM_CONFIG=0xf272670eb55e895584501d564AfEB048bEd26194 NEW_GAS_LIMIT=400000000 OLD_GAS_LIMIT=375000000 NEW_ELASTICITY=5 OLD_ELASTICITY=6 NEW_DENOMINATOR=100 OLD_DENOMINATOR=125 NEW_DA_FOOTPRINT_GAS_SCALAR=148 OLD_DA_FOOTPRINT_GAS_SCALAR=139 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+    "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
+    "messageHash": "0x825aead69e642c0d761d0604375de5fb13a12dcbf854921320979c7eda4baa66"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe62788ab79a1bc2a117c749a12ef06964cde977e13a67e963582311102a4f8b4",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000010",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000011",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564AfEB048bEd26194",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x00000000000000000000000000000000000a118b0000044d00000000165a0bc0",
+          "after": "0x00000000000000000000000000000000000a118b0000044d0000000017d78400",
+          "description": "Updates the gas limit from 375,000,000 to 400,000,000",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x00000000000000000000008b000000000000000000000000000000060000007d",
+          "after": "0x0000000000000000000000940000000000000000000000000000000500000064",
+          "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}
