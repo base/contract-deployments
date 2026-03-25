@@ -4,7 +4,7 @@
 
 This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base/contracts](https://github.com/base/contracts).
 
-This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network. Supported networks are `mainnet`, `sepolia`, and `sepolia-alpha`.
+This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network. Supported networks are `mainnet`, `sepolia`, `sepolia-alpha`, and `zeronet`.
 
 <!-- Badge row 1 - status -->
 
@@ -57,7 +57,7 @@ Please note, for some older tasks (that have not yet been adapted to use the sig
 
 ## Network configuration
 
-Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
+Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`, `zeronet/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
 
 The network `.env` files contain:
 
