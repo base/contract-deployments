@@ -1,0 +1,96 @@
+{
+  "cmd": "OWNER_SAFE=0x14536667Cd30e52C0b458BaACcB9faDA7046E056 SYSTEM_CONFIG=0x73a79Fab69143498Ed3712e519A88a918e1f4072 OLD_GAS_LIMIT=400000000 NEW_GAS_LIMIT=375000000 OLD_ELASTICITY=5 NEW_ELASTICITY=6 OLD_DENOMINATOR=100 NEW_DENOMINATOR=125 OLD_DA_FOOTPRINT_GAS_SCALAR=148 NEW_DA_FOOTPRINT_GAS_SCALAR=139 SAFE_NONCE=105 forge script --rpc-url https://eth-mainnet.public.blastapi.io IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x26a19e1e19c9dd593b254574af1c18ab62b00f4e36d4cd554891a02617f3f7cc"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000069",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc6edbbe6d06beac67af3a930fafb3f0c0505c89cd6ad26f26b9501da24434821",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79Fab69143498Ed3712e519A88a918e1f4072",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "value": "0x0000000000000000000000000000000000101c12000008dd0000000017d78400",
+          "description": "Overrides gas limit to post-upgrade value (400,000,000) so rollback simulation succeeds",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "value": "0x0000000000000000000000940000000000000000000000000000000500000064",
+          "description": "Overrides EIP-1559 params and DA footprint gas scalar to post-upgrade values so rollback simulation succeeds",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000069",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79Fab69143498Ed3712e519A88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x0000000000000000000000000000000000101c12000008dd0000000017d78400",
+          "after": "0x0000000000000000000000000000000000101c12000008dd00000000165a0bc0",
+          "description": "Reverts the gas limit from 400,000,000 back to 375,000,000",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000000940000000000000000000000000000000500000064",
+          "after": "0x00000000000000000000008b000000000000000000000000000000060000007d",
+          "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true,
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}
