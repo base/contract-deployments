@@ -1,6 +1,6 @@
 # Update Gas Limit, EIP-1559 Params & DA Footprint Gas Scalar in L1 `SystemConfig`
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0xa0e2f62a2867858350ff32a7943a23ddb872571eeacee7bc0453b46948a5c372) ([artifact](./records/IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol/1/run-1774471597995.json))
 
 ## Description
 
