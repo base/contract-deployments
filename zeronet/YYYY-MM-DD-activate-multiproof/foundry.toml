@@ -34,4 +34,5 @@ remappings = [
     'src/vendor/=lib/contracts/src/vendor/',
     'src/libraries/=lib/contracts/src/libraries/',
     'lib/op-enclave/=lib/op-enclave/',
+    'lib/sp1-contracts/contracts/src/=src/stubs/',
 ]

@@ -11,7 +11,9 @@ import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.so
 import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
 import {GameType, Hash, Proposal} from "@base-contracts/src/dispute/lib/Types.sol";
 import {AnchorStateRegistry} from "@base-contracts/src/dispute/AnchorStateRegistry.sol";
+import {DelayedWETH} from "@base-contracts/src/dispute/DelayedWETH.sol";
 import {OptimismPortal2} from "@base-contracts/src/L1/OptimismPortal2.sol";
+import {TEEProverRegistry} from "@base-contracts/src/multiproof/tee/TEEProverRegistry.sol";
 
 interface IProxyAdmin {
     function upgrade(address proxy, address implementation) external;
@@ -23,6 +25,7 @@ interface IProxy {
 }
 
 interface IDisputeGameFactoryAdmin {
+    function owner() external view returns (address);
     function gameImpls(GameType gameType) external view returns (address);
     function initBonds(GameType gameType) external view returns (uint256);
     function setImplementation(GameType gameType, address impl, bytes calldata args) external;
@@ -42,10 +45,20 @@ contract UpgradeMultiproofStack is MultisigScript {
     bytes32 internal startingAnchorRootEnv;
     uint256 internal startingAnchorL2BlockNumberEnv;
 
+    // TEE registry initialization parameters.
+    address internal teeProverRegistryOwnerEnv;
+    address internal teeProverRegistryManagerEnv;
+    address internal teeProposerEnv;
+
+    // Addresses from the facilitator deploy step (addresses.json).
     address internal newAggregateVerifier;
     address internal newOptimismPortalImpl;
     address internal newDgfImpl;
     address internal newAsrImpl;
+    address internal newTeeProverRegistryImpl;
+    address internal newTeeProverRegistryProxy;
+    address internal newDelayedWethImpl;
+    address internal newDelayedWethProxy;
 
     function setUp() public {
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
@@ -60,6 +73,10 @@ contract UpgradeMultiproofStack is MultisigScript {
         startingAnchorRootEnv = vm.envBytes32("STARTING_ANCHOR_ROOT");
         startingAnchorL2BlockNumberEnv = vm.envUint("STARTING_ANCHOR_L2_BLOCK_NUMBER");
 
+        teeProverRegistryOwnerEnv = vm.envAddress("TEE_PROVER_REGISTRY_OWNER");
+        teeProverRegistryManagerEnv = vm.envAddress("TEE_PROVER_REGISTRY_MANAGER");
+        teeProposerEnv = vm.envAddress("TEE_PROPOSER");
+
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/addresses.json");
         string memory json = vm.readFile(path);
@@ -68,39 +85,46 @@ contract UpgradeMultiproofStack is MultisigScript {
         newOptimismPortalImpl = vm.parseJsonAddress(json, ".optimismPortal2Impl");
         newDgfImpl = vm.parseJsonAddress(json, ".disputeGameFactoryImpl");
         newAsrImpl = vm.parseJsonAddress(json, ".anchorStateRegistryImpl");
-    }
+        newTeeProverRegistryImpl = vm.parseJsonAddress(json, ".teeProverRegistryImpl");
+        newTeeProverRegistryProxy = vm.parseJsonAddress(json, ".teeProverRegistryProxy");
+        newDelayedWethImpl = vm.parseJsonAddress(json, ".delayedWETHImpl");
+        newDelayedWethProxy = vm.parseJsonAddress(json, ".delayedWETHProxy");
 
-    function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal override {
-        vm.prank(proxyAdminEnv);
-        require(IProxy(optimismPortalEnv).implementation() == newOptimismPortalImpl, "portal impl mismatch");
-        vm.prank(proxyAdminEnv);
-        require(IProxy(disputeGameFactoryProxyEnv).implementation() == newDgfImpl, "dgf impl mismatch");
-        vm.prank(proxyAdminEnv);
-        require(IProxy(anchorStateRegistryProxyEnv).implementation() == newAsrImpl, "asr impl mismatch");
-
-        IDisputeGameFactoryAdmin dgf = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv);
-        require(dgf.gameImpls(GameType.wrap(gameTypeEnv)) == newAggregateVerifier, "game impl mismatch");
-        require(dgf.initBonds(GameType.wrap(gameTypeEnv)) == initBondEnv, "init bond mismatch");
-
-        Proposal memory startingAnchor = AnchorStateRegistry(anchorStateRegistryProxyEnv).getStartingAnchorRoot();
-        require(Hash.unwrap(startingAnchor.root) == startingAnchorRootEnv, "anchor root mismatch");
-        require(startingAnchor.l2SequenceNumber == startingAnchorL2BlockNumberEnv, "anchor block mismatch");
+        // Sanity-check that the executing Safe holds the roles required by calls 5-8.
         require(
-            GameType.unwrap(AnchorStateRegistry(anchorStateRegistryProxyEnv).respectedGameType()) == gameTypeEnv,
-            "respected game type mismatch"
+            IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).owner() == ownerSafeEnv,
+            "DGF owner != PROXY_ADMIN_OWNER: setImplementation/setInitBond will revert"
         );
-        require(AnchorStateRegistry(anchorStateRegistryProxyEnv).retirementTimestamp() > 0, "retirement not set");
         require(
-            address(OptimismPortal2(payable(optimismPortalEnv)).anchorStateRegistry()) == anchorStateRegistryProxyEnv,
-            "portal asr mismatch"
+            ISystemConfig(systemConfigEnv).guardian() == ownerSafeEnv,
+            "Guardian != PROXY_ADMIN_OWNER: updateRetirementTimestamp/setRespectedGameType will revert"
         );
     }
 
+    /// @dev Builds the ordered batch of calls executed atomically by the multisig.
+    ///      Ordering constraints:
+    ///      - Proxy upgrades (0-2) must precede any call that depends on new impl logic.
+    ///      - TEEProverRegistry (3) and DelayedWETH (4) proxies must be wired before
+    ///        the game type is registered, so that game clones can interact with them.
+    ///      - setImplementation (5) must precede setRespectedGameType (8) so that the
+    ///        game type is registered before it becomes respected.
+    ///      - updateRetirementTimestamp (7) must precede setRespectedGameType (8) so
+    ///        that old games are retired before the new type is activated.
+    ///
+    ///      Call summary:
+    ///      0. Upgrade OptimismPortal2 proxy.
+    ///      1. Upgrade DisputeGameFactory proxy.
+    ///      2. Upgrade + reinitialize AnchorStateRegistry proxy.
+    ///      3. Wire TEEProverRegistry proxy (upgradeAndCall with initialize).
+    ///      4. Wire DelayedWETH proxy (upgradeAndCall with initialize).
+    ///      5. Register AggregateVerifier in the DisputeGameFactory.
+    ///      6. Set the init bond for the multiproof game type.
+    ///      7. Retire pre-cutover games.
+    ///      8. Set the multiproof game type as the respected game type.
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[](7);
+        Call[] memory calls = new Call[](9);
 
         // 0. Upgrade the OptimismPortal2 proxy to the new implementation.
-        //    No reinitializer call is needed in this activation.
         calls[0] = Call({
             operation: Enum.Operation.Call,
             target: proxyAdminEnv,
@@ -109,7 +133,6 @@ contract UpgradeMultiproofStack is MultisigScript {
         });
 
         // 1. Upgrade the DisputeGameFactory proxy to the new implementation.
-        //    No reinitializer call is needed for DGF in this activation.
         calls[1] = Call({
             operation: Enum.Operation.Call,
             target: proxyAdminEnv,
@@ -117,8 +140,8 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 2. Upgrade the AnchorStateRegistry proxy and rerun initialize to seed the
-        //    starting anchor root, wire the DGF dependency, and set the initial game type.
+        // 2. Upgrade the AnchorStateRegistry proxy and reinitialize to seed the starting anchor root,
+        //    wire the DGF dependency, and set the initial game type.
         calls[2] = Call({
             operation: Enum.Operation.Call,
             target: proxyAdminEnv,
@@ -143,9 +166,48 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 3. Register the newly deployed AggregateVerifier as the implementation for the
-        //    configured multiproof game type in the DisputeGameFactory.
+        // 3. Wire the TEEProverRegistry proxy: set its implementation and initialize owner, manager,
+        //    proposer, and game type in one atomic call.
         calls[3] = Call({
+            operation: Enum.Operation.Call,
+            target: proxyAdminEnv,
+            data: abi.encodeCall(
+                IProxyAdmin.upgradeAndCall,
+                (
+                    newTeeProverRegistryProxy,
+                    newTeeProverRegistryImpl,
+                    abi.encodeCall(
+                        TEEProverRegistry.initialize,
+                        (
+                            teeProverRegistryOwnerEnv,
+                            teeProverRegistryManagerEnv,
+                            teeProposerEnv,
+                            GameType.wrap(gameTypeEnv)
+                        )
+                    )
+                )
+            ),
+            value: 0
+        });
+
+        // 4. Wire the DelayedWETH proxy: set its implementation and initialize it against the existing SystemConfig.
+        calls[4] = Call({
+            operation: Enum.Operation.Call,
+            target: proxyAdminEnv,
+            data: abi.encodeCall(
+                IProxyAdmin.upgradeAndCall,
+                (
+                    newDelayedWethProxy,
+                    newDelayedWethImpl,
+                    abi.encodeCall(DelayedWETH.initialize, (ISystemConfig(systemConfigEnv)))
+                )
+            ),
+            value: 0
+        });
+
+        // 5. Register the newly deployed AggregateVerifier as the implementation for the configured multiproof
+        //      game type in the DisputeGameFactory.
+        calls[5] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(
@@ -154,26 +216,25 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 4. Set the init bond required to create games of the new multiproof type.
-        calls[4] = Call({
+        // 6. Set the init bond required to create games of the new multiproof type.
+        calls[6] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(IDisputeGameFactoryAdmin.setInitBond, (GameType.wrap(gameTypeEnv), initBondEnv)),
             value: 0
         });
 
-        // 5. Retire any pre-cutover games so older disputes cannot remain respected after
-        //    the new multiproof configuration is activated.
-        calls[5] = Call({
+        // 7. Retire any pre-cutover games so older disputes cannot remain respected after the new multiproof configuration is activated.
+        calls[7] = Call({
             operation: Enum.Operation.Call,
             target: anchorStateRegistryProxyEnv,
             data: abi.encodeCall(AnchorStateRegistry.updateRetirementTimestamp, ()),
             value: 0
         });
 
-        // 6. Finalize the cutover by marking the new multiproof game type as the respected
+        // 8. Finalize the cutover by marking the new multiproof game type as the respected
         //    game type used by the AnchorStateRegistry.
-        calls[6] = Call({
+        calls[8] = Call({
             operation: Enum.Operation.Call,
             target: anchorStateRegistryProxyEnv,
             data: abi.encodeCall(AnchorStateRegistry.setRespectedGameType, (GameType.wrap(gameTypeEnv))),
@@ -181,6 +242,92 @@ contract UpgradeMultiproofStack is MultisigScript {
         });
 
         return calls;
+    }
+
+    function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal override {
+        _checkProxyUpgrades();
+        _checkAnchorStateRegistry();
+        _checkTeeProverRegistryProxy();
+        _checkDelayedWethProxy();
+        _checkDisputeGameFactory();
+    }
+
+    /// @dev Validates that every existing L1 proxy now points to its new implementation.
+    ///      1. Check that OptimismPortal2 proxy implementation equals the deployed impl.
+    ///      2. Check that DisputeGameFactory proxy implementation equals the deployed impl.
+    ///      3. Check that AnchorStateRegistry proxy implementation equals the deployed impl.
+    function _checkProxyUpgrades() internal {
+        vm.prank(proxyAdminEnv);
+        require(IProxy(optimismPortalEnv).implementation() == newOptimismPortalImpl, "portal impl mismatch");
+        vm.prank(proxyAdminEnv);
+        require(IProxy(disputeGameFactoryProxyEnv).implementation() == newDgfImpl, "dgf impl mismatch");
+        vm.prank(proxyAdminEnv);
+        require(IProxy(anchorStateRegistryProxyEnv).implementation() == newAsrImpl, "asr impl mismatch");
+    }
+
+    /// @dev Validates the AnchorStateRegistry reinitialization and cutover state.
+    ///      1. Check that systemConfig matches the .env value.
+    ///      2. Check that disputeGameFactory matches the .env value.
+    ///      3. Check that startingAnchorRoot matches the .env value.
+    ///      4. Check that the starting L2 sequence number matches the .env value.
+    ///      5. Check that respectedGameType is set to the multiproof game type.
+    ///      6. Check that retirementTimestamp is non-zero (old games retired).
+    ///      7. Check that OptimismPortal2 still references this ASR proxy.
+    function _checkAnchorStateRegistry() internal view {
+        AnchorStateRegistry asr = AnchorStateRegistry(anchorStateRegistryProxyEnv);
+
+        require(address(asr.systemConfig()) == systemConfigEnv, "asr system config mismatch");
+        require(address(asr.disputeGameFactory()) == disputeGameFactoryProxyEnv, "asr dgf mismatch");
+
+        Proposal memory startingAnchor = asr.getStartingAnchorRoot();
+        require(Hash.unwrap(startingAnchor.root) == startingAnchorRootEnv, "anchor root mismatch");
+        require(startingAnchor.l2SequenceNumber == startingAnchorL2BlockNumberEnv, "anchor block mismatch");
+        require(GameType.unwrap(asr.respectedGameType()) == gameTypeEnv, "respected game type mismatch");
+        require(asr.retirementTimestamp() > 0, "retirement not set");
+        require(
+            address(OptimismPortal2(payable(optimismPortalEnv)).anchorStateRegistry()) == anchorStateRegistryProxyEnv,
+            "portal asr mismatch"
+        );
+    }
+
+    /// @dev Validates the TEEProverRegistry proxy after upgradeAndCall.
+    ///      1. Check that the proxy implementation is set to the deployed impl.
+    ///      2. Check that owner is set to TEE_PROVER_REGISTRY_OWNER.
+    ///      3. Check that manager is set to TEE_PROVER_REGISTRY_MANAGER.
+    ///      4. Check that gameType is set to the multiproof game type.
+    ///      5. Check that the initial proposer is flagged as valid.
+    function _checkTeeProverRegistryProxy() internal {
+        vm.prank(proxyAdminEnv);
+        require(
+            IProxy(newTeeProverRegistryProxy).implementation() == newTeeProverRegistryImpl, "tee registry impl mismatch"
+        );
+
+        TEEProverRegistry registry = TEEProverRegistry(newTeeProverRegistryProxy);
+        require(registry.owner() == teeProverRegistryOwnerEnv, "tee registry owner mismatch");
+        require(registry.manager() == teeProverRegistryManagerEnv, "tee registry manager mismatch");
+        require(GameType.unwrap(registry.gameType()) == gameTypeEnv, "tee registry game type mismatch");
+        require(registry.isValidProposer(teeProposerEnv), "tee registry proposer mismatch");
+    }
+
+    /// @dev Validates the DelayedWETH proxy after upgradeAndCall.
+    ///      1. Check that the proxy implementation is set to the deployed impl.
+    ///      2. Check that systemConfig is initialized to the existing SystemConfig.
+    function _checkDelayedWethProxy() internal {
+        vm.prank(proxyAdminEnv);
+        require(IProxy(newDelayedWethProxy).implementation() == newDelayedWethImpl, "delayed weth impl mismatch");
+        require(
+            address(DelayedWETH(payable(newDelayedWethProxy)).systemConfig()) == systemConfigEnv,
+            "delayed weth systemConfig mismatch"
+        );
+    }
+
+    /// @dev Validates the DisputeGameFactory configuration for the new multiproof game type.
+    ///      1. Check that the game implementation is set to the deployed AggregateVerifier.
+    ///      2. Check that the init bond matches the .env value.
+    function _checkDisputeGameFactory() internal view {
+        IDisputeGameFactoryAdmin dgf = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv);
+        require(dgf.gameImpls(GameType.wrap(gameTypeEnv)) == newAggregateVerifier, "game impl mismatch");
+        require(dgf.initBonds(GameType.wrap(gameTypeEnv)) == initBondEnv, "init bond mismatch");
     }
 
     function _ownerSafe() internal view override returns (address) {

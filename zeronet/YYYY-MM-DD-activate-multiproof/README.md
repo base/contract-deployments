@@ -58,7 +58,7 @@ Before running the task, fill in:
 make deploy
 ```
 
-This generates `addresses.json`, which is then used by the upgrade script.
+This generates `addresses.json` with the deployed Nitro and multiproof contract addresses, which is then used by the upgrade script.
 
 ## Approve the transaction
 
