@@ -41,7 +41,7 @@ brew install node
 ```bash
 cd contract-deployments
 git pull
-cd zeronet/YYYY-MM-DD-activate-multiproof
+cd zeronet/2026-04-01-activate-multiproof
 make deps
 ```
 
@@ -50,7 +50,7 @@ make deps
 Before running the task, fill in:
 
 - [`zeronet/.env`](../.env)
-- [`zeronet/YYYY-MM-DD-activate-multiproof/.env`](.env)
+- [`zeronet/2026-04-01-activate-multiproof/.env`](.env)
 
 ### 5. Run the deploy step
 
@@ -78,7 +78,7 @@ make sign-task
 ### 3. Generate the validation
 
 ```bash
-cd zeronet/YYYY-MM-DD-activate-multiproof
+cd zeronet/2026-04-01-activate-multiproof
 make gen-validation-upgrade
 ```
 

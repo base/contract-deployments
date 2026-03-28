@@ -7,7 +7,7 @@ Guide for facilitators managing this task.
 ```bash
 cd contract-deployments
 git pull
-cd zeronet/YYYY-MM-DD-activate-multiproof
+cd zeronet/2026-04-01-activate-multiproof
 make deps
 make gen-validation-upgrade
 ```
@@ -24,7 +24,7 @@ This produces:
 ```bash
 cd contract-deployments
 git pull
-cd zeronet/YYYY-MM-DD-activate-multiproof
+cd zeronet/2026-04-01-activate-multiproof
 make deps
 ```
 
@@ -53,7 +53,7 @@ export SIGNATURES="[SIGNATURE1][SIGNATURE2]..."
 Then run:
 
 ```bash
-SIGNATURES=$SIGNATURES make approve-cb-sc
+SIGNATURES=$SIGNATURES make approve-sc
 ```
 
 ### 4. Execute
