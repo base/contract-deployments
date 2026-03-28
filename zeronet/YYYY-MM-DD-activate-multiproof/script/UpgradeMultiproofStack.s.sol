@@ -90,14 +90,14 @@ contract UpgradeMultiproofStack is MultisigScript {
         newDelayedWethImpl = vm.parseJsonAddress(json, ".delayedWETHImpl");
         newDelayedWethProxy = vm.parseJsonAddress(json, ".delayedWETHProxy");
 
-        // Sanity-check that the executing Safe holds the roles required by calls 5-8.
+        // Sanity-check that the executing Safe holds the roles required by calls 5-7.
         require(
             IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).owner() == ownerSafeEnv,
             "DGF owner != PROXY_ADMIN_OWNER: setImplementation/setInitBond will revert"
         );
         require(
             ISystemConfig(systemConfigEnv).guardian() == ownerSafeEnv,
-            "Guardian != PROXY_ADMIN_OWNER: updateRetirementTimestamp/setRespectedGameType will revert"
+            "Guardian != PROXY_ADMIN_OWNER: updateRetirementTimestamp will revert"
         );
     }
 
@@ -106,23 +106,21 @@ contract UpgradeMultiproofStack is MultisigScript {
     ///      - Proxy upgrades (0-2) must precede any call that depends on new impl logic.
     ///      - TEEProverRegistry (3) and DelayedWETH (4) proxies must be wired before
     ///        the game type is registered, so that game clones can interact with them.
-    ///      - setImplementation (5) must precede setRespectedGameType (8) so that the
-    ///        game type is registered before it becomes respected.
-    ///      - updateRetirementTimestamp (7) must precede setRespectedGameType (8) so
-    ///        that old games are retired before the new type is activated.
+    ///      - setImplementation (5) must be registered before the respected game type
+    ///        takes effect (set by the ASR reinitializer in call 2).
+    ///      - updateRetirementTimestamp (7) retires old games after all wiring is done.
     ///
     ///      Call summary:
     ///      0. Upgrade OptimismPortal2 proxy.
     ///      1. Upgrade DisputeGameFactory proxy.
-    ///      2. Upgrade + reinitialize AnchorStateRegistry proxy.
+    ///      2. Upgrade + reinitialize AnchorStateRegistry proxy (sets respectedGameType).
     ///      3. Wire TEEProverRegistry proxy (upgradeAndCall with initialize).
     ///      4. Wire DelayedWETH proxy (upgradeAndCall with initialize).
     ///      5. Register AggregateVerifier in the DisputeGameFactory.
     ///      6. Set the init bond for the multiproof game type.
     ///      7. Retire pre-cutover games.
-    ///      8. Set the multiproof game type as the respected game type.
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[](9);
+        Call[] memory calls = new Call[](8);
 
         // 0. Upgrade the OptimismPortal2 proxy to the new implementation.
         calls[0] = Call({
@@ -232,15 +230,6 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 8. Finalize the cutover by marking the new multiproof game type as the respected
-        //    game type used by the AnchorStateRegistry.
-        calls[8] = Call({
-            operation: Enum.Operation.Call,
-            target: anchorStateRegistryProxyEnv,
-            data: abi.encodeCall(AnchorStateRegistry.setRespectedGameType, (GameType.wrap(gameTypeEnv))),
-            value: 0
-        });
-
         return calls;
     }
 
@@ -271,7 +260,7 @@ contract UpgradeMultiproofStack is MultisigScript {
     ///      3. Check that startingAnchorRoot matches the .env value.
     ///      4. Check that the starting L2 sequence number matches the .env value.
     ///      5. Check that respectedGameType is set to the multiproof game type.
-    ///      6. Check that retirementTimestamp is non-zero (old games retired).
+    ///      6. Check that retirementTimestamp equals block.timestamp (set by call 7).
     ///      7. Check that OptimismPortal2 still references this ASR proxy.
     function _checkAnchorStateRegistry() internal view {
         AnchorStateRegistry asr = AnchorStateRegistry(anchorStateRegistryProxyEnv);
@@ -283,7 +272,7 @@ contract UpgradeMultiproofStack is MultisigScript {
         require(Hash.unwrap(startingAnchor.root) == startingAnchorRootEnv, "anchor root mismatch");
         require(startingAnchor.l2SequenceNumber == startingAnchorL2BlockNumberEnv, "anchor block mismatch");
         require(GameType.unwrap(asr.respectedGameType()) == gameTypeEnv, "respected game type mismatch");
-        require(asr.retirementTimestamp() > 0, "retirement not set");
+        require(asr.retirementTimestamp() == uint64(block.timestamp), "retirement timestamp mismatch");
         require(
             address(OptimismPortal2(payable(optimismPortalEnv)).anchorStateRegistry()) == anchorStateRegistryProxyEnv,
             "portal asr mismatch"

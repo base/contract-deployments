@@ -34,22 +34,22 @@ deploy:
 # Upgrade Multiproof
 ##
 .PHONY: gen-validation-upgrade
-gen-validation-upgrade: gen-validation-cb gen-validation-cb-sc
+gen-validation-upgrade: gen-validation-cb gen-validation-sc
 
 .PHONY: gen-validation-cb
 gen-validation-cb: deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(CB_MULTISIG),$(CB_SIGNER_SENDER),base-signer.json,)
 
-.PHONY: gen-validation-cb-sc
-gen-validation-cb-sc: deps-signer-tool
+.PHONY: gen-validation-sc
+gen-validation-sc: deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(CB_SC_SIGNER),base-sc-signer.json,)
 
 .PHONY: approve-cb
 approve-cb:
 	$(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
 
-.PHONY: approve-cb-sc
-approve-cb-sc:
+.PHONY: approve-sc
+approve-sc:
 	$(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
 
 .PHONY: execute
