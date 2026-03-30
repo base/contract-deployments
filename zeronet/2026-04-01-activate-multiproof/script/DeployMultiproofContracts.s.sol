@@ -33,7 +33,8 @@ contract DeployMultiproofContracts is Script {
     // Multiproof identity and chain-level parameters.
     uint32 internal gameTypeEnv;
     bytes32 internal teeImageHashEnv;
-    bytes32 internal zkImageHashEnv;
+    bytes32 internal zkRangeHashEnv;
+    bytes32 internal zkAggregateHashEnv;
     bytes32 internal configHashEnv;
     uint256 internal l2ChainIdEnv;
     uint256 internal blockIntervalEnv;
@@ -78,7 +79,8 @@ contract DeployMultiproofContracts is Script {
         // Multiproof identity and chain-level parameters.
         gameTypeEnv = uint32(vm.envUint("GAME_TYPE"));
         teeImageHashEnv = vm.envBytes32("TEE_IMAGE_HASH");
-        zkImageHashEnv = vm.envBytes32("ZK_IMAGE_HASH");
+        zkRangeHashEnv = vm.envBytes32("ZK_RANGE_HASH");
+        zkAggregateHashEnv = vm.envBytes32("ZK_AGGREGATE_HASH");
         configHashEnv = vm.envBytes32("CONFIG_HASH");
         l2ChainIdEnv = vm.envUint("L2_CHAIN_ID");
         blockIntervalEnv = vm.envUint("BLOCK_INTERVAL");
@@ -147,13 +149,13 @@ contract DeployMultiproofContracts is Script {
             })
         );
 
-        // 4. Deploy the temporary mock ZK verifier.
+        // 4. Deploy the temporary mock ZK verifier used by the AggregateVerifier template.
         zkVerifier = address(new MockVerifier({anchorStateRegistry: IAnchorStateRegistry(anchorStateRegistryProxyEnv)}));
 
-        // 5. Deploy DelayedWETH implementation.
+        // 5. Deploy the DelayedWETH implementation that will later be wired to its proxy.
         delayedWethImpl = address(new DelayedWETH({_delay: delayedWethDelaySecondsEnv}));
 
-        // 6. Deploy the multiproof AggregateVerifier.
+        // 6. Deploy the multiproof AggregateVerifier template.
         aggregateVerifier = address(
             new AggregateVerifier({
                 gameType_: GameType.wrap(gameTypeEnv),
@@ -162,7 +164,7 @@ contract DeployMultiproofContracts is Script {
                 teeVerifier: TEEVerifier(teeVerifier),
                 zkVerifier: MockVerifier(zkVerifier),
                 teeImageHash: teeImageHashEnv,
-                zkImageHash: zkImageHashEnv,
+                zkHashes: AggregateVerifier.ZkHashes({rangeHash: zkRangeHashEnv, aggregateHash: zkAggregateHashEnv}),
                 configHash: configHashEnv,
                 l2ChainId: l2ChainIdEnv,
                 blockInterval: blockIntervalEnv,
@@ -250,7 +252,7 @@ contract DeployMultiproofContracts is Script {
         );
     }
 
-    /// @dev Validates the MockVerifier (temporary ZK verifier placeholder).
+    /// @dev Validates the MockVerifier used as the temporary ZK verifier placeholder.
     ///      1. Check that ANCHOR_STATE_REGISTRY points to the existing ASR proxy.
     function _checkMockVerifier() internal view {
         require(
@@ -268,7 +270,7 @@ contract DeployMultiproofContracts is Script {
         );
     }
 
-    /// @dev Validates the AggregateVerifier (EIP-1167 clone template for dispute games).
+    /// @dev Validates the AggregateVerifier template that the DisputeGameFactory will clone for new games.
     ///      1. Check that gameType matches the .env value.
     ///      2. Check that anchorStateRegistry points to the existing ASR proxy.
     ///      3. Check that DISPUTE_GAME_FACTORY is derived from the ASR's disputeGameFactory().
@@ -276,12 +278,13 @@ contract DeployMultiproofContracts is Script {
     ///      5. Check that TEE_VERIFIER points to the deployed TEEVerifier.
     ///      6. Check that ZK_VERIFIER points to the deployed MockVerifier.
     ///      7. Check that TEE_IMAGE_HASH matches the .env value.
-    ///      8. Check that ZK_IMAGE_HASH matches the .env value.
-    ///      9. Check that CONFIG_HASH matches the .env value.
-    ///      10. Check that L2_CHAIN_ID matches the .env value.
-    ///      11. Check that BLOCK_INTERVAL matches the .env value.
-    ///      12. Check that INTERMEDIATE_BLOCK_INTERVAL matches the .env value.
-    ///      13. Check that PROOF_THRESHOLD matches the .env value.
+    ///      8. Check that ZK_RANGE_HASH matches the .env value.
+    ///      9. Check that ZK_AGGREGATE_HASH matches the .env value.
+    ///      10. Check that CONFIG_HASH matches the .env value.
+    ///      11. Check that L2_CHAIN_ID matches the .env value.
+    ///      12. Check that BLOCK_INTERVAL matches the .env value.
+    ///      13. Check that INTERMEDIATE_BLOCK_INTERVAL matches the .env value.
+    ///      14. Check that PROOF_THRESHOLD matches the .env value.
     function _checkAggregateVerifier() internal view {
         AggregateVerifier av = AggregateVerifier(aggregateVerifier);
 
@@ -292,7 +295,8 @@ contract DeployMultiproofContracts is Script {
         require(address(av.TEE_VERIFIER()) == teeVerifier, "aggregate tee verifier mismatch");
         require(address(av.ZK_VERIFIER()) == zkVerifier, "aggregate zk verifier mismatch");
         require(av.TEE_IMAGE_HASH() == teeImageHashEnv, "aggregate tee image hash mismatch");
-        require(av.ZK_IMAGE_HASH() == zkImageHashEnv, "aggregate zk image hash mismatch");
+        require(av.ZK_RANGE_HASH() == zkRangeHashEnv, "aggregate zk range hash mismatch");
+        require(av.ZK_AGGREGATE_HASH() == zkAggregateHashEnv, "aggregate zk aggregate hash mismatch");
         require(av.CONFIG_HASH() == configHashEnv, "aggregate config hash mismatch");
         require(av.L2_CHAIN_ID() == l2ChainIdEnv, "aggregate l2 chain mismatch");
         require(av.BLOCK_INTERVAL() == blockIntervalEnv, "aggregate block interval mismatch");
