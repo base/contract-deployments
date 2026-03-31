@@ -25,6 +25,11 @@ task-extra-deps:
 ##
 # Deployment
 ##
+.PHONY: deploy-nitro-enclave-verifier
+deploy-nitro-enclave-verifier:
+	forge script --rpc-url $(L1_RPC_URL) script/DeployNitroEnclaveVerifier.s.sol:DeployNitroEnclaveVerifier \
+		--account testnet-admin --broadcast -vvvv
+
 .PHONY: deploy
 deploy:
 	forge script --rpc-url $(L1_RPC_URL) script/DeployMultiproofContracts.s.sol:DeployMultiproofContracts \

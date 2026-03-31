@@ -24,6 +24,12 @@ interface IProxy {
     function implementation() external view returns (address);
 }
 
+interface INitroEnclaveVerifierAdmin {
+    function owner() external view returns (address);
+    function proofSubmitter() external view returns (address);
+    function setProofSubmitter(address submitter) external;
+}
+
 interface IDisputeGameFactoryAdmin {
     function owner() external view returns (address);
     function gameImpls(GameType gameType) external view returns (address);
@@ -60,6 +66,7 @@ contract UpgradeMultiproofStack is MultisigScript {
     address internal newTeeProverRegistryProxy;
     address internal newDelayedWethImpl;
     address internal newDelayedWethProxy;
+    address internal nitroEnclaveVerifier;
 
     function setUp() public {
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
@@ -83,14 +90,15 @@ contract UpgradeMultiproofStack is MultisigScript {
         string memory path = string.concat(root, "/addresses.json");
         string memory json = vm.readFile(path);
 
-        newAggregateVerifier = vm.parseJsonAddress(json, ".aggregateVerifier");
-        newOptimismPortalImpl = vm.parseJsonAddress(json, ".optimismPortal2Impl");
-        newDgfImpl = vm.parseJsonAddress(json, ".disputeGameFactoryImpl");
-        newAsrImpl = vm.parseJsonAddress(json, ".anchorStateRegistryImpl");
-        newTeeProverRegistryImpl = vm.parseJsonAddress(json, ".teeProverRegistryImpl");
-        newTeeProverRegistryProxy = vm.parseJsonAddress(json, ".teeProverRegistryProxy");
-        newDelayedWethImpl = vm.parseJsonAddress(json, ".delayedWETHImpl");
-        newDelayedWethProxy = vm.parseJsonAddress(json, ".delayedWETHProxy");
+        newAggregateVerifier = vm.parseJsonAddress({json: json, key: ".aggregateVerifier"});
+        newOptimismPortalImpl = vm.parseJsonAddress({json: json, key: ".optimismPortal2Impl"});
+        newDgfImpl = vm.parseJsonAddress({json: json, key: ".disputeGameFactoryImpl"});
+        newAsrImpl = vm.parseJsonAddress({json: json, key: ".anchorStateRegistryImpl"});
+        newTeeProverRegistryImpl = vm.parseJsonAddress({json: json, key: ".teeProverRegistryImpl"});
+        newTeeProverRegistryProxy = vm.parseJsonAddress({json: json, key: ".teeProverRegistryProxy"});
+        newDelayedWethImpl = vm.parseJsonAddress({json: json, key: ".delayedWETHImpl"});
+        newDelayedWethProxy = vm.parseJsonAddress({json: json, key: ".delayedWETHProxy"});
+        nitroEnclaveVerifier = vm.parseJsonAddress({json: json, key: ".nitroEnclaveVerifier"});
 
         // Sanity-check that the executing Safe holds the roles required by the non-ProxyAdmin calls.
         require(
@@ -101,6 +109,18 @@ contract UpgradeMultiproofStack is MultisigScript {
             ISystemConfig(systemConfigEnv).guardian() == ownerSafeEnv,
             "Guardian != PROXY_ADMIN_OWNER: updateRetirementTimestamp will revert"
         );
+        require(
+            teeProverRegistryOwnerEnv == ownerSafeEnv,
+            "TEE_PROVER_REGISTRY_OWNER != PROXY_ADMIN_OWNER: setProofSubmitter will revert"
+        );
+        require(
+            INitroEnclaveVerifierAdmin(nitroEnclaveVerifier).owner() == ownerSafeEnv,
+            "Nitro owner != PROXY_ADMIN_OWNER: setProofSubmitter will revert"
+        );
+        require(
+            INitroEnclaveVerifierAdmin(nitroEnclaveVerifier).proofSubmitter() == ownerSafeEnv,
+            "Nitro proofSubmitter is not the expected placeholder owner"
+        );
     }
 
     /// @dev Builds the ordered batch of calls executed atomically by the owner Safe.
@@ -108,6 +128,8 @@ contract UpgradeMultiproofStack is MultisigScript {
     ///      - Proxy upgrades must precede any call that depends on new impl logic.
     ///      - TEEProverRegistry and DelayedWETH must be wired before the game type is registered,
     ///        so that game clones can interact with them.
+    ///      - NitroEnclaveVerifier must point at the live TEEProverRegistry proxy before any
+    ///        attestation-backed proposer actions can succeed after cutover.
     ///      - `setImplementation` must be registered before the respected game type takes effect
     ///        through the AnchorStateRegistry reinitializer.
     ///      - `updateRetirementTimestamp` retires old games after all wiring is done.
@@ -117,12 +139,13 @@ contract UpgradeMultiproofStack is MultisigScript {
     ///      1. Upgrade DisputeGameFactory proxy.
     ///      2. Upgrade + reinitialize AnchorStateRegistry proxy (sets respectedGameType).
     ///      3. Wire TEEProverRegistry proxy (upgradeAndCall with initialize).
-    ///      4. Wire DelayedWETH proxy (upgradeAndCall with initialize).
-    ///      5. Register AggregateVerifier in the DisputeGameFactory.
-    ///      6. Set the init bond for the multiproof game type.
-    ///      7. Retire pre-cutover games.
+    ///      4. Point NitroEnclaveVerifier at the live TEEProverRegistry proxy.
+    ///      5. Wire DelayedWETH proxy (upgradeAndCall with initialize).
+    ///      6. Register AggregateVerifier in the DisputeGameFactory.
+    ///      7. Set the init bond for the multiproof game type.
+    ///      8. Retire pre-cutover games.
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[](8);
+        Call[] memory calls = new Call[](9);
 
         // 0. Upgrade the OptimismPortal2 proxy to the new implementation.
         calls[0] = Call({
@@ -178,8 +201,16 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 4. Wire the DelayedWETH proxy: set its implementation and initialize it with the existing SystemConfig.
+        // 4. Point NitroEnclaveVerifier at the live TEEProverRegistry proxy now that the proxy has been upgraded.
         calls[4] = Call({
+            operation: Enum.Operation.Call,
+            target: nitroEnclaveVerifier,
+            data: abi.encodeCall(INitroEnclaveVerifierAdmin.setProofSubmitter, (newTeeProverRegistryProxy)),
+            value: 0
+        });
+
+        // 5. Wire the DelayedWETH proxy: set its implementation and initialize it with the existing SystemConfig.
+        calls[5] = Call({
             operation: Enum.Operation.Call,
             target: proxyAdminEnv,
             data: abi.encodeCall(
@@ -193,9 +224,9 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 5. Register the newly deployed AggregateVerifier as the implementation for the configured multiproof
+        // 6. Register the newly deployed AggregateVerifier as the implementation for the configured multiproof
         //      game type in the DisputeGameFactory.
-        calls[5] = Call({
+        calls[6] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(
@@ -204,17 +235,17 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 6. Set the init bond required to create games of the new multiproof type.
-        calls[6] = Call({
+        // 7. Set the init bond required to create games of the new multiproof type.
+        calls[7] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(IDisputeGameFactoryAdmin.setInitBond, (GameType.wrap(gameTypeEnv), initBondEnv)),
             value: 0
         });
 
-        // 7. Retire any pre-cutover games so older disputes cannot remain respected
+        // 8. Retire any pre-cutover games so older disputes cannot remain respected
         //    after the new multiproof configuration is activated.
-        calls[7] = Call({
+        calls[8] = Call({
             operation: Enum.Operation.Call,
             target: anchorStateRegistryProxyEnv,
             data: abi.encodeCall(AnchorStateRegistry.updateRetirementTimestamp, ()),
@@ -245,6 +276,7 @@ contract UpgradeMultiproofStack is MultisigScript {
         _checkProxyUpgrades();
         _checkAnchorStateRegistry();
         _checkTeeProverRegistryProxy();
+        _checkNitroEnclaveVerifier();
         _checkDelayedWethProxy();
         _checkDisputeGameFactory();
     }
@@ -306,6 +338,15 @@ contract UpgradeMultiproofStack is MultisigScript {
         require(GameType.unwrap(registry.gameType()) == gameTypeEnv, "tee registry game type mismatch");
         require(registry.isValidProposer(teeProposerEnv), "tee registry proposer mismatch");
         require(registry.isValidProposer(challengerEnv), "tee registry challenger mismatch");
+    }
+
+    /// @dev Validates the NitroEnclaveVerifier cutover state after setProofSubmitter.
+    ///      1. Check that owner still matches the owner Safe.
+    ///      2. Check that proofSubmitter now points to the TEEProverRegistry proxy.
+    function _checkNitroEnclaveVerifier() internal view {
+        INitroEnclaveVerifierAdmin nitro = INitroEnclaveVerifierAdmin(nitroEnclaveVerifier);
+        require(nitro.owner() == ownerSafeEnv, "nitro owner mismatch");
+        require(nitro.proofSubmitter() == newTeeProverRegistryProxy, "nitro proof submitter mismatch");
     }
 
     /// @dev Validates the DelayedWETH proxy after upgradeAndCall.

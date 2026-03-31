@@ -2,6 +2,21 @@
 
 Guide for facilitators managing this task.
 
+## Deployment prerequisites
+
+Before collecting signatures, complete both deploy steps:
+
+```bash
+cd contract-deployments
+git pull
+cd zeronet/2026-04-01-activate-multiproof
+make deps
+make deploy-nitro-enclave-verifier
+make deploy
+```
+
+This produces a single `addresses.json`. The Nitro deploy step initializes it, and the main deploy step appends the remaining addresses used by the signed upgrade step.
+
 ## Generate validation files
 
 ```bash
