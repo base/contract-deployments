@@ -25,21 +25,24 @@ task-extra-deps:
 ##
 # Deployment
 ##
+.PHONY: deploy-cb-multicall
+deploy-cb-multicall:
+	forge script --rpc-url $(L1_RPC_URL) script/DeployCBMulticall.s.sol:DeployCBMulticallScript \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+
 .PHONY: deploy-nitro-enclave-verifier
 deploy-nitro-enclave-verifier:
 	forge script --rpc-url $(L1_RPC_URL) script/DeployNitroEnclaveVerifier.s.sol:DeployNitroEnclaveVerifier \
-		--account testnet-admin --broadcast -vvvv
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 .PHONY: deploy
 deploy:
 	forge script --rpc-url $(L1_RPC_URL) script/DeployMultiproofContracts.s.sol:DeployMultiproofContracts \
-		--account testnet-admin --broadcast -vvvv
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 ##
 # Upgrade Multiproof
 ##
-.PHONY: gen-validation-upgrade
-gen-validation-upgrade: gen-validation-cb gen-validation-sc
 
 .PHONY: gen-validation-cb
 gen-validation-cb: deps-signer-tool

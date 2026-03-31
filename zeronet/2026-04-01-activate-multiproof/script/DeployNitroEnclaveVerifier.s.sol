@@ -34,7 +34,6 @@ contract DeployNitroEnclaveVerifier is Script {
     }
 
     function run() external {
-        bytes4 setVerifierSelector = RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv);
         bytes32[] memory trustedCerts = new bytes32[](0);
 
         vm.startBroadcast();
@@ -56,43 +55,36 @@ contract DeployNitroEnclaveVerifier is Script {
                 initialProofSubmitter: teeProverRegistryOwnerEnv,
                 zkCoProcessor: ZkCoProcessorType.RiscZero,
                 config: ZkCoProcessorConfig({
-                    verifierId: nitroZkVerifierIdEnv,
-                    aggregatorId: bytes32(0),
-                    zkVerifier: riscZeroVerifierRouterEnv
+                    verifierId: nitroZkVerifierIdEnv, aggregatorId: bytes32(0), zkVerifier: riscZeroVerifierRouterEnv
                 }),
                 verifierProofId: bytes32(0)
             })
         );
 
-        NitroEnclaveVerifier(nitroEnclaveVerifier).addVerifyRoute({
-            zkCoProcessor: ZkCoProcessorType.RiscZero,
-            selector: setVerifierSelector,
-            verifier: riscZeroSetVerifier
-        });
-
         vm.stopBroadcast();
 
-        _postCheck(setVerifierSelector);
+        _postCheck();
         _writeAddresses();
     }
 
-    function _postCheck(bytes4 setVerifierSelector) internal view {
-        _checkRiscZeroSetVerifier(setVerifierSelector);
-        _checkNitroEnclaveVerifier(setVerifierSelector);
+    function _postCheck() internal view {
+        _checkRiscZeroSetVerifier();
+        _checkNitroEnclaveVerifier();
     }
 
     /// @dev Validates the local RISC Zero set verifier deployment.
     ///      1. Check that VERIFIER points to the configured external router.
     ///      2. Check that SELECTOR matches the configured set-builder image ID.
-    function _checkRiscZeroSetVerifier(bytes4 setVerifierSelector) internal view {
+    function _checkRiscZeroSetVerifier() internal view {
         RiscZeroSetVerifier setVerifier = RiscZeroSetVerifier(riscZeroSetVerifier);
+        bytes4 setVerifierSelector = RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv);
 
         require(address(setVerifier.VERIFIER()) == riscZeroVerifierRouterEnv, "set verifier router mismatch");
         require(setVerifier.SELECTOR() == setVerifierSelector, "set verifier selector mismatch");
     }
 
-    /// @dev Validates the NitroEnclaveVerifier deployment and the route wiring for
-    ///      RISC Zero set-inclusion proofs.
+    /// @dev Validates the NitroEnclaveVerifier deployment before the owner Safe completes
+    ///      the final route wiring in the upgrade batch.
     ///      1. Check that owner is set to TEE_PROVER_REGISTRY_OWNER.
     ///      2. Check that maxTimeDiff matches NITRO_INITIAL_MAX_TIME_DIFF_SECONDS.
     ///      3. Check that rootCert matches NITRO_INITIAL_ROOT_CERT.
@@ -100,9 +92,11 @@ contract DeployNitroEnclaveVerifier is Script {
     ///      5. Check that the default RISC Zero config points at the external router
     ///         and configured Nitro verifier image ID.
     ///      6. Check that the verifier proof ID is zero for the default route.
-    ///      7. Check that the set-verifier selector resolves to the deployed local verifier.
-    function _checkNitroEnclaveVerifier(bytes4 setVerifierSelector) internal view {
+    ///      7. Check that the set-verifier selector still resolves to the default router
+    ///         before the owner Safe wires the dedicated route in the upgrade batch.
+    function _checkNitroEnclaveVerifier() internal view {
         NitroEnclaveVerifier nev = NitroEnclaveVerifier(nitroEnclaveVerifier);
+        bytes4 setVerifierSelector = RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv);
 
         require(nev.owner() == teeProverRegistryOwnerEnv, "nitro owner mismatch");
         require(nev.maxTimeDiff() == nitroInitialMaxTimeDiffSecondsEnv, "nitro max time diff mismatch");
@@ -119,8 +113,8 @@ contract DeployNitroEnclaveVerifier is Script {
         );
         require(
             INitroEnclaveVerifier(nitroEnclaveVerifier).getZkVerifier(ZkCoProcessorType.RiscZero, setVerifierSelector)
-                == riscZeroSetVerifier,
-            "nitro set verifier route mismatch"
+                == riscZeroVerifierRouterEnv,
+            "nitro default verifier mismatch"
         );
     }
 
@@ -133,7 +127,9 @@ contract DeployNitroEnclaveVerifier is Script {
         string memory json =
             vm.serializeAddress({objectKey: root, valueKey: "riscZeroSetVerifier", value: riscZeroSetVerifier});
         json = vm.serializeAddress({objectKey: root, valueKey: "nitroEnclaveVerifier", value: nitroEnclaveVerifier});
-        json = vm.serializeAddress({objectKey: root, valueKey: "riscZeroVerifierRouter", value: riscZeroVerifierRouterEnv});
+        json = vm.serializeAddress({
+            objectKey: root, valueKey: "riscZeroVerifierRouter", value: riscZeroVerifierRouterEnv
+        });
         vm.writeJson({json: json, path: "addresses.json"});
     }
 }

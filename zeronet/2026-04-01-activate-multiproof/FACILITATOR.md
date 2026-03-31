@@ -4,18 +4,21 @@ Guide for facilitators managing this task.
 
 ## Deployment prerequisites
 
-Before collecting signatures, complete both deploy steps:
+Before collecting signatures, complete all deploy steps:
 
 ```bash
 cd contract-deployments
 git pull
 cd zeronet/2026-04-01-activate-multiproof
 make deps
+make deploy-cb-multicall
 make deploy-nitro-enclave-verifier
 make deploy
 ```
 
-This produces a single `addresses.json`. The Nitro deploy step initializes it, and the main deploy step appends the remaining addresses used by the signed upgrade step.
+`make deploy-cb-multicall` deploys the canonical `CBMulticall` helper used by `MultisigScript` signer-side simulations on zeronet.
+
+The Nitro deploy step initializes `addresses.json`, and the main deploy step appends the remaining addresses used by the signed upgrade step.
 
 ## Generate validation files
 
@@ -24,7 +27,8 @@ cd contract-deployments
 git pull
 cd zeronet/2026-04-01-activate-multiproof
 make deps
-make gen-validation-upgrade
+make gen-validation-cb
+make gen-validation-sc
 ```
 
 This produces:
