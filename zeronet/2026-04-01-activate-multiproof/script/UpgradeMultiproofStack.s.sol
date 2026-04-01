@@ -58,7 +58,7 @@ contract UpgradeMultiproofStack is MultisigScript {
     // TEE registry initialization parameters.
     address internal teeProverRegistryOwnerEnv;
     address internal teeProverRegistryManagerEnv;
-    address internal teeProposerEnv;
+    address internal proposerEnv;
     address internal challengerEnv;
 
     // Addresses from the facilitator deploy step (addresses.json).
@@ -89,7 +89,7 @@ contract UpgradeMultiproofStack is MultisigScript {
 
         teeProverRegistryOwnerEnv = vm.envAddress("TEE_PROVER_REGISTRY_OWNER");
         teeProverRegistryManagerEnv = vm.envAddress("TEE_PROVER_REGISTRY_MANAGER");
-        teeProposerEnv = vm.envAddress("TEE_PROPOSER");
+        proposerEnv = vm.envAddress("PROPOSER");
         challengerEnv = vm.envAddress("CHALLENGER");
         riscZeroSetBuilderImageIdEnv = vm.envBytes32("RISC0_SET_BUILDER_IMAGE_ID");
 
@@ -295,12 +295,12 @@ contract UpgradeMultiproofStack is MultisigScript {
     ///      The registry is initialized with:
     ///      1. `TEE_PROVER_REGISTRY_OWNER` as owner.
     ///      2. `TEE_PROVER_REGISTRY_MANAGER` as manager.
-    ///      3. Two initial valid proposers: `TEE_PROPOSER` and `CHALLENGER`.
+    ///      3. Two initial valid proposers: `PROPOSER` and `CHALLENGER`.
     ///      4. The multiproof game type, so signer validity resolves against the correct AggregateVerifier.
     /// @return The encoded call to TEEProverRegistry.initialize.
     function _teeRegistryInitData() internal view returns (bytes memory) {
         address[] memory initialProposers = new address[](2);
-        initialProposers[0] = teeProposerEnv;
+        initialProposers[0] = proposerEnv;
         initialProposers[1] = challengerEnv;
         return abi.encodeCall(
             TEEProverRegistry.initialize,
@@ -360,7 +360,7 @@ contract UpgradeMultiproofStack is MultisigScript {
     ///      2. Check that owner is set to TEE_PROVER_REGISTRY_OWNER.
     ///      3. Check that manager is set to TEE_PROVER_REGISTRY_MANAGER.
     ///      4. Check that gameType is set to the multiproof game type.
-    ///      5. Check that TEE_PROPOSER is flagged as valid.
+    ///      5. Check that PROPOSER is flagged as valid.
     ///      6. Check that the challenger is flagged as valid.
     function _checkTeeProverRegistryProxy() internal {
         vm.prank(proxyAdminEnv);
@@ -372,7 +372,7 @@ contract UpgradeMultiproofStack is MultisigScript {
         require(registry.owner() == teeProverRegistryOwnerEnv, "tee registry owner mismatch");
         require(registry.manager() == teeProverRegistryManagerEnv, "tee registry manager mismatch");
         require(GameType.unwrap(registry.gameType()) == gameTypeEnv, "tee registry game type mismatch");
-        require(registry.isValidProposer(teeProposerEnv), "tee registry proposer mismatch");
+        require(registry.isValidProposer(proposerEnv), "tee registry proposer mismatch");
         require(registry.isValidProposer(challengerEnv), "tee registry challenger mismatch");
     }
 
