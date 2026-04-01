@@ -108,7 +108,7 @@ contract DeployNitroEnclaveVerifier is Script {
         require(cfg.aggregatorId == bytes32(0), "nitro aggregator id mismatch");
         require(cfg.zkVerifier == riscZeroVerifierRouterEnv, "nitro router mismatch");
         require(
-            nev.getVerifierProofId(ZkCoProcessorType.RiscZero, nitroZkVerifierIdEnv) == bytes32(0),
+            nev.getVerifierProofId(ZkCoProcessorType.RiscZero) == bytes32(0),
             "nitro verifier proof id mismatch"
         );
         require(
