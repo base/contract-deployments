@@ -3,7 +3,7 @@ pragma solidity 0.8.15;
 
 import {Script, console} from "forge-std/Script.sol";
 
-contract DeployCBMulticallScript is Script {
+contract DeployCBMulticall is Script {
     bytes32 internal constant SALT = bytes32(uint256(1));
     address internal constant EXPECTED_CB_MULTICALL = 0xA8B8CA1d6F0F5Ce63dCEA9121A01b302c5801303;
 

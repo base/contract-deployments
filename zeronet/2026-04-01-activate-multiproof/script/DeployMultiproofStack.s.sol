@@ -19,7 +19,7 @@ import {AggregateVerifier} from "@base-contracts/src/multiproof/AggregateVerifie
 import {MockVerifier} from "@base-contracts/src/multiproof/mocks/MockVerifier.sol";
 import {Proxy} from "@base-contracts/src/universal/Proxy.sol";
 
-contract DeployMultiproofContracts is Script {
+contract DeployMultiproofStack is Script {
     // Existing Hoodi L1 dependencies consumed by the deploy.
     address internal l1ProxyAdminEnv;
     address internal anchorStateRegistryProxyEnv;

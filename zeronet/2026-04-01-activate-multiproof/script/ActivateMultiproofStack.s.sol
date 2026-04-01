@@ -24,14 +24,6 @@ interface IProxy {
     function implementation() external view returns (address);
 }
 
-interface INitroEnclaveVerifierAdmin {
-    function owner() external view returns (address);
-    function proofSubmitter() external view returns (address);
-    function addVerifyRoute(uint8 zkCoProcessor, bytes4 selector, address verifier) external;
-    function getZkVerifier(uint8 zkCoProcessor, bytes4 selector) external view returns (address);
-    function setProofSubmitter(address submitter) external;
-}
-
 interface IDisputeGameFactoryAdmin {
     function owner() external view returns (address);
     function gameImpls(GameType gameType) external view returns (address);
@@ -40,9 +32,7 @@ interface IDisputeGameFactoryAdmin {
     function setInitBond(GameType gameType, uint256 initBond) external;
 }
 
-contract UpgradeMultiproofStack is MultisigScript {
-    uint8 internal constant ZK_COPROCESSOR_RISC_ZERO = 1;
-
+contract ActivateMultiproofStack is MultisigScript {
     address internal ownerSafeEnv;
     address internal proxyAdminEnv;
     address internal systemConfigEnv;
@@ -70,9 +60,6 @@ contract UpgradeMultiproofStack is MultisigScript {
     address internal newTeeProverRegistryProxy;
     address internal newDelayedWethImpl;
     address internal newDelayedWethProxy;
-    address internal riscZeroSetVerifier;
-    address internal nitroEnclaveVerifier;
-    bytes32 internal riscZeroSetBuilderImageIdEnv;
 
     function setUp() public {
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
@@ -91,7 +78,6 @@ contract UpgradeMultiproofStack is MultisigScript {
         teeProverRegistryManagerEnv = vm.envAddress("TEE_PROVER_REGISTRY_MANAGER");
         proposerEnv = vm.envAddress("PROPOSER");
         challengerEnv = vm.envAddress("CHALLENGER");
-        riscZeroSetBuilderImageIdEnv = vm.envBytes32("RISC0_SET_BUILDER_IMAGE_ID");
 
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/addresses.json");
@@ -105,10 +91,9 @@ contract UpgradeMultiproofStack is MultisigScript {
         newTeeProverRegistryProxy = vm.parseJsonAddress({json: json, key: ".teeProverRegistryProxy"});
         newDelayedWethImpl = vm.parseJsonAddress({json: json, key: ".delayedWETHImpl"});
         newDelayedWethProxy = vm.parseJsonAddress({json: json, key: ".delayedWETHProxy"});
-        riscZeroSetVerifier = vm.parseJsonAddress({json: json, key: ".riscZeroSetVerifier"});
-        nitroEnclaveVerifier = vm.parseJsonAddress({json: json, key: ".nitroEnclaveVerifier"});
 
-        // Sanity-check that the executing Safe holds the roles required by the non-ProxyAdmin calls.
+        // Sanity-check that the executing Safe holds the roles required by the non-ProxyAdmin calls
+        // that remain in this batch.
         require(
             IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).owner() == ownerSafeEnv,
             "DGF owner != PROXY_ADMIN_OWNER: setImplementation/setInitBond will revert"
@@ -117,18 +102,6 @@ contract UpgradeMultiproofStack is MultisigScript {
             ISystemConfig(systemConfigEnv).guardian() == ownerSafeEnv,
             "Guardian != PROXY_ADMIN_OWNER: updateRetirementTimestamp will revert"
         );
-        require(
-            teeProverRegistryOwnerEnv == ownerSafeEnv,
-            "TEE_PROVER_REGISTRY_OWNER != PROXY_ADMIN_OWNER: setProofSubmitter will revert"
-        );
-        require(
-            INitroEnclaveVerifierAdmin(nitroEnclaveVerifier).owner() == ownerSafeEnv,
-            "Nitro owner != PROXY_ADMIN_OWNER: Nitro admin calls will revert"
-        );
-        require(
-            INitroEnclaveVerifierAdmin(nitroEnclaveVerifier).proofSubmitter() == ownerSafeEnv,
-            "Nitro proofSubmitter is not the expected placeholder owner"
-        );
     }
 
     /// @dev Builds the ordered batch of calls executed atomically by the owner Safe.
@@ -136,11 +109,6 @@ contract UpgradeMultiproofStack is MultisigScript {
     ///      - Proxy upgrades must precede any call that depends on new impl logic.
     ///      - TEEProverRegistry and DelayedWETH must be wired before the game type is registered,
     ///        so that game clones can interact with them.
-    ///      - NitroEnclaveVerifier route wiring must occur before `setProofSubmitter` so the
-    ///        owner Safe finishes all owner-only Nitro configuration before handing proof
-    ///        submission to the live TEEProverRegistry proxy.
-    ///      - NitroEnclaveVerifier must point at the live TEEProverRegistry proxy before any
-    ///        attestation-backed proposer actions can succeed after cutover.
     ///      - The AnchorStateRegistry reinitializer runs before `setImplementation`, but this is
     ///        still safe because the batch executes atomically and no external caller can observe
     ///        the intermediate state where the respected game type has been updated before the
@@ -152,14 +120,12 @@ contract UpgradeMultiproofStack is MultisigScript {
     ///      1. Upgrade DisputeGameFactory proxy.
     ///      2. Upgrade + reinitialize AnchorStateRegistry proxy (sets respectedGameType).
     ///      3. Wire TEEProverRegistry proxy (upgradeAndCall with initialize).
-    ///      4. Add the RISC Zero set-verifier route to NitroEnclaveVerifier.
-    ///      5. Point NitroEnclaveVerifier at the live TEEProverRegistry proxy.
-    ///      6. Wire DelayedWETH proxy (upgradeAndCall with initialize).
-    ///      7. Register AggregateVerifier in the DisputeGameFactory.
-    ///      8. Set the init bond for the multiproof game type.
-    ///      9. Retire pre-cutover games.
+    ///      4. Wire DelayedWETH proxy (upgradeAndCall with initialize).
+    ///      5. Register AggregateVerifier in the DisputeGameFactory.
+    ///      6. Set the init bond for the multiproof game type.
+    ///      7. Retire pre-cutover games.
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[](10);
+        Call[] memory calls = new Call[](8);
 
         // 0. Upgrade the OptimismPortal2 proxy to the new implementation.
         calls[0] = Call({
@@ -215,28 +181,8 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 4. Add the selector-specific route that sends RISC Zero set-inclusion proofs to the
-        //    dedicated local RiscZeroSetVerifier deployed in the facilitator step.
+        // 4. Wire the DelayedWETH proxy: set its implementation and initialize it with the existing SystemConfig.
         calls[4] = Call({
-            operation: Enum.Operation.Call,
-            target: nitroEnclaveVerifier,
-            data: abi.encodeCall(
-                INitroEnclaveVerifierAdmin.addVerifyRoute,
-                (ZK_COPROCESSOR_RISC_ZERO, _riscZeroSetVerifierSelector(), riscZeroSetVerifier)
-            ),
-            value: 0
-        });
-
-        // 5. Point NitroEnclaveVerifier at the live TEEProverRegistry proxy now that the proxy has been upgraded.
-        calls[5] = Call({
-            operation: Enum.Operation.Call,
-            target: nitroEnclaveVerifier,
-            data: abi.encodeCall(INitroEnclaveVerifierAdmin.setProofSubmitter, (newTeeProverRegistryProxy)),
-            value: 0
-        });
-
-        // 6. Wire the DelayedWETH proxy: set its implementation and initialize it with the existing SystemConfig.
-        calls[6] = Call({
             operation: Enum.Operation.Call,
             target: proxyAdminEnv,
             data: abi.encodeCall(
@@ -250,9 +196,9 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 7. Register the newly deployed AggregateVerifier as the implementation for the configured multiproof
-        //      game type in the DisputeGameFactory.
-        calls[7] = Call({
+        // 5. Register the newly deployed AggregateVerifier as the implementation for the configured multiproof
+        //    game type in the DisputeGameFactory.
+        calls[5] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(
@@ -261,17 +207,17 @@ contract UpgradeMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 8. Set the init bond required to create games of the new multiproof type.
-        calls[8] = Call({
+        // 6. Set the init bond required to create games of the new multiproof type.
+        calls[6] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(IDisputeGameFactoryAdmin.setInitBond, (GameType.wrap(gameTypeEnv), initBondEnv)),
             value: 0
         });
 
-        // 9. Retire any pre-cutover games so older disputes cannot remain respected
+        // 7. Retire any pre-cutover games so older disputes cannot remain respected
         //    after the new multiproof configuration is activated.
-        calls[9] = Call({
+        calls[7] = Call({
             operation: Enum.Operation.Call,
             target: anchorStateRegistryProxyEnv,
             data: abi.encodeCall(AnchorStateRegistry.updateRetirementTimestamp, ()),
@@ -279,16 +225,6 @@ contract UpgradeMultiproofStack is MultisigScript {
         });
 
         return calls;
-    }
-
-    function _riscZeroSetVerifierSelector() internal view returns (bytes4) {
-        return bytes4(
-            sha256(
-                abi.encodePacked(
-                    sha256("risc0.SetInclusionReceiptVerifierParameters"), riscZeroSetBuilderImageIdEnv, uint16(1) << 8
-                )
-            )
-        );
     }
 
     /// @dev Builds the initialization payload used when wiring the TEEProverRegistry proxy.
@@ -312,7 +248,6 @@ contract UpgradeMultiproofStack is MultisigScript {
         _checkProxyUpgrades();
         _checkAnchorStateRegistry();
         _checkTeeProverRegistryProxy();
-        _checkNitroEnclaveVerifier();
         _checkDelayedWethProxy();
         _checkDisputeGameFactory();
     }
@@ -374,23 +309,6 @@ contract UpgradeMultiproofStack is MultisigScript {
         require(GameType.unwrap(registry.gameType()) == gameTypeEnv, "tee registry game type mismatch");
         require(registry.isValidProposer(proposerEnv), "tee registry proposer mismatch");
         require(registry.isValidProposer(challengerEnv), "tee registry challenger mismatch");
-    }
-
-    /// @dev Validates the NitroEnclaveVerifier cutover state after route wiring and
-    ///      setProofSubmitter.
-    ///      1. Check that owner still matches the owner Safe.
-    ///      2. Check that proofSubmitter now points to the TEEProverRegistry proxy.
-    ///      3. Check that the set-builder selector resolves to the deployed local
-    ///         RiscZeroSetVerifier.
-    function _checkNitroEnclaveVerifier() internal view {
-        INitroEnclaveVerifierAdmin nitro = INitroEnclaveVerifierAdmin(nitroEnclaveVerifier);
-        require(nitro.owner() == ownerSafeEnv, "nitro owner mismatch");
-        require(nitro.proofSubmitter() == newTeeProverRegistryProxy, "nitro proof submitter mismatch");
-        require(
-            INitroEnclaveVerifierAdmin(nitroEnclaveVerifier)
-                .getZkVerifier(ZK_COPROCESSOR_RISC_ZERO, _riscZeroSetVerifierSelector()) == riscZeroSetVerifier,
-            "nitro route mismatch"
-        );
     }
 
     /// @dev Validates the DelayedWETH proxy after upgradeAndCall.

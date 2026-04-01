@@ -1,0 +1,241 @@
+{
+  "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0x6f980f465ba15f82882eac77e352870a20acdb6b4c1e296b99edd2bca648dc59"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xed4a90c652ae7449fbfb7db7e4a9202b67a4b796076d3e597bd3b41b0a0f4ed3",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "DisputeGameFactory - Zeronet",
+      "address": "0x154972aB98A5e321a9c7aB7677973f1F501a8090",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000ce4c3525a1cf87919b2ac32ac7f36b9d3c26fcc0",
+          "description": "Updates the multiproof game implementation to the new AggregateVerifier.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000074fac1d45b98bae058f8f566201c9a81b85c7d50",
+          "after": "0x00000000000000000000000074282b13f304c2d9ef10a4fb21fb0b596de873d0",
+          "description": "Update address of DisputeGameFactory to new implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe599aaa2f8fda7c53529cbda86878cc948a0a03183dcb2ecbc676dee91952337",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000b1a2bc2ec50000",
+          "description": "Sets the init bond for the multiproof game type.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x815c6a7915d2a50c3680dce1093cb6c5515c2f3495f3a44a7c497ee46c350c47",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the Security Council Safe approval on the coordinator Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Zeronet",
+      "address": "0x60A6C389F0BC5cE4269A40d9695927bC58700328",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800001",
+          "after": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800002",
+          "description": "Runs the AnchorStateRegistry reinitializer for the multiproof cutover.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0xdead000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xaaada834ea301486fdf3fc2cb72efa2bbee04bccc29af4d03a4bfbf272a2664a",
+          "description": "Sets the starting anchor root for the new multiproof game type.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000867a4",
+          "description": "Sets the starting anchor L2 block number for the new multiproof game type.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "before": "0x00000000000000000000000000000000000000000000000069bc78ac00000001",
+          "after": "0x00000000000000000000000000000000000000000000000069cd5b580000026d",
+          "description": "Sets the respected game type to multiproof and updates the packed retirement timestamp slot; small differences are expected because this slot also stores a block.timestamp-derived value.",
+          "allowDifference": true
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000eb69cc681e8d4a557b30dffbad85affd47a2cf2e",
+          "after": "0x0000000000000000000000005fe805f993bfe59c90ecd1bcdb93306c8c60bfdb",
+          "description": "Update address of AnchorStateRegistry to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Zeronet",
+      "address": "0x7b9fB81a8e041814903C9385B22d88ac303DF699",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000007cf803296662e8c72a6c1d6450572209acf7f202",
+          "after": "0x0000000000000000000000002559acb724cf20be7b66753ea304903094d320da",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DelayedWETH - Zeronet",
+      "address": "0xA12aE047125247baa97eD67E30513a7F95102919",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Initializes the DelayedWETH proxy.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea80",
+          "description": "Sets DelayedWETH to use the existing SystemConfig.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000ddef4975f6335f294e51f5d45a9999acadbecafa",
+          "description": "Update address of DelayedWETH to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "TEEProverRegistry - Zeronet",
+      "address": "0xd6eF870eD958502931cc96BEFcBEc1F5980220e2",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Initializes the TEEProverRegistry proxy.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000033",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000856611ed7e07d83243b15e93f6321f2df6865852",
+          "description": "Sets the TEEProverRegistry owner to the configured Safe.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000034",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000009b0343651efbac50f571c455973204c1d29a7bc6",
+          "description": "Sets the TEEProverRegistry manager to the configured manager.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000065",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000026d",
+          "description": "Sets the TEEProverRegistry game type to multiproof.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000fda350e8038728b689976d4a9e8a318400a150c5",
+          "description": "Update address of TEEProverRegistry to new implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xf1de10557000618d34742531338f640cc06eb6cd7749e88383ff329a75bbfa0e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Marks CHALLENGER as a valid proposer in TEEProverRegistry (isValidProposer[CHALLENGER], mapping slot 104; derive with `cast index address 0x950926F3b71A891BfC340d6bFeB5972513306DF0 104`).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xfd459436888b9c8857d273fa0ad0fd63ee695f0647e339338740daf8e1a7553f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Marks PROPOSER as a valid proposer in TEEProverRegistry (isValidProposer[PROPOSER], mapping slot 104; derive with `cast index address 0x4A944b9629cbbd0f226859fa99500a48f35C1D0D 104`).",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "baptiste.oueriagli@coinbase.com"
+    }
+  }
+}

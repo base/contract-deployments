@@ -1,6 +1,6 @@
 # Activate Multiproof
 
-Status: DRAFT
+Status: READY TO SIGN
 
 ## Description
 

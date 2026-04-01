@@ -13,7 +13,7 @@ import {IRiscZeroVerifier} from "lib/risc0-ethereum/contracts/src/IRiscZeroVerif
 import {RiscZeroSetVerifier, RiscZeroSetVerifierLib} from "lib/risc0-ethereum/contracts/src/RiscZeroSetVerifier.sol";
 import {NitroEnclaveVerifier} from "@base-contracts/src/multiproof/tee/NitroEnclaveVerifier.sol";
 
-contract DeployNitroEnclaveVerifier is Script {
+contract DeployNitroVerifier is Script {
     address internal teeProverRegistryOwnerEnv;
     uint64 internal nitroInitialMaxTimeDiffSecondsEnv;
     bytes32 internal nitroInitialRootCertEnv;
@@ -42,7 +42,7 @@ contract DeployNitroEnclaveVerifier is Script {
             new RiscZeroSetVerifier({
                 verifier: IRiscZeroVerifier(riscZeroVerifierRouterEnv),
                 imageId: riscZeroSetBuilderImageIdEnv,
-                _imageUrl: ""
+                _imageUrl: "https://gateway.pinata.cloud/ipfs/bafybeicclqbjn5ief3ycqif6wv3n3wr43szv2locrmml5h7d4fkrz4jrum"
             })
         );
 
@@ -107,10 +107,7 @@ contract DeployNitroEnclaveVerifier is Script {
         require(cfg.verifierId == nitroZkVerifierIdEnv, "nitro verifier id mismatch");
         require(cfg.aggregatorId == bytes32(0), "nitro aggregator id mismatch");
         require(cfg.zkVerifier == riscZeroVerifierRouterEnv, "nitro router mismatch");
-        require(
-            nev.getVerifierProofId(ZkCoProcessorType.RiscZero) == bytes32(0),
-            "nitro verifier proof id mismatch"
-        );
+        require(nev.getVerifierProofId(ZkCoProcessorType.RiscZero) == bytes32(0), "nitro verifier proof id mismatch");
         require(
             INitroEnclaveVerifier(nitroEnclaveVerifier).getZkVerifier(ZkCoProcessorType.RiscZero, setVerifierSelector)
                 == riscZeroVerifierRouterEnv,
