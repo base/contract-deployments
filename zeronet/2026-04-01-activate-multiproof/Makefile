@@ -12,8 +12,12 @@ MULTIPROOF_CB_SENDER := $(shell cast call $(CB_MULTISIG) "getOwners()(address[])
 MULTIPROOF_SC_SENDER := $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 SETUP_NITRO_SENDER := $(shell cast call $(TEE_PROVER_REGISTRY_OWNER) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 
+.PHONY: apply-patches
+apply-patches:
+	cd lib/contracts && patch -p1 < ../../patch/asr-reset-anchor-game.patch
+
 .PHONY: deps
-deps: task-extra-deps
+deps: task-extra-deps apply-patches
 
 .PHONY: task-extra-deps
 task-extra-deps:

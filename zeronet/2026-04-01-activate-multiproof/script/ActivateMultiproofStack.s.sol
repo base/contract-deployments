@@ -45,7 +45,8 @@ contract ActivateMultiproofStack is MultisigScript {
     bytes32 internal startingAnchorRootEnv;
     uint256 internal startingAnchorL2BlockNumberEnv;
 
-    // TEE registry initialization parameters.
+    // TEE registry parameters (used for post-check validation; proxies are initialized
+    // at deploy time in DeployMultiproofStack).
     address internal teeProverRegistryOwnerEnv;
     address internal teeProverRegistryManagerEnv;
     address internal proposerEnv;
@@ -107,25 +108,24 @@ contract ActivateMultiproofStack is MultisigScript {
     /// @dev Builds the ordered batch of calls executed atomically by the owner Safe.
     ///      Ordering constraints:
     ///      - Proxy upgrades must precede any call that depends on new impl logic.
-    ///      - TEEProverRegistry and DelayedWETH must be wired before the game type is registered,
-    ///        so that game clones can interact with them.
     ///      - The AnchorStateRegistry reinitializer runs before `setImplementation`, but this is
     ///        still safe because the batch executes atomically and no external caller can observe
     ///        the intermediate state where the respected game type has been updated before the
     ///        new DisputeGameFactory implementation is registered.
     ///      - `updateRetirementTimestamp` retires old games after all wiring is done.
     ///
+    ///      Note: TEEProverRegistry and DelayedWETH proxies are already initialized at deploy
+    ///      time (in DeployMultiproofStack) and do not require wiring in this batch.
+    ///
     ///      Call summary:
     ///      0. Upgrade OptimismPortal2 proxy.
     ///      1. Upgrade DisputeGameFactory proxy.
     ///      2. Upgrade + reinitialize AnchorStateRegistry proxy (sets respectedGameType).
-    ///      3. Wire TEEProverRegistry proxy (upgradeAndCall with initialize).
-    ///      4. Wire DelayedWETH proxy (upgradeAndCall with initialize).
-    ///      5. Register AggregateVerifier in the DisputeGameFactory.
-    ///      6. Set the init bond for the multiproof game type.
-    ///      7. Retire pre-cutover games.
+    ///      3. Register AggregateVerifier in the DisputeGameFactory.
+    ///      4. Set the init bond for the multiproof game type.
+    ///      5. Retire pre-cutover games.
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[](8);
+        Call[] memory calls = new Call[](6);
 
         // 0. Upgrade the OptimismPortal2 proxy to the new implementation.
         calls[0] = Call({
@@ -169,36 +169,9 @@ contract ActivateMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 3. Wire the TEEProverRegistry proxy: set its implementation and initialize owner, manager,
-        //    initial valid proposers, and game type in one atomic call.
-        calls[3] = Call({
-            operation: Enum.Operation.Call,
-            target: proxyAdminEnv,
-            data: abi.encodeCall(
-                IProxyAdmin.upgradeAndCall,
-                (newTeeProverRegistryProxy, newTeeProverRegistryImpl, _teeRegistryInitData())
-            ),
-            value: 0
-        });
-
-        // 4. Wire the DelayedWETH proxy: set its implementation and initialize it with the existing SystemConfig.
-        calls[4] = Call({
-            operation: Enum.Operation.Call,
-            target: proxyAdminEnv,
-            data: abi.encodeCall(
-                IProxyAdmin.upgradeAndCall,
-                (
-                    newDelayedWethProxy,
-                    newDelayedWethImpl,
-                    abi.encodeCall(DelayedWETH.initialize, (ISystemConfig(systemConfigEnv)))
-                )
-            ),
-            value: 0
-        });
-
-        // 5. Register the newly deployed AggregateVerifier as the implementation for the configured multiproof
+        // 3. Register the newly deployed AggregateVerifier as the implementation for the configured multiproof
         //    game type in the DisputeGameFactory.
-        calls[5] = Call({
+        calls[3] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(
@@ -207,17 +180,17 @@ contract ActivateMultiproofStack is MultisigScript {
             value: 0
         });
 
-        // 6. Set the init bond required to create games of the new multiproof type.
-        calls[6] = Call({
+        // 4. Set the init bond required to create games of the new multiproof type.
+        calls[4] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(IDisputeGameFactoryAdmin.setInitBond, (GameType.wrap(gameTypeEnv), initBondEnv)),
             value: 0
         });
 
-        // 7. Retire any pre-cutover games so older disputes cannot remain respected
+        // 5. Retire any pre-cutover games so older disputes cannot remain respected
         //    after the new multiproof configuration is activated.
-        calls[7] = Call({
+        calls[5] = Call({
             operation: Enum.Operation.Call,
             target: anchorStateRegistryProxyEnv,
             data: abi.encodeCall(AnchorStateRegistry.updateRetirementTimestamp, ()),
@@ -225,23 +198,6 @@ contract ActivateMultiproofStack is MultisigScript {
         });
 
         return calls;
-    }
-
-    /// @dev Builds the initialization payload used when wiring the TEEProverRegistry proxy.
-    ///      The registry is initialized with:
-    ///      1. `TEE_PROVER_REGISTRY_OWNER` as owner.
-    ///      2. `TEE_PROVER_REGISTRY_MANAGER` as manager.
-    ///      3. Two initial valid proposers: `PROPOSER` and `CHALLENGER`.
-    ///      4. The multiproof game type, so signer validity resolves against the correct AggregateVerifier.
-    /// @return The encoded call to TEEProverRegistry.initialize.
-    function _teeRegistryInitData() internal view returns (bytes memory) {
-        address[] memory initialProposers = new address[](2);
-        initialProposers[0] = proposerEnv;
-        initialProposers[1] = challengerEnv;
-        return abi.encodeCall(
-            TEEProverRegistry.initialize,
-            (teeProverRegistryOwnerEnv, teeProverRegistryManagerEnv, initialProposers, GameType.wrap(gameTypeEnv))
-        );
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal override {
@@ -290,7 +246,7 @@ contract ActivateMultiproofStack is MultisigScript {
         );
     }
 
-    /// @dev Validates the TEEProverRegistry proxy after upgradeAndCall.
+    /// @dev Validates the TEEProverRegistry proxy (initialized at deploy time in DeployMultiproofStack).
     ///      1. Check that the proxy implementation is set to the deployed impl.
     ///      2. Check that owner is set to TEE_PROVER_REGISTRY_OWNER.
     ///      3. Check that manager is set to TEE_PROVER_REGISTRY_MANAGER.
@@ -311,7 +267,7 @@ contract ActivateMultiproofStack is MultisigScript {
         require(registry.isValidProposer(challengerEnv), "tee registry challenger mismatch");
     }
 
-    /// @dev Validates the DelayedWETH proxy after upgradeAndCall.
+    /// @dev Validates the DelayedWETH proxy (initialized at deploy time in DeployMultiproofStack).
     ///      1. Check that the proxy implementation is set to the deployed impl.
     ///      2. Check that systemConfig is initialized to the existing SystemConfig.
     function _checkDelayedWethProxy() internal {
