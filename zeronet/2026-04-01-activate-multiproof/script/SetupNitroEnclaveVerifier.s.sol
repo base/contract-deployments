@@ -48,29 +48,18 @@ contract SetupNitroEnclaveVerifier is MultisigScript {
         );
         require(
             INitroEnclaveVerifierAdmin(nitroEnclaveVerifier)
-                .getZkVerifier(ZK_COPROCESSOR_RISC_ZERO, _riscZeroSetVerifierSelector()) == riscZeroVerifierRouterEnv,
-            "Nitro set-verifier route is not on the default router"
+                .getZkVerifier(ZK_COPROCESSOR_RISC_ZERO, _riscZeroSetVerifierSelector()) == riscZeroSetVerifier,
+            "Nitro set-verifier route not wired to RiscZeroSetVerifier"
         );
     }
 
     /// @dev Builds the owner-only Nitro configuration batch executed by TEE_PROVER_REGISTRY_OWNER.
-    ///      0. Add the selector-specific route that sends RISC Zero set-inclusion proofs
-    ///         to the dedicated local RiscZeroSetVerifier.
-    ///      1. Hand Nitro proof submission to the live TEEProverRegistry proxy.
+    ///      The set-verifier route is already wired at deploy time (DeployNitroVerifier).
+    ///      0. Hand Nitro proof submission to the live TEEProverRegistry proxy.
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[](2);
+        Call[] memory calls = new Call[](1);
 
         calls[0] = Call({
-            operation: Enum.Operation.Call,
-            target: nitroEnclaveVerifier,
-            data: abi.encodeCall(
-                INitroEnclaveVerifierAdmin.addVerifyRoute,
-                (ZK_COPROCESSOR_RISC_ZERO, _riscZeroSetVerifierSelector(), riscZeroSetVerifier)
-            ),
-            value: 0
-        });
-
-        calls[1] = Call({
             operation: Enum.Operation.Call,
             target: nitroEnclaveVerifier,
             data: abi.encodeCall(INitroEnclaveVerifierAdmin.setProofSubmitter, (newTeeProverRegistryProxy)),
