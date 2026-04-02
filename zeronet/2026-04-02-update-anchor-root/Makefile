@@ -12,8 +12,7 @@ UPDATE_ANCHOR_SC_SENDER := $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners
 
 .PHONY: apply-patches
 apply-patches:
-	cd lib/contracts && patch -p1 < ../../patch/asr-reset-anchor-game.patch
-	cd lib/contracts && patch -p1 < ../../patch/asr-bump-reinit-version.patch
+	cd lib/contracts && patch -p1 < ../../patch/asr-reinit-v3.patch
 
 .PHONY: deps
 deps: task-extra-deps apply-patches

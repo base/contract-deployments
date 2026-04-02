@@ -9,3 +9,12 @@ diff --git a/src/dispute/AnchorStateRegistry.sol b/src/dispute/AnchorStateRegist
          DISPUTE_GAME_FINALITY_DELAY_SECONDS = _disputeGameFinalityDelaySeconds;
          _disableInitializers();
      }
+@@ -101,6 +101,7 @@
+         // Now perform initialization logic.
+         systemConfig = _systemConfig;
+         disputeGameFactory = _disputeGameFactory;
+         startingAnchorRoot = _startingAnchorRoot;
++        anchorGame = IFaultDisputeGame(address(0));
+         respectedGameType = _startingRespectedGameType;
+ 
+         // Set the retirement timestamp to the current timestamp the first time the contract is
