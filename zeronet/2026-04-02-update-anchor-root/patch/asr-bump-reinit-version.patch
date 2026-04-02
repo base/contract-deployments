@@ -1,0 +1,11 @@
+diff --git a/src/dispute/AnchorStateRegistry.sol b/src/dispute/AnchorStateRegistry.sol
+--- a/src/dispute/AnchorStateRegistry.sol
++++ b/src/dispute/AnchorStateRegistry.sol
+@@ -77,7 +77,7 @@
+ 
+     /// @param _disputeGameFinalityDelaySeconds The dispute game finality delay in seconds.
+-    constructor(uint256 _disputeGameFinalityDelaySeconds) ReinitializableBase(2) {
++    constructor(uint256 _disputeGameFinalityDelaySeconds) ReinitializableBase(3) {
+         DISPUTE_GAME_FINALITY_DELAY_SECONDS = _disputeGameFinalityDelaySeconds;
+         _disableInitializers();
+     }
