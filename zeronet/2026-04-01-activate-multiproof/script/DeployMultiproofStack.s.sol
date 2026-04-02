@@ -6,6 +6,7 @@ import {Script, console} from "forge-std/Script.sol";
 import {IAnchorStateRegistry} from "interfaces/dispute/IAnchorStateRegistry.sol";
 import {IDelayedWETH} from "interfaces/dispute/IDelayedWETH.sol";
 import {IDisputeGameFactory} from "interfaces/dispute/IDisputeGameFactory.sol";
+import {ISystemConfig} from "interfaces/L1/ISystemConfig.sol";
 import {INitroEnclaveVerifier} from "interfaces/multiproof/tee/INitroEnclaveVerifier.sol";
 
 import {GameType} from "@base-contracts/src/dispute/lib/Types.sol";
@@ -18,6 +19,10 @@ import {TEEVerifier} from "@base-contracts/src/multiproof/tee/TEEVerifier.sol";
 import {AggregateVerifier} from "@base-contracts/src/multiproof/AggregateVerifier.sol";
 import {MockVerifier} from "@base-contracts/src/multiproof/mocks/MockVerifier.sol";
 import {Proxy} from "@base-contracts/src/universal/Proxy.sol";
+
+interface IProxy {
+    function implementation() external view returns (address);
+}
 
 contract DeployMultiproofStack is Script {
     // Existing Hoodi L1 dependencies consumed by the deploy.
@@ -40,6 +45,13 @@ contract DeployMultiproofStack is Script {
     uint256 internal proofMaturityDelaySecondsEnv;
     uint256 internal disputeGameFinalityDelaySecondsEnv;
     uint256 internal delayedWethDelaySecondsEnv;
+
+    // Proxy initialization parameters (TEEProverRegistry + DelayedWETH).
+    address internal systemConfigEnv;
+    address internal teeProverRegistryOwnerEnv;
+    address internal teeProverRegistryManagerEnv;
+    address internal proposerEnv;
+    address internal challengerEnv;
 
     // Predeployed RISC Zero / Nitro contracts consumed by this task.
     address public nitroEnclaveVerifier;
@@ -78,6 +90,13 @@ contract DeployMultiproofStack is Script {
         disputeGameFinalityDelaySecondsEnv = vm.envUint("DISPUTE_GAME_FINALITY_DELAY_SECONDS");
         delayedWethDelaySecondsEnv = vm.envUint("DELAYED_WETH_DELAY_SECONDS");
 
+        // Proxy initialization parameters (TEEProverRegistry + DelayedWETH).
+        systemConfigEnv = vm.envAddress("SYSTEM_CONFIG");
+        teeProverRegistryOwnerEnv = vm.envAddress("TEE_PROVER_REGISTRY_OWNER");
+        teeProverRegistryManagerEnv = vm.envAddress("TEE_PROVER_REGISTRY_MANAGER");
+        proposerEnv = vm.envAddress("PROPOSER");
+        challengerEnv = vm.envAddress("CHALLENGER");
+
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/addresses.json");
         string memory json = vm.readFile(path);
@@ -87,13 +106,7 @@ contract DeployMultiproofStack is Script {
     function run() external {
         vm.startBroadcast();
 
-        // 0. Deploy empty proxies with the real ProxyAdmin as admin.
-        //    No implementation is set yet; the multisig upgrade script will wire
-        //    them via ProxyAdmin.upgradeAndCall.
-        teeProverRegistryProxy = address(new Proxy(l1ProxyAdminEnv));
-        delayedWethProxy = address(new Proxy(l1ProxyAdminEnv));
-
-        // 1. Deploy the TEE prover registry implementation.
+        // 0. Deploy the TEE prover registry implementation.
         teeProverRegistryImpl = address(
             new TEEProverRegistry({
                 nitroVerifier: INitroEnclaveVerifier(nitroEnclaveVerifier),
@@ -101,7 +114,43 @@ contract DeployMultiproofStack is Script {
             })
         );
 
-        // 2. Deploy the stateless TEE verifier.
+        // 1. Deploy the DelayedWETH implementation.
+        delayedWethImpl = address(new DelayedWETH({_delay: delayedWethDelaySecondsEnv}));
+
+        // 2. Deploy proxies with msg.sender as admin, initialize immediately,
+        //    then transfer admin to the real ProxyAdmin.
+        {
+            // 2a. TEEProverRegistry proxy: deploy, upgradeToAndCall to initialize
+            //     with the configured owner/manager/proposers/gameType, then hand
+            //     the proxy admin to the real ProxyAdmin.
+            address[] memory initialProposers = new address[](2);
+            initialProposers[0] = proposerEnv;
+            initialProposers[1] = challengerEnv;
+
+            Proxy teeProxy = new Proxy(msg.sender);
+            teeProxy.upgradeToAndCall(
+                teeProverRegistryImpl,
+                abi.encodeCall(
+                    TEEProverRegistry.initialize,
+                    (teeProverRegistryOwnerEnv, teeProverRegistryManagerEnv, initialProposers, GameType.wrap(gameTypeEnv))
+                )
+            );
+            teeProxy.changeAdmin(l1ProxyAdminEnv);
+            teeProverRegistryProxy = address(teeProxy);
+        }
+        {
+            // 2b. DelayedWETH proxy: deploy, upgradeToAndCall to initialize with
+            //     the existing SystemConfig, then hand the proxy admin to the real
+            //     ProxyAdmin.
+            Proxy wethProxy = new Proxy(msg.sender);
+            wethProxy.upgradeToAndCall(
+                delayedWethImpl, abi.encodeCall(DelayedWETH.initialize, (ISystemConfig(systemConfigEnv)))
+            );
+            wethProxy.changeAdmin(l1ProxyAdminEnv);
+            delayedWethProxy = address(wethProxy);
+        }
+
+        // 3. Deploy the stateless TEE verifier.
         teeVerifier = address(
             new TEEVerifier({
                 teeProverRegistry: TEEProverRegistry(teeProverRegistryProxy),
@@ -109,11 +158,8 @@ contract DeployMultiproofStack is Script {
             })
         );
 
-        // 3. Deploy the temporary mock ZK verifier used by the AggregateVerifier template.
+        // 4. Deploy the temporary mock ZK verifier used by the AggregateVerifier template.
         zkVerifier = address(new MockVerifier({anchorStateRegistry: IAnchorStateRegistry(anchorStateRegistryProxyEnv)}));
-
-        // 4. Deploy the DelayedWETH implementation that will later be wired to its proxy.
-        delayedWethImpl = address(new DelayedWETH({_delay: delayedWethDelaySecondsEnv}));
 
         // 5. Deploy the multiproof AggregateVerifier template.
         aggregateVerifier = address(
@@ -145,18 +191,18 @@ contract DeployMultiproofStack is Script {
         _writeAddresses();
     }
 
-    function _postCheck() internal view {
+    function _postCheck() internal {
         _checkTeeProverRegistryImpl();
+        _checkTeeProverRegistryProxy();
         _checkTeeVerifier();
         _checkMockVerifier();
         _checkDelayedWethImpl();
+        _checkDelayedWethProxy();
         _checkAggregateVerifier();
         _checkUpgradeTargetImpls();
     }
 
-    /// @dev Validates the TEEProverRegistry **implementation** contract. The proxy is
-    ///      deployed empty (no implementation set); only constructor immutables are
-    ///      readable on the implementation. Initialized state is checked in the upgrade script.
+    /// @dev Validates the TEEProverRegistry **implementation** contract.
     ///      1. Check that NITRO_VERIFIER points to the deployed NitroEnclaveVerifier.
     ///      2. Check that DISPUTE_GAME_FACTORY points to the existing DGF proxy.
     function _checkTeeProverRegistryImpl() internal view {
@@ -164,6 +210,27 @@ contract DeployMultiproofStack is Script {
 
         require(address(impl.NITRO_VERIFIER()) == nitroEnclaveVerifier, "registry nitro verifier mismatch");
         require(address(impl.DISPUTE_GAME_FACTORY()) == disputeGameFactoryProxyEnv, "registry dgf mismatch");
+    }
+
+    /// @dev Validates the TEEProverRegistry proxy after upgradeToAndCall.
+    ///      1. Check that the proxy implementation is set to the deployed impl.
+    ///      2. Check that owner is set to TEE_PROVER_REGISTRY_OWNER.
+    ///      3. Check that manager is set to TEE_PROVER_REGISTRY_MANAGER.
+    ///      4. Check that gameType is set to the multiproof game type.
+    ///      5. Check that PROPOSER is flagged as valid.
+    ///      6. Check that CHALLENGER is flagged as valid.
+    function _checkTeeProverRegistryProxy() internal {
+        vm.prank(l1ProxyAdminEnv);
+        require(
+            IProxy(teeProverRegistryProxy).implementation() == teeProverRegistryImpl, "tee registry impl mismatch"
+        );
+
+        TEEProverRegistry registry = TEEProverRegistry(teeProverRegistryProxy);
+        require(registry.owner() == teeProverRegistryOwnerEnv, "tee registry owner mismatch");
+        require(registry.manager() == teeProverRegistryManagerEnv, "tee registry manager mismatch");
+        require(GameType.unwrap(registry.gameType()) == gameTypeEnv, "tee registry game type mismatch");
+        require(registry.isValidProposer(proposerEnv), "tee registry proposer mismatch");
+        require(registry.isValidProposer(challengerEnv), "tee registry challenger mismatch");
     }
 
     /// @dev Validates the TEEVerifier contract. This is a stateless verifier whose
@@ -190,12 +257,23 @@ contract DeployMultiproofStack is Script {
         );
     }
 
-    /// @dev Validates the DelayedWETH **implementation** contract. Like the TEE registry,
-    ///      the proxy is empty at this stage; initialization is deferred to the upgrade script.
+    /// @dev Validates the DelayedWETH **implementation** contract.
     ///      1. Check that delay matches DELAYED_WETH_DELAY_SECONDS.
     function _checkDelayedWethImpl() internal view {
         require(
             DelayedWETH(payable(delayedWethImpl)).delay() == delayedWethDelaySecondsEnv, "delayed weth delay mismatch"
+        );
+    }
+
+    /// @dev Validates the DelayedWETH proxy after upgradeToAndCall.
+    ///      1. Check that the proxy implementation is set to the deployed impl.
+    ///      2. Check that systemConfig is initialized to the existing SystemConfig.
+    function _checkDelayedWethProxy() internal {
+        vm.prank(l1ProxyAdminEnv);
+        require(IProxy(delayedWethProxy).implementation() == delayedWethImpl, "delayed weth impl mismatch");
+        require(
+            address(DelayedWETH(payable(delayedWethProxy)).systemConfig()) == systemConfigEnv,
+            "delayed weth systemConfig mismatch"
         );
     }
 

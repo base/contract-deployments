@@ -6,14 +6,15 @@ include .env
 SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
 ACTIVATE_MULTIPROOF_SCRIPT_NAME = script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack
-SETUP_NITRO_SCRIPT_NAME = script/SetupNitroEnclaveVerifier.s.sol:SetupNitroEnclaveVerifier
-
 MULTIPROOF_CB_SENDER := $(shell cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 MULTIPROOF_SC_SENDER := $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
-SETUP_NITRO_SENDER := $(shell cast call $(TEE_PROVER_REGISTRY_OWNER) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
+
+.PHONY: apply-patches
+apply-patches:
+	cd lib/contracts && patch -p1 < ../../patch/asr-reset-anchor-game.patch
 
 .PHONY: deps
-deps: task-extra-deps
+deps: task-extra-deps apply-patches
 
 .PHONY: task-extra-deps
 task-extra-deps:
@@ -36,20 +37,21 @@ deploy-cb-multicall:
 .PHONY: deploy-nitro-verifier
 deploy-nitro-verifier:
 	forge script --rpc-url $(L1_RPC_URL) script/DeployNitroVerifier.s.sol:DeployNitroVerifier \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33
 
 .PHONY: deploy-multiproof
 deploy-multiproof:
 	forge script --rpc-url $(L1_RPC_URL) script/DeployMultiproofStack.s.sol:DeployMultiproofStack \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33
+
+.PHONY: setup-nitro
+setup-nitro:
+	forge script --rpc-url $(L1_RPC_URL) script/SetupNitroEnclaveVerifier.s.sol:SetupNitroEnclaveVerifier \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33
 
 ##
 # Activate Multiproof
 ##
-
-.PHONY: gen-validation-setup-nitro
-gen-validation-setup-nitro: deps-signer-tool
-	$(call GEN_VALIDATION,$(SETUP_NITRO_SCRIPT_NAME),,$(SETUP_NITRO_SENDER),setup-nitro-signer.json,)
 
 .PHONY: gen-validation-multiproof-cb
 gen-validation-multiproof-cb: deps-signer-tool
@@ -68,11 +70,6 @@ approve-multiproof-cb:
 approve-multiproof-sc: SCRIPT_NAME := $(ACTIVATE_MULTIPROOF_SCRIPT_NAME)
 approve-multiproof-sc:
 	$(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
-
-.PHONY: execute-setup-nitro
-execute-setup-nitro: SCRIPT_NAME := $(SETUP_NITRO_SCRIPT_NAME)
-execute-setup-nitro:
-	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: execute-activate-multiproof
 execute-activate-multiproof: SCRIPT_NAME := $(ACTIVATE_MULTIPROOF_SCRIPT_NAME)
