@@ -2,6 +2,7 @@ diff --git a/src/dispute/AnchorStateRegistry.sol b/src/dispute/AnchorStateRegist
 --- a/src/dispute/AnchorStateRegistry.sol
 +++ b/src/dispute/AnchorStateRegistry.sol
 @@ -77,7 +77,7 @@
+     error AnchorStateRegistry_Unauthorized();
  
      /// @param _disputeGameFinalityDelaySeconds The dispute game finality delay in seconds.
 -    constructor(uint256 _disputeGameFinalityDelaySeconds) ReinitializableBase(2) {
@@ -9,7 +10,7 @@ diff --git a/src/dispute/AnchorStateRegistry.sol b/src/dispute/AnchorStateRegist
          DISPUTE_GAME_FINALITY_DELAY_SECONDS = _disputeGameFinalityDelaySeconds;
          _disableInitializers();
      }
-@@ -101,6 +101,7 @@
+@@ -101,7 +101,8 @@
          // Now perform initialization logic.
          systemConfig = _systemConfig;
          disputeGameFactory = _disputeGameFactory;
