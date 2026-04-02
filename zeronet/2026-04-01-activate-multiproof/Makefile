@@ -5,6 +5,7 @@ include .env
 
 SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
+DEPLOYER := $(shell cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
 ACTIVATE_MULTIPROOF_SCRIPT_NAME = script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack
 MULTIPROOF_CB_SENDER := $(shell cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 MULTIPROOF_SC_SENDER := $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
@@ -37,17 +38,17 @@ deploy-cb-multicall:
 .PHONY: deploy-nitro-verifier
 deploy-nitro-verifier:
 	forge script --rpc-url $(L1_RPC_URL) script/DeployNitroVerifier.s.sol:DeployNitroVerifier \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
 
 .PHONY: deploy-multiproof
 deploy-multiproof:
 	forge script --rpc-url $(L1_RPC_URL) script/DeployMultiproofStack.s.sol:DeployMultiproofStack \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
 
 .PHONY: setup-nitro
 setup-nitro:
 	forge script --rpc-url $(L1_RPC_URL) script/SetupNitroEnclaveVerifier.s.sol:SetupNitroEnclaveVerifier \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
 
 ##
 # Activate Multiproof
