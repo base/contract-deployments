@@ -1,0 +1,165 @@
+{
+  "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x0b0dfe24279a1d6c94ca126289c2fae06b9779e8da9ede07df5a1584772d306e"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Coordinator Safe - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb233baf9705486af24f17bd743520541ecee77e39560c97844434546e1f231a2",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "DisputeGameFactory - Zeronet",
+      "address": "0x154972aB98A5e321a9c7aB7677973f1F501a8090",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000006ed60b2e1bdc8bcf333e12e716af2bc63bb263d6",
+          "description": "Updates the multiproof game implementation to the new AggregateVerifier.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000074fac1d45b98bae058f8f566201c9a81b85c7d50",
+          "after": "0x000000000000000000000000c5942bf8039cef74414305a67384c382fb5e0bb4",
+          "description": "Update address of DisputeGameFactory to new implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe599aaa2f8fda7c53529cbda86878cc948a0a03183dcb2ecbc676dee91952337",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000b1a2bc2ec50000",
+          "description": "Sets the init bond for the multiproof game type.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc8f0cc10fb3d3155bd917cf66b22e63a82f0dc902bb2df5f9f9b4e2c7ef94042",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the CB Signer Safe approval on the coordinator Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Zeronet",
+      "address": "0x60A6C389F0BC5cE4269A40d9695927bC58700328",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800001",
+          "after": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800002",
+          "description": "Runs the AnchorStateRegistry reinitializer for the multiproof cutover.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0xdead000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xaaada834ea301486fdf3fc2cb72efa2bbee04bccc29af4d03a4bfbf272a2664a",
+          "description": "Sets the starting anchor root for the new multiproof game type.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000000000000867a4",
+          "description": "Sets the starting anchor L2 block number for the new multiproof game type.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "before": "0x00000000000000000000000000000000000000000000000069bc78ac00000001",
+          "after": "0x00000000000000000000000000000000000000000000000069ce6dd80000026d",
+          "description": "Sets the respected game type to multiproof and updates the packed retirement timestamp slot; small differences are expected because this slot also stores a block.timestamp-derived value.",
+          "allowDifference": true
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000eb69cc681e8d4a557b30dffbad85affd47a2cf2e",
+          "after": "0x000000000000000000000000144a55c8d46a347cd08204c0327cb411527f846e",
+          "description": "Update address of AnchorStateRegistry to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Zeronet",
+      "address": "0x7b9fB81a8e041814903C9385B22d88ac303DF699",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000007cf803296662e8c72a6c1d6450572209acf7f202",
+          "after": "0x00000000000000000000000027b8d2d28540b133f9454535867e3b89b78d88b0",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "baptiste.oueriagli@coinbase.com"
+    }
+  }
+}
