@@ -1,0 +1,107 @@
+{
+  "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpdateAnchorRoot.s.sol:UpdateAnchorRoot --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0x78dba4f38d7a0ed0c821a5c72a1dc8cba9884db9c46e2f0ec857cee2d0d798d1"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Coordinator Safe - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xf02cab6bedc78d107d827bc5e39342413f09d41f4bd1d86d50f49be6fdc749cc",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Coordinator Safe - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xbbaba09d73fdceda5ac3440847d5052cbfabc827b82a1f708b860380d60cfd5e",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Zeronet",
+      "address": "0x60A6C389F0BC5cE4269A40d9695927bC58700328",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800002",
+          "after": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800003",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0xaaada834ea301486fdf3fc2cb72efa2bbee04bccc29af4d03a4bfbf272a2664a",
+          "after": "0x6d788e7f1b628697d4d34e9b34e8e094ba18647dfbffd51751e10afafc983454",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x00000000000000000000000000000000000000000000000000000000000867a4",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000091669",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000144a55c8d46a347cd08204c0327cb411527f846e",
+          "after": "0x000000000000000000000000614f4647a65f6a16ee9f7b9a7bbf1c26768ba93a",
+          "description": "Update address of AnchorStateRegistry to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
