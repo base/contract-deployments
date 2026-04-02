@@ -62,14 +62,14 @@ contract DeployNitroVerifier is Script {
         );
 
         // Wire the selector-specific route that sends RISC Zero set-inclusion proofs
-        // to the dedicated local RiscZeroSetVerifier, then transfer ownership to the
-        // configured multisig owner.
+        // to the dedicated local RiscZeroSetVerifier. Ownership is retained by msg.sender
+        // so that SetupNitroEnclaveVerifier can call setProofSubmitter after the
+        // TEEProverRegistry proxy is deployed, then transfer ownership to the multisig.
         NitroEnclaveVerifier(nitroEnclaveVerifier).addVerifyRoute(
             ZkCoProcessorType.RiscZero,
             RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv),
             riscZeroSetVerifier
         );
-        NitroEnclaveVerifier(nitroEnclaveVerifier).transferOwnership(teeProverRegistryOwnerEnv);
 
         vm.stopBroadcast();
 
@@ -93,22 +93,22 @@ contract DeployNitroVerifier is Script {
         require(setVerifier.SELECTOR() == setVerifierSelector, "set verifier selector mismatch");
     }
 
-    /// @dev Validates the NitroEnclaveVerifier deployment after ownership transfer and
-    ///      route wiring.
-    ///      1. Check that owner is set to TEE_PROVER_REGISTRY_OWNER (after transferOwnership).
-    ///      2. Check that maxTimeDiff matches NITRO_INITIAL_MAX_TIME_DIFF_SECONDS.
-    ///      3. Check that rootCert matches NITRO_INITIAL_ROOT_CERT.
-    ///      4. Check that proofSubmitter is the temporary owner placeholder.
-    ///      5. Check that the default RISC Zero config points at the external router
+    /// @dev Validates the NitroEnclaveVerifier deployment after route wiring.
+    ///      Ownership remains with the deployer (msg.sender) at this stage; it will be
+    ///      transferred to TEE_PROVER_REGISTRY_OWNER in SetupNitroEnclaveVerifier after
+    ///      setProofSubmitter is called.
+    ///      1. Check that maxTimeDiff matches NITRO_INITIAL_MAX_TIME_DIFF_SECONDS.
+    ///      2. Check that rootCert matches NITRO_INITIAL_ROOT_CERT.
+    ///      3. Check that proofSubmitter is the temporary owner placeholder.
+    ///      4. Check that the default RISC Zero config points at the external router
     ///         and configured Nitro verifier image ID.
-    ///      6. Check that the verifier proof ID is zero for the default route.
-    ///      7. Check that the set-verifier selector route now points to the deployed
+    ///      5. Check that the verifier proof ID is zero for the default route.
+    ///      6. Check that the set-verifier selector route now points to the deployed
     ///         RiscZeroSetVerifier (wired via addVerifyRoute at deploy time).
     function _checkNitroEnclaveVerifier() internal view {
         NitroEnclaveVerifier nev = NitroEnclaveVerifier(nitroEnclaveVerifier);
         bytes4 setVerifierSelector = RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv);
 
-        require(nev.owner() == teeProverRegistryOwnerEnv, "nitro owner mismatch");
         require(nev.maxTimeDiff() == nitroInitialMaxTimeDiffSecondsEnv, "nitro max time diff mismatch");
         require(nev.rootCert() == nitroInitialRootCertEnv, "nitro root cert mismatch");
         require(nev.proofSubmitter() == teeProverRegistryOwnerEnv, "nitro placeholder submitter mismatch");
