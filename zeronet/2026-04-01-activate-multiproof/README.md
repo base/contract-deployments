@@ -1,6 +1,6 @@
 # Activate Multiproof
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xbe0eb99650a815fbfed83ba6063a4c1dbe9444e2a55acda4d3a850fb825a5804)
 
 ## Description
 
