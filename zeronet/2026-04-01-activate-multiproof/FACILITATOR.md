@@ -41,6 +41,41 @@ This produces:
 - `validations/multiproof-cb-signer.json`
 - `validations/multiproof-sc-signer.json`
 
+## Pre-sign check: `STARTING_ANCHOR_*` correctness
+
+`STARTING_ANCHOR_ROOT` and `STARTING_ANCHOR_L2_BLOCK_NUMBER` are chain-critical.
+Before collecting signatures, verify both values against the target RPC endpoints.
+
+### 1. Validate that the anchor block number is expected
+
+Confirm `STARTING_ANCHOR_L2_BLOCK_NUMBER` matches the planned cutover value (if one was agreed)
+
+```bash
+BLOCK=$STARTING_ANCHOR_L2_BLOCK_NUMBER
+cast block $BLOCK --rpc-url $L2_RPC_URL
+```
+
+### 2. Derive output root from that exact block
+
+Use `optimism_outputAtBlock` with the same block and compare to `STARTING_ANCHOR_ROOT` from `.env`.
+
+```bash
+BLOCK=$STARTING_ANCHOR_L2_BLOCK_NUMBER
+OUTPUT_ROOT=$(cast rpc optimism_outputAtBlock $(cast 2h $BLOCK) --rpc-url $OP_NODE_RPC_URL | jq -r '.outputRoot')
+echo $OUTPUT_ROOT
+echo $STARTING_ANCHOR_ROOT
+```
+
+Expected result:
+
+- `OUTPUT_ROOT == STARTING_ANCHOR_ROOT`
+
+### 3. RPC requirements
+
+- `L2_RPC_URL` should point to the target L2 execution RPC.
+- `OP_NODE_RPC_URL` must expose `optimism_outputAtBlock` (typically an OP node RPC).
+- Depending on block age and provider retention, an archive-capable RPC may be required.
+
 ## Execute the transaction
 
 ### 1. Update repo
