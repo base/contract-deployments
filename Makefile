@@ -143,7 +143,7 @@ checkout-base-contracts-commit:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=69fa90b41996e9c1f15e77d7e8e4dda5ac51d007
+SIGNER_TOOL_COMMIT=ea3cca92dd55bb09ac7b296704672d3b3b59270d
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool
