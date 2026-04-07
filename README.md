@@ -38,7 +38,6 @@ To execute a new task, run one of the following commands (depending on the type 
 - For a generic task: `make setup-task network=<network> task=<task-name>`
 - For gas increase tasks: `make setup-gas-increase network=<network>`
 - For combined gas, elasticity, and DA footprint gas scalar tasks: `make setup-gas-and-elasticity-increase network=<network>`
-- For funding: `make setup-funding network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
 - For funding tasks: `make setup-funding network=<network>`
@@ -119,7 +118,7 @@ Two helper macros are also available for tasks that need nonce offset calculatio
 | `GET_NONCE`  | Fetch the current nonce of a Safe contract on-chain     | `(safe_address)` |
 | `ADDR_UPPER` | Convert an address to uppercase (for env var construction) | `(address)`     |
 
-Signing is handled externally by the task-signing-tool.
+Signing is handled externally by the [task-signing-tool](https://github.com/base/task-signing-tool).
 
 Every template Makefile should include `Multisig.mk` and define at least two variables for the macros to work:
 
@@ -224,7 +223,7 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 1. Go to the folder that was created using the `make setup-upgrade-fault-proofs network=<network>` step
 1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file
 1. Run `make deps`
-1. Add the new absolute prestate to the `.env` file. This can be found in the op-program prestates [releases.json](https://github.com/ethereum-optimism/superchain-registry/blob/main/validation/standard/standard-prestates.toml) file.
+1. Add the new absolute prestate to the `.env` file. This can be found in the op-program prestates [standard-prestates.toml](https://github.com/ethereum-optimism/superchain-registry/blob/main/validation/standard/standard-prestates.toml) file.
 1. Network-specific contract addresses are loaded automatically from the network `.env` file. Fill in any remaining task-specific variables in the task's `.env` file.
 1. Build the contracts with `forge build`
 1. Remove the unneeded validations from `VALIDATION.md` and update the relevant validations accordingly
