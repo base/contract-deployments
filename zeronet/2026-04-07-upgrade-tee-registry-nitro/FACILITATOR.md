@@ -1,59 +1,97 @@
-# Facilitator Runbook - Upgrade TEEProverRegistry Nitro Pointer
+# Facilitator Guide
 
-This runbook executes the task in two phases with different authorization contexts.
+Guide for facilitators managing this task.
 
-## Phase 1 - EOA deploy and owner-only Nitro setup
+## Deployment prerequisites
 
-Caller: deployer EOA (Ledger)
-
-From task directory:
+Before collecting signatures, complete all deploy steps:
 
 ```bash
+cd contract-deployments
+git pull
+cd zeronet/2026-04-07-upgrade-tee-registry-nitro
 make deps
-make deploy-and-setup LEDGER_ACCOUNT=<ledger_account_index> L1_RPC_URL=<l1_rpc_url>
+make deploy-and-setup
 ```
 
-Expected outputs:
+`make deploy-and-setup` performs the EOA-authorized phase:
 
-- `addresses.json` contains:
-  - `riscZeroSetVerifier`
-  - `nitroEnclaveVerifier`
-  - `teeProverRegistryImpl`
-  - `riscZeroVerifierRouter`
+- runs `DeployAndSetupNitro`:
+  - deploys new `NitroEnclaveVerifier`
+  - sets Nitro routes and owner-only setters (`setProofSubmitter`, `setRevoker`)
+  - transfers Nitro ownership to `TEE_PROVER_REGISTRY_OWNER`
+  - writes initial `addresses.json`
+- runs `DeployTEEProverRegistryImpl`:
+  - deploys new `TEEProverRegistry` implementation
+  - appends `teeProverRegistryImpl` to `addresses.json`
 
-Checks enforced by script:
+Expected `addresses.json` keys:
 
-- Nitro route wiring is set for set-verifier selector.
-- Nitro `proofSubmitter` is the existing `TEE_PROVER_REGISTRY_PROXY`.
-- Nitro `revoker` is `NITRO_REVOKER`.
-- Nitro owner is transferred to `TEE_PROVER_REGISTRY_OWNER`.
-- New TEE implementation immutables point to new Nitro and existing DGF proxy.
+- `nitroEnclaveVerifier`
+- `teeProverRegistryImpl`
 
-## Phase 2 - Multisig upgrade of TEE proxy
-
-Caller: `PROXY_ADMIN_OWNER` safe signers
-
-1) Generate validation:
+## Generate validation files
 
 ```bash
-make gen-validation-upgrade-tee LEDGER_ACCOUNT=<ledger_account_index> L1_RPC_URL=<l1_rpc_url>
+cd contract-deployments
+git pull
+cd zeronet/2026-04-07-upgrade-tee-registry-nitro
+make deps
+make gen-validation-upgrade-tee-cb
+make gen-validation-upgrade-tee-sc
 ```
 
-2) Collect signatures in signer tool and set `SIGNATURES`.
+This produces:
 
-3) Approve:
+- `validations/upgrade-tee-registry-cb-signer.json`
+- `validations/upgrade-tee-registry-sc-signer.json`
+
+## Execute the transaction
+
+### 1. Update repo
 
 ```bash
-make approve-upgrade-tee LEDGER_ACCOUNT=<ledger_account_index> L1_RPC_URL=<l1_rpc_url> SIGNATURES=<signatures_blob>
+cd contract-deployments
+git pull
+cd zeronet/2026-04-07-upgrade-tee-registry-nitro
+make deps
 ```
 
-4) Execute:
+### 2. Collect signatures for `CB_MULTISIG`
+
+Concatenate all signatures and export as the `SIGNATURES` environment variable:
 
 ```bash
-make execute-upgrade-tee LEDGER_ACCOUNT=<ledger_account_index> L1_RPC_URL=<l1_rpc_url>
+export SIGNATURES="[SIGNATURE1][SIGNATURE2]..."
 ```
 
-Checks enforced by script:
+Then run:
 
-- `TEE_PROVER_REGISTRY_PROXY` implementation equals new `teeProverRegistryImpl`.
-- `TEEProverRegistry(proxy).NITRO_VERIFIER()` equals new `nitroEnclaveVerifier`.
+```bash
+SIGNATURES=$SIGNATURES make approve-upgrade-tee-cb
+```
+
+### 3. Collect signatures for `BASE_SECURITY_COUNCIL`
+
+Concatenate all signatures and export as the `SIGNATURES` environment variable:
+
+```bash
+export SIGNATURES="[SIGNATURE1][SIGNATURE2]..."
+```
+
+Then run:
+
+```bash
+SIGNATURES=$SIGNATURES make approve-upgrade-tee-sc
+```
+
+### 4. Execute upgrade batch
+
+```bash
+make execute-upgrade-tee
+```
+
+Post-checks enforced by script:
+
+- `TEE_PROVER_REGISTRY_PROXY` implementation equals `teeProverRegistryImpl`
+- `TEEProverRegistry(proxy).NITRO_VERIFIER()` equals `nitroEnclaveVerifier`

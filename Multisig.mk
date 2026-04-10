@@ -48,7 +48,7 @@ endef
 define GEN_VALIDATION
 $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 	cd $(SIGNER_TOOL_PATH) && \
-		bun run scripts/genValidationFile.ts \
+		npx tsx scripts/genValidationFile.ts \
 			--rpc-url $(RPC_URL) \
 			--workdir $(CURDIR) \
 			--forge-cmd '$(if $(5),$(5) )forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \

@@ -1,0 +1,97 @@
+{
+  "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpgradeTEEProverRegistry.s.sol:UpgradeTEEProverRegistry --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0xbbb0aca449d3ed8a82d9e6bb7ac77436cca51d2275bd16bc61f5ab7485535a37"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x8e89151dca644cf5ff05db7d97a15f426e5ef0337d6baebafc451966dc22f1b8",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xcd283795c0948d23b4d73e40644334fd3b7d08ab27306ef8a3efccfffffc4800",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets an approval for this transaction",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "TEE Prover Registry Proxy - Zeronet",
+      "address": "0xf1d1441B7d98f191f5CFBE4660D3684FEa004AFc",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000003b0d2f6a1f9d9de3a163e1f0aaf845dd47ce3122",
+          "after": "0x000000000000000000000000c18bca64e7665082a4b695488a093e65d11290bc",
+          "description": "Updates TEEProverRegistry proxy implementation address.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "baptiste.oueriagli@coinbase.com"
+    }
+  }
+}

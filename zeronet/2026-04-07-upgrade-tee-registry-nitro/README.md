@@ -11,7 +11,9 @@ This task upgrades the `TEEProverRegistry` proxy on `zeronet` to a new implement
 
 The task is intentionally split by caller permissions:
 
-- Phase 1: deployer EOA deploys and configures Nitro + deploys new TEE implementation
+- Phase 1: deployer EOA runs 2 scripts in order:
+  - `DeployAndSetupNitro`
+  - `DeployTEEProverRegistryImpl`
 - Phase 2: ProxyAdmin owner multisig upgrades the TEE proxy
 
 ## Procedure

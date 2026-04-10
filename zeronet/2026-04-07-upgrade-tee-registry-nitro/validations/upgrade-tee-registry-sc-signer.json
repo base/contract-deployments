@@ -1,0 +1,91 @@
+{
+  "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpgradeTEEProverRegistry.s.sol:UpgradeTEEProverRegistry --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0xbbb0aca449d3ed8a82d9e6bb7ac77436cca51d2275bd16bc61f5ab7485535a37"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xd711f51637fc65fa76628e9311dc8a9c7ccfad71ec2d35971faccc65c49a30f1",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x70a927c5abf0e39bf28ecd27fb38ff0744c793af018cab6a3869a9befe38d925",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets an approval for this transaction",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "TEE Prover Registry Proxy - Zeronet",
+      "address": "0xf1d1441B7d98f191f5CFBE4660D3684FEa004AFc",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000003b0d2f6a1f9d9de3a163e1f0aaf845dd47ce3122",
+          "after": "0x000000000000000000000000c18bca64e7665082a4b695488a093e65d11290bc",
+          "description": "Updates TEEProverRegistry proxy implementation address.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "baptiste.oueriagli@coinbase.com"
+    }
+  }
+}
