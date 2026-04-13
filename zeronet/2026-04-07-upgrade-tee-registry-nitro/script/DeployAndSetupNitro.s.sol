@@ -13,30 +13,40 @@ import {RiscZeroSetVerifier, RiscZeroSetVerifierLib} from "lib/risc0-ethereum/co
 import {NitroEnclaveVerifier} from "@base-contracts/src/multiproof/tee/NitroEnclaveVerifier.sol";
 
 contract DeployAndSetupNitro is Script {
+    address internal existingNitroEnclaveVerifierEnv;
     address internal teeProverRegistryOwnerEnv;
     address internal teeProverRegistryProxyEnv;
     address internal nitroRevokerEnv;
-
-    uint64 internal nitroInitialMaxTimeDiffSecondsEnv;
-    bytes32 internal nitroInitialRootCertEnv;
-    address internal riscZeroVerifierRouterEnv;
-    address internal riscZeroSetVerifierEnv;
     bytes32 internal riscZeroSetBuilderImageIdEnv;
-    bytes32 internal nitroZkVerifierIdEnv;
+
+    // Derived from the existing NitroEnclaveVerifier at setUp time.
+    uint64 internal nitroInitialMaxTimeDiff;
+    bytes32 internal nitroInitialRootCert;
+    address internal riscZeroVerifierRouter;
+    address internal riscZeroSetVerifier;
+    bytes32 internal nitroZkVerifierId;
 
     address public nitroEnclaveVerifier;
 
     function setUp() public {
+        existingNitroEnclaveVerifierEnv = vm.envAddress("EXISTING_NITRO_ENCLAVE_VERIFIER");
         teeProverRegistryOwnerEnv = vm.envAddress("TEE_PROVER_REGISTRY_OWNER");
         teeProverRegistryProxyEnv = vm.envAddress("TEE_PROVER_REGISTRY_PROXY");
         nitroRevokerEnv = vm.envAddress("NITRO_REVOKER");
-
-        nitroInitialMaxTimeDiffSecondsEnv = uint64(vm.envUint("NITRO_INITIAL_MAX_TIME_DIFF_SECONDS"));
-        nitroInitialRootCertEnv = vm.envBytes32("NITRO_INITIAL_ROOT_CERT");
-        riscZeroVerifierRouterEnv = vm.envAddress("RISC0_VERIFIER_ROUTER");
-        riscZeroSetVerifierEnv = vm.envAddress("RISC0_SET_VERIFIER");
         riscZeroSetBuilderImageIdEnv = vm.envBytes32("RISC0_SET_BUILDER_IMAGE_ID");
-        nitroZkVerifierIdEnv = vm.envBytes32("NITRO_ZK_VERIFIER_ID");
+
+        // Read config from the existing NitroEnclaveVerifier to ensure continuity.
+        NitroEnclaveVerifier existingNev = NitroEnclaveVerifier(existingNitroEnclaveVerifierEnv);
+        nitroInitialMaxTimeDiff = existingNev.maxTimeDiff();
+        nitroInitialRootCert = existingNev.rootCert();
+
+        ZkCoProcessorConfig memory cfg = existingNev.getZkConfig(ZkCoProcessorType.RiscZero);
+        riscZeroVerifierRouter = cfg.zkVerifier;
+        nitroZkVerifierId = cfg.verifierId;
+
+        bytes4 setVerifierSelector = RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv);
+        riscZeroSetVerifier = INitroEnclaveVerifier(existingNitroEnclaveVerifierEnv)
+            .getZkVerifier({_zkCoProcessor: ZkCoProcessorType.RiscZero, _selector: setVerifierSelector});
     }
 
     function run() external {
@@ -48,28 +58,26 @@ contract DeployAndSetupNitro is Script {
         nitroEnclaveVerifier = address(
             new NitroEnclaveVerifier({
                 owner: msg.sender,
-                initialMaxTimeDiff: nitroInitialMaxTimeDiffSecondsEnv,
+                initialMaxTimeDiff: nitroInitialMaxTimeDiff,
                 initializeTrustedCerts: trustedCerts,
                 initializeTrustedCertExpiries: trustedCertExpiries,
-                initialRootCert: nitroInitialRootCertEnv,
+                initialRootCert: nitroInitialRootCert,
                 initialProofSubmitter: msg.sender,
-                initialRevoker: address(0),
+                initialRevoker: nitroRevokerEnv,
                 zkCoProcessor: ZkCoProcessorType.RiscZero,
                 config: ZkCoProcessorConfig({
-                    verifierId: nitroZkVerifierIdEnv, aggregatorId: bytes32(0), zkVerifier: riscZeroVerifierRouterEnv
+                    verifierId: nitroZkVerifierId, aggregatorId: bytes32(0), zkVerifier: riscZeroVerifierRouter
                 }),
                 verifierProofId: bytes32(0)
             })
         );
 
-        NitroEnclaveVerifier(nitroEnclaveVerifier)
-            .addVerifyRoute({
-                zkCoProcessor: ZkCoProcessorType.RiscZero,
-                selector: RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv),
-                verifier: riscZeroSetVerifierEnv
-            });
+        NitroEnclaveVerifier(nitroEnclaveVerifier).addVerifyRoute({
+            zkCoProcessor: ZkCoProcessorType.RiscZero,
+            selector: RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv),
+            verifier: riscZeroSetVerifier
+        });
         NitroEnclaveVerifier(nitroEnclaveVerifier).setProofSubmitter(teeProverRegistryProxyEnv);
-        NitroEnclaveVerifier(nitroEnclaveVerifier).setRevoker(nitroRevokerEnv);
         NitroEnclaveVerifier(nitroEnclaveVerifier).transferOwnership(teeProverRegistryOwnerEnv);
 
         vm.stopBroadcast();
@@ -84,10 +92,10 @@ contract DeployAndSetupNitro is Script {
     }
 
     function _checkRiscZeroSetVerifier() internal view {
-        RiscZeroSetVerifier setVerifier = RiscZeroSetVerifier(riscZeroSetVerifierEnv);
+        RiscZeroSetVerifier setVerifier = RiscZeroSetVerifier(riscZeroSetVerifier);
         bytes4 setVerifierSelector = RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv);
 
-        require(address(setVerifier.VERIFIER()) == riscZeroVerifierRouterEnv, "set verifier router mismatch");
+        require(address(setVerifier.VERIFIER()) == riscZeroVerifierRouter, "set verifier router mismatch");
         require(setVerifier.SELECTOR() == setVerifierSelector, "set verifier selector mismatch");
     }
 
@@ -95,21 +103,21 @@ contract DeployAndSetupNitro is Script {
         NitroEnclaveVerifier nev = NitroEnclaveVerifier(nitroEnclaveVerifier);
         bytes4 setVerifierSelector = RiscZeroSetVerifierLib.selector(riscZeroSetBuilderImageIdEnv);
 
-        require(nev.maxTimeDiff() == nitroInitialMaxTimeDiffSecondsEnv, "nitro max time diff mismatch");
-        require(nev.rootCert() == nitroInitialRootCertEnv, "nitro root cert mismatch");
+        require(nev.maxTimeDiff() == nitroInitialMaxTimeDiff, "nitro max time diff mismatch");
+        require(nev.rootCert() == nitroInitialRootCert, "nitro root cert mismatch");
         require(nev.proofSubmitter() == teeProverRegistryProxyEnv, "nitro proof submitter mismatch");
         require(nev.revoker() == nitroRevokerEnv, "nitro revoker mismatch");
         require(nev.owner() == teeProverRegistryOwnerEnv, "nitro owner mismatch");
 
         ZkCoProcessorConfig memory cfg = nev.getZkConfig(ZkCoProcessorType.RiscZero);
-        require(cfg.verifierId == nitroZkVerifierIdEnv, "nitro verifier id mismatch");
+        require(cfg.verifierId == nitroZkVerifierId, "nitro verifier id mismatch");
         require(cfg.aggregatorId == bytes32(0), "nitro aggregator id mismatch");
-        require(cfg.zkVerifier == riscZeroVerifierRouterEnv, "nitro router mismatch");
+        require(cfg.zkVerifier == riscZeroVerifierRouter, "nitro router mismatch");
         require(nev.getVerifierProofId(ZkCoProcessorType.RiscZero) == bytes32(0), "nitro verifier proof id mismatch");
         require(
             INitroEnclaveVerifier(nitroEnclaveVerifier)
                 .getZkVerifier({_zkCoProcessor: ZkCoProcessorType.RiscZero, _selector: setVerifierSelector})
-            == riscZeroSetVerifierEnv,
+            == riscZeroSetVerifier,
             "nitro set-verifier route mismatch"
         );
     }

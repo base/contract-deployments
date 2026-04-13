@@ -18,17 +18,21 @@ make deploy-and-setup
 
 - runs `DeployAndSetupNitro`:
   - deploys new `NitroEnclaveVerifier`
-  - sets Nitro routes and owner-only setters (`setProofSubmitter`, `setRevoker`)
+  - sets Nitro routes and proof submitter
   - transfers Nitro ownership to `TEE_PROVER_REGISTRY_OWNER`
   - writes initial `addresses.json`
-- runs `DeployTEEProverRegistryImpl`:
+- runs `DeployTeeProverRegistryImpl`:
   - deploys new `TEEProverRegistry` implementation
   - appends `teeProverRegistryImpl` to `addresses.json`
+- runs `DeployAggregateVerifier`:
+  - redeploys `AggregateVerifier` with same immutables as existing one
+  - appends `aggregateVerifier` to `addresses.json`
 
 Expected `addresses.json` keys:
 
 - `nitroEnclaveVerifier`
 - `teeProverRegistryImpl`
+- `aggregateVerifier`
 
 ## Generate validation files
 
@@ -95,3 +99,4 @@ Post-checks enforced by script:
 
 - `TEE_PROVER_REGISTRY_PROXY` implementation equals `teeProverRegistryImpl`
 - `TEEProverRegistry(proxy).NITRO_VERIFIER()` equals `nitroEnclaveVerifier`
+- `DisputeGameFactory.gameImpls(gameType)` equals `aggregateVerifier`

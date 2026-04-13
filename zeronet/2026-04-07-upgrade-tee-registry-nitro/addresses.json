@@ -1,4 +1,5 @@
 {
-  "nitroEnclaveVerifier": "0xf8Cd3a905a3b59Fa25e8848Ab038D1359F770FDc",
-  "teeProverRegistryImpl": "0xC18BcA64e7665082A4b695488a093e65d11290Bc"
+  "nitroEnclaveVerifier": "0xA52E326E5d8Ea661408ce595070C3ae9ebe09e1d",
+  "teeProverRegistryImpl": "0x97a4FA7DB39950c53847BdffEd9B1537638a7B6d",
+  "aggregateVerifier": "0xeC35196Ad4AA0be49D6054125bbc66e18dbd3344"
 }

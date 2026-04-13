@@ -6,7 +6,7 @@ import {INitroEnclaveVerifier} from "interfaces/multiproof/tee/INitroEnclaveVeri
 import {IDisputeGameFactory} from "interfaces/dispute/IDisputeGameFactory.sol";
 import {TEEProverRegistry} from "@base-contracts/src/multiproof/tee/TEEProverRegistry.sol";
 
-contract DeployTEEProverRegistryImpl is Script {
+contract DeployTeeProverRegistryImpl is Script {
     address internal disputeGameFactoryProxyEnv;
     address internal nitroEnclaveVerifier;
 

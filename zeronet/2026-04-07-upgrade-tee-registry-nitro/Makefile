@@ -6,7 +6,7 @@ include .env
 SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
 DEPLOYER ?= $(shell cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
-UPGRADE_TEE_REGISTRY_SCRIPT_NAME = script/UpgradeTEEProverRegistry.s.sol:UpgradeTEEProverRegistry
+UPGRADE_TEE_REGISTRY_SCRIPT_NAME = script/UpgradeTeeProverRegistry.s.sol:UpgradeTeeProverRegistry
 UPGRADE_TEE_REGISTRY_CB_SENDER ?= $(shell cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 UPGRADE_TEE_REGISTRY_SC_SENDER ?= $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 
@@ -37,7 +37,13 @@ endif
 		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
 		--verifier-api-key $(VERIFIER_API_KEY) \
 		-vvvv --sender $(DEPLOYER) && \
-	forge script --rpc-url $(L1_RPC_URL) script/DeployTEEProverRegistryImpl.s.sol:DeployTEEProverRegistryImpl \
+	forge script --rpc-url $(L1_RPC_URL) script/DeployTeeProverRegistryImpl.s.sol:DeployTeeProverRegistryImpl \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
+		--verifier custom \
+		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) \
+		-vvvv --sender $(DEPLOYER) && \
+	forge script --rpc-url $(L1_RPC_URL) script/DeployAggregateVerifier.s.sol:DeployAggregateVerifier \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
 		--verifier custom \
 		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \

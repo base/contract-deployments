@@ -11,10 +11,11 @@ This task upgrades the `TEEProverRegistry` proxy on `zeronet` to a new implement
 
 The task is intentionally split by caller permissions:
 
-- Phase 1: deployer EOA runs 2 scripts in order:
+- Phase 1: deployer EOA runs 3 scripts in order:
   - `DeployAndSetupNitro`
-  - `DeployTEEProverRegistryImpl`
-- Phase 2: ProxyAdmin owner multisig upgrades the TEE proxy
+  - `DeployTeeProverRegistryImpl`
+  - `DeployAggregateVerifier`
+- Phase 2: ProxyAdmin owner multisig upgrades the TEE proxy and registers the new AggregateVerifier in the DisputeGameFactory
 
 ## Procedure
 
