@@ -2,6 +2,7 @@
   "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpgradeTeeProverRegistry.s.sol:UpgradeTeeProverRegistry --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
   "ledgerId": 1,
   "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
     "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
