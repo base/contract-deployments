@@ -6,7 +6,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
     "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
-    "messageHash": "0x0ec6d509d190144a02aef3081a189e70f42ab884ec25149611044c65087690b0"
+    "messageHash": "0x48e3995e89b5093eb1b9e1954b27a93ec24aa87e90eb8b4a1d1da4d8a1f1049c"
   },
   "stateOverrides": [
     {
@@ -32,7 +32,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xa5d68f8ad6e859e7f3fca275fcc7fa2f85e1daa3a86f2a5d4dcb2e0879dcf939",
+          "key": "0xa440aa26b229b26e1a9a257dd91c1614c61b99807d725a60ba76059e4e4a4dc3",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -48,7 +48,7 @@
         {
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x0000000000000000000000006ed60b2e1bdc8bcf333e12e716af2bc63bb263d6",
-          "after": "0x000000000000000000000000ec35196ad4aa0be49d6054125bbc66e18dbd3344",
+          "after": "0x000000000000000000000000016cdb236f103078677aea6d9287ea9b2f33c872",
           "description": "Updates the AggregateVerifier implementation address for game type 621.",
           "allowDifference": false
         }
@@ -66,7 +66,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x983b10492b22d2dde8e50a2fa6a1142289fc77bb9fcaa823cad87615b7f7747b",
+          "key": "0xc6da430873ecec5a5fc3670db199efefdae78b642b94f0f6e44d7dc26ad1af34",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Sets an approval for this transaction.",
@@ -94,7 +94,7 @@
         {
           "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
           "before": "0x0000000000000000000000003b0d2f6a1f9d9de3a163e1f0aaf845dd47ce3122",
-          "after": "0x00000000000000000000000097a4fa7db39950c53847bdffed9b1537638a7b6d",
+          "after": "0x000000000000000000000000cbb3f44b4378c014ce7aaa15bae54b433ac63085",
           "description": "Updates TEEProverRegistry proxy implementation address.",
           "allowDifference": false
         }

@@ -5,10 +5,10 @@ include .env
 
 SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
-DEPLOYER ?= $(shell cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
+DEPLOYER = $(shell cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
 UPGRADE_TEE_REGISTRY_SCRIPT_NAME = script/UpgradeTeeProverRegistry.s.sol:UpgradeTeeProverRegistry
-UPGRADE_TEE_REGISTRY_CB_SENDER ?= $(shell cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
-UPGRADE_TEE_REGISTRY_SC_SENDER ?= $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
+UPGRADE_TEE_REGISTRY_CB_SENDER = $(shell cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
+UPGRADE_TEE_REGISTRY_SC_SENDER = $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 
 .PHONY: deps
 deps: task-extra-deps
