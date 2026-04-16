@@ -34,13 +34,27 @@ task-extra-deps:
 # CBMulticall is already deployed on Sepolia, so this task starts at Nitro deployment.
 .PHONY: deploy-nitro-verifier
 deploy-nitro-verifier:
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
 	forge script --rpc-url $(L1_RPC_URL) script/DeployNitroVerifier.s.sol:DeployNitroVerifier \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
+		--verifier custom \
+		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) \
+		-vvvv --sender $(DEPLOYER)
 
 .PHONY: deploy-multiproof
 deploy-multiproof:
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
 	forge script --rpc-url $(L1_RPC_URL) script/DeployMultiproofStack.s.sol:DeployMultiproofStack \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
+		--verifier custom \
+		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) \
+		-vvvv --sender $(DEPLOYER)
 
 .PHONY: setup-nitro
 setup-nitro:

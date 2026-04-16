@@ -128,17 +128,11 @@ contract DeployNitroVerifier is Script {
     }
 
     function _writeAddresses() internal {
-        console.log("RiscZeroSetVerifier:", riscZeroSetVerifier);
         console.log("NitroEnclaveVerifier:", nitroEnclaveVerifier);
-        console.log("RiscZeroVerifierRouter:", riscZeroVerifierRouterEnv);
 
         string memory root = "root";
         string memory json =
-            vm.serializeAddress({objectKey: root, valueKey: "riscZeroSetVerifier", value: riscZeroSetVerifier});
-        json = vm.serializeAddress({objectKey: root, valueKey: "nitroEnclaveVerifier", value: nitroEnclaveVerifier});
-        json = vm.serializeAddress({
-            objectKey: root, valueKey: "riscZeroVerifierRouter", value: riscZeroVerifierRouterEnv
-        });
+            vm.serializeAddress({objectKey: root, valueKey: "nitroEnclaveVerifier", value: nitroEnclaveVerifier});
         vm.writeJson({json: json, path: "addresses.json"});
     }
 }

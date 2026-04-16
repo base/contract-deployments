@@ -15,21 +15,21 @@ import {NitroEnclaveVerifier} from "@base-contracts/src/multiproof/tee/NitroEncl
 contract SetupNitroEnclaveVerifier is Script {
     address internal teeProverRegistryOwnerEnv;
     bytes32 internal riscZeroSetBuilderImageIdEnv;
+    address internal riscZeroSetVerifierEnv;
 
     address internal nitroEnclaveVerifier;
-    address internal riscZeroSetVerifier;
     address internal teeProverRegistryProxy;
 
     function setUp() public {
         teeProverRegistryOwnerEnv = vm.envAddress("TEE_PROVER_REGISTRY_OWNER");
         riscZeroSetBuilderImageIdEnv = vm.envBytes32("RISC0_SET_BUILDER_IMAGE_ID");
+        riscZeroSetVerifierEnv = vm.envAddress("RISC0_SET_VERIFIER");
 
         string memory root = vm.projectRoot();
         string memory path = string.concat(root, "/addresses.json");
         string memory json = vm.readFile(path);
 
         nitroEnclaveVerifier = vm.parseJsonAddress({json: json, key: ".nitroEnclaveVerifier"});
-        riscZeroSetVerifier = vm.parseJsonAddress({json: json, key: ".riscZeroSetVerifier"});
         teeProverRegistryProxy = vm.parseJsonAddress({json: json, key: ".teeProverRegistryProxy"});
     }
 
@@ -57,7 +57,7 @@ contract SetupNitroEnclaveVerifier is Script {
         require(nev.proofSubmitter() == teeProverRegistryProxy, "nitro proof submitter mismatch");
         require(
             INitroEnclaveVerifier(nitroEnclaveVerifier).getZkVerifier(ZkCoProcessorType.RiscZero, setVerifierSelector)
-                == riscZeroSetVerifier,
+                == riscZeroSetVerifierEnv,
             "nitro set-verifier route mismatch"
         );
     }
