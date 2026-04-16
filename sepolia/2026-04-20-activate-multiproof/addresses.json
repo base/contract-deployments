@@ -1,13 +1,12 @@
 {
-  "nitroEnclaveVerifier": "0x5fE805F993BFE59c90eCd1BCdb93306C8c60bFDB",
-  "teeProverRegistryImpl": "0x5eD42a8Eb9E1F0B466047c02156d894968d42FF9",
-  "teeProverRegistryProxy": "0x3b0D2F6A1F9d9De3A163e1F0aaF845dD47Ce3122",
-  "teeVerifier": "0x6Ffd12456c0594BFAE7e2475A115Dd6e29d2083c",
-  "zkVerifier": "0xD2bfb516fC4373edc20c82Cf08c339BFcA17b202",
-  "delayedWETHImpl": "0x641e68e4D48BabC359e46283a1440d7698Fc39C0",
-  "delayedWETHProxy": "0xBC1622e2C1ee3552a74197d288964db0e62eBF86",
-  "aggregateVerifier": "0x6F3DB1c1F5110b20EfBBCCD13367Bca8898092E6",
-  "optimismPortal2Impl": "0x4730CEc510E664838B20B576881702b64651Cc45",
-  "disputeGameFactoryImpl": "0x6Ed60b2e1bdc8Bcf333e12e716AF2bC63BB263d6",
-  "anchorStateRegistryImpl": "0x27b8D2D28540B133f9454535867e3b89b78d88B0"
+  "nitroEnclaveVerifier": "0x8E385C5136a530DD359F424db43Bf672dD191eC9",
+  "teeProverRegistryImpl": "0xaf2c60C00fF938a50b36D23f3a8b89478C55ab44",
+  "teeProverRegistryProxy": "0x18217d97582e0E5bf03f3408Ff4569bB333bFBCD",
+  "teeVerifier": "0xE049d99Db72204480ceB7E94502dAFE6F05e5C66",
+  "delayedWETHImpl": "0x0319d7BE06524f6817a30f3BDab541A064Ff4DcF",
+  "delayedWETHProxy": "0x5A7DA1D200aF68f890b4568c258aD86eE805b35B",
+  "aggregateVerifier": "0xF9A4733f2b709F37baa4c819F44ca4e8c935355C",
+  "optimismPortal2Impl": "0x93a33057958dEb25F7416DD3eC47cebCCbadBBDf",
+  "disputeGameFactoryImpl": "0x4e7f7f41125247aCB5844dc74f5704c5C53B78B0",
+  "anchorStateRegistryImpl": "0x38Eb04fB947cD8c49Aac49F31A0BbFBD1C9Ae443"
 }

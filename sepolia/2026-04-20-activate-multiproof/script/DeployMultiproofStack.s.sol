@@ -60,7 +60,6 @@ contract DeployMultiproofStack is Script {
     address public teeProverRegistryImpl;
     address public teeProverRegistryProxy;
     address public teeVerifier;
-    address public zkVerifier;
     address public delayedWethImpl;
     address public delayedWethProxy;
     address public aggregateVerifier;
@@ -162,17 +161,15 @@ contract DeployMultiproofStack is Script {
             })
         );
 
-        // 4. Deploy the temporary mock ZK verifier used by the AggregateVerifier template.
-        zkVerifier = address(new MockVerifier({anchorStateRegistry: IAnchorStateRegistry(anchorStateRegistryProxyEnv)}));
-
-        // 5. Deploy the multiproof AggregateVerifier template.
+        // 4. Deploy the multiproof AggregateVerifier template with the ZK path disabled
+        //    (zkVerifier = address(0)).
         aggregateVerifier = address(
             new AggregateVerifier({
                 gameType_: GameType.wrap(gameTypeEnv),
                 anchorStateRegistry_: IAnchorStateRegistry(anchorStateRegistryProxyEnv),
                 delayedWETH: IDelayedWETH(payable(delayedWethProxy)),
                 teeVerifier: TEEVerifier(teeVerifier),
-                zkVerifier: MockVerifier(zkVerifier),
+                zkVerifier: MockVerifier(address(0)),
                 teeImageHash: teeImageHashEnv,
                 zkHashes: AggregateVerifier.ZkHashes({rangeHash: zkRangeHashEnv, aggregateHash: zkAggregateHashEnv}),
                 configHash: configHashEnv,
@@ -183,7 +180,7 @@ contract DeployMultiproofStack is Script {
             })
         );
 
-        // 6. Deploy the new implementations for existing L1 proxies.
+        // 5. Deploy the new implementations for existing L1 proxies.
         optimismPortal2Impl = address(new OptimismPortal2({_proofMaturityDelaySeconds: proofMaturityDelaySecondsEnv}));
         disputeGameFactoryImpl = address(new DisputeGameFactory());
         anchorStateRegistryImpl =
@@ -199,7 +196,6 @@ contract DeployMultiproofStack is Script {
         _checkTeeProverRegistryImpl();
         _checkTeeProverRegistryProxy();
         _checkTeeVerifier();
-        _checkMockVerifier();
         _checkDelayedWethImpl();
         _checkDelayedWethProxy();
         _checkAggregateVerifier();
@@ -250,15 +246,6 @@ contract DeployMultiproofStack is Script {
         );
     }
 
-    /// @dev Validates the MockVerifier used as the temporary ZK verifier placeholder.
-    ///      1. Check that ANCHOR_STATE_REGISTRY points to the existing ASR proxy.
-    function _checkMockVerifier() internal view {
-        require(
-            address(MockVerifier(zkVerifier).ANCHOR_STATE_REGISTRY()) == anchorStateRegistryProxyEnv,
-            "mock verifier asr mismatch"
-        );
-    }
-
     /// @dev Validates the DelayedWETH **implementation** contract.
     ///      1. Check that delay matches DELAYED_WETH_DELAY_SECONDS.
     function _checkDelayedWethImpl() internal view {
@@ -285,7 +272,7 @@ contract DeployMultiproofStack is Script {
     ///      3. Check that DISPUTE_GAME_FACTORY is derived from the ASR's disputeGameFactory().
     ///      4. Check that DELAYED_WETH points to the deployed DelayedWETH proxy.
     ///      5. Check that TEE_VERIFIER points to the deployed TEEVerifier.
-    ///      6. Check that ZK_VERIFIER points to the deployed MockVerifier.
+    ///      6. Check that ZK_VERIFIER is the zero address (ZK path intentionally disabled).
     ///      7. Check that TEE_IMAGE_HASH matches the .env value.
     ///      8. Check that ZK_RANGE_HASH matches the .env value.
     ///      9. Check that ZK_AGGREGATE_HASH matches the .env value.
@@ -302,7 +289,7 @@ contract DeployMultiproofStack is Script {
         require(address(av.DISPUTE_GAME_FACTORY()) == disputeGameFactoryProxyEnv, "aggregate dgf mismatch");
         require(address(av.DELAYED_WETH()) == delayedWethProxy, "aggregate delayed weth mismatch");
         require(address(av.TEE_VERIFIER()) == teeVerifier, "aggregate tee verifier mismatch");
-        require(address(av.ZK_VERIFIER()) == zkVerifier, "aggregate zk verifier mismatch");
+        require(address(av.ZK_VERIFIER()) == address(0), "aggregate zk verifier not disabled");
         require(av.TEE_IMAGE_HASH() == teeImageHashEnv, "aggregate tee image hash mismatch");
         require(av.ZK_RANGE_HASH() == zkRangeHashEnv, "aggregate zk range hash mismatch");
         require(av.ZK_AGGREGATE_HASH() == zkAggregateHashEnv, "aggregate zk aggregate hash mismatch");
@@ -334,7 +321,7 @@ contract DeployMultiproofStack is Script {
         console.log("TEEProverRegistry impl:", teeProverRegistryImpl);
         console.log("TEEProverRegistry proxy:", teeProverRegistryProxy);
         console.log("TEEVerifier:", teeVerifier);
-        console.log("Mock ZKVerifier:", zkVerifier);
+        console.log("ZKVerifier: disabled (address(0))");
         console.log("DelayedWETH impl:", delayedWethImpl);
         console.log("DelayedWETH proxy:", delayedWethProxy);
         console.log("AggregateVerifier:", aggregateVerifier);
@@ -346,7 +333,6 @@ contract DeployMultiproofStack is Script {
         _writeAddress({key: "teeProverRegistryImpl", value: teeProverRegistryImpl});
         _writeAddress({key: "teeProverRegistryProxy", value: teeProverRegistryProxy});
         _writeAddress({key: "teeVerifier", value: teeVerifier});
-        _writeAddress({key: "zkVerifier", value: zkVerifier});
         _writeAddress({key: "delayedWETHImpl", value: delayedWethImpl});
         _writeAddress({key: "delayedWETHProxy", value: delayedWethProxy});
         _writeAddress({key: "aggregateVerifier", value: aggregateVerifier});
