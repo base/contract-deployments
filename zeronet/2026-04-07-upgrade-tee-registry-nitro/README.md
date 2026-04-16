@@ -1,6 +1,6 @@
 # Upgrade TEEProverRegistry Nitro Pointer
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xca03ee8d7bf83e660523910113cb64f75c15baab35777e75bbcb6dc2c8efdd3a)
 
 ## Description
 
