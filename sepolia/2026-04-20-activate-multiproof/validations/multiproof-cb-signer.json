@@ -56,7 +56,7 @@
           "key": "0x8240e4b0c8163a8556fd79c8ca3da05d3c071c2ac132d610f09e2d2db35ccfd8",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Records the CB Coordinator Safe approval on the Proxy Admin Owner Safe.",
           "allowDifference": false
         }
       ]
@@ -69,36 +69,36 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "before": "0x00000000000000000000f272670eb55e895584501d564afeb048bed261940001",
           "after": "0x00000000000000000000f272670eb55e895584501d564afeb048bed261940002",
-          "description": "<<Summary>>",
+          "description": "Runs the AnchorStateRegistry reinitializer for the multiproof cutover.",
           "allowDifference": false
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
           "before": "0x00000000000000000000000053a1173f18669c74ea1992883a2772244dfee509",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "description": "<<Summary>>",
+          "description": "Clears the cached anchor game address as part of the AnchorStateRegistry reinitialization.",
           "allowDifference": false
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
           "before": "0x10283d1a23d115b2de66adf6ae7e08f50f7c9c7808c3017d6160c853a385668a",
           "after": "0x6c452877ba18e43fecb2a10b5ce458c2da3097f2262f23361659979395208c77",
-          "description": "<<Summary>>",
+          "description": "Sets the starting anchor root for the new multiproof game type.",
           "allowDifference": false
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
           "before": "0x0000000000000000000000000000000000000000000000000000000001da8458",
           "after": "0x0000000000000000000000000000000000000000000000000000000002670bcf",
-          "description": "<<Summary>>",
+          "description": "Sets the starting anchor L2 block number for the new multiproof game type.",
           "allowDifference": false
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
           "before": "0x00000000000000000000000000000000000000000000000068d1a52c00000000",
           "after": "0x00000000000000000000000000000000000000000000000069e177e80000026d",
-          "description": "<<Summary>>",
-          "allowDifference": false
+          "description": "Sets the respected game type to multiproof and updates the packed retirement timestamp slot; small differences are expected because this slot also stores a block.timestamp-derived value.",
+          "allowDifference": true
         },
         {
           "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
@@ -143,7 +143,7 @@
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000498313fb340cd5055c5568546364008299a47517",
-          "description": "Updates the `X` implementation address.",
+          "description": "Updates the multiproof game implementation to the new AggregateVerifier.",
           "allowDifference": false
         },
         {
@@ -157,7 +157,7 @@
           "key": "0xe599aaa2f8fda7c53529cbda86878cc948a0a03183dcb2ecbc676dee91952337",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x00000000000000000000000000000000000000000000000000b1a2bc2ec50000",
-          "description": "<<Summary>>",
+          "description": "Sets the init bond for the multiproof game type.",
           "allowDifference": false
         }
       ]
