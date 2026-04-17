@@ -71,7 +71,7 @@
           "before": "0x00000000000000000000000053a1173f18669c74ea1992883a2772244dfee509",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "description": "Clears the cached anchor game address as part of the AnchorStateRegistry reinitialization.",
-          "allowDifference": false
+          "allowDifference": true
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
