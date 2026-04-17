@@ -1,6 +1,6 @@
 # Fix Nitro Verifier ID
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x3b7898e2c9b47b5000ba09cf67933c6b98027a4e49eecfe00539ad8e7f2e08ce)
 
 ## Description
 
