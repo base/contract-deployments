@@ -1,6 +1,6 @@
 # Activate Multiproof
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xb20fcd230ee76842637a508382886aa7596f36dd6fc8f47d147aeab213fbd55d)
 
 ## Description
 
