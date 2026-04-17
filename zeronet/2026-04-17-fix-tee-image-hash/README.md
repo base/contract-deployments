@@ -1,6 +1,6 @@
 # Fix TEE Image Hash
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x5040cdbab505f66c32db1b5d334325091243ea76a169053eab0b22b27c66c7e3)
 
 ## Description
 
