@@ -1,0 +1,167 @@
+{
+  "cmd": "forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack --sig sign(address[]) [0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x644d0F5c2C55A4679b4BFe057B87ba203AF9aC0D",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
+    "messageHash": "0xd8844409acac8f6b7007aab74a4a665700c84fe4feda0c7e13225f202f95d67d"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdb4efef7ae91cd5408dc10293ce6ca932989186f58f8785fc38eb809cdd4ea76",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000020",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000021",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x8240e4b0c8163a8556fd79c8ca3da05d3c071c2ac132d610f09e2d2db35ccfd8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Sepolia",
+      "address": "0x2fF5cC82dBf333Ea30D8ee462178ab1707315355",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x00000000000000000000f272670eb55e895584501d564afeb048bed261940001",
+          "after": "0x00000000000000000000f272670eb55e895584501d564afeb048bed261940002",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "before": "0x00000000000000000000000053a1173f18669c74ea1992883a2772244dfee509",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x10283d1a23d115b2de66adf6ae7e08f50f7c9c7808c3017d6160c853a385668a",
+          "after": "0x6c452877ba18e43fecb2a10b5ce458c2da3097f2262f23361659979395208c77",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000001da8458",
+          "after": "0x0000000000000000000000000000000000000000000000000000000002670bcf",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "before": "0x00000000000000000000000000000000000000000000000068d1a52c00000000",
+          "after": "0x00000000000000000000000000000000000000000000000069e177e80000026d",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000036398155cd17cfe804f69b233edda800dd4d5aa5",
+          "after": "0x000000000000000000000000b1cc9f8422042eda9eb36a408002517d7c772ac7",
+          "description": "Update address of AnchorStateRegistry to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Sepolia",
+      "address": "0x49f53e41452C74589E85cA1677426Ba426459e85",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000097cebbf8959e2a5476fbe9b98a21806ec234609b",
+          "after": "0x00000000000000000000000045fa7cffa725e238a46a35fde9f339b63fdedbdd",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000011",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000012",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactoryProxy - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000498313fb340cd5055c5568546364008299a47517",
+          "description": "Updates the `X` implementation address.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000c040f392e52cb6970ca8e110c280fe24e07c5e2c",
+          "after": "0x000000000000000000000000e7f2e3c6286375c102e482c0aa2385d8baacac26",
+          "description": "Update address of DisputeGameFactory to new implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe599aaa2f8fda7c53529cbda86878cc948a0a03183dcb2ecbc676dee91952337",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000b1a2bc2ec50000",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": []
+}
