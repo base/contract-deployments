@@ -1,0 +1,65 @@
+{
+  "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/FixNitroVerifierId.s.sol:FixNitroVerifierId --sig sign(address[]) [] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0xbee760b0eb211eda9ebc731c7b84a2e381491873c14003eca70bdcf997f811f8"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x74139f45c055985357da01c4284f32ad254e5309f5799669df497a09b95388f4",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "NitroEnclaveVerifier - Zeronet",
+      "address": "0x4e3E30E148E803667913bE97A8ce9EBA39b65563",
+      "changes": [
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "before": "0xce17a683c290c57ff91f00d4c0e6e6ec8aa2f73285af7d81b162327ba96321d6",
+          "after": "0x15051db631d6ed382d957c795a558a0abdd00d0d22a1670455721bc2712d3d6e",
+          "description": "Updates the RISC Zero verifier ID used by NitroEnclaveVerifier.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "baptiste.oueriagli@coinbase.com"
+    }
+  }
+}
