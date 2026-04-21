@@ -1,0 +1,45 @@
+# Update ZK Config
+
+Status: PENDING
+
+## Description
+
+This task redeploys `AggregateVerifier` on `zeronet` with a newly deployed `ZK_VERIFIER` and updated ZK program hashes, then registers the new implementation under the existing multiproof game type in the `DisputeGameFactory`.
+
+- deploying a new `ZkVerifier` via `DeployZkVerifier`
+- redeploying `AggregateVerifier` with identical immutables, overriding `ZK_VERIFIER`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
+- pointing `DisputeGameFactory.gameImpls(gameType)` at the new `AggregateVerifier`
+
+The task is intentionally split by caller permissions:
+
+- Phase 1: deployer EOA runs `DeployZkVerifier` and `DeployAggregateVerifier`
+- Phase 2: `PROXY_ADMIN_OWNER` multisig (nested `CB_MULTISIG` + `BASE_SECURITY_COUNCIL`) registers the new `AggregateVerifier` in the `DisputeGameFactory`
+
+## Procedure
+
+### Sign task
+
+#### 1. Update repo
+
+```bash
+cd contract-deployments
+git pull
+```
+
+#### 2. Run signing tool
+
+```bash
+cd contract-deployments
+make sign-task
+```
+
+#### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
+
+- Select the correct signer role from the list of available users to sign.
+- After completion, close the signer tool with `Ctrl + C`.
+
+#### 4. Send signature to facilitator
+
+Copy the signature output and send it to the designated facilitator via the agreed communication channel.
+
+For facilitator instructions, see `FACILITATOR.md`.
