@@ -1,6 +1,6 @@
 # Update ZK Config
 
-Status: PENDING
+Status: READY TO SIGN
 
 ## Description
 
@@ -9,11 +9,6 @@ This task redeploys `AggregateVerifier` on `zeronet` with a newly deployed `ZK_V
 - deploying a new `ZkVerifier` via `DeployZkVerifier`
 - redeploying `AggregateVerifier` with identical immutables, overriding `ZK_VERIFIER`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
 - pointing `DisputeGameFactory.gameImpls(gameType)` at the new `AggregateVerifier`
-
-The task is intentionally split by caller permissions:
-
-- Phase 1: deployer EOA runs `DeployZkVerifier` and `DeployAggregateVerifier`
-- Phase 2: `PROXY_ADMIN_OWNER` multisig (nested `CB_MULTISIG` + `BASE_SECURITY_COUNCIL`) registers the new `AggregateVerifier` in the `DisputeGameFactory`
 
 ## Procedure
 
