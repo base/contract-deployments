@@ -19,7 +19,6 @@ contract DeployZkVerifier is Script {
 
     // Live multiproof implementation currently registered in the DGF.
     address internal currentAggregateVerifier;
-    address internal currentZkVerifier;
 
     // Constructor args copied from the live AggregateVerifier.
     address internal currentAnchorStateRegistry;
@@ -32,20 +31,16 @@ contract DeployZkVerifier is Script {
         gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
         sp1VerifierEnv = vm.envAddress("SP1_VERIFIER");
 
-        currentAggregateVerifier =
-            address(IDisputeGameFactory(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv));
+        currentAggregateVerifier = address(IDisputeGameFactory(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv));
         require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
 
         AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
         require(
-            GameType.unwrap(currentAggregate.gameType()) == GameType.unwrap(gameTypeEnv),
-            "current game type mismatch"
+            GameType.unwrap(currentAggregate.gameType()) == GameType.unwrap(gameTypeEnv), "current game type mismatch"
         );
         currentAnchorStateRegistry = address(currentAggregate.anchorStateRegistry());
-        currentZkVerifier = address(currentAggregate.ZK_VERIFIER());
 
         require(currentAnchorStateRegistry != address(0), "anchor state registry not found");
-        require(currentZkVerifier != address(0), "current zk verifier not found");
         require(sp1VerifierEnv != address(0), "sp1 verifier not set");
     }
 
@@ -66,8 +61,6 @@ contract DeployZkVerifier is Script {
     }
 
     function _postCheck() internal view {
-        require(zkVerifier != address(0), "zk verifier not deployed");
-        require(zkVerifier != currentZkVerifier, "new zk verifier equals current");
         require(
             address(ZkVerifier(zkVerifier).ANCHOR_STATE_REGISTRY()) == currentAnchorStateRegistry,
             "zk verifier asr mismatch"

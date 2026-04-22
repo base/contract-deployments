@@ -80,8 +80,7 @@ contract UpdateZkConfig is MultisigScript {
 
         AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
         require(
-            GameType.unwrap(currentAggregate.gameType()) == GameType.unwrap(gameTypeEnv),
-            "current game type mismatch"
+            GameType.unwrap(currentAggregate.gameType()) == GameType.unwrap(gameTypeEnv), "current game type mismatch"
         );
         require(
             address(currentAggregate.anchorStateRegistry()) == anchorStateRegistryProxyEnv,
@@ -120,7 +119,9 @@ contract UpdateZkConfig is MultisigScript {
         nextGameType = nextAggregate.gameType();
 
         require(GameType.unwrap(nextGameType) == GameType.unwrap(gameTypeEnv), "next game type mismatch");
-        require(address(nextAggregate.anchorStateRegistry()) == anchorStateRegistryProxyEnv, "next aggregate asr mismatch");
+        require(
+            address(nextAggregate.anchorStateRegistry()) == anchorStateRegistryProxyEnv, "next aggregate asr mismatch"
+        );
         require(
             address(nextAggregate.DISPUTE_GAME_FACTORY()) == address(currentAggregate.DISPUTE_GAME_FACTORY()),
             "next aggregate dgf mismatch"
@@ -134,17 +135,26 @@ contract UpdateZkConfig is MultisigScript {
             "next aggregate tee verifier mismatch"
         );
         require(address(nextAggregate.ZK_VERIFIER()) == nextZkVerifier, "next aggregate zk verifier mismatch");
-        require(nextAggregate.TEE_IMAGE_HASH() == currentAggregate.TEE_IMAGE_HASH(), "next aggregate tee image hash mismatch");
+        require(
+            nextAggregate.TEE_IMAGE_HASH() == currentAggregate.TEE_IMAGE_HASH(),
+            "next aggregate tee image hash mismatch"
+        );
         require(nextAggregate.ZK_RANGE_HASH() == zkRangeHashEnv, "next aggregate zk range hash mismatch");
         require(nextAggregate.ZK_AGGREGATE_HASH() == zkAggregateHashEnv, "next aggregate zk aggregate hash mismatch");
         require(nextAggregate.CONFIG_HASH() == currentAggregate.CONFIG_HASH(), "next aggregate config hash mismatch");
         require(nextAggregate.L2_CHAIN_ID() == currentAggregate.L2_CHAIN_ID(), "next aggregate l2 chain id mismatch");
-        require(nextAggregate.BLOCK_INTERVAL() == currentAggregate.BLOCK_INTERVAL(), "next aggregate block interval mismatch");
+        require(
+            nextAggregate.BLOCK_INTERVAL() == currentAggregate.BLOCK_INTERVAL(),
+            "next aggregate block interval mismatch"
+        );
         require(
             nextAggregate.INTERMEDIATE_BLOCK_INTERVAL() == currentAggregate.INTERMEDIATE_BLOCK_INTERVAL(),
             "next aggregate intermediate interval mismatch"
         );
-        require(nextAggregate.PROOF_THRESHOLD() == currentAggregate.PROOF_THRESHOLD(), "next aggregate proof threshold mismatch");
+        require(
+            nextAggregate.PROOF_THRESHOLD() == currentAggregate.PROOF_THRESHOLD(),
+            "next aggregate proof threshold mismatch"
+        );
         require(
             address(ZkVerifier(nextZkVerifier).ANCHOR_STATE_REGISTRY()) == anchorStateRegistryProxyEnv,
             "next zk verifier asr mismatch"
@@ -176,8 +186,7 @@ contract UpdateZkConfig is MultisigScript {
                             ISystemConfig(systemConfigEnv),
                             IDisputeGameFactory(disputeGameFactoryProxyEnv),
                             Proposal({
-                                root: Hash.wrap(startingAnchorRootEnv),
-                                l2SequenceNumber: startingAnchorL2BlockNumberEnv
+                                root: Hash.wrap(startingAnchorRootEnv), l2SequenceNumber: startingAnchorL2BlockNumberEnv
                             }),
                             nextGameType
                         )
@@ -190,9 +199,7 @@ contract UpdateZkConfig is MultisigScript {
         calls[1] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
-            data: abi.encodeCall(
-                IDisputeGameFactoryAdmin.setImplementation, (nextGameType, nextAggregateVerifier, "")
-            ),
+            data: abi.encodeCall(IDisputeGameFactoryAdmin.setImplementation, (nextGameType, nextAggregateVerifier, "")),
             value: 0
         });
 
@@ -208,7 +215,9 @@ contract UpdateZkConfig is MultisigScript {
         (Hash currentAnchorRoot, uint256 currentAnchorL2BlockNumber) = asr.getAnchorRoot();
 
         vm.prank(proxyAdminEnv);
-        require(IProxy(anchorStateRegistryProxyEnv).implementation() == nextAnchorStateRegistryImpl, "asr impl mismatch");
+        require(
+            IProxy(anchorStateRegistryProxyEnv).implementation() == nextAnchorStateRegistryImpl, "asr impl mismatch"
+        );
 
         require(address(asr.systemConfig()) == systemConfigEnv, "asr system config mismatch");
         require(address(asr.disputeGameFactory()) == disputeGameFactoryProxyEnv, "asr dgf mismatch");
@@ -225,7 +234,9 @@ contract UpdateZkConfig is MultisigScript {
         require(asr.initVersion() == currentAsrInitVersion + 1, "asr init version mismatch");
 
         require(dgf.gameImpls(nextGameType) == nextAggregateVerifier, "dgf aggregate verifier mismatch");
-        require(address(nextAggregate.anchorStateRegistry()) == anchorStateRegistryProxyEnv, "next aggregate asr mismatch");
+        require(
+            address(nextAggregate.anchorStateRegistry()) == anchorStateRegistryProxyEnv, "next aggregate asr mismatch"
+        );
         require(
             address(nextAggregate.DISPUTE_GAME_FACTORY()) == address(currentAggregate.DISPUTE_GAME_FACTORY()),
             "next aggregate dgf mismatch"
@@ -239,17 +250,26 @@ contract UpdateZkConfig is MultisigScript {
             "next aggregate tee verifier mismatch"
         );
         require(address(nextAggregate.ZK_VERIFIER()) == nextZkVerifier, "next aggregate zk verifier mismatch");
-        require(nextAggregate.TEE_IMAGE_HASH() == currentAggregate.TEE_IMAGE_HASH(), "next aggregate tee image hash mismatch");
+        require(
+            nextAggregate.TEE_IMAGE_HASH() == currentAggregate.TEE_IMAGE_HASH(),
+            "next aggregate tee image hash mismatch"
+        );
         require(nextAggregate.ZK_RANGE_HASH() == zkRangeHashEnv, "next aggregate zk range hash mismatch");
         require(nextAggregate.ZK_AGGREGATE_HASH() == zkAggregateHashEnv, "next aggregate zk aggregate hash mismatch");
         require(nextAggregate.CONFIG_HASH() == currentAggregate.CONFIG_HASH(), "next aggregate config hash mismatch");
         require(nextAggregate.L2_CHAIN_ID() == currentAggregate.L2_CHAIN_ID(), "next aggregate l2 chain id mismatch");
-        require(nextAggregate.BLOCK_INTERVAL() == currentAggregate.BLOCK_INTERVAL(), "next aggregate block interval mismatch");
+        require(
+            nextAggregate.BLOCK_INTERVAL() == currentAggregate.BLOCK_INTERVAL(),
+            "next aggregate block interval mismatch"
+        );
         require(
             nextAggregate.INTERMEDIATE_BLOCK_INTERVAL() == currentAggregate.INTERMEDIATE_BLOCK_INTERVAL(),
             "next aggregate intermediate interval mismatch"
         );
-        require(nextAggregate.PROOF_THRESHOLD() == currentAggregate.PROOF_THRESHOLD(), "next aggregate proof threshold mismatch");
+        require(
+            nextAggregate.PROOF_THRESHOLD() == currentAggregate.PROOF_THRESHOLD(),
+            "next aggregate proof threshold mismatch"
+        );
         require(
             address(ZkVerifier(nextZkVerifier).ANCHOR_STATE_REGISTRY()) == anchorStateRegistryProxyEnv,
             "next zk verifier asr mismatch"

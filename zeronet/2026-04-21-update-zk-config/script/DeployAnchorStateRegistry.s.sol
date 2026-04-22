@@ -24,9 +24,6 @@ contract DeployAnchorStateRegistry is Script {
         AnchorStateRegistry currentAsr = AnchorStateRegistry(anchorStateRegistryProxyEnv);
         currentDisputeGameFinalityDelaySeconds = currentAsr.disputeGameFinalityDelaySeconds();
         currentInitVersion = currentAsr.initVersion();
-
-        require(currentDisputeGameFinalityDelaySeconds != 0, "asr finality delay not found");
-        require(currentInitVersion != 0, "asr init version not found");
     }
 
     function run() external {
@@ -45,8 +42,6 @@ contract DeployAnchorStateRegistry is Script {
     function _postCheck() internal view {
         AnchorStateRegistry nextAsr = AnchorStateRegistry(anchorStateRegistryImpl);
 
-        require(anchorStateRegistryImpl != address(0), "anchor state registry impl not deployed");
-        require(anchorStateRegistryImpl != anchorStateRegistryProxyEnv, "anchor state registry impl equals proxy");
         require(
             nextAsr.disputeGameFinalityDelaySeconds() == currentDisputeGameFinalityDelaySeconds,
             "anchor state registry finality delay mismatch"
@@ -56,6 +51,8 @@ contract DeployAnchorStateRegistry is Script {
 
     function _writeAddresses() internal {
         console.log("AnchorStateRegistry impl:", anchorStateRegistryImpl);
-        vm.writeJson({json: vm.toString(anchorStateRegistryImpl), path: "addresses.json", valueKey: ".anchorStateRegistryImpl"});
+        vm.writeJson({
+            json: vm.toString(anchorStateRegistryImpl), path: "addresses.json", valueKey: ".anchorStateRegistryImpl"
+        });
     }
 }

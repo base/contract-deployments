@@ -1,6 +1,6 @@
 # Update ZK Config
 
-Status: PENDING
+Status: READY TO SIGN
 
 ## Description
 
