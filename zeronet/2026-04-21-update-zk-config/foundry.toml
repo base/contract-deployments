@@ -21,6 +21,7 @@ remappings = [
     'interfaces/legacy/=lib/contracts/interfaces/legacy/',
     'interfaces/multiproof/=lib/contracts/interfaces/multiproof/',
     'interfaces/universal/=lib/contracts/interfaces/universal/',
+    'src/L1/=lib/contracts/src/L1/',
     'src/libraries/=lib/contracts/src/libraries/',
     'src/dispute/=lib/contracts/src/dispute/',
     'src/universal/=lib/contracts/src/universal/',
