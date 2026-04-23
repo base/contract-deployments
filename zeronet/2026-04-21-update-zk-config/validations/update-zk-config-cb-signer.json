@@ -1,0 +1,131 @@
+{
+  "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpdateZkConfig.s.sol:UpdateZkConfig --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x0e55738c840807ab5d3b05bacdb89f50eb66eb465db551c2cfdde55c21e84edb"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xf01317cc6e8cac1c31d4025b6e09295b1966a30699c1ad601036829e2b1e6326",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "DisputeGameFactory Proxy - Zeronet",
+      "address": "0x154972aB98A5e321a9c7aB7677973f1F501a8090",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000ebf217b345fd635b0614e4f56afbe2136528883e",
+          "after": "0x000000000000000000000000fe3e1d27023c4c2e85a7db89d880499958abb77d",
+          "description": "Updates `gameImpls[621]` in the DisputeGameFactory to the newly deployed AggregateVerifier carrying the updated verifier configuration.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x6e1f62b489b838ef8b2eb074602d9da1a1ce2dd02471ee1d7b9815802839d5bb",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the approval of this task's transaction hash by the CB Signer Safe (nested approver of the Proxy Admin Owner).",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Zeronet",
+      "address": "0x60A6C389F0BC5cE4269A40d9695927bC58700328",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800002",
+          "after": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800003",
+          "description": "Runs the AnchorStateRegistry reinitializer for the verifier config update and anchor reset, keeping the packed SystemConfig address unchanged and bumping initVersion from 2 to 3.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0xaaada834ea301486fdf3fc2cb72efa2bbee04bccc29af4d03a4bfbf272a2664a",
+          "after": "0x333041604fff095bd1f06c0d4e9294c64522d9a780e5a497559045e724f1f696",
+          "description": "Resets the starting anchor root for the multiproof game type.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x00000000000000000000000000000000000000000000000000000000000867a4",
+          "after": "0x000000000000000000000000000000000000000000000000000000000016e288",
+          "description": "Resets the starting anchor L2 block number for the multiproof game type to 0x16e288 (1499784).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000144a55c8d46a347cd08204c0327cb411527f846e",
+          "after": "0x00000000000000000000000097cf8c67e0bca7b55909191a731f4d762c9d5ff1",
+          "description": "Update address of AnchorStateRegistry to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "baptiste.oueriagli@coinbase.com"
+    }
+  }
+}

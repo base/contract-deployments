@@ -4,10 +4,10 @@ Status: READY TO SIGN
 
 ## Description
 
-This task updates the ZK configuration of the multiproof implementation on `zeronet` and resets the `AnchorStateRegistry` starting anchor root.
+This task updates the verifier configuration of the multiproof implementation on `zeronet` and resets the `AnchorStateRegistry` starting anchor root.
 
 - deploying a new `ZkVerifier`
-- redeploying `AggregateVerifier` with identical immutables, overriding `ZK_VERIFIER`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
+- redeploying `AggregateVerifier` with identical immutables, overriding `ZK_VERIFIER`, `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
 - deploying a new `AnchorStateRegistry` implementation
 - upgrading `AnchorStateRegistry` to seed the new starting anchor root and clear `anchorGame`
 - pointing `DisputeGameFactory.gameImpls(gameType)` at the new `AggregateVerifier`
