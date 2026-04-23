@@ -1,6 +1,6 @@
 # Fix Starting Anchor Root
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x76e97ddf73d9d2868439c15aa513efe141cfa828ec574ceb6c09180bc55cf5d8)
 
 ## Description
 
