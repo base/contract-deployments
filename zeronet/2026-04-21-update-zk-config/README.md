@@ -1,6 +1,6 @@
 # Update ZK Config
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x84511c640a3f316cba8e6d6442ec152e5378013b9adc40b732633f283d2ea2a0)
 
 ## Description
 
