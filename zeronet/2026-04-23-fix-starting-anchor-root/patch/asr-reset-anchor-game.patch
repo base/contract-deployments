@@ -1,0 +1,21 @@
+diff --git a/src/dispute/AnchorStateRegistry.sol b/src/dispute/AnchorStateRegistry.sol
+index 0e2c41c..2bc5746 100644
+--- a/src/dispute/AnchorStateRegistry.sol
++++ b/src/dispute/AnchorStateRegistry.sol
+@@ -77,7 +77,7 @@ contract AnchorStateRegistry is ProxyAdminOwnedBase, Initializable, Reinitializa
+     error AnchorStateRegistry_Unauthorized();
+ 
+     /// @param _disputeGameFinalityDelaySeconds The dispute game finality delay in seconds.
+-    constructor(uint256 _disputeGameFinalityDelaySeconds) ReinitializableBase(2) {
++    constructor(uint256 _disputeGameFinalityDelaySeconds) ReinitializableBase(4) {
+         DISPUTE_GAME_FINALITY_DELAY_SECONDS = _disputeGameFinalityDelaySeconds;
+         _disableInitializers();
+     }
+@@ -102,6 +102,7 @@ contract AnchorStateRegistry is ProxyAdminOwnedBase, Initializable, Reinitializa
+         systemConfig = _systemConfig;
+         disputeGameFactory = _disputeGameFactory;
+         startingAnchorRoot = _startingAnchorRoot;
++        anchorGame = IFaultDisputeGame(address(0));
+         respectedGameType = _startingRespectedGameType;
+ 
+         // Set the retirement timestamp to the current timestamp the first time the contract is
