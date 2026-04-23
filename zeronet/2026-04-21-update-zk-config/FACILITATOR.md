@@ -23,7 +23,7 @@ make deploy-anchor-state-registry
 
 `make deploy-aggregate-verifier` runs `DeployAggregateVerifier`:
 
-- redeploys `AggregateVerifier` with the same immutables as the existing one, overriding `ZK_VERIFIER`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
+- redeploys `AggregateVerifier` with the same immutables as the existing one, overriding `ZK_VERIFIER`, `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
 - writes `aggregateVerifier` to `addresses.json`
 
 `make deploy-anchor-state-registry` runs `DeployAnchorStateRegistry`:
@@ -141,5 +141,6 @@ Post-checks enforced by script:
 - `DisputeGameFactory.gameImpls(gameType)` equals the newly deployed `aggregateVerifier`
 - `zkVerifier.SP1_VERIFIER()` equals the configured `SP1_VERIFIER`
 - `aggregateVerifier.ZK_VERIFIER()` equals the newly deployed `zkVerifier`
+- `aggregateVerifier.TEE_IMAGE_HASH()` equals the configured `TEE_IMAGE_HASH`
 - `aggregateVerifier.ZK_RANGE_HASH()` equals the configured `ZK_RANGE_HASH`
 - `aggregateVerifier.ZK_AGGREGATE_HASH()` equals the configured `ZK_AGGREGATE_HASH`
