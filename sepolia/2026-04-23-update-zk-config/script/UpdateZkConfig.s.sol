@@ -23,9 +23,7 @@ contract UpdateZkConfig is MultisigScript {
     address internal disputeGameFactoryProxyEnv;
     GameType internal gameTypeEnv;
     address internal sp1VerifierEnv;
-    bytes32 internal teeImageHashEnv;
     bytes32 internal zkRangeHashEnv;
-    bytes32 internal zkAggregateHashEnv;
 
     // Live onchain state.
     address internal currentAggregateVerifier;
@@ -40,9 +38,7 @@ contract UpdateZkConfig is MultisigScript {
         disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
         gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
         sp1VerifierEnv = vm.envAddress("SP1_VERIFIER");
-        teeImageHashEnv = vm.envBytes32("TEE_IMAGE_HASH");
         zkRangeHashEnv = vm.envBytes32("ZK_RANGE_HASH");
-        zkAggregateHashEnv = vm.envBytes32("ZK_AGGREGATE_HASH");
 
         require(IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).owner() == ownerSafeEnv, "dgf owner mismatch");
 
@@ -68,7 +64,6 @@ contract UpdateZkConfig is MultisigScript {
         require(nextZkVerifier != currentZkVerifier, "next zk verifier equals current");
         require(sp1VerifierEnv != address(0), "sp1 verifier not set");
         require(zkRangeHashEnv != bytes32(0), "zk range hash not set");
-        require(zkAggregateHashEnv != bytes32(0), "zk aggregate hash not set");
 
         _checkNextAggregate(currentAggregate, AggregateVerifier(nextAggregateVerifier));
         _checkNextZkVerifier(currentAggregate);
@@ -117,9 +112,15 @@ contract UpdateZkConfig is MultisigScript {
             "next aggregate tee verifier mismatch"
         );
         require(address(nextAggregate.ZK_VERIFIER()) == nextZkVerifier, "next aggregate zk verifier mismatch");
-        require(nextAggregate.TEE_IMAGE_HASH() == teeImageHashEnv, "next aggregate tee image hash mismatch");
+        require(
+            nextAggregate.TEE_IMAGE_HASH() == currentAggregate.TEE_IMAGE_HASH(),
+            "next aggregate tee image hash mismatch"
+        );
         require(nextAggregate.ZK_RANGE_HASH() == zkRangeHashEnv, "next aggregate zk range hash mismatch");
-        require(nextAggregate.ZK_AGGREGATE_HASH() == zkAggregateHashEnv, "next aggregate zk aggregate hash mismatch");
+        require(
+            nextAggregate.ZK_AGGREGATE_HASH() == currentAggregate.ZK_AGGREGATE_HASH(),
+            "next aggregate zk aggregate hash mismatch"
+        );
         require(nextAggregate.CONFIG_HASH() == currentAggregate.CONFIG_HASH(), "next aggregate config hash mismatch");
         require(nextAggregate.L2_CHAIN_ID() == currentAggregate.L2_CHAIN_ID(), "next aggregate l2 chain id mismatch");
         require(

@@ -22,7 +22,7 @@ make deploy-aggregate-verifier
 
 `make deploy-aggregate-verifier` runs `DeployAggregateVerifier`:
 
-- redeploys `AggregateVerifier` with the same immutables as the existing one, overriding `ZK_VERIFIER`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
+- redeploys `AggregateVerifier` with the same immutables as the existing one, overriding `ZK_VERIFIER` and `ZK_RANGE_HASH`
 - writes `aggregateVerifier` to `addresses.json`
 
 Expected `addresses.json` keys:
@@ -96,6 +96,6 @@ Post-checks enforced by script:
 - `DisputeGameFactory.gameImpls(gameType)` equals the newly deployed `aggregateVerifier`
 - `zkVerifier.SP1_VERIFIER()` equals the configured `SP1_VERIFIER`
 - `aggregateVerifier.ZK_VERIFIER()` equals the newly deployed `zkVerifier`
-- `aggregateVerifier.TEE_IMAGE_HASH()` equals the configured `TEE_IMAGE_HASH`
+- `aggregateVerifier.TEE_IMAGE_HASH()` matches the live `AggregateVerifier`
 - `aggregateVerifier.ZK_RANGE_HASH()` equals the configured `ZK_RANGE_HASH`
-- `aggregateVerifier.ZK_AGGREGATE_HASH()` equals the configured `ZK_AGGREGATE_HASH`
+- `aggregateVerifier.ZK_AGGREGATE_HASH()` matches the live `AggregateVerifier`
