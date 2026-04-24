@@ -1,6 +1,6 @@
 # Update ZK Config
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x58803e2584a615a2b2883d46152fba6364a392ef816a509057bcb795e51167c8)
 
 ## Description
 
