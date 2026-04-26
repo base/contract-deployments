@@ -51,7 +51,7 @@ jobs:
           - template: template-set-bridge-partner-threshold
             setup_target: "setup-bridge-partner-threshold"
             setup_args: "network=sepolia"
-            task_dir_suffix: pause-bridge-base
+            task_dir_suffix: set-bridge-partner-threshold
           - template: template-switch-to-permissioned-game
             setup_target: "setup-switch-to-permissioned-game"
             setup_args: "network=sepolia"
