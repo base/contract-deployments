@@ -3,36 +3,43 @@ include ../../Multisig.mk
 include ../.env
 include .env
 
-ifndef LEDGER_ACCOUNT
-override LEDGER_ACCOUNT = 1
-endif
-
+SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
+export OWNER_SAFE
+export PROXY_ADMIN
+export SYSTEM_CONFIG
+
+UPGRADE_SCRIPT_NAME = script/UpgradeSystemConfig.s.sol:UpgradeSystemConfigScript
+DEPLOY_SCRIPT_NAME = script/DeploySystemConfig.s.sol:DeploySystemConfigScript
+
+BASE_SENDER = $(shell cast call $(BASE_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
+OP_SENDER = $(shell cast call $(OP_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
+
+# Validate required configuration before execution
+.PHONY: validate-config
+validate-config:
+	@test -n "$(BASE_CONTRACTS_COMMIT)" -a "$(BASE_CONTRACTS_COMMIT)" != "TODO" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
+	@test -n "$(BASE_CONTRACTS_PATCH)" || (echo "BASE_CONTRACTS_PATCH required" && exit 1)
+	@test -n "$(OWNER_SAFE)" || (echo "OWNER_SAFE required" && exit 1)
+	@test -n "$(PROXY_ADMIN)" || (echo "PROXY_ADMIN required" && exit 1)
+	@test -n "$(SYSTEM_CONFIG)" || (echo "SYSTEM_CONFIG required" && exit 1)
+	@echo "Configuration validated successfully"
 
 # Override deps to also apply the patch to base-contracts after checkout
 .PHONY: deps
-deps: install-foundry
-	go install github.com/base/eip712sign@v0.0.11
-	rm -rf lib
-	forge install --no-git \
-		github.com/foundry-rs/forge-std@0844d7e1fc5e60d77b68e469bff60265f236c398 \
-		github.com/OpenZeppelin/openzeppelin-contracts@v4.9.3 \
-		github.com/rari-capital/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
-		github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \
-		github.com/Vectorized/solady@502cc1ea718e6fa73b380635ee0868b0740595f0 \
-		github.com/ethereum-optimism/lib-keccak@3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
-	rm -rf lib/openzeppelin-contracts-upgradeable
-	git clone --no-recurse-submodules --depth 1 --branch v4.7.3 \
-		https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable.git \
-		lib/openzeppelin-contracts-upgradeable
-	rm -rf lib/openzeppelin-contracts-upgradeable/.git
-	forge install --no-git github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
+deps: clean-lib forge-deps clone-oz-upgradeable checkout-base-contracts-commit apply-patch
+
+.PHONY: apply-patch
+apply-patch:
 	cd lib/contracts && git apply ../../$(BASE_CONTRACTS_PATCH)
 
+##
+# Deployment (EOA) — run by facilitator before collecting signatures
+##
 .PHONY: deploy
 deploy:
-	forge script --rpc-url $(L1_RPC_URL) DeploySystemConfigScript \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --verify --broadcast
+	forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_SCRIPT_NAME) \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --verify --broadcast
 
 #
 #    ┌─────────────────────────────────────────────┐       ┌─────────────────────────────────────────────┐
@@ -47,37 +54,34 @@ deploy:
 #                             │  0x0fe884546476dDd290eC46318785046ef68a0BA9 │
 #                             └─────────────────────────────────────────────┘
 
-# OPTIMISM
+##
+# Validation file generation
+##
+.PHONY: gen-validation-base
+gen-validation-base: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT_NAME),$(BASE_MULTISIG),$(BASE_SENDER),base-signer.json,OWNER_SAFE=$(OWNER_SAFE) PROXY_ADMIN=$(PROXY_ADMIN) SYSTEM_CONFIG=$(SYSTEM_CONFIG))
 
-.PHONY: sign-op
-sign-op:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
-	--sig  "sign(address[])" "[$(OP_MULTISIG)]"
+.PHONY: gen-validation-op
+gen-validation-op: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT_NAME),$(OP_MULTISIG),$(OP_SENDER),op-signer.json,OWNER_SAFE=$(OWNER_SAFE) PROXY_ADMIN=$(PROXY_ADMIN) SYSTEM_CONFIG=$(SYSTEM_CONFIG))
+
+##
+# Approve
+##
+.PHONY: approve-base
+approve-base: SCRIPT_NAME := $(UPGRADE_SCRIPT_NAME)
+approve-base:
+	$(call MULTISIG_APPROVE,$(BASE_MULTISIG),$(SIGNATURES))
 
 .PHONY: approve-op
+approve-op: SCRIPT_NAME := $(UPGRADE_SCRIPT_NAME)
 approve-op:
-	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
-	--sig "approve(address[],bytes)" "[$(OP_MULTISIG)]" $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+	$(call MULTISIG_APPROVE,$(OP_MULTISIG),$(SIGNATURES))
 
-# BASE
-
-.PHONY: sign-base
-sign-base:
-	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
-	--sig "sign(address[])" "[$(BASE_MULTISIG)]"
-
-.PHONY: approve-base
-approve-base:
-	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
-	--sig "approve(address[],bytes)" "[$(BASE_MULTISIG)]" $(SIGNATURES) \
-	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
-
+##
 # Execute
-
+##
 .PHONY: execute
+execute: SCRIPT_NAME := $(UPGRADE_SCRIPT_NAME)
 execute:
-	forge script --rpc-url $(L1_RPC_URL) UpgradeSystemConfigScript \
-	--sig "run(bytes)" 0x --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
+	$(call MULTISIG_EXECUTE,0x)

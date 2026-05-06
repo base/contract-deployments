@@ -20,40 +20,29 @@ No storage changes occur since only the `MAX_GAS_LIMIT` constant and `version()`
 
 ## Procedure
 
-### 1. Update repo:
+### Sign Task
+
+#### 1. Update repo
 
 ```bash
 cd contract-deployments
 git pull
-cd sepolia/2026-05-06-increase-max-gas-limit
-make deps
 ```
 
-### 2. Setup Ledger
+#### 2. Run the signing tool
 
-Your Ledger needs to be connected and unlocked. The Ethereum application needs to be opened on Ledger with the message "Application is ready".
-
-### 3. Simulate, Validate, and Sign
-
-Make sure your ledger is still unlocked and run the appropriate command:
-
-For OP signers:
 ```bash
-make sign-op
+cd contract-deployments
+make sign-task
 ```
 
-For Base signers:
-```bash
-make sign-base
-```
+#### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-You will see a "Simulation link" from the output. Paste this URL in your browser to validate the state diff.
+- Select the correct signer role from the list of available users to sign.
+- After completion, close the signer tool with `Ctrl + C`.
 
-Validate:
-1. Network is `Sepolia`
-2. Timestamp is recent
-3. The only state change is the SystemConfig proxy implementation slot being updated to the new implementation address
+#### 4. Send signature to facilitator
 
-### 4. Send signature to facilitator
+Copy the signature output and send it to the designated facilitator via the agreed communication channel.
 
-Share the `Data`, `Signer` and `Signature` with the facilitator.
+For facilitator instructions, see `FACILITATOR.md`.
