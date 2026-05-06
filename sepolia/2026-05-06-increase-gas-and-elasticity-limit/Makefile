@@ -3,6 +3,8 @@ include ../../Multisig.mk
 include ../.env
 include .env
 
+SIGNER_TOOL_PATH = ../../signer-tool
+
 # Map config variables to script variables
 OWNER_SAFE ?= $(INCIDENT_MULTISIG)
 export OWNER_SAFE

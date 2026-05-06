@@ -21,14 +21,30 @@ make sign-as-base-facilitator
 make sign-as-sc-facilitator
 ```
 
-## Execution
-
-### 1. Update repo:
+## Generate validation files
 
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<task-name>
+cd sepolia/2026-05-06-increase-gas-and-elasticity-limit
+make deps
+make gen-validation
+make gen-validation-rollback
+```
+
+This produces:
+
+- `validations/base-signer.json`
+- `validations/base-signer-rollback.json`
+
+## Execution
+
+### 1. Update repo
+
+```bash
+cd contract-deployments
+git pull
+cd sepolia/2026-05-06-increase-gas-and-elasticity-limit
 make deps
 ```
 
