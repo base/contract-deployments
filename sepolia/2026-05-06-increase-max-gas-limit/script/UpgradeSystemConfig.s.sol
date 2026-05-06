@@ -5,9 +5,9 @@ import {Vm} from "forge-std/Vm.sol";
 
 import {SystemConfig} from "@base-contracts/src/L1/SystemConfig.sol";
 
-import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
-import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
+import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
+import {MultisigScript} from "@base-contracts/scripts/universal/MultisigScript.sol";
+import {Enum} from "@base-contracts/scripts/universal/IGnosisSafe.sol";
 
 interface IProxyAdmin {
     function upgrade(address _proxy, address _implementation) external;
