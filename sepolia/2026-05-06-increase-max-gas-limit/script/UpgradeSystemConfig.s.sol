@@ -36,6 +36,17 @@ contract UpgradeSystemConfigScript is MultisigScript {
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal override {
+        // Verify the new implementation has the expected version and max gas limit.
+        require(
+            keccak256(bytes(SystemConfig(NEW_IMPLEMENTATION).version()))
+                == keccak256("3.13.2+max-gas-limit-2000M"),
+            "SystemConfig version mismatch"
+        );
+        require(
+            SystemConfig(NEW_IMPLEMENTATION).maximumGasLimit() == 2_000_000_000,
+            "Maximum gas limit mismatch"
+        );
+
         // NOTE: Bypass `proxyCallIfNotAdmin` modifier.
         vm.prank(PROXY_ADMIN);
         require(IProxy(SYSTEM_CONFIG).implementation() == NEW_IMPLEMENTATION);
