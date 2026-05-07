@@ -1,0 +1,96 @@
+{
+  "cmd": "OWNER_SAFE=0x0fe884546476dDd290eC46318785046ef68a0BA9 PROXY_ADMIN=0x0389E59Aa0a41E4A413Ae70f0008e76CAA34b1F3 SYSTEM_CONFIG=0xf272670eb55e895584501d564AfEB048bEd26194 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net script/UpgradeSystemConfig.s.sol:UpgradeSystemConfigScript --sig sign(address[]) [0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x644d0F5c2C55A4679b4BFe057B87ba203AF9aC0D",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
+    "messageHash": "0x55f4eccc359f67aa54e4e4d7b48250f6602ea06e724972191f010efdcc7ba772"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x88281075a00d11655e2dd4cd8d1ac52c947c1719cba4a6c5f0adbed03127e91c",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000022",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000023",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0959ab27c9c714976222cd60981d4df1b4bed83a74677da76226d0694f3d8e67",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564AfEB048bEd26194",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000ee364de73e1827f5e31a18c70a40f1f78c075b84",
+          "after": "0x0000000000000000000000004aba707dc42c49586158037ec7f2e1e48254c735",
+          "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}
