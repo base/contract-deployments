@@ -31,7 +31,7 @@ deps: clean-lib forge-deps clone-oz-upgradeable checkout-base-contracts-commit a
 
 .PHONY: apply-patch
 apply-patch:
-	cd lib/contracts && git apply ../../$(BASE_CONTRACTS_PATCH)
+	cd lib/contracts && git init -q && git add -A && git apply ../../$(BASE_CONTRACTS_PATCH)
 
 ##
 # Deployment (EOA) — run by facilitator before collecting signatures
