@@ -134,6 +134,19 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
     }
 
     function _buildCalls() internal view override returns (Call[] memory) {
+        // Pre-checks: verify current on-chain values match expected FROM values.
+        require(ISystemConfig(SYSTEM_CONFIG).gasLimit() == GAS_LIMIT, "Pre-check: gas limit mismatch");
+        require(
+            ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity() == ELASTICITY, "Pre-check: elasticity mismatch"
+        );
+        require(
+            ISystemConfig(SYSTEM_CONFIG).eip1559Denominator() == DENOMINATOR, "Pre-check: denominator mismatch"
+        );
+        require(
+            ISystemConfig(SYSTEM_CONFIG).daFootprintGasScalar() == DA_FOOTPRINT_GAS_SCALAR,
+            "Pre-check: DA footprint gas scalar mismatch"
+        );
+
         Call[] memory calls = new Call[](3);
 
         calls[0] = Call({
