@@ -1,0 +1,83 @@
+{
+  "cmd": "OWNER_SAFE=0x646132A1667ca7aD00d36616AFBA1A28116C770A SYSTEM_CONFIG=0xf272670eb55e895584501d564AfEB048bEd26194 SYSTEM_CONFIG_IMPL=0x4ABA707Dc42c49586158037EC7F2e1E48254c735 NEW_GAS_LIMIT=1200000000 OLD_GAS_LIMIT=400000000 NEW_ELASTICITY=15 OLD_ELASTICITY=5 NEW_DENOMINATOR=100 OLD_DENOMINATOR=100 NEW_DA_FOOTPRINT_GAS_SCALAR=446 OLD_DA_FOOTPRINT_GAS_SCALAR=148 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+    "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
+    "messageHash": "0x151bafb38167abea9b24913711efec9f9964dfefe9a89391daef6232ba8d3fab"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x7d4ab1aafbca383fedf0e7876470eec639bafdcce770a7874d218cdbbaad5593",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564AfEB048bEd26194",
+      "overrides": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "value": "0x0000000000000000000000004aba707dc42c49586158037ec7f2e1e48254c735",
+          "description": "Overrides the EIP-1967 implementation slot to the new SystemConfig impl (MAX_GAS_LIMIT=2B) so the simulation can set gasLimit above the old 500M cap. This override is only needed until the prerequisite upgrade is executed on-chain.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564AfEB048bEd26194",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x00000000000000000000000000000000000a118b0000044d0000000017d78400",
+          "after": "0x00000000000000000000000000000000000a118b0000044d0000000047868c00",
+          "description": "Updates the gas limit from 400M to 1.2B (lower 64 bits of the packed gas config slot).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000000940000000000000000000000000000000500000064",
+          "after": "0x0000000000000000000001be0000000000000000000000000000000f00000064",
+          "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}
