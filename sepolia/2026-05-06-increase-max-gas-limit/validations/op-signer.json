@@ -1,0 +1,90 @@
+{
+  "cmd": "OWNER_SAFE=0x0fe884546476dDd290eC46318785046ef68a0BA9 PROXY_ADMIN=0x0389E59Aa0a41E4A413Ae70f0008e76CAA34b1F3 SYSTEM_CONFIG=0xf272670eb55e895584501d564AfEB048bEd26194 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net script/UpgradeSystemConfig.s.sol:UpgradeSystemConfigScript --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0x3b309df42570815bab602fc45b0b631d6a2851e94e61d8e7e2215e28e54d931a"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0xd2deeb5f117e99656b110537a46197def561d04cd9c610d3f64c5c9b8b4f3e01",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000022",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000023",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x1b802874fc60666ac735952093f63b12cbd4212feb01fc104419d381b60bcad4",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Approves the nested transaction hash on the ProxyAdminOwner Safe (approvedHashes mapping).",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000020",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564AfEB048bEd26194",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000ee364de73e1827f5e31a18c70a40f1f78c075b84",
+          "after": "0x0000000000000000000000004aba707dc42c49586158037ec7f2e1e48254c735",
+          "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}
