@@ -1,11 +1,11 @@
 {
-  "cmd": "OWNER_SAFE=0x646132A1667ca7aD00d36616AFBA1A28116C770A SYSTEM_CONFIG=0xf272670eb55e895584501d564AfEB048bEd26194 SYSTEM_CONFIG_IMPL=0x4ABA707Dc42c49586158037EC7F2e1E48254c735 OLD_GAS_LIMIT=1200000000 NEW_GAS_LIMIT=400000000 OLD_ELASTICITY=15 NEW_ELASTICITY=5 OLD_DENOMINATOR=100 NEW_DENOMINATOR=100 OLD_DA_FOOTPRINT_GAS_SCALAR=446 NEW_DA_FOOTPRINT_GAS_SCALAR=148 SAFE_NONCE=20 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33",
+  "cmd": "OWNER_SAFE=0x646132A1667ca7aD00d36616AFBA1A28116C770A SYSTEM_CONFIG=0xf272670eb55e895584501d564AfEB048bEd26194 OLD_GAS_LIMIT=1200000000 NEW_GAS_LIMIT=400000000 OLD_ELASTICITY=15 NEW_ELASTICITY=5 OLD_DENOMINATOR=100 NEW_DENOMINATOR=100 OLD_DA_FOOTPRINT_GAS_SCALAR=446 NEW_DA_FOOTPRINT_GAS_SCALAR=148 SAFE_NONCE=21 forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [] --sender 0x6e427c3212C0b63BE0C382F97715D49b011bFF33",
   "ledgerId": 1,
   "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
     "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
     "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
-    "messageHash": "0x3955876d37f8bff103bcc46bd482999323da5985590458d1e9da425a14a6cddf"
+    "messageHash": "0x7628073d37a66b6a7b5c95abf0d645642c12195699195944841ff1fbd3426640"
   },
   "stateOverrides": [
     {
@@ -20,12 +20,12 @@
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000015",
           "description": "Override the nonce to be our expected value after initial execution.",
           "allowDifference": false
         },
         {
-          "key": "0x764d5869d3d44ffb4ff5b95b67e25ca708dcbf0e2693dd39e53757cb370cbcaa",
+          "key": "0x467dc0aee3a389ccad8e85187bf4a548e06a131b41a7836d1efc079336a062a4",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -39,19 +39,13 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
           "value": "0x00000000000000000000000000000000000a118b0000044d0000000047868c00",
-          "description": "Overrides the gas config slot to set gas limit to 1.2B (the post-forward-execution state) so the rollback simulation starts from the correct state.",
+          "description": "<<OverrideMeaning>>",
           "allowDifference": false
         },
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "value": "0x0000000000000000000001be0000000000000000000000000000000f00000064",
-          "description": "Overrides the EIP-1559 params slot to set elasticity=15, denominator=100, DA scalar=446 (the post-forward-execution state) so the rollback simulation starts from the correct state.",
-          "allowDifference": false
-        },
-        {
-          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-          "value": "0x0000000000000000000000004aba707dc42c49586158037ec7f2e1e48254c735",
-          "description": "Overrides the EIP-1967 implementation slot to the new SystemConfig impl (MAX_GAS_LIMIT=2B) so the simulation can set gasLimit above the old 500M cap. This override is only needed until the prerequisite upgrade is executed on-chain.",
+          "description": "",
           "allowDifference": false
         }
       ]
@@ -64,8 +58,8 @@
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000014",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
           "description": "Increments the nonce",
           "allowDifference": false
         }
@@ -79,7 +73,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
           "before": "0x00000000000000000000000000000000000a118b0000044d0000000047868c00",
           "after": "0x00000000000000000000000000000000000a118b0000044d0000000017d78400",
-          "description": "Rolls back the gas limit from 1.2B to 400M (lower 64 bits of the packed gas config slot).",
+          "description": "<<Summary>>",
           "allowDifference": false
         },
         {
