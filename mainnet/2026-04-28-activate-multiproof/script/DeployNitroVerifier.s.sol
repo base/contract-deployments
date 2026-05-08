@@ -21,6 +21,7 @@ contract DeployNitroVerifier is Script {
     address internal riscZeroSetVerifierEnv;
     bytes32 internal riscZeroSetBuilderImageIdEnv;
     bytes32 internal nitroZkVerifierIdEnv;
+    bytes32 internal nitroVerifierProofIdEnv;
 
     address public riscZeroSetVerifier;
     address public nitroEnclaveVerifier;
@@ -34,6 +35,7 @@ contract DeployNitroVerifier is Script {
         riscZeroSetVerifierEnv = vm.envAddress("RISC0_SET_VERIFIER");
         riscZeroSetBuilderImageIdEnv = vm.envBytes32("RISC0_SET_BUILDER_IMAGE_ID");
         nitroZkVerifierIdEnv = vm.envBytes32("NITRO_ZK_VERIFIER_ID");
+        nitroVerifierProofIdEnv = vm.envBytes32("NITRO_VERIFIER_PROOF_ID");
     }
 
     function run() external {
@@ -56,7 +58,7 @@ contract DeployNitroVerifier is Script {
                 config: ZkCoProcessorConfig({
                     verifierId: nitroZkVerifierIdEnv, aggregatorId: bytes32(0), zkVerifier: riscZeroVerifierRouterEnv
                 }),
-                verifierProofId: bytes32(0)
+                verifierProofId: nitroVerifierProofIdEnv
             })
         );
 
@@ -99,7 +101,10 @@ contract DeployNitroVerifier is Script {
         require(cfg.verifierId == nitroZkVerifierIdEnv, "nitro verifier id mismatch");
         require(cfg.aggregatorId == bytes32(0), "nitro aggregator id mismatch");
         require(cfg.zkVerifier == riscZeroVerifierRouterEnv, "nitro router mismatch");
-        require(nev.getVerifierProofId(ZkCoProcessorType.RiscZero) == bytes32(0), "nitro verifier proof id mismatch");
+        require(
+            nev.getVerifierProofId(ZkCoProcessorType.RiscZero) == nitroVerifierProofIdEnv,
+            "nitro verifier proof id mismatch"
+        );
         require(
             INitroEnclaveVerifier(nitroEnclaveVerifier).getZkVerifier(ZkCoProcessorType.RiscZero, setVerifierSelector)
                 == riscZeroSetVerifier,
