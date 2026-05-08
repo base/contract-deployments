@@ -49,7 +49,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
           "before": "0x00000000000000000000000000000000000a118b0000044d0000000017d78400",
           "after": "0x00000000000000000000000000000000000a118b0000044d0000000047868c00",
-          "description": "<<Summary>>",
+          "description": "Updates the gas limit from 400M to 1.2B (lower 64 bits of the packed gas config slot).",
           "allowDifference": false
         },
         {

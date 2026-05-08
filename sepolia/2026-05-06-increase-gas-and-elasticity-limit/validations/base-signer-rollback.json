@@ -39,13 +39,13 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
           "value": "0x00000000000000000000000000000000000a118b0000044d0000000047868c00",
-          "description": "<<OverrideMeaning>>",
+          "description": "Overrides the gas config slot to set gas limit to 1.2B (the post-forward-execution state) so the rollback simulation starts from the correct state.",
           "allowDifference": false
         },
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "value": "0x0000000000000000000001be0000000000000000000000000000000f00000064",
-          "description": "",
+          "description": "Overrides the EIP-1559 params and DA Footprint Gas Scalar to post-forward-execution state so the rollback simulation starts from the correct state.",
           "allowDifference": false
         }
       ]
@@ -73,7 +73,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
           "before": "0x00000000000000000000000000000000000a118b0000044d0000000047868c00",
           "after": "0x00000000000000000000000000000000000a118b0000044d0000000017d78400",
-          "description": "<<Summary>>",
+          "description": "Rolls back the gas limit from 1.2B to 400M (lower 64 bits of the packed gas config slot).",
           "allowDifference": false
         },
         {
