@@ -1,6 +1,6 @@
 # Update Gas Limit, EIP-1559 Params & DA Footprint Gas Scalar in L1 `SystemConfig`
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x62f0de50c147128a4faa7c8c93686f8fd716a18824678e93f72b6c4c979d132e) ([artifact](./records/IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol/11155111/run-1778274122196.json))
 
 > [!NOTE] **Prerequisite:** This task requires the SystemConfig `maximumGasLimit` to be raised
 > from 500M to 2B first. See `sepolia/2026-05-06-increase-max-gas-limit` (separate PR).

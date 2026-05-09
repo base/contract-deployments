@@ -59,76 +59,48 @@ contract IncreaseEip1559ElasticityAndIncreaseGasLimitScript is MultisigScript {
     }
 
     function _simulationOverrides() internal view override returns (Simulation.StateOverride[] memory _stateOverrides) {
-        // Check if we need to override the SystemConfig proxy implementation.
-        // This is needed when the prerequisite MAX_GAS_LIMIT upgrade (PR #677) has not yet been
-        // executed on-chain, but the simulation must run as if it has.
-        address systemConfigImpl = vm.envOr("SYSTEM_CONFIG_IMPL", address(0));
-        bytes32 implSlot = bytes32(uint256(0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc));
-        bool needsImplOverride = false;
-        if (systemConfigImpl != address(0)) {
-            address currentImpl = address(uint160(uint256(vm.load(SYSTEM_CONFIG, implSlot))));
-            needsImplOverride = currentImpl != systemConfigImpl;
-        }
-
+        // Check if we need rollback overrides: when the chain already reflects post-change values
+        // (i.e. the task has been executed), we override storage back to the "from" values so the
+        // rollback simulation can run.
         bool needsRollbackOverride = GAS_LIMIT != ISystemConfig(SYSTEM_CONFIG).gasLimit()
             || ELASTICITY != ISystemConfig(SYSTEM_CONFIG).eip1559Elasticity()
             || DENOMINATOR != ISystemConfig(SYSTEM_CONFIG).eip1559Denominator()
             || DA_FOOTPRINT_GAS_SCALAR != ISystemConfig(SYSTEM_CONFIG).daFootprintGasScalar();
 
-        if (!needsImplOverride && !needsRollbackOverride) {
+        if (!needsRollbackOverride) {
             return _stateOverrides;
         }
 
-        // Count the storage overrides we need:
-        //   - 1 for implementation slot (if needed)
-        //   - 2 for gas config slot 0x68 + EIP-1559/DA slot 0x6a (if rollback needed)
-        uint256 storageOverrideCount = 0;
-        if (needsImplOverride) storageOverrideCount++;
-        if (needsRollbackOverride) storageOverrideCount += 2;
+        Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](2);
+
+        // Override SystemConfig state to the expected "from" values so simulation succeeds even
+        // when the chain already reflects the post-change values (during rollback simulation).
+
+        // Load current packed gas config (slot 0x68) and replace only the lower 64 bits with GAS_LIMIT
+        bytes32 gasConfigSlotKey = bytes32(uint256(0x68));
+        uint256 gasConfigWord = uint256(vm.load(SYSTEM_CONFIG, gasConfigSlotKey));
+        uint256 updatedGasConfigWord = (gasConfigWord & ~uint256(0xffffffffffffffff)) | uint256(GAS_LIMIT);
+        storageOverrides[0] = Simulation.StorageOverride({key: gasConfigSlotKey, value: bytes32(updatedGasConfigWord)});
+
+        // Update EIP-1559 params and DA Footprint Gas Scalar (slot 0x6a)
+        // Storage layout (low to high bits):
+        //   - eip1559Denominator (uint32): bits 0-31
+        //   - eip1559Elasticity (uint32): bits 32-63
+        //   - operatorFeeScalar (uint32): bits 64-95
+        //   - operatorFeeConstant (uint64): bits 96-159
+        //   - daFootprintGasScalar (uint16): bits 160-175
+        // Load existing slot to preserve operatorFeeScalar and operatorFeeConstant, then update
+        // the fields we care about.
+        bytes32 eip1559SlotKey = bytes32(uint256(0x6a));
+        uint256 existingEip1559Word = uint256(vm.load(SYSTEM_CONFIG, eip1559SlotKey));
+        // Mask to preserve bits 64-159 (operatorFeeScalar and operatorFeeConstant)
+        uint256 operatorFeeMask = uint256(0xFFFFFFFFFFFFFFFFFFFFFFFF) << 64;
+        uint256 preservedOperatorFees = existingEip1559Word & operatorFeeMask;
+        uint256 composedEip1559Word = (uint256(DA_FOOTPRINT_GAS_SCALAR) << 160) | preservedOperatorFees
+            | (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
+        storageOverrides[1] = Simulation.StorageOverride({key: eip1559SlotKey, value: bytes32(composedEip1559Word)});
 
         Simulation.StateOverride[] memory stateOverrides = new Simulation.StateOverride[](1);
-        Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](storageOverrideCount);
-
-        uint256 idx = 0;
-
-        if (needsImplOverride) {
-            // Override the EIP-1967 implementation slot so the proxy delegates to the new
-            // SystemConfig implementation with MAX_GAS_LIMIT = 2_000_000_000.
-            storageOverrides[idx++] =
-                Simulation.StorageOverride({key: implSlot, value: bytes32(uint256(uint160(systemConfigImpl)))});
-        }
-
-        if (needsRollbackOverride) {
-            // Override SystemConfig state to the expected "from" values so simulation succeeds even
-            // when the chain already reflects the post-change values (during rollback simulation).
-
-            // Load current packed gas config (slot 0x68) and replace only the lower 64 bits with GAS_LIMIT
-            bytes32 gasConfigSlotKey = bytes32(uint256(0x68));
-            uint256 gasConfigWord = uint256(vm.load(SYSTEM_CONFIG, gasConfigSlotKey));
-            uint256 updatedGasConfigWord = (gasConfigWord & ~uint256(0xffffffffffffffff)) | uint256(GAS_LIMIT);
-            storageOverrides[idx++] =
-                Simulation.StorageOverride({key: gasConfigSlotKey, value: bytes32(updatedGasConfigWord)});
-
-            // Update EIP-1559 params and DA Footprint Gas Scalar (slot 0x6a)
-            // Storage layout (low to high bits):
-            //   - eip1559Denominator (uint32): bits 0-31
-            //   - eip1559Elasticity (uint32): bits 32-63
-            //   - operatorFeeScalar (uint32): bits 64-95
-            //   - operatorFeeConstant (uint64): bits 96-159
-            //   - daFootprintGasScalar (uint16): bits 160-175
-            // Load existing slot to preserve operatorFeeScalar and operatorFeeConstant, then update
-            // the fields we care about.
-            bytes32 eip1559SlotKey = bytes32(uint256(0x6a));
-            uint256 existingEip1559Word = uint256(vm.load(SYSTEM_CONFIG, eip1559SlotKey));
-            // Mask to preserve bits 64-159 (operatorFeeScalar and operatorFeeConstant)
-            uint256 operatorFeeMask = uint256(0xFFFFFFFFFFFFFFFFFFFFFFFF) << 64;
-            uint256 preservedOperatorFees = existingEip1559Word & operatorFeeMask;
-            uint256 composedEip1559Word = (uint256(DA_FOOTPRINT_GAS_SCALAR) << 160) | preservedOperatorFees
-                | (uint256(ELASTICITY) << 32) | uint256(DENOMINATOR);
-            storageOverrides[idx++] =
-                Simulation.StorageOverride({key: eip1559SlotKey, value: bytes32(composedEip1559Word)});
-        }
-
         stateOverrides[0] = Simulation.StateOverride({contractAddress: SYSTEM_CONFIG, overrides: storageOverrides});
         return stateOverrides;
     }
