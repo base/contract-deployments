@@ -17,6 +17,14 @@ new-forge-deps:
 gen-validation: deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
 
+.PHONY: gen-validation-secondary
+gen-validation-secondary: deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer-safe-b.json,OWNER_SAFE=$(SECONDARY_SAFE))
+
 .PHONY: execute
 execute:
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))
+
+.PHONY: execute-secondary
+execute-secondary:
+	OWNER_SAFE=$(SECONDARY_SAFE) $(call MULTISIG_EXECUTE,$(SIGNATURES))

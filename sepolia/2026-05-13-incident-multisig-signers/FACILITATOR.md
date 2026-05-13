@@ -39,6 +39,19 @@ This produces `validations/base-signer.json`. Check that the `cmd` field uses:
 --sender 0x644d0F5c2C55A4679b4BFe057B87ba203AF9aC0D
 ```
 
+Then generate the Safe B validation:
+
+```bash
+make gen-validation-secondary
+```
+
+This produces `validations/base-signer-safe-b.json`. Check that the `cmd` field uses:
+
+```text
+OWNER_SAFE=0x6AF0674791925f767060Dd52f7fB20984E8639d8
+--sender 0x644d0F5c2C55A4679b4BFe057B87ba203AF9aC0D
+```
+
 ## Collect Signatures
 
 Ask signers to follow [README.md](./README.md). They should run `make sign-task` from the repo root and select `sepolia/2026-05-13-incident-multisig-signers` in the signing UI.
@@ -56,5 +69,11 @@ SIGNATURES=AAABBBCCC make execute
 ```
 
 Replace `AAABBBCCC` with the concatenated signatures collected from signers.
+
+To execute the Safe B update, use:
+
+```bash
+SIGNATURES=AAABBBCCC make execute-secondary
+```
 
 After execution, update [README.md](./README.md) status to `EXECUTED` with the transaction link and check in any generated execution records.

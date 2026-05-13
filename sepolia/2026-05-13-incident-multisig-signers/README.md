@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-We wish to update the owners of our [Incident Multisig](https://sepolia.etherscan.io/address/0x646132A1667ca7aD00d36616AFBA1A28116C770A) on Sepolia to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
+We wish to update the owners of our [Incident Multisig](https://sepolia.etherscan.io/address/0x646132A1667ca7aD00d36616AFBA1A28116C770A) and [Safe B](https://sepolia.etherscan.io/address/0x6AF0674791925f767060Dd52f7fB20984E8639d8) on Sepolia to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file and apply to both safes.
 
 The signer changes are configured in [OwnerDiff.json](./OwnerDiff.json), and the simulation sender is configured in [.env](./.env).
 
@@ -50,6 +50,11 @@ make sign-task
 Be sure to select the correct task from the list of available tasks to sign.
 
 Task name: `sepolia/2026-05-13-incident-multisig-signers`
+
+Then select the Safe for which you would like to sign:
+
+- Incident Multisig: `validations/base-signer.json`
+- Safe B: `validations/base-signer-safe-b.json`
 
 ### 4. Send signature to facilitator
 
