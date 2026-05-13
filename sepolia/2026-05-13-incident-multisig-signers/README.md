@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-We wish to update the owners of our [Incident Multisig](https://sepolia.etherscan.io/address/0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f) on Sepolia to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
+We wish to update the owners of our [Incident Multisig](https://sepolia.etherscan.io/address/0x646132A1667ca7aD00d36616AFBA1A28116C770A) on Sepolia to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
 
 The signer changes are configured in [OwnerDiff.json](./OwnerDiff.json), and the simulation sender is configured in [.env](./.env).
 
