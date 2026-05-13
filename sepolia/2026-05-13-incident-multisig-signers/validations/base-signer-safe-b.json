@@ -37,84 +37,84 @@
           "key": "0x04f5b49ecc01681da29e79068c15efdb3abde943719f9854b44138e483921ad2",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000623942f433ee569df78dceac754c2ed3a3343a80",
-          "description": "Updates the owners mapping",
+          "description": "Adds `0xE167153964d4ba0819E1Ad56172F3329cD5A0263` to the owners mapping and points it to `0x623942f433Ee569Df78Dceac754C2ed3A3343A80`.",
           "allowDifference": false
         },
         {
           "key": "0x1faa07ea6a4832ac192fb7e2cbd607c53ad1016be862a14dc26d02378418c601",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000006e427c3212c0b63be0c382f97715d49b011bff33",
-          "description": "Updates the owners mapping",
+          "description": "Adds `0x623942f433Ee569Df78Dceac754C2ed3A3343A80` to the owners mapping and points it to the previous head owner `0x6e427c3212C0b63BE0C382F97715D49b011bFF33`.",
           "allowDifference": false
         },
         {
           "key": "0x4bf34efa2cf5d17da7425df2ee4f6191d734167ae5ba396b1eaa05b9d92099f6",
           "before": "0x000000000000000000000000420c8fe1ddb0593c71487445576c87c17f177179",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "description": "Updates the owners mapping",
+          "description": "Removes `0xEE316Db0eDaee45347DfC498795a01311F085225` from the owners mapping.",
           "allowDifference": false
         },
         {
           "key": "0x50acbb719f16147a2c8ee75d12507825fd23cf8249e700977d21095d26e2750b",
           "before": "0x000000000000000000000000931e24b032511d8dd029aedeb44837fac251f3d8",
           "after": "0x000000000000000000000000edecf2c444559210a865a22acfc6a2a25590ab1b",
-          "description": "Updates the owners mapping",
+          "description": "Updates `0x0CF2F86C3338993ce10F74d6f4B095712c7efe26` to skip removed owners `0x931E24B032511d8dD029AedeB44837FAc251f3d8` and `0xE45AC81eA7f53dea5f0bd6Caa0733DD5c02d3b60`, pointing it to `0xEdecf2c444559210a865a22acfc6A2a25590Ab1b`.",
           "allowDifference": false
         },
         {
           "key": "0x563d4ddf297b5a92e03dce553dc56572bfee245f134f6db63397742b674f94dd",
           "before": "0x000000000000000000000000ee316db0edaee45347dfc498795a01311f085225",
           "after": "0x000000000000000000000000420c8fe1ddb0593c71487445576c87c17f177179",
-          "description": "Updates the owners mapping",
+          "description": "Updates `0xb2d9a52e76841279EF0372c534C539a4f68f8C0B` to skip removed owner `0xEE316Db0eDaee45347DfC498795a01311F085225`, pointing it to `0x420c8fE1dDb0593c71487445576c87c17f177179`.",
           "allowDifference": false
         },
         {
           "key": "0x789d0a937d11245f00c7805a1652391bdbf3de0209dd993a5d6bc0ea4964bd5e",
           "before": "0x0000000000000000000000007f10098bd53519c739ca8a404afe127647d94774",
           "after": "0x0000000000000000000000009986ccaf9e3de0ffef82a0f7fa3a06d5afe07252",
-          "description": "Updates the owners mapping",
+          "description": "Updates `0xEdecf2c444559210a865a22acfc6A2a25590Ab1b` to skip removed owner `0x7f10098BD53519c739cA8A404afE127647D94774`, pointing it to `0x9986ccaf9E3DE0fFEF82a0f7fA3a06D5aFe07252`.",
           "allowDifference": false
         },
         {
           "key": "0x82f9f6d76f17715407982421d7a2ab9a5f6be8ac439648a288d69f6e86af9c2b",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000e167153964d4ba0819e1ad56172f3329cd5a0263",
-          "description": "Updates the owners mapping",
+          "description": "Adds `0x98EAC95c208b74d31550fDA9dD3AD62C5d462DF9` to the owners mapping and points it to `0xE167153964d4ba0819E1Ad56172F3329cD5A0263`.",
           "allowDifference": false
         },
         {
           "key": "0xb06fd2848181e1497bbaa80b8d007c335c7806a2e47211a7bba7a9af63e0ca64",
           "before": "0x000000000000000000000000edecf2c444559210a865a22acfc6a2a25590ab1b",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "description": "Updates the owners mapping",
+          "description": "Removes `0xE45AC81eA7f53dea5f0bd6Caa0733DD5c02d3b60` from the owners mapping.",
           "allowDifference": false
         },
         {
           "key": "0xb7148df08fba2104e13e2db097b95b457295019a50d577cc90c6010aba3100d1",
           "before": "0x000000000000000000000000e45ac81ea7f53dea5f0bd6caa0733dd5c02d3b60",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "description": "Updates the owners mapping",
+          "description": "Removes `0x931E24B032511d8dD029AedeB44837FAc251f3d8` from the owners mapping.",
           "allowDifference": false
         },
         {
           "key": "0xc737cf9e0b995a0b7c95319fd1b2a1daedbcafc9b244731b97e04bbf2a8067f3",
           "before": "0x0000000000000000000000009986ccaf9e3de0ffef82a0f7fa3a06d5afe07252",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "description": "Updates the owners mapping",
+          "description": "Removes `0x7f10098BD53519c739cA8A404afE127647D94774` from the owners mapping.",
           "allowDifference": false
         },
         {
           "key": "0xd75ac7000e645bb681b0252efd6e2374a16914e40d01873d738e67eba9190a29",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x00000000000000000000000098eac95c208b74d31550fda9dd3ad62c5d462df9",
-          "description": "Updates the owners mapping",
+          "description": "Adds `0x821Ff2A3fB66B008fA668B40Eca9d3535B246575` to the owners mapping and points it to `0x98EAC95c208b74d31550fDA9dD3AD62C5d462DF9`.",
           "allowDifference": false
         },
         {
           "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
           "before": "0x0000000000000000000000006e427c3212c0b63be0c382f97715d49b011bff33",
           "after": "0x000000000000000000000000821ff2a3fb66b008fa668b40eca9d3535b246575",
-          "description": "Sets the head of the owners linked list",
+          "description": "Sets the head of the owners linked list to newly added owner `0x821Ff2A3fB66B008fA668B40Eca9d3535B246575`.",
           "allowDifference": false
         }
       ]
