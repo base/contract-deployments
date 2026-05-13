@@ -1,12 +1,12 @@
 # Update Sepolia Incident Multisig Signers
 
-Status: TODO
+Status: READY TO SIGN
 
 ## Description
 
-We wish to update the owners of our [Incident Multisig](https://sepolia.etherscan.io/address/0x646132A1667ca7aD00d36616AFBA1A28116C770A) on Sepolia to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
+We wish to update the owners of our [Incident Multisig](https://sepolia.etherscan.io/address/0x5dfEB066334B67355A15dc9b67317fD2a2e1f77f) on Sepolia to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
 
-Before generating validations, replace the placeholder addresses in [OwnerDiff.json](./OwnerDiff.json) and set `SENDER` in [.env](./.env) to a current signer of the Incident Multisig.
+The signer changes are configured in [OwnerDiff.json](./OwnerDiff.json), and the simulation sender is configured in [.env](./.env).
 
 ## Install dependencies
 
@@ -48,6 +48,8 @@ make sign-task
 ### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
 Be sure to select the correct task from the list of available tasks to sign.
+
+Task name: `sepolia/2026-05-13-incident-multisig-signers`
 
 ### 4. Send signature to facilitator
 
