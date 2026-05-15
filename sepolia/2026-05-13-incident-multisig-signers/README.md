@@ -1,6 +1,6 @@
 # Update Sepolia Incident Multisig Signers
 
-Status: READY TO SIGN
+Status: EXECUTED ([A](https://sepolia.etherscan.io/tx/0x0ddb802cea5022501f2ecd184a5a017ec0eb908a5ac6bf6cb8746c811c630b56) and [B](https://sepolia.etherscan.io/tx/0x7463cc3d0d5d16f55d8eadfbbe1f82b285e2b161cfef498f84f05d52984ccc57))
 
 ## Description
 
