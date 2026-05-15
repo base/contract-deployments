@@ -1,6 +1,6 @@
 # Update Zeronet Incident Multisig Signers
 
-Status: READY TO SIGN
+Status: EXECUTED ([A](https://hoodi.etherscan.io/tx/0x45f193efb27033a6aec5b087b4ea14583d14e2a6def494c783498fbe4d45d835) and [B](https://hoodi.etherscan.io/tx/0x3ff342865121762a2265509f7e4121b54f4e350ea6797221fd76bee1d3c92d19))
 
 ## Description
 
