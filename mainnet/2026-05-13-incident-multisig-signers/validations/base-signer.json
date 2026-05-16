@@ -1,0 +1,138 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io UpdateSigners --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x753699c81ccbc257e50879009fa831002a29f7c1f51adbec42e1c24633233c77"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x599c9e965dd1777a11bbf5f82e91ae3c228e9b1380c82f34e9428c742e419947",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Restores the execution threshold from the simulation override value 1 to the expected value 3.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000069",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "description": "Increments the Safe nonce from 105 to 106.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x35f8ca6c240a9b89272a80f341f4a22b46f2a01c8311b54080373c9b91208c98",
+          "before": "0x00000000000000000000000026c72586fb396325f58718152fefa94e93cf177b",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Owners linked list: Removes signer 0x5468985b560d966dedea2daf493f5756101137dc by clearing its pointer to 0x26c72586fb396325f58718152fefa94e93cf177b.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x56a2719ad2beef0c19441f84d407dd2c9784ca8c8f85fb6f5c8696628c63fd10",
+          "before": "0x0000000000000000000000004427683aa1f0ff25ccdc4a5db83010c1de9b5ff4",
+          "after": "0x000000000000000000000000b37b2d42cb0c10ebf96279cceca2cbfc47c6f236",
+          "description": "Owners linked list: Relinks signer 0x541a833e4303eb56a45be7e8e4a908db97568d1e to point to 0xb37b2d42cb0c10ebf96279cceca2cbfc47c6f236 after removing 0x4427683aa1f0ff25ccdc4a5db83010c1de9b5ff4 and 0xa31e1c38d5c37d8ecd0e94c80c0f7fd624d009a3.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x738e743b0e4f327810ae0f138c7c5012854e2f43043547bef588cf84df24f166",
+          "before": "0x00000000000000000000000024c3ae1aedb8142d32bb6d3b988f5910f272d53b",
+          "after": "0x000000000000000000000000644e3dedb0e4f83bfcf8f9992964d240224b74dc",
+          "description": "Owners linked list: Relinks signer 0xb37b2d42cb0c10ebf96279cceca2cbfc47c6f236 to point to 0x644e3dedb0e4f83bfcf8f9992964d240224b74dc after removing 0x24c3ae1aedb8142d32bb6d3b988f5910f272d53b.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x87fac1b7a53c40e489763073338f9f3a8d07a2058ee5f00a64dd1eeae74550a4",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000082cc00d1031a57d53496abf6dad8a6247159452",
+          "description": "Owners linked list: Adds signer 0x0c1ea3aca9fc2cfa3640fec98a3214a849715b43 pointing to next owner 0x082cc00d1031a57d53496abf6dad8a6247159452.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x95d1aa1bb172c2bf1f8f9d26147578664d9c87a13833e5ec836b94816dd5e63c",
+          "before": "0x0000000000000000000000005468985b560d966dedea2daf493f5756101137dc",
+          "after": "0x00000000000000000000000026c72586fb396325f58718152fefa94e93cf177b",
+          "description": "Owners linked list: Relinks signer 0x7ad8e6b7b1f6d66f49559f20053cef8a7b6c488e to point to 0x26c72586fb396325f58718152fefa94e93cf177b after removing 0x5468985b560d966dedea2daf493f5756101137dc.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xaae1b570ab817af80d8c0d204fb15e028c217d77afad5a3c8113d93575274af8",
+          "before": "0x000000000000000000000000a31e1c38d5c37d8ecd0e94c80c0f7fd624d009a3",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Owners linked list: Removes signer 0x4427683aa1f0ff25ccdc4a5db83010c1de9b5ff4 by clearing its pointer to 0xa31e1c38d5c37d8ecd0e94c80c0f7fd624d009a3.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb15fe2848d40596069252cc647bd74a278cd49bf36cb5c08459942bd90414084",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000c1ea3aca9fc2cfa3640fec98a3214a849715b43",
+          "description": "Owners linked list: Adds signer 0x8fab0b6b31a0b50a2c3d1ffbe6c0e1125699ae9d pointing to next owner 0x0c1ea3aca9fc2cfa3640fec98a3214a849715b43.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb66edc9a114e89f02d0b7982582a48a539d388af46cfade8e93f01cba0973729",
+          "before": "0x000000000000000000000000b37b2d42cb0c10ebf96279cceca2cbfc47c6f236",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Owners linked list: Removes signer 0xa31e1c38d5c37d8ecd0e94c80c0f7fd624d009a3 by clearing its pointer to 0xb37b2d42cb0c10ebf96279cceca2cbfc47c6f236.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xbb0ca364a5d59aeb597ecc0746c7932123c2f20efece9f164f8af2f2e5ee7618",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000008fab0b6b31a0b50a2c3d1ffbe6c0e1125699ae9d",
+          "description": "Owners linked list: Adds signer 0xd56c6462dc3a943596c7a54d6b0dba404490e206 pointing to next owner 0x8fab0b6b31a0b50a2c3d1ffbe6c0e1125699ae9d.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xd8206f987b26f969100b1584f87a78b15e14b9d64fcad9bdc2466f6cb7becb87",
+          "before": "0x000000000000000000000000644e3dedb0e4f83bfcf8f9992964d240224b74dc",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Owners linked list: Removes signer 0x24c3ae1aedb8142d32bb6d3b988f5910f272d53b by clearing its pointer to 0x644e3dedb0e4f83bfcf8f9992964d240224b74dc.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe2e7e1f18e3e0546efbef39088f820c7d9c78019eec558886d8826ad49444d6b",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000001841cb3c2ce6870d0417844c817849da64e6e937",
+          "description": "Owners linked list: Adds signer 0x082cc00d1031a57d53496abf6dad8a6247159452 pointing to next owner 0x1841cb3c2ce6870d0417844c817849da64e6e937.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "before": "0x0000000000000000000000001841cb3c2ce6870d0417844c817849da64e6e937",
+          "after": "0x000000000000000000000000d56c6462dc3a943596c7a54d6b0dba404490e206",
+          "description": "Owners linked list: Updates SENTINEL to point to new head 0xd56c6462dc3a943596c7a54d6b0dba404490e206.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
