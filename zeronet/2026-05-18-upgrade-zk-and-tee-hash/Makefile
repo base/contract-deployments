@@ -43,11 +43,11 @@ endif
 ##
 .PHONY: gen-validation-update-verifier-hashes-cb
 gen-validation-update-verifier-hashes-cb: deps-signer-tool
-	$(call GEN_VALIDATION,$(UPDATE_VERIFIER_HASHES_SCRIPT_NAME),$(CB_MULTISIG),$(UPDATE_VERIFIER_HASHES_CB_SENDER),update-verifier-hashes-cb-signer.json,)
+	$(call GEN_VALIDATION,$(UPDATE_VERIFIER_HASHES_SCRIPT_NAME),$(CB_MULTISIG),$(UPDATE_VERIFIER_HASHES_CB_SENDER),base-signer.json,)
 
 .PHONY: gen-validation-update-verifier-hashes-sc
 gen-validation-update-verifier-hashes-sc: deps-signer-tool
-	$(call GEN_VALIDATION,$(UPDATE_VERIFIER_HASHES_SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(UPDATE_VERIFIER_HASHES_SC_SENDER),update-verifier-hashes-sc-signer.json,)
+	$(call GEN_VALIDATION,$(UPDATE_VERIFIER_HASHES_SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(UPDATE_VERIFIER_HASHES_SC_SENDER),base-signer-2.json,)
 
 .PHONY: approve-update-verifier-hashes-cb
 approve-update-verifier-hashes-cb: SCRIPT_NAME := $(UPDATE_VERIFIER_HASHES_SCRIPT_NAME)

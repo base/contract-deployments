@@ -37,8 +37,8 @@ make gen-validation-update-verifier-hashes-sc
 
 This produces:
 
-- `validations/update-verifier-hashes-cb-signer.json`
-- `validations/update-verifier-hashes-sc-signer.json`
+- `validations/base-signer.json`
+- `validations/base-signer-2.json`
 
 ## Execute the transaction
 
