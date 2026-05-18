@@ -10,7 +10,6 @@ import {IVerifier} from "interfaces/multiproof/IVerifier.sol";
 
 import {GameType} from "@base-contracts/src/dispute/lib/Types.sol";
 import {AggregateVerifier} from "@base-contracts/src/multiproof/AggregateVerifier.sol";
-import {TEEVerifier} from "@base-contracts/src/multiproof/tee/TEEVerifier.sol";
 
 /// @notice Redeploys AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH,
 /// and ZK_AGGREGATE_HASH. All other immutables (including the existing ZkVerifier)
@@ -36,7 +35,6 @@ contract DeployAggregateVerifier is Script {
     uint256 internal immutable currentL2ChainId;
     uint256 internal immutable currentBlockInterval;
     uint256 internal immutable currentIntermediateBlockInterval;
-    uint256 internal immutable currentProofThreshold;
 
     // Deployment output written to addresses.json.
     address public aggregateVerifier;
@@ -60,7 +58,6 @@ contract DeployAggregateVerifier is Script {
         currentL2ChainId = currentAggregate.L2_CHAIN_ID();
         currentBlockInterval = currentAggregate.BLOCK_INTERVAL();
         currentIntermediateBlockInterval = currentAggregate.INTERMEDIATE_BLOCK_INTERVAL();
-        currentProofThreshold = currentAggregate.PROOF_THRESHOLD();
     }
 
     function setUp() public {
@@ -83,15 +80,14 @@ contract DeployAggregateVerifier is Script {
                 gameType_: currentGameType,
                 anchorStateRegistry_: currentAnchorStateRegistry,
                 delayedWETH: currentDelayedWeth,
-                teeVerifier: TEEVerifier(currentTeeVerifier),
+                teeVerifier: IVerifier(currentTeeVerifier),
                 zkVerifier: IVerifier(currentZkVerifier),
                 teeImageHash: teeImageHashEnv,
                 zkHashes: AggregateVerifier.ZkHashes({rangeHash: zkRangeHashEnv, aggregateHash: zkAggregateHashEnv}),
                 configHash: currentConfigHash,
                 l2ChainId: currentL2ChainId,
                 blockInterval: currentBlockInterval,
-                intermediateBlockInterval: currentIntermediateBlockInterval,
-                proofThreshold: currentProofThreshold
+                intermediateBlockInterval: currentIntermediateBlockInterval
             })
         );
 
@@ -127,7 +123,6 @@ contract DeployAggregateVerifier is Script {
             av.INTERMEDIATE_BLOCK_INTERVAL() == currentIntermediateBlockInterval,
             "aggregate intermediate interval mismatch"
         );
-        require(av.PROOF_THRESHOLD() == currentProofThreshold, "aggregate proof threshold mismatch");
     }
 
     function _writeAddresses() internal {

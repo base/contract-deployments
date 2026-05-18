@@ -103,10 +103,6 @@ contract UpdateVerifierHashes is MultisigScript {
             nextAggregate.INTERMEDIATE_BLOCK_INTERVAL() == currentAggregate.INTERMEDIATE_BLOCK_INTERVAL(),
             "next aggregate intermediate interval mismatch"
         );
-        require(
-            nextAggregate.PROOF_THRESHOLD() == currentAggregate.PROOF_THRESHOLD(),
-            "next aggregate proof threshold mismatch"
-        );
     }
 
     function _buildCalls() internal view override returns (Call[] memory) {
@@ -165,10 +161,6 @@ contract UpdateVerifierHashes is MultisigScript {
         require(
             nextAggregate.INTERMEDIATE_BLOCK_INTERVAL() == currentAggregate.INTERMEDIATE_BLOCK_INTERVAL(),
             "next aggregate intermediate interval mismatch"
-        );
-        require(
-            nextAggregate.PROOF_THRESHOLD() == currentAggregate.PROOF_THRESHOLD(),
-            "next aggregate proof threshold mismatch"
         );
     }
 
