@@ -48,7 +48,7 @@
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x000000000000000000000000fe3e1d27023c4c2e85a7db89d880499958abb77d",
           "after": "0x000000000000000000000000dc3e4db1947f57fb18b093924ca95b96ddc1ef2e",
-          "description": "Updates the `X` implementation address.",
+          "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",
           "allowDifference": false
         }
       ]
@@ -68,7 +68,7 @@
           "key": "0xa92a309fcd3b525490fed3996556b67ef50b123ab8d8f50918f9265379c6b417",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Approves the transaction hash for execution by the nested multisig.",
           "allowDifference": false
         }
       ]
@@ -88,9 +88,5 @@
     }
   ],
   "balanceChanges": [],
-  "taskOriginConfig": {
-    "taskCreator": {
-      "commonName": "mihir.wadekar@coinbase.com"
-    }
-  }
+  "skipTaskOriginValidation": true
 }
