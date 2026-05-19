@@ -25,7 +25,6 @@ remappings = [
     'src/libraries/=lib/contracts/src/libraries/',
     'src/dispute/=lib/contracts/src/dispute/',
     'src/universal/=lib/contracts/src/universal/',
-    'lib/op-enclave/=lib/op-enclave/',
     'openzeppelin/=lib/risc0-ethereum/lib/openzeppelin-contracts/',
     '@lib-keccak/=lib/lib-keccak/contracts/lib/',
     'interfaces/cannon/=lib/contracts/interfaces/cannon/',

@@ -70,6 +70,15 @@ contract DeployAggregateVerifier is Script {
         require(teeImageHashEnv != bytes32(0), "tee image hash not set");
         require(zkRangeHashEnv != bytes32(0), "zk range hash not set");
         require(zkAggregateHashEnv != bytes32(0), "zk aggregate hash not set");
+
+        // Verify new hashes differ from current
+        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
+        require(
+            teeImageHashEnv != currentAggregate.TEE_IMAGE_HASH()
+                || zkRangeHashEnv != currentAggregate.ZK_RANGE_HASH()
+                || zkAggregateHashEnv != currentAggregate.ZK_AGGREGATE_HASH(),
+            "all hashes are identical to the current aggregate verifier"
+        );
     }
 
     function run() external {
