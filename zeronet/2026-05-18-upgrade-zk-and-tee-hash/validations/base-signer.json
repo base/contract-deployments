@@ -5,7 +5,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
     "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
-    "messageHash": "0xcb0168c45110dcbef47ed2cf692b75fac8c2af651a6b39101e1243da710a7def"
+    "messageHash": "0x8decb195ef8778e5ba85dc822e33cba13fb85b0023dfc339fbba1c3aacf9851c"
   },
   "stateOverrides": [
     {
@@ -31,7 +31,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xf862ce46e4c8f557dfd9c77af282070f2cc1b6874569911055af471a20d70249",
+          "key": "0x5bcb6ba450104b4e5a134624daca7bb57cad3e2ae85a53bee0d3aba6e0c17c52",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -47,7 +47,7 @@
         {
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x000000000000000000000000fe3e1d27023c4c2e85a7db89d880499958abb77d",
-          "after": "0x000000000000000000000000dc3e4db1947f57fb18b093924ca95b96ddc1ef2e",
+          "after": "0x000000000000000000000000682332fa3f931734cf6e742ff47f1e4ac27cc5cf",
           "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",
           "allowDifference": false
         }
@@ -65,7 +65,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xa92a309fcd3b525490fed3996556b67ef50b123ab8d8f50918f9265379c6b417",
+          "key": "0xed0f2df93db6f815d187c44634fdf50411d60912735778fba998bf1e43db47e3",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Approves the transaction hash for execution by the nested multisig.",
@@ -88,5 +88,9 @@
     }
   ],
   "balanceChanges": [],
-  "skipTaskOriginValidation": true
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "mihir.wadekar@coinbase.com"
+    }
+  }
 }
