@@ -1,6 +1,6 @@
 # Upgrade ZK and TEE Hash
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x13ffd444e330e096cdaacea5fdb5f90fee875667a1359fca793a1b8130b1ed62)
 
 ## Description
 
