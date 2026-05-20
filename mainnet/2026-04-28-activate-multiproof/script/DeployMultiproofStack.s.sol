@@ -42,7 +42,6 @@ contract DeployMultiproofStack is Script {
     uint256 internal l2ChainIdEnv;
     uint256 internal blockIntervalEnv;
     uint256 internal intermediateBlockIntervalEnv;
-    uint256 internal proofThresholdEnv;
 
     // Delay / timing parameters for the newly deployed implementations.
     uint256 internal proofMaturityDelaySecondsEnv;
@@ -85,7 +84,6 @@ contract DeployMultiproofStack is Script {
         l2ChainIdEnv = vm.envUint("L2_CHAIN_ID");
         blockIntervalEnv = vm.envUint("BLOCK_INTERVAL");
         intermediateBlockIntervalEnv = vm.envUint("INTERMEDIATE_BLOCK_INTERVAL");
-        proofThresholdEnv = vm.envUint("PROOF_THRESHOLD");
 
         proofMaturityDelaySecondsEnv = vm.envUint("PROOF_MATURITY_DELAY_SECONDS");
         disputeGameFinalityDelaySecondsEnv = vm.envUint("DISPUTE_GAME_FINALITY_DELAY_SECONDS");
@@ -170,8 +168,7 @@ contract DeployMultiproofStack is Script {
                 configHash: configHashEnv,
                 l2ChainId: l2ChainIdEnv,
                 blockInterval: blockIntervalEnv,
-                intermediateBlockInterval: intermediateBlockIntervalEnv,
-                proofThreshold: proofThresholdEnv
+                intermediateBlockInterval: intermediateBlockIntervalEnv
             })
         );
 
@@ -266,7 +263,6 @@ contract DeployMultiproofStack is Script {
         require(av.L2_CHAIN_ID() == l2ChainIdEnv, "aggregate l2 chain mismatch");
         require(av.BLOCK_INTERVAL() == blockIntervalEnv, "aggregate block interval mismatch");
         require(av.INTERMEDIATE_BLOCK_INTERVAL() == intermediateBlockIntervalEnv, "aggregate intermediate mismatch");
-        require(av.PROOF_THRESHOLD() == proofThresholdEnv, "aggregate proof threshold mismatch");
     }
 
     function _checkUpgradeTargetImpls() internal view {

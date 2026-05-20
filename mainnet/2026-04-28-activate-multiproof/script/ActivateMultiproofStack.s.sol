@@ -54,7 +54,6 @@ contract ActivateMultiproofStack is MultisigScript {
     uint256 internal l2ChainIdEnv;
     uint256 internal blockIntervalEnv;
     uint256 internal intermediateBlockIntervalEnv;
-    uint256 internal proofThresholdEnv;
     uint256 internal proofMaturityDelaySecondsEnv;
     bytes32 internal startingAnchorRootEnv;
     uint256 internal startingAnchorL2BlockNumberEnv;
@@ -93,7 +92,6 @@ contract ActivateMultiproofStack is MultisigScript {
         l2ChainIdEnv = vm.envUint("L2_CHAIN_ID");
         blockIntervalEnv = vm.envUint("BLOCK_INTERVAL");
         intermediateBlockIntervalEnv = vm.envUint("INTERMEDIATE_BLOCK_INTERVAL");
-        proofThresholdEnv = vm.envUint("PROOF_THRESHOLD");
         proofMaturityDelaySecondsEnv = vm.envUint("PROOF_MATURITY_DELAY_SECONDS");
         startingAnchorRootEnv = vm.envBytes32("STARTING_ANCHOR_ROOT");
         startingAnchorL2BlockNumberEnv = vm.envUint("STARTING_ANCHOR_L2_BLOCK_NUMBER");
@@ -292,7 +290,6 @@ contract ActivateMultiproofStack is MultisigScript {
             av.INTERMEDIATE_BLOCK_INTERVAL() == intermediateBlockIntervalEnv,
             "aggregate intermediate interval mismatch"
         );
-        require(av.PROOF_THRESHOLD() == proofThresholdEnv, "aggregate proof threshold mismatch");
     }
 
     function _checkZkVerifier() internal view {
