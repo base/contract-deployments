@@ -29,9 +29,40 @@ This repo is structured with each network having a high-level directory which co
 
 ## Setup
 
-First, install forge if you don't have it already:
+### Toolchain (mise)
 
-- Run `make install-foundry` to install [`Foundry`](https://github.com/foundry-rs/foundry/commit/3b1129b5bc43ba22a9bcf4e4323c5a9df0023140).
+All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise.toml) so that every contributor — and especially every signer — runs identical versions. This eliminates a class of bugs where domain separators, build artifacts, or generated signatures differ between machines.
+
+1. Install [`mise`](https://mise.jdx.dev/getting-started.html). On macOS the simplest path is:
+
+   ```bash
+   brew install mise
+   ```
+
+   Then follow the [shell activation instructions](https://mise.jdx.dev/getting-started.html#activate-mise) for your shell (e.g. add `eval "$(mise activate zsh)"` to `~/.zshrc`).
+
+2. From the repo root, install and activate the pinned versions:
+
+   ```bash
+   mise trust    # one-time, approves this repo's mise.toml
+   mise install  # downloads pinned foundry, node, bun, go
+   ```
+
+3. Verify Foundry is on the pinned version (currently `1.5.1`):
+
+   ```bash
+   $ forge --version
+   forge Version: 1.5.1-...
+   Commit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2
+   ```
+
+   The `Commit SHA` is the source of truth — it must match the commit pinned in `mise.toml`. The `Version` suffix may differ (`-stable` vs `-v1.5.1`) depending on which release artifact you installed; both are built from the same source.
+
+Once `mise install` has run, `forge`, `cast`, `anvil`, `node`, `npm`, `npx`, `bun`, and `go` will all be on the pinned versions whenever you `cd` into this repo (assuming `mise activate` is set up in your shell).
+
+> **Legacy install:** A `make install-foundry` target is still available for environments where mise cannot be used, but please prefer mise — it keeps all contributors aligned without manual re-pinning.
+
+### Running a task
 
 To execute a new task, run one of the following commands (depending on the type of change you're making):
 
@@ -89,7 +120,7 @@ Templates are validated in parallel using a matrix strategy, so failures are iso
 
 **How it works:**
 
-- Foundry stable is installed via the `foundry-rs/foundry-toolchain` GitHub Action.
+- All tooling (Foundry, Node, Bun, Go) is installed by the [`jdx/mise-action`](https://github.com/jdx/mise-action) GitHub Action using the versions pinned in [`mise.toml`](mise.toml), so CI matches local signer environments.
 - For each template, the corresponding `make setup-*` target creates a task directory from the template.
 - `make deps` installs all dependencies (including base-contracts at the commit pinned in the template's `.env`).
 

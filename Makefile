@@ -1,4 +1,7 @@
-FOUNDRY_COMMIT ?= 3b1129b5bc43ba22a9bcf4e4323c5a9df0023140
+# Foundry version used by the `install-foundry` fallback below. The canonical
+# pin lives in `mise.toml`; please keep this value in sync (commit SHA from
+# `forge --version` on the version pinned in `mise.toml`).
+FOUNDRY_COMMIT ?= b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2
 
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
@@ -27,6 +30,8 @@ ifndef $(GOPATH)
     export GOPATH
 endif
 
+# Legacy Foundry installer. Prefer `mise install` (see mise.toml and README).
+# This target remains for environments where mise is not available.
 .PHONY: install-foundry
 install-foundry:
 	curl -L https://foundry.paradigm.xyz | bash

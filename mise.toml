@@ -1,0 +1,25 @@
+# mise tool versions — https://mise.jdx.dev
+#
+# This file pins the toolchain versions used across the contract-deployments
+# repo. Contributors and signers should install mise and run `mise install` at
+# the repo root so that everyone executes tasks with byte-identical tooling.
+#
+# When bumping any version here, also update the matching pin in
+# `.github/workflows/validate-templates.yml` (or anywhere else CI installs the
+# same tool) so that local and CI runs stay aligned.
+
+[tools]
+# Foundry (forge/cast/anvil/chisel) — pinned for deterministic build artifacts,
+# script outputs, and EIP-712 domain separators across all signers.
+foundry = "1.5.1"
+
+# Node.js — required by the task-signing-tool (`npm ci` / `npx tsx`) and by
+# template scripts that invoke `bun run` against TypeScript sources.
+node = "22.20.0"
+
+# Bun — used by per-task Makefiles to run `scripts/genValidationFile.ts` and
+# other TypeScript helpers shipped with each task.
+bun = "1.3.2"
+
+# Go — required to `go install` the `eip712sign` CLI as part of `make deps`.
+go = "1.25.1"
