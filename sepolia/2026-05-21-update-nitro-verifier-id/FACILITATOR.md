@@ -38,15 +38,3 @@ export SIGNATURES="[SIGNATURE1][SIGNATURE2]..."
 ```bash
 SIGNATURES=$SIGNATURES make execute
 ```
-
-Post-checks enforced by the script:
-
-- `NitroEnclaveVerifier.owner()` remains `TEE_PROVER_REGISTRY_OWNER`
-- `NitroEnclaveVerifier.proofSubmitter()` remains unchanged
-- `NitroEnclaveVerifier.revoker()` remains unchanged
-- `NitroEnclaveVerifier.maxTimeDiff()` remains unchanged
-- `NitroEnclaveVerifier.rootCert()` remains unchanged
-- `NitroEnclaveVerifier.getZkConfig(RiscZero).verifierId` equals `NITRO_ZK_VERIFIER_ID`
-- `NitroEnclaveVerifier.getZkConfig(RiscZero).aggregatorId` remains unchanged
-- `NitroEnclaveVerifier.getZkConfig(RiscZero).zkVerifier` remains unchanged
-- `NitroEnclaveVerifier.getVerifierProofId(RiscZero)` remains unchanged
