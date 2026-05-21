@@ -1,0 +1,122 @@
+name: Validate Task Schema
+
+on:
+  pull_request:
+    paths:
+      - 'mainnet/**'
+      - 'sepolia/**'
+      - 'sepolia-alpha/**'
+      - 'zeronet/**'
+
+jobs:
+  validate-task-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate task schema
+        run: |
+          set -e
+
+          # Get the list of task directories changed in this PR
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD)
+          CHANGED_TASKS=$(echo "$CHANGED_FILES" | grep -oE '[^/]+/[0-9]{4}-[0-9]{2}-[^/]+' | sort -u)
+
+          if [ -z "$CHANGED_TASKS" ]; then
+            echo "No task directories changed."
+            exit 0
+          fi
+
+          echo "Validating tasks: $CHANGED_TASKS"
+          ERROR_COUNT=0
+
+          for TASK in $CHANGED_TASKS; do
+            TASK_DIR="$TASK"
+            echo ""
+            echo "=== Checking: $TASK_DIR ==="
+
+            # Check README.md exists and has Status field
+            if [ ! -f "$TASK_DIR/README.md" ]; then
+              echo "  ERROR: README.md not found"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            else
+              if ! grep -q "Status: READY TO SIGN\|Status: EXECUTED" "$TASK_DIR/README.md"; then
+                echo "  ERROR: README.md missing 'Status: READY TO SIGN' or 'Status: EXECUTED'"
+                ERROR_COUNT=$((ERROR_COUNT + 1))
+              else
+                echo "  OK: README.md has Status field"
+              fi
+            fi
+
+            # Check Makefile exists
+            if [ ! -f "$TASK_DIR/Makefile" ]; then
+              echo "  ERROR: Makefile not found"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            else
+              if ! grep -q "../../Makefile\|../../Multisig.mk" "$TASK_DIR/Makefile"; then
+                echo "  ERROR: Makefile missing standard includes (../../Makefile or ../../Multisig.mk)"
+                ERROR_COUNT=$((ERROR_COUNT + 1))
+              else
+                echo "  OK: Makefile has standard includes"
+              fi
+            fi
+
+            # Check foundry.toml exists
+            if [ ! -f "$TASK_DIR/foundry.toml" ]; then
+              echo "  ERROR: foundry.toml not found"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            else
+              echo "  OK: foundry.toml found"
+            fi
+
+            # Check script/ contains at least one .sol file
+            if [ ! -d "$TASK_DIR/script" ]; then
+              echo "  ERROR: script/ directory not found"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            elif [ -z "$(ls "$TASK_DIR/script/"*.sol 2>/dev/null)" ]; then
+              echo "  ERROR: script/ contains no .sol files"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            else
+              echo "  OK: script/ has .sol files"
+            fi
+
+            # Check FACILITATOR.md exists
+            if [ ! -f "$TASK_DIR/FACILITATOR.md" ]; then
+              echo "  ERROR: FACILITATOR.md not found"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            else
+              echo "  OK: FACILITATOR.md found"
+            fi
+
+            # Check .env exists
+            if [ ! -f "$TASK_DIR/.env" ]; then
+              echo "  ERROR: .env not found"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            else
+              echo "  OK: .env found"
+            fi
+
+            # Check validations/ exists
+            if [ ! -d "$TASK_DIR/validations" ]; then
+              echo "  ERROR: validations/ directory not found"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            else
+              echo "  OK: validations/ found"
+            fi
+
+            # Check records/ exists
+            if [ ! -d "$TASK_DIR/records" ]; then
+              echo "  ERROR: records/ directory not found"
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+            else
+              echo "  OK: records/ found"
+            fi
+          done
+
+          echo ""
+          if [ $ERROR_COUNT -gt 0 ]; then
+            echo "VALIDATION FAILED: $ERROR_COUNT error(s) found"
+            exit 1
+          else
+            echo "All tasks passed schema validation."
+          fi
