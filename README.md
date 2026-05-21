@@ -39,6 +39,7 @@ To execute a new task, run one of the following commands (depending on the type 
 - For gas increase tasks: `make setup-gas-increase network=<network>`
 - For combined gas, elasticity, and DA footprint gas scalar tasks: `make setup-gas-and-elasticity-increase network=<network>`
 - For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
+- For upgrading multiproof ZK and TEE hashes: `make setup-upgrade-zk-and-tee-hash network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
 - For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
@@ -78,7 +79,7 @@ Each task will have a directory structure similar to the following:
 
 ## CI — Template Validation
 
-A GitHub Actions workflow automatically validates all 10 setup-templates on every pull request and on pushes to `main`.
+A GitHub Actions workflow automatically validates all 11 setup-templates on every pull request and on pushes to `main`.
 
 **What CI checks for each template:**
 
@@ -228,6 +229,20 @@ This template is used to upgrade the fault proof contracts. This is commonly don
 1. Build the contracts with `forge build`
 1. Remove the unneeded validations from `VALIDATION.md` and update the relevant validations accordingly
 1. Check in the task when it's ready to sign and collect signatures from signers
+1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+
+## Using the ZK and TEE hash upgrade template
+
+This template is used to redeploy a multiproof `AggregateVerifier` with new `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH` values, then update `DisputeGameFactory.gameImpls(gameType)` to point at the new verifier.
+
+1. Ensure you have followed the instructions above in `setup`.
+1. Run `make setup-upgrade-zk-and-tee-hash network=<network>` and go to the folder that was created by this command.
+1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
+1. Set `GAME_TYPE`, `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, `ZK_AGGREGATE_HASH`, `PROXY_ADMIN_OWNER`, and `DISPUTE_GAME_FACTORY_PROXY` in the task's `.env` file.
+1. Run `make deps` and `forge build`.
+1. Deploy the replacement verifier with `make deploy-aggregate-verifier VERIFIER_API_KEY=...`; this writes `addresses.json`.
+1. Generate signer validations with `make gen-validation-update-verifier-hashes-cb` and `make gen-validation-update-verifier-hashes-sc`.
+1. Check in the task when it's ready to sign and request facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
 ## Using the safe management template
