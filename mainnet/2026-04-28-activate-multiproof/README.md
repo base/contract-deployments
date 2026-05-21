@@ -1,10 +1,10 @@
 # Activate Multiproof
 
-Status: PENDING
+Status: READY TO SIGN
 
 ## Description
 
-This task deploys and activates multiproof on `mainnet`.
+This task deploys and activates multiproof on Ethereum mainnet L1 for Base mainnet.
 
 - deploys `NitroEnclaveVerifier`
 - deploys the multiproof stack with `TEEVerifier`, `ZkVerifier`, and `AggregateVerifier`
