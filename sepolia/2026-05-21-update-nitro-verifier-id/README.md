@@ -1,6 +1,6 @@
 # Update Nitro Verifier ID
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x11e3462ea767ab15b99cda9ddd7534ad995b04685d2682c735ad76acbf46b135)
 
 ## Description
 
