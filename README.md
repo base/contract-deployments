@@ -60,8 +60,6 @@ All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise
 
 Once `mise install` has run, `forge`, `cast`, `anvil`, `node`, `npm`, `npx`, `bun`, and `go` will all be on the pinned versions whenever you `cd` into this repo (assuming `mise activate` is set up in your shell).
 
-> **Legacy install:** A `make install-foundry` target is still available for environments where mise cannot be used, but please prefer mise — it keeps all contributors aligned without manual re-pinning.
-
 ### Running a task
 
 To execute a new task, run one of the following commands (depending on the type of change you're making):
