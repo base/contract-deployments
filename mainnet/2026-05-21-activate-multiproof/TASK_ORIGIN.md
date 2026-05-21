@@ -7,7 +7,7 @@ Run these commands only after the task folder is final. The signatures cover the
 ## Task Creator
 
 ```bash
-cd contract-deployments/mainnet/2026-05-21-activate-multiproof
+cd mainnet/2026-05-21-activate-multiproof
 make deps
 make sign-as-task-creator
 ```
@@ -15,7 +15,7 @@ make sign-as-task-creator
 ## Base Facilitator
 
 ```bash
-cd contract-deployments/mainnet/2026-05-21-activate-multiproof
+cd mainnet/2026-05-21-activate-multiproof
 make deps
 make sign-as-base-facilitator
 ```
@@ -23,7 +23,7 @@ make sign-as-base-facilitator
 ## Security Council Facilitator
 
 ```bash
-cd contract-deployments/mainnet/2026-05-21-activate-multiproof
+cd mainnet/2026-05-21-activate-multiproof
 make deps
 make sign-as-sc-facilitator
 ```
