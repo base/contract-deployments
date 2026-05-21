@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import {Vm} from "forge-std/Vm.sol";
 
@@ -10,29 +10,26 @@ import {ZkCoProcessorConfig, ZkCoProcessorType} from "interfaces/multiproof/tee/
 import {NitroEnclaveVerifier} from "@base-contracts/src/multiproof/tee/NitroEnclaveVerifier.sol";
 
 contract UpdateNitroVerifierId is MultisigScript {
-    address internal nitroOwnerEnv;
-    address internal nitroEnclaveVerifierEnv;
-    bytes32 internal currentNitroZkVerifierIdEnv;
-    bytes32 internal newNitroZkVerifierIdEnv;
+    address internal immutable nitroOwnerEnv;
+    address internal immutable nitroEnclaveVerifierEnv;
+    bytes32 internal immutable currentNitroZkVerifierIdEnv;
+    bytes32 internal immutable newNitroZkVerifierIdEnv;
 
-    address internal currentProofSubmitter;
-    address internal currentRevoker;
-    uint64 internal currentMaxTimeDiff;
-    bytes32 internal currentRootCert;
-    bytes32 internal currentAggregatorId;
-    address internal currentRouter;
-    bytes32 internal currentVerifierProofId;
+    address internal immutable currentProofSubmitter;
+    address internal immutable currentRevoker;
+    uint64 internal immutable currentMaxTimeDiff;
+    bytes32 internal immutable currentRootCert;
+    bytes32 internal immutable currentAggregatorId;
+    address internal immutable currentRouter;
+    bytes32 internal immutable currentVerifierProofId;
 
-    function setUp() public {
+    constructor() {
         nitroOwnerEnv = vm.envAddress("TEE_PROVER_REGISTRY_OWNER");
         nitroEnclaveVerifierEnv = vm.envAddress("NITRO_ENCLAVE_VERIFIER");
         currentNitroZkVerifierIdEnv = vm.envBytes32("CURRENT_NITRO_ZK_VERIFIER_ID");
         newNitroZkVerifierIdEnv = vm.envBytes32("NITRO_ZK_VERIFIER_ID");
 
-        require(currentNitroZkVerifierIdEnv != newNitroZkVerifierIdEnv, "verifier id already target");
-
         NitroEnclaveVerifier nev = NitroEnclaveVerifier(nitroEnclaveVerifierEnv);
-        require(nev.owner() == nitroOwnerEnv, "nitro owner mismatch");
 
         currentProofSubmitter = nev.proofSubmitter();
         currentRevoker = nev.revoker();
@@ -41,10 +38,18 @@ contract UpdateNitroVerifierId is MultisigScript {
         currentVerifierProofId = nev.getVerifierProofId(ZkCoProcessorType.RiscZero);
 
         ZkCoProcessorConfig memory cfg = nev.getZkConfig(ZkCoProcessorType.RiscZero);
-        require(cfg.verifierId == currentNitroZkVerifierIdEnv, "unexpected current verifier id");
-
         currentAggregatorId = cfg.aggregatorId;
         currentRouter = cfg.zkVerifier;
+    }
+
+    function setUp() public {
+        require(currentNitroZkVerifierIdEnv != newNitroZkVerifierIdEnv, "verifier id already target");
+
+        NitroEnclaveVerifier nev = NitroEnclaveVerifier(nitroEnclaveVerifierEnv);
+        require(nev.owner() == nitroOwnerEnv, "nitro owner mismatch");
+
+        ZkCoProcessorConfig memory cfg = nev.getZkConfig(ZkCoProcessorType.RiscZero);
+        require(cfg.verifierId == currentNitroZkVerifierIdEnv, "unexpected current verifier id");
     }
 
     function _buildCalls() internal view override returns (Call[] memory calls) {
