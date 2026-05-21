@@ -1,5 +1,3 @@
-FOUNDRY_COMMIT ?= 3b1129b5bc43ba22a9bcf4e4323c5a9df0023140
-
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 GAS_AND_ELASTICITY_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-and-elasticity-limit
@@ -26,11 +24,6 @@ ifndef $(GOPATH)
     GOPATH=$(shell go env GOPATH)
     export GOPATH
 endif
-
-.PHONY: install-foundry
-install-foundry:
-	curl -L https://foundry.paradigm.xyz | bash
-	~/.foundry/bin/foundryup --commit $(FOUNDRY_COMMIT)
 
 ##
 # Project Setup
