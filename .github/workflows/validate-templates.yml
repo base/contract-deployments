@@ -40,6 +40,10 @@ jobs:
             setup_target: "setup-upgrade-fault-proofs"
             setup_args: "network=sepolia"
             task_dir_suffix: upgrade-fault-proofs
+          - template: template-upgrade-zk-and-tee-hash
+            setup_target: "setup-upgrade-zk-and-tee-hash"
+            setup_args: "network=sepolia"
+            task_dir_suffix: upgrade-zk-and-tee-hash
           - template: template-pause-bridge-base
             setup_target: "setup-bridge-pause"
             setup_args: "network=sepolia"

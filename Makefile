@@ -2,6 +2,7 @@ PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 GAS_AND_ELASTICITY_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-and-elasticity-limit
 FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
+ZK_AND_TEE_HASH_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-zk-and-tee-hash
 SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-management
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
@@ -13,6 +14,7 @@ TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
 TEMPLATE_GAS_AND_ELASTICITY_INCREASE = setup-templates/template-gas-and-elasticity-increase
 TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
+TEMPLATE_UPGRADE_ZK_AND_TEE_HASH = setup-templates/template-upgrade-zk-and-tee-hash
 TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
 TEMPLATE_FUNDING = setup-templates/template-funding
 TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
@@ -50,6 +52,12 @@ setup-gas-and-elasticity-increase:
 setup-upgrade-fault-proofs:
 	cp -r $(TEMPLATE_UPGRADE_FAULT_PROOFS) $(FAULT_PROOF_UPGRADE_DIR)
 	mkdir -p $(network)/signatures/$(notdir $(FAULT_PROOF_UPGRADE_DIR))
+
+# Run `make setup-upgrade-zk-and-tee-hash network=<network>`
+setup-upgrade-zk-and-tee-hash:
+	rm -rf $(TEMPLATE_UPGRADE_ZK_AND_TEE_HASH)/cache $(TEMPLATE_UPGRADE_ZK_AND_TEE_HASH)/lib $(TEMPLATE_UPGRADE_ZK_AND_TEE_HASH)/out
+	cp -r $(TEMPLATE_UPGRADE_ZK_AND_TEE_HASH) $(ZK_AND_TEE_HASH_UPGRADE_DIR)
+	mkdir -p $(network)/signatures/$(notdir $(ZK_AND_TEE_HASH_UPGRADE_DIR))
 
 # Run `make setup-safe-management network=<network>`
 setup-safe-management:
