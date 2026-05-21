@@ -17,6 +17,10 @@ SENDER=0x1841CB3C2ce6870D0417844C817849da64E6e937
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = PauseBridge
 
+ZERO_ADDRESS = 0x0000000000000000000000000000000000000000
+SAFE_TX_TYPEHASH = 0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8
+SAFE_TX_ABI = f(bytes32,address,uint256,bytes32,uint8,uint256,uint256,uint256,address,address,uint256)
+
 # Validate required configuration before execution
 .PHONY: validate-config
 validate-config:
@@ -35,12 +39,19 @@ gen-validation: validate-config deps-signer-tool
 .PHONY: sign-pause
 sign-pause: validate-config
 	@rm -f signatures-pause.txt
-	@for i in $$(seq 0 19); do \
+	@set -e; \
+	domain_separator=$$(cast call $(OWNER_SAFE) "domainSeparator()(bytes32)" --rpc-url $(L1_RPC_URL)); \
+	bridge_data=$$(cast calldata "setPaused(bool)" true); \
+	portal_data=$$(cast calldata "depositTransaction(address,uint256,uint64,bool,bytes)" $(L2_BRIDGE) 0 100000 false $$bridge_data); \
+	portal_data_hash=$$(cast keccak "$$portal_data"); \
+	for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
 		echo "Signing with nonce $$nonce"; \
-		IS_PAUSED=true SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		safe_tx=$$(cast abi-encode '$(SAFE_TX_ABI)' $(SAFE_TX_TYPEHASH) $(L1_PORTAL) 0 $$portal_data_hash 0 0 0 0 $(ZERO_ADDRESS) $(ZERO_ADDRESS) $$nonce); \
+		message_hash=$$(cast keccak "$$safe_tx"); \
+		signing_data="0x1901$${domain_separator#0x}$${message_hash#0x}"; \
+		$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -data "$$signing_data" > sign_output.tmp; \
+		cat sign_output.tmp; \
 		echo "Nonce: $$nonce" >> signatures-pause.txt; \
 		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-pause.txt || true; \
 		echo "" >> signatures-pause.txt; \
@@ -50,12 +61,19 @@ sign-pause: validate-config
 .PHONY: sign-unpause
 sign-unpause: validate-config
 	@rm -f signatures-unpause.txt
-	@for i in $$(seq 0 19); do \
+	@set -e; \
+	domain_separator=$$(cast call $(OWNER_SAFE) "domainSeparator()(bytes32)" --rpc-url $(L1_RPC_URL)); \
+	bridge_data=$$(cast calldata "setPaused(bool)" false); \
+	portal_data=$$(cast calldata "depositTransaction(address,uint256,uint64,bool,bytes)" $(L2_BRIDGE) 0 100000 false $$bridge_data); \
+	portal_data_hash=$$(cast keccak "$$portal_data"); \
+	for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
 		echo "Signing with nonce $$nonce"; \
-		IS_PAUSED=false SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		safe_tx=$$(cast abi-encode '$(SAFE_TX_ABI)' $(SAFE_TX_TYPEHASH) $(L1_PORTAL) 0 $$portal_data_hash 0 0 0 0 $(ZERO_ADDRESS) $(ZERO_ADDRESS) $$nonce); \
+		message_hash=$$(cast keccak "$$safe_tx"); \
+		signing_data="0x1901$${domain_separator#0x}$${message_hash#0x}"; \
+		$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -data "$$signing_data" > sign_output.tmp; \
+		cat sign_output.tmp; \
 		echo "Nonce: $$nonce" >> signatures-unpause.txt; \
 		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-unpause.txt || true; \
 		echo "" >> signatures-unpause.txt; \
