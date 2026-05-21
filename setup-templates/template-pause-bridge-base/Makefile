@@ -40,7 +40,7 @@ sign-pause: validate-config
 		echo "Signing with nonce $$nonce"; \
 		IS_PAUSED=true SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		--sig "signingData(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
 		echo "Nonce: $$nonce" >> signatures-pause.txt; \
 		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-pause.txt || true; \
 		echo "" >> signatures-pause.txt; \
@@ -55,7 +55,7 @@ sign-unpause: validate-config
 		echo "Signing with nonce $$nonce"; \
 		IS_PAUSED=false SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		--sig "signingData(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
 		echo "Nonce: $$nonce" >> signatures-unpause.txt; \
 		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-unpause.txt || true; \
 		echo "" >> signatures-unpause.txt; \

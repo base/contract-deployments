@@ -22,7 +22,7 @@ sign-pause:
 		echo "Signing with nonce $$nonce"; \
 		SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
 		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
-		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
+		--sig "signingData(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
 		signer=$$(grep "^Signer:" sign_output.tmp | awk '{print $$2}'); \
 		sig=$$(grep "^Signature:" sign_output.tmp | awk '{print $$2}'); \
 		printf "%s," "$$signer:$$nonce:$$sig" >> signatures-pause.txt; \
