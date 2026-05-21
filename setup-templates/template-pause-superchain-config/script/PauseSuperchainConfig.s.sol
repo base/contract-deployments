@@ -34,12 +34,6 @@ contract PauseSuperchainConfig is MultisigScript {
         return calls;
     }
 
-    function signingData(address[] memory safes) public {
-        safes = _appendOwnerSafe({safes: safes});
-        Call[] memory callsChain = _buildCallsChain({safes: safes});
-        _printDataToSign({safe: safes[0], call: callsChain[0]});
-    }
-
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         address superchainConfig = ISystemConfig(SYSTEM_CONFIG).superchainConfig();
         bool paused = ISuperchainConfig(superchainConfig).paused(address(0));
