@@ -1,13 +1,31 @@
 {
-  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack --sig sign(address[]) [0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0xf9e320f3dA12E68af219d9E2A490Dd649f6B177c",
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0xbDE1845c879942fC326F247Ad708677733Dd5594",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
     "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
-    "domainHash": "0x88aac3dc27cc1618ec43a87b3df21482acd24d172027ba3fbb5a5e625d895a0b",
-    "messageHash": "0xd1334413d54957cc34fffa231f85db7b12f01545678bf9f668451462c83290b3"
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x94323b5b7edcce2a185c064d527a0fff850bf4c48bbe2cb028ca3dacdf36e5e6"
   },
   "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x4dfac5494851a000bd68d3b3119c3cf7f73bca2552fe9d474dc806d8ddbf9e16",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
     {
       "name": "Proxy Admin Owner - Mainnet",
       "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
@@ -19,27 +37,22 @@
           "allowDifference": false
         }
       ]
-    },
-    {
-      "name": "CB Safe - Mainnet",
-      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
-      "overrides": [
-        {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Override the threshold to 1 so the transaction simulation can occur.",
-          "allowDifference": false
-        },
-        {
-          "key": "0xb1c7b202eaf4ba7a87ab44492873fb72eff388a59c0ffe7ee3c90cc069c70fd2",
-          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
-          "allowDifference": false
-        }
-      ]
     }
   ],
   "stateChanges": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
     {
       "name": "Dispute Game Factory Proxy - Mainnet",
       "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
@@ -134,10 +147,10 @@
           "allowDifference": false
         },
         {
-          "key": "0xb41219a499670375cee747b0e369609a89e3c4594df6df1e722a356f2eb1ce29",
+          "key": "0x37c734c211408e04802342d824ad1dceabbe4593d80fcb65ffe3f66587eaa915",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "Records the CB Coordinator Safe approval on the Proxy Admin Owner Safe.",
+          "description": "Records the Security Council Safe approval on the Proxy Admin Owner Safe.",
           "allowDifference": false
         }
       ]
@@ -177,7 +190,7 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
           "before": "0x00000000000000000000000000000000000000000000000068e55f3300000000",
-          "after": "0x0000000000000000000000000000000000000000000000006a0f6e9b0000026d",
+          "after": "0x0000000000000000000000000000000000000000000000006a0f6ed70000026d",
           "description": "Sets the respected game type to multiproof and updates the packed retirement timestamp slot; small differences are expected because this slot also stores a block.timestamp-derived value.",
           "allowDifference": true
         },
@@ -189,25 +202,12 @@
           "allowDifference": false
         }
       ]
-    },
-    {
-      "name": "CB Safe - Mainnet",
-      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
-      "changes": [
-        {
-          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x000000000000000000000000000000000000000000000000000000000000001d",
-          "after": "0x000000000000000000000000000000000000000000000000000000000000001e",
-          "description": "Increments the nonce",
-          "allowDifference": false
-        }
-      ]
     }
   ],
   "balanceChanges": [],
   "taskOriginConfig": {
     "taskCreator": {
-      "commonName": "baptiste.oueriagli@coinbase.com"
+      "commonName": "jack.chuma@coinbase.com"
     }
   }
 }
