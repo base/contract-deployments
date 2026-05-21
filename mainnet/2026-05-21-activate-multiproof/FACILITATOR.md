@@ -7,7 +7,7 @@ This task executes on Ethereum mainnet L1 and configures Base mainnet dispute ga
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2026-04-28-activate-multiproof
+cd mainnet/2026-05-21-activate-multiproof
 make deps
 ```
 
