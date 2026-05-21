@@ -1,0 +1,213 @@
+{
+  "cmd": "forge script --rpc-url https://eth-mainnet.public.blastapi.io script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack --sig sign(address[]) [0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0xf9e320f3dA12E68af219d9E2A490Dd649f6B177c",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x88aac3dc27cc1618ec43a87b3df21482acd24d172027ba3fbb5a5e625d895a0b",
+    "messageHash": "0xd1334413d54957cc34fffa231f85db7b12f01545678bf9f668451462c83290b3"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb1c7b202eaf4ba7a87ab44492873fb72eff388a59c0ffe7ee3c90cc069c70fd2",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
+      "changes": [
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea5",
+          "before": "0x033c000916b4a88cfffeceddd6cf0f4be3897a89195941e5a7c3f8209b4dbb6e",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears legacy Cannon gameArgs word 1/4: absolute prestate.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea6",
+          "before": "0x6463dee3828677f6270d83d45408044fc5edb908909f6cf47ed12f010a796527",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears legacy Cannon gameArgs word 2/4: MIPS VM address and start of AnchorStateRegistry address.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea7",
+          "before": "0xf562bfc26c7f4e722453c1216e49704d84ea98a4dacd95738f2fc8ec00000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears legacy Cannon gameArgs word 3/4: end of AnchorStateRegistry address and DelayedWETH address.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2e713cda4bce4da2a4129e9bf397dcdd0c170c68ec15235263c7f7c9f24b2ea8",
+          "before": "0x0000000000000000000000000000000000000000000000000000210500000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears legacy Cannon gameArgs word 4/4: L2 chain ID tail plus padding.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000004c0daf5d9abe92e8a26a60698a657b03538a3028",
+          "description": "Updates the multiproof game implementation to the new AggregateVerifier.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000c040f392e52cb6970ca8e110c280fe24e07c5e2c",
+          "after": "0x000000000000000000000000468c2345d1d409d5b0f2f8be4ae2082150cc1a0c",
+          "description": "Update address of DisputeGameFactory to new implementation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x5843af22e99e7c98370145a5056245c244ce8ee852f4ef5e6d6a8e410a18cf41",
+          "before": "0x00000000000000000000000000000000000000000000000000000000000000f9",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears legacy Cannon gameArgs length after disabling Cannon game creation.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe599aaa2f8fda7c53529cbda86878cc948a0a03183dcb2ecbc676dee91952337",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000000000000000000000000000000b1a2bc2ec50000",
+          "description": "Sets the init bond for the multiproof game type.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xffdfc1249c027f9191656349feb0761381bb32c9f557e01f419fd08754bf5a1b",
+          "before": "0x0000000000000000000000006ddba09bc4ccb0d6ca9fc5350580f74165707499",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears the Cannon FaultDisputeGame implementation address to disable new Cannon game creation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000097cebbf8959e2a5476fbe9b98a21806ec234609b",
+          "after": "0x00000000000000000000000066d94ee8f529b683ed6013729784e8bb44697a64",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000010",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb41219a499670375cee747b0e369609a89e3c4594df6df1e722a356f2eb1ce29",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the CB Coordinator Safe approval on the Proxy Admin Owner Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Mainnet",
+      "address": "0x909f6cf47ed12f010A796527f562bFc26C7F4E72",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000073a79fab69143498ed3712e519a88a918e1f40720001",
+          "after": "0x0000000000000000000073a79fab69143498ed3712e519a88a918e1f40720002",
+          "description": "Runs the AnchorStateRegistry reinitializer for the multiproof cutover.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "before": "0x000000000000000000000000419ef7979498d525dee49754065b7f1738f927fa",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears the cached anchor game address as part of the AnchorStateRegistry reinitialization.",
+          "allowDifference": true
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x9a37fe32cd2b49385bec0236b7b5c2177e71176bb306d19a49a8a77651ce2cd0",
+          "after": "0xc34c9f98b74b2fb85a516e302f86bc9bedcf5623ab078a671d40beac0e120329",
+          "description": "Sets the starting anchor root for the new multiproof game type.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x000000000000000000000000000000000000000000000000000000000228e032",
+          "after": "0x0000000000000000000000000000000000000000000000000000000002c286f0",
+          "description": "Sets the starting anchor L2 block number for the new multiproof game type.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "before": "0x00000000000000000000000000000000000000000000000068e55f3300000000",
+          "after": "0x0000000000000000000000000000000000000000000000006a0f6e9b0000026d",
+          "description": "Sets the respected game type to multiproof and updates the packed retirement timestamp slot; small differences are expected because this slot also stores a block.timestamp-derived value.",
+          "allowDifference": true
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000036398155cd17cfe804f69b233edda800dd4d5aa5",
+          "after": "0x0000000000000000000000004483f964f6711cb55f633820ed174e780369b99d",
+          "description": "Update address of AnchorStateRegistry to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001e",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "jack.chuma@coinbase.com"
+    }
+  }
+}
