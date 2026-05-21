@@ -12,7 +12,7 @@ make deps
 make gen-validation
 ```
 
-This produces `validations/update-nitro-verifier-id-cb-signer.json`, which signers should use in the signing UI.
+This produces `validations/base-signer.json`, which signers should use in the signing UI.
 
 ## Execute the transaction
 

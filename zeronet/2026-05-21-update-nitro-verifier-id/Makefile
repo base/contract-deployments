@@ -5,7 +5,7 @@ include .env
 
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = script/UpdateNitroVerifierId.s.sol:UpdateNitroVerifierId
-VALIDATION_FILE = update-nitro-verifier-id-cb-signer.json
+VALIDATION_FILE = base-signer.json
 SENDER ?= $(shell cast call $(TEE_PROVER_REGISTRY_OWNER) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 
 .PHONY: deps
