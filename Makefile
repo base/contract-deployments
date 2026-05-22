@@ -199,6 +199,23 @@ sign-as-sc-facilitator: deps-signer-tool
 help:
 	@grep -E '^##\s' $(MAKEFILE_LIST) | sed -e 's/##\s//' | awk -F '##' '{printf "%-20s %s\n", $$1, $$2}'
 
+# Run `make verify-task-status` to audit Status: fields across all tasks
+.PHONY: verify-task-status
+verify-task-status:
+	@echo "Network          Task Directory                                      Status"
+	@echo "--------------------------------------------------------------------------------"
+	@for network in mainnet sepolia sepolia-alpha zeronet; do \
+		if [ -d "$$network" ]; then \
+			for task in $$network/*/; do \
+				if [ -f "$$task/README.md" ]; then \
+					status=$$(grep -m1 "^Status:" "$$task/README.md" 2>/dev/null | sed 's/Status:\s*//'); \
+					taskname=$$(basename "$$task"); \
+					printf "%-16s %-50s %s\n" "$$network" "$$taskname" "$$status"; \
+				fi; \
+			done; \
+		fi; \
+	done
+
 .PHONY: solidity-test
 solidity-test:
 	forge test --ffi -vvv
