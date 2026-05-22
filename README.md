@@ -206,7 +206,7 @@ This template is used to update the gas limit, elasticity, and DA footprint gas 
 1. Fill in any task-specific variables in the `.env` file that have per-network comments (e.g., `OWNER_SAFE`, `SENDER`), using the value for your target network.
 1. Ensure the `SENDER` variable in the `.env` file is set to a signer of `OWNER_SAFE`.
 1. Set the `FROM_*` and `TO_*` values for gas limit and elasticity in the `.env` file.
-1. Calculate the DA footprint gas scalar with `make da-scalar TARGET_BLOB_COUNT=<value>` and set the `FROM_DA_FOOTPRINT_GAS_SCALAR` and `TO_DA_FOOTPRINT_GAS_SCALAR` values in the `.env` file.
+1. Calculate the DA footprint gas scalar using the DA limits runbook at `go/base-da-config`. `make da-scalar TARGET_BLOB_COUNT=<value>` is the source of truth for the standard soft-cap policy and calculates `gas_limit / (elasticity * da_soft_cap_blob_count * 32,000)`. Since BPO2, Base has used a DA soft-cap blob count of 21, passed as `TARGET_BLOB_COUNT=21`, to allow the chain to use all L1 DA before raising the L2 base fee. The command prints the `.env` value and the DA table to copy into the task README. Pass `BUILDER_HARD_CAP=<value>` after checking the target network's `op_batcher_throttle_block_size_upper_limit` Config Service value. The task README includes links for the standard network scopes. Set the `FROM_DA_FOOTPRINT_GAS_SCALAR` and `TO_DA_FOOTPRINT_GAS_SCALAR` values in the `.env` file.
 1. Build the contracts with `forge build`.
 1. Generate the validation file for signers with `make gen-validation`.
 1. Generate the rollback validation file for signers with `make gen-validation-rollback`.
