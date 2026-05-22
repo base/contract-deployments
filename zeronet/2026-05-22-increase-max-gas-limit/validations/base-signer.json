@@ -88,9 +88,5 @@
     }
   ],
   "balanceChanges": [],
-  "taskOriginConfig": {
-    "taskCreator": {
-      "commonName": "will.law@coinbase.com"
-    }
-  }
+  "skipTaskOriginValidation": true
 }
