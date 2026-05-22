@@ -1,0 +1,115 @@
+name: Validate Address Liveness
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run weekly on Sunday at 00:00 UTC
+    - cron: '0 0 * * 0'
+  pull_request:
+    paths:
+      - 'mainnet/**'
+      - 'sepolia/**'
+      - 'sepolia-alpha/**'
+      - 'zeronet/**'
+      - '.github/workflows/validate-addresses.yml'
+
+jobs:
+  validate-addresses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mise-managed toolchain
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          experimental: true
+
+      - name: Validate addresses for network
+        env:
+          NETWORK: ${{ matrix.network }}
+        strategy:
+          matrix:
+            include:
+              - network: mainnet
+                rpc_url_env: L1_RPC_URL
+              - network: sepolia
+                rpc_url_env: L1_RPC_URL
+              - network: sepolia-alpha
+                rpc_url_env: L1_RPC_URL
+              - network: zeronet
+                rpc_url_env: L1_RPC_URL
+        run: |
+          set -e
+
+          echo "=== Validating addresses for ${{ matrix.network }} ==="
+
+          # Source the network .env
+          set -a
+          source ${{ matrix.network }}/.env
+          set +a
+
+          RPC_URL="${!{{ matrix.rpc_url_env }}}"
+          if [ -z "$RPC_URL" ]; then
+            echo "ERROR: ${{ matrix.rpc_url_env }} not set in ${{ matrix.network }}/.env"
+            exit 1
+          fi
+
+          # Verify chain ID matches expected
+          case "${{ matrix.network }}" in
+            mainnet) EXPECTED_CHAIN_ID=8453 ;;
+            sepolia) EXPECTED_CHAIN_ID=11155111 ;;
+            sepolia-alpha) EXPECTED_CHAIN_ID=11763071 ;;
+            zeronet) EXPECTED_CHAIN_ID=127808 ;;
+          esac
+
+          ACTUAL_CHAIN_ID=$(cast chain-id --rpc-url "$RPC_URL")
+          if [ "$ACTUAL_CHAIN_ID" != "$EXPECTED_CHAIN_ID" ]; then
+            echo "ERROR: Chain ID mismatch for ${{ matrix.network }}"
+            echo "  Expected: $EXPECTED_CHAIN_ID"
+            echo "  Actual: $ACTUAL_CHAIN_ID"
+            exit 1
+          fi
+          echo "  OK: Chain ID matches expected ($ACTUAL_CHAIN_ID)"
+
+          # Extract all *_ADDR and *_PROXY variables from .env and validate they have code
+          ENV_FILE="${{ matrix.network }}/.env"
+          ERROR_COUNT=0
+
+          while IFS='=' read -r key value; do
+            # Skip comments and empty lines
+            if [[ "$key" =~ ^# ]] || [[ -z "$key" ]]; then
+              continue
+            fi
+
+            # Check if key ends with _ADDR or _PROXY
+            if [[ "$key" =~ _ADDR$ ]] || [[ "$key" =~ _PROXY$ ]]; then
+              addr="$value"
+              # Skip placeholder values
+              if [[ "$addr" == "<"*">"* ]] || [[ -z "$addr" ]]; then
+                echo "  SKIP: $key (placeholder)"
+                continue
+              fi
+
+              # Check if address is a valid eth address
+              if ! [[ "$addr" =~ ^0x[0-9a-fA-F]{40}$ ]]; then
+                echo "  SKIP: $key (not a valid address: $addr)"
+                continue
+              fi
+
+              code=$(cast code "$addr" --rpc-url "$RPC_URL" 2>/dev/null || echo "0x")
+              if [ "$code" == "0x" ] || [ -z "$code" ]; then
+                echo "  ERROR: $key=$addr — no contract code found at this address"
+                ERROR_COUNT=$((ERROR_COUNT + 1))
+              else
+                echo "  OK: $key=$addr (code length: ${#code})"
+              fi
+            fi
+          done < "$ENV_FILE"
+
+          echo ""
+          if [ $ERROR_COUNT -gt 0 ]; then
+            echo "VALIDATION FAILED: $ERROR_COUNT address(es) have no code"
+            exit 1
+          else
+            echo "All addresses validated successfully."
+          fi

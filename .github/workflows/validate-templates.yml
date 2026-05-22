@@ -107,3 +107,14 @@ jobs:
             echo "::error::Compilation failed for ${{ matrix.template }}. Check imports, types, and dependency versions."
             exit 1
           fi
+
+      - name: Check exact pragma versions (no range pragmas)
+        working-directory: ${{ steps.setup.outputs.task_dir }}
+        run: |
+          echo "==> checking for range pragmas in script/ (${{ matrix.template }})"
+          if grep -r "pragma solidity \^[0-9]" script/; then
+            echo ""
+            echo "::error::Range pragmas (^) found in script/. Use exact versions (e.g., 'pragma solidity 0.8.15'). See AGENTS.md."
+            exit 1
+          fi
+          echo "  OK: No range pragmas found"
