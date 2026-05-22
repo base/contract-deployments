@@ -191,8 +191,14 @@ sign-as-sc-facilitator: deps-signer-tool
 		--facilitator security-council
 
 ##
-# Solidity Testing
+# Utilities
 ##
+
+# Run `make help` to see all available targets
+.PHONY: help
+help:
+	@grep -E '^##\s' $(MAKEFILE_LIST) | sed -e 's/##\s//' | awk -F '##' '{printf "%-20s %s\n", $$1, $$2}'
+
 .PHONY: solidity-test
 solidity-test:
 	forge test --ffi -vvv
