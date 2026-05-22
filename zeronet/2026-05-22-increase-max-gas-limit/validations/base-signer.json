@@ -55,7 +55,7 @@
           "key": "0x51bbd2c35b0b640300d40a135017268708e110471fea61cbc7c9270e47b60ead",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Approves the nested transaction hash on the ProxyAdminOwner Safe (approvedHashes mapping).",
           "allowDifference": false
         }
       ]
