@@ -3,7 +3,7 @@
 Status: READY TO SIGN
 
 [Deploy SystemConfig impl](https://hoodi.etherscan.io/tx/0xc619806dad6b6a7b1c88135ac82a4d4dd31c8bee00cf6abc8a4d38ca500ebe61) ([artifact](./records/DeploySystemConfig.s.sol/560048/run-1779471994.json))
-[Execution](https://hoodi.etherscan.io/tx/0x315b0791412f2e88d4c9c9a416f6e3c6517da40a9877c040a23ed993d656d3ed) ([artifact](./records/UpgradeSystemConfig.s.sol/560048/run-1779717772.json))
+[Execution](https://hoodi.etherscan.io/tx/0x935dcdf277424427d4b3b2ea42d7de602a21a2ed4eec38c736424020b3e91312) ([artifact](./records/UpgradeSystemConfig.s.sol/560048/run-1779719011.json))
 
 ## Description
 
