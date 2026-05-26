@@ -349,3 +349,6 @@ This template is used to pause or un-pause the L1 SuperchainConfig contract.
 1. Sign the pause transaction with `make sign-pause` or generate the validation file for un-pausing with `make gen-validation-unpause`.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+
+## Contributing
+PRs welcome!
