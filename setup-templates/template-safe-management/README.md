@@ -1,6 +1,6 @@
 # Update Sepolia Incident Multisig Signers
 
-Status: TODO[READY TO SIGN|EXECUTED]
+Status: READY TO SIGN
 
 ## Description
 

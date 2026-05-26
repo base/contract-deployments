@@ -18,15 +18,13 @@ validate-config:
 	@test -n "$(L1_PORTAL)" || (echo "L1_PORTAL required" && exit 1)
 	@test -n "$(L2_BRIDGE_VALIDATOR)" || (echo "L2_BRIDGE_VALIDATOR required" && exit 1)
 	@test -n "$(NEW_THRESHOLD)" || (echo "NEW_THRESHOLD required" && exit 1)
+	@test -n "$(SENDER)" -a "$(SENDER)" != "TODO" || (echo "SENDER required" && exit 1)
 	@echo "Configuration validated successfully"
 
 # TODO: ensure `sender` is a signer for `OWNER_SAFE`
 .PHONY: gen-validation
-gen-validation: validate-config
-	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o validations/signer.json \
-	-- forge script --rpc-url $(L1_RPC_URL) SetThreshold \
-	--sig "sign(address[])" "[$(OWNER_SAFE)]" \
-	--sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B
+gen-validation: validate-config deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
 
 # Execute
 .PHONY: execute

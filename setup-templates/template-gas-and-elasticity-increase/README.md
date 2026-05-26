@@ -1,6 +1,6 @@
 # Update Gas Limit, Elasticity & DA Footprint Gas Scalar in L1 `SystemConfig`
 
-Status: TODO[READY TO SIGN|DONE]
+Status: READY TO SIGN
 
 ## Description
 

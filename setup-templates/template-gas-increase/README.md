@@ -1,6 +1,6 @@
 # Update Gas Limit in L1 `SystemConfig`
 
-Status: TODO[READY TO SIGN|DONE]
+Status: READY TO SIGN
 
 ## Objective
 
