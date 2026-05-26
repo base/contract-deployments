@@ -25,14 +25,15 @@ UPGRADE_ENV = NEW_GAS_LIMIT=$(TO_GAS_LIMIT) OLD_GAS_LIMIT=$(FROM_GAS_LIMIT) \
 	NEW_DENOMINATOR=$(TO_DENOMINATOR) OLD_DENOMINATOR=$(FROM_DENOMINATOR) \
 	NEW_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) OLD_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR)
 
-# Rollback env vars — targets the rollup-config defaults instead of the literal
-# zero FROM_* values because setEIP1559Params enforces denominator >= 1 and
-# elasticity >= 1.
-ROLLBACK_ENV = OLD_GAS_LIMIT=$(TO_GAS_LIMIT) NEW_GAS_LIMIT=$(ROLLBACK_GAS_LIMIT) \
+# Rollback param env vars — targets the rollup-config defaults instead of the
+# literal zero FROM_* values because setEIP1559Params enforces denominator >= 1
+# and elasticity >= 1. Nonce overrides are NOT included here; they are computed
+# per-safe in each rollback target using SAFE_NONCE_<ADDR> to avoid poisoning
+# other safes in the nested path.
+ROLLBACK_PARAMS = OLD_GAS_LIMIT=$(TO_GAS_LIMIT) NEW_GAS_LIMIT=$(ROLLBACK_GAS_LIMIT) \
 	OLD_ELASTICITY=$(TO_ELASTICITY) NEW_ELASTICITY=$(ROLLBACK_ELASTICITY) \
 	OLD_DENOMINATOR=$(TO_DENOMINATOR) NEW_DENOMINATOR=$(ROLLBACK_DENOMINATOR) \
-	OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) NEW_DA_FOOTPRINT_GAS_SCALAR=$(ROLLBACK_DA_FOOTPRINT_GAS_SCALAR) \
-	SAFE_NONCE=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET))
+	OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) NEW_DA_FOOTPRINT_GAS_SCALAR=$(ROLLBACK_DA_FOOTPRINT_GAS_SCALAR)
 
 # Validate required configuration before execution
 .PHONY: validate-config
@@ -79,13 +80,15 @@ gen-validation-cb: validate-config deps-signer-tool
 gen-validation-sc: validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer.json,$(UPGRADE_ENV) OWNER_SAFE=$(OWNER_SAFE) SYSTEM_CONFIG=$(SYSTEM_CONFIG))
 
+# Rollback validation: per-safe nonce overrides so each safe gets current_nonce + 1
+# after the forward execution consumes one nonce on each.
 .PHONY: gen-validation-cb-rollback
 gen-validation-cb-rollback: validate-config deps-signer-tool
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(CB_MULTISIG),$(CB_SENDER),base-signer-rollback.json,$(ROLLBACK_ENV) OWNER_SAFE=$(OWNER_SAFE) SYSTEM_CONFIG=$(SYSTEM_CONFIG))
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(CB_MULTISIG),$(CB_SENDER),base-signer-rollback.json,$(ROLLBACK_PARAMS) OWNER_SAFE=$(OWNER_SAFE) SYSTEM_CONFIG=$(SYSTEM_CONFIG) SAFE_NONCE_$(call ADDR_UPPER,$(OWNER_SAFE))=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) SAFE_NONCE_$(call ADDR_UPPER,$(CB_MULTISIG))=$(shell expr $(call GET_NONCE,$(CB_MULTISIG)) + $(ROLLBACK_NONCE_OFFSET)))
 
 .PHONY: gen-validation-sc-rollback
 gen-validation-sc-rollback: validate-config deps-signer-tool
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer-rollback.json,$(ROLLBACK_ENV) OWNER_SAFE=$(OWNER_SAFE) SYSTEM_CONFIG=$(SYSTEM_CONFIG))
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer-rollback.json,$(ROLLBACK_PARAMS) OWNER_SAFE=$(OWNER_SAFE) SYSTEM_CONFIG=$(SYSTEM_CONFIG) SAFE_NONCE_$(call ADDR_UPPER,$(OWNER_SAFE))=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) SAFE_NONCE_$(call ADDR_UPPER,$(BASE_SECURITY_COUNCIL))=$(shell expr $(call GET_NONCE,$(BASE_SECURITY_COUNCIL)) + $(ROLLBACK_NONCE_OFFSET)))
 
 ##
 # Approve
@@ -113,12 +116,16 @@ execute: validate-config
 ##
 .PHONY: approve-cb-rollback
 approve-cb-rollback: validate-config
-	$(ROLLBACK_ENV) \
+	$(ROLLBACK_PARAMS) \
+	SAFE_NONCE_$(call ADDR_UPPER,$(OWNER_SAFE))=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) \
+	SAFE_NONCE_$(call ADDR_UPPER,$(CB_MULTISIG))=$(shell expr $(call GET_NONCE,$(CB_MULTISIG)) + $(ROLLBACK_NONCE_OFFSET)) \
 	$(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
 
 .PHONY: approve-sc-rollback
 approve-sc-rollback: validate-config
-	$(ROLLBACK_ENV) \
+	$(ROLLBACK_PARAMS) \
+	SAFE_NONCE_$(call ADDR_UPPER,$(OWNER_SAFE))=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) \
+	SAFE_NONCE_$(call ADDR_UPPER,$(BASE_SECURITY_COUNCIL))=$(shell expr $(call GET_NONCE,$(BASE_SECURITY_COUNCIL)) + $(ROLLBACK_NONCE_OFFSET)) \
 	$(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
 
 ##
@@ -126,5 +133,6 @@ approve-sc-rollback: validate-config
 ##
 .PHONY: execute-rollback
 execute-rollback: validate-config
-	$(ROLLBACK_ENV) \
+	$(ROLLBACK_PARAMS) \
+	SAFE_NONCE_$(call ADDR_UPPER,$(OWNER_SAFE))=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) \
 	$(call MULTISIG_EXECUTE,0x)

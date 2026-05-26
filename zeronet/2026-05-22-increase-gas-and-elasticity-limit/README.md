@@ -25,7 +25,7 @@ The L1 `SystemConfig` storage on Zeronet has never had its EIP-1559 params or DA
 explicitly written (raw storage is all zeros). The contract's `setEIP1559Params` enforces
 `denominator >= 1` and `elasticity >= 1`, so the rollback cannot restore literal zeros. Instead,
 the rollback targets the rollup-config defaults the chain actually operates with
-(denominator=250, elasticity=6, daFootprintGasScalar=400). This is a exceptional case for this task to rollback to a different value due to how EIP-1559 parameter validation works.
+(denominator=250, elasticity=6, daFootprintGasScalar=400).
 
 ### DA Footprint Gas Scalar
 
@@ -54,8 +54,8 @@ With the new parameters (gas_limit=1.2B, elasticity=15, scalar=119):
 - soft cap: ~672 KB per L2 block (~21 blobs per L1 block target)
 - hard cap: ~10.1 MB per L2 block
 
-> [!IMPORTANT] We have two transactions to sign. Please follow
-> the flow for both the upgrade and rollback signing steps below.
+> [!IMPORTANT] We have four transactions to sign (upgrade + rollback for each
+> signer role). Please follow the flow below to sign all of them.
 
 ## Install dependencies
 
@@ -79,7 +79,7 @@ If you see a version output from the above command, you can move on. Otherwise, 
 brew install node
 ```
 
-## Approving the Update transaction
+## Signing
 
 ### 1. Update repo:
 
@@ -96,14 +96,19 @@ make sign-task
 
 ### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-Be sure to select the correct task from the list of available tasks to sign (**not** the "Base Signer Rollback" task). Copy the resulting signature and save it.
+Select the correct signer role from the list of available users to sign. There are four
+validation files — sign each one that corresponds to your signer role:
 
-### 4. Rollback signing
+- **Base Signer** — primary upgrade (CB Multisig signers)
+- **Security Council Signer** — primary upgrade (Security Council signers)
+- **Base Signer Rollback** — rollback (CB Multisig signers)
+- **Security Council Signer Rollback** — rollback (Security Council signers)
 
-Now, click on the "Base Signer" selection and switch over to the rollback task (called "Base Signer Rollback"). Copy the resulting signature and save it.
+Copy each resulting signature and save it.
 
-### 5. Send signature to facilitator
+### 4. Send signatures to facilitator
 
-Send the two signatures to the facilitator and make sure to clearly note which one is the primary one and which one is the rollback.
+Send all signatures to the facilitator, clearly noting which signer role and
+which transaction (upgrade vs rollback) each signature corresponds to.
 
 You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.
