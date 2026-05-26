@@ -2,10 +2,6 @@
 
 Status: READY TO SIGN
 
-> [!NOTE] **Prerequisite:** This task requires the SystemConfig `maximumGasLimit` to be raised
-> from 500M to 2B first. A separate task (analogous to `sepolia/2026-05-06-increase-max-gas-limit`)
-> will be created to handle that upgrade.
-
 ## Description
 
 We are updating the gas limit, EIP-1559 elasticity, EIP-1559 denominator, and DA footprint gas
@@ -17,24 +13,19 @@ current:  gas_limit = 25,000,000,    elasticity = 6  (default) -> gas_target = 4
 proposed: gas_limit = 1,200,000,000, elasticity = 15           -> gas_target = 80,000,000
 ```
 
-This runbook invokes the following script which allows our signers to sign the same call with two
-different sets of parameters for our Incident Multisig, defined in the
-[base-org/contracts](https://github.com/base/contracts) repository:
+This runbook invokes `IncreaseEip1559ElasticityAndIncreaseGasLimitScript` which allows our signers
+to sign the same call with two different sets of parameters:
 
-`IncreaseEip1559ElasticityAndIncreaseGasLimitScript` -- This script will update the gas limit to
-1,200,000,000, elasticity to 15, denominator to 100, and DA footprint gas scalar to 119 if invoked
-as part of the "upgrade" process, or revert to the prior limit of 25,000,000 gas, elasticity of 0,
-denominator of 0, and DA footprint gas scalar of 0 if invoked as part of the "rollback" process.
+- **Upgrade**: gas limit → 1,200,000,000, elasticity → 15, denominator → 100, DA footprint gas scalar → 119
+- **Rollback**: gas limit → 25,000,000, elasticity → 6, denominator → 250, DA footprint gas scalar → 400
 
-### Note on the FROM values
+### Note on the rollback values
 
 The L1 `SystemConfig` storage on Zeronet has never had its EIP-1559 params or DA footprint scalar
-explicitly written, so the raw `eip1559Elasticity()`, `eip1559Denominator()`, and
-`daFootprintGasScalar()` getters all return 0. The chain currently operates with the rollup-config
-defaults (denominator=250, elasticity=6, daFootprintGasScalar=400), which are surfaced in L2 block
-`extraData` and on the L1Block predeploy. The script's pre-checks read from the raw SystemConfig
-getters, so the `FROM_*` values in `.env` are set to match that raw storage (0 for the three
-defaulted fields, 25,000,000 for `gasLimit`).
+explicitly written (raw storage is all zeros). The contract's `setEIP1559Params` enforces
+`denominator >= 1` and `elasticity >= 1`, so the rollback cannot restore literal zeros. Instead,
+the rollback targets the rollup-config defaults the chain actually operates with
+(denominator=250, elasticity=6, daFootprintGasScalar=400).
 
 ### DA Footprint Gas Scalar
 
@@ -63,60 +54,37 @@ With the new parameters (gas_limit=1.2B, elasticity=15, scalar=119):
 - soft cap: ~672 KB per L2 block (~21 blobs per L1 block target)
 - hard cap: ~10.1 MB per L2 block
 
-The values we are sending are statically defined in the `.env` file.
-
 > [!IMPORTANT] We have two transactions to sign. Please follow
-> the flow for both "Approving the Update transaction" and
-> "Approving the Rollback transaction". Hopefully we only need
-> the former, but will have the latter available if needed.
+> the flow for both the upgrade and rollback signing steps below.
 
-## Install dependencies
+## Procedure
 
-### 1. Update foundry
+### Sign task
 
-```bash
-foundryup
-```
-
-### 2. Install Node.js if needed
-
-First, check if you have node installed
-
-```bash
-node --version
-```
-
-If you see a version output from the above command, you can move on. Otherwise, install node
-
-```bash
-brew install node
-```
-
-## Approving the Update transaction
-
-### 1. Update repo:
+#### 1. Update repo
 
 ```bash
 cd contract-deployments
 git pull
 ```
 
-### 2. Run the signing tool (NOTE: do not enter the task directory. Run this command from the project's root).
+#### 2. Run the signing tool
 
 ```bash
+cd contract-deployments
 make sign-task
 ```
 
-### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
+#### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
 
-Be sure to select the correct task from the list of available tasks to sign (**not** the "Base Signer Rollback" task). Copy the resulting signature and save it.
+Select the **"Base Signer"** task (not the rollback) and sign. Copy the resulting signature.
 
-### 4. Rollback signing
+Then switch to the **"Base Signer Rollback"** task and sign. Copy the resulting signature.
 
-Now, click on the "Base Signer" selection and switch over to the rollback task (called "Base Signer Rollback"). Copy the resulting signature and save it.
+#### 4. Send signatures to facilitator
 
-### 5. Send signature to facilitator
+Send both signatures to the facilitator, clearly noting which is the primary upgrade and which is the rollback.
 
-Send the two signatures to the facilitator and make sure to clearly note which one is the primary one and which one is the rollback.
+Close the signer tool with `Ctrl + C`.
 
-You may now kill the Signer Tool process in your terminal window by running `Ctrl + C`.
+For facilitator instructions, see `FACILITATOR.md`.

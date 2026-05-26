@@ -3,9 +3,9 @@ pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
 
-import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
-import {MultisigScript} from "@base-contracts/scripts/universal/MultisigScript.sol";
-import {Enum} from "@base-contracts/scripts/universal/IGnosisSafe.sol";
+import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
 
 interface ISystemConfig {
     function eip1559Elasticity() external view returns (uint32);
