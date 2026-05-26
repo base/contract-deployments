@@ -112,20 +112,17 @@ execute: validate-config
 	$(call MULTISIG_EXECUTE,0x)
 
 ##
-# Rollback approve
+# Rollback approve — no nonce overrides needed at execution time because the
+# forward transaction has already consumed one nonce on each safe.
 ##
 .PHONY: approve-cb-rollback
 approve-cb-rollback: validate-config
 	$(ROLLBACK_PARAMS) \
-	SAFE_NONCE_$(call ADDR_UPPER,$(OWNER_SAFE))=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) \
-	SAFE_NONCE_$(call ADDR_UPPER,$(CB_MULTISIG))=$(shell expr $(call GET_NONCE,$(CB_MULTISIG)) + $(ROLLBACK_NONCE_OFFSET)) \
 	$(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
 
 .PHONY: approve-sc-rollback
 approve-sc-rollback: validate-config
 	$(ROLLBACK_PARAMS) \
-	SAFE_NONCE_$(call ADDR_UPPER,$(OWNER_SAFE))=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) \
-	SAFE_NONCE_$(call ADDR_UPPER,$(BASE_SECURITY_COUNCIL))=$(shell expr $(call GET_NONCE,$(BASE_SECURITY_COUNCIL)) + $(ROLLBACK_NONCE_OFFSET)) \
 	$(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
 
 ##
@@ -134,5 +131,4 @@ approve-sc-rollback: validate-config
 .PHONY: execute-rollback
 execute-rollback: validate-config
 	$(ROLLBACK_PARAMS) \
-	SAFE_NONCE_$(call ADDR_UPPER,$(OWNER_SAFE))=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)) \
 	$(call MULTISIG_EXECUTE,0x)

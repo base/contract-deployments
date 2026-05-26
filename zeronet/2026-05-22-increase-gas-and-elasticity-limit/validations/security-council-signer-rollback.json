@@ -1,11 +1,11 @@
 {
-  "cmd": "OLD_GAS_LIMIT=1200000000 NEW_GAS_LIMIT=25000000 OLD_ELASTICITY=15 NEW_ELASTICITY=6 OLD_DENOMINATOR=100 NEW_DENOMINATOR=250 OLD_DA_FOOTPRINT_GAS_SCALAR=119 NEW_DA_FOOTPRINT_GAS_SCALAR=400 SAFE_NONCE=8 OWNER_SAFE=0x3d59999977e0896ee1f8783bb8251df16fb483e9 SYSTEM_CONFIG=0xcc7c76564bea74a963a0bd75e0bc9bce3ff0ea80 forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "cmd": "OLD_GAS_LIMIT=1200000000 NEW_GAS_LIMIT=25000000 OLD_ELASTICITY=15 NEW_ELASTICITY=6 OLD_DENOMINATOR=100 NEW_DENOMINATOR=250 OLD_DA_FOOTPRINT_GAS_SCALAR=119 NEW_DA_FOOTPRINT_GAS_SCALAR=400 OWNER_SAFE=0x3d59999977e0896ee1f8783bb8251df16fb483e9 SYSTEM_CONFIG=0xcc7c76564bea74a963a0bd75e0bc9bce3ff0ea80 SAFE_NONCE_0X3D59999977E0896EE1F8783BB8251DF16FB483E9=8 SAFE_NONCE_0XC4C0AD998B5DFA4CF4B298970F21B9015A5EE7BA=9 forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
   "ledgerId": 1,
   "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
     "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
     "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
-    "messageHash": "0x8be09a7091b8333c11d2db827cdb4ce0f9e89b3b91cdfbf7245b08d2f3da93af"
+    "messageHash": "0xab75ee9e9f8b2e5f95725295b0990945039fcc22d7da86f7ba3cec32231092bc"
   },
   "stateOverrides": [
     {
@@ -31,7 +31,13 @@
       "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
       "overrides": [
         {
-          "key": "0x0bd92f545ae25f5ec5cf36c475f2d52d02099f7d57380e2d65f0e9445cc3352c",
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xc66663793c3a91726b1f98138a8ad8678b7f836f14b85a0ece1fcd0f072b69cb",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -84,8 +90,8 @@
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
-          "before": "0x0000000000000000000000000000000000000000000000000000000000000008",
-          "after": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000a",
           "description": "Increments the nonce",
           "allowDifference": false
         }
