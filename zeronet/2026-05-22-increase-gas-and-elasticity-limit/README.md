@@ -1,6 +1,10 @@
 # Update Gas Limit, EIP-1559 Params & DA Footprint Gas Scalar in L1 `SystemConfig`
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xfe75645310cea9a8e1ae0bf9e94e6ce197253f1662ea8543345404692be27a84)
+
+[CB approval](https://hoodi.etherscan.io/tx/0x844ee1ef1070746997ffa17de60848eb8fc57aa37e224121a89361c851ea1fbf) ([artifact](./records/IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol/560048/run-1779834710.json))
+[SC approval](https://hoodi.etherscan.io/tx/0x38b212c5ca9b79a0d6a97d070e7dd951fe5ed7bc03129637c74c2e3cb7c5e7b0) ([artifact](./records/IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol/560048/run-1779834794.json))
+[Execution](https://hoodi.etherscan.io/tx/0xfe75645310cea9a8e1ae0bf9e94e6ce197253f1662ea8543345404692be27a84) ([artifact](./records/IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol/560048/run-1779834889.json))
 
 ## Description
 
