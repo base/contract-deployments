@@ -1,6 +1,6 @@
 # Activate Multiproof
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x75b1c9b2090ba2b311d6be08c319340b87dc1aabfae2505d126e7a0f1fc6b11c)
 
 ## Description
 
