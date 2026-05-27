@@ -17,14 +17,14 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: gen-validation
-gen-validation: validate-config deps-signer-tool
+gen-validation: bootstrap-mise validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(OP_SECURITY_COUNCIL_SAFE),$(SENDER),op-signer.json,)
 
 .PHONY: approve-op
-approve-op: validate-config
+approve-op: bootstrap-mise validate-config
 	$(call MULTISIG_APPROVE,$(OP_SECURITY_COUNCIL_SAFE),$(SIGNATURES))
 
 # Execute
 .PHONY: execute
-execute: validate-config
+execute: bootstrap-mise validate-config
 	$(call MULTISIG_EXECUTE,0x)

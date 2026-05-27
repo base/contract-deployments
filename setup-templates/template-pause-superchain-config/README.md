@@ -6,14 +6,6 @@ Status: READY TO SIGN
 
 Pauses deposits/withdrawals Base.
 
-## Install dependencies
-
-### 1. Update foundry
-
-```bash
-foundryup
-```
-
 ## Sign Pause Task
 
 ### 1. Update repo:

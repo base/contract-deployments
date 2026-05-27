@@ -6,22 +6,23 @@ include .env
 export INCIDENT_MULTISIG
 export SYSTEM_CONFIG
 
-# Get first owner from INCIDENT_MULTISIG
-SENDER := $(shell cast call $(INCIDENT_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | head -1 | tr -d '[]' | cut -d',' -f1)
+# Get first owner from INCIDENT_MULTISIG (resolved lazily so it runs after
+# `bootstrap-mise`; using `=` defers expansion to recipe time).
+SENDER = $(shell $(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | head -1 | tr -d '[]' | cut -d',' -f1)
 
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = PauseSuperchainConfig
 
 .PHONY: sign-pause
-sign-pause:
+sign-pause: bootstrap-mise
 	@rm -f signatures-pause.txt
-	@start_nonce=$$(cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL) | xargs printf "%d"); \
+	@start_nonce=$$($(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL) | xargs printf "%d"); \
 	echo "Starting nonce: $$start_nonce"; \
 	for i in $$(seq 0 19); do \
 		nonce=$$(($$start_nonce + $$i)); \
 		echo "Signing with nonce $$nonce"; \
 		SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
 		signer=$$(grep "^Signer:" sign_output.tmp | awk '{print $$2}'); \
 		sig=$$(grep "^Signature:" sign_output.tmp | awk '{print $$2}'); \
@@ -32,17 +33,17 @@ sign-pause:
 
 # Execute
 .PHONY: execute-pause
-execute-pause:
+execute-pause: bootstrap-mise
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: check-status
-check-status:
-	@superchain_config=$$(cast call $(SYSTEM_CONFIG) "superchainConfig()" --rpc-url $(L1_RPC_URL)); \
+check-status: bootstrap-mise
+	@superchain_config=$$($(MISE_EXEC) cast call $(SYSTEM_CONFIG) "superchainConfig()" --rpc-url $(L1_RPC_URL)); \
 	superchain_config=$$(echo $$superchain_config | sed 's/0x000000000000000000000000//'); \
 	echo "SuperchainConfig address: 0x$$superchain_config"; \
-	cast call 0x$$superchain_config "paused()" --rpc-url $(L1_RPC_URL)
+	$(MISE_EXEC) cast call 0x$$superchain_config "paused()" --rpc-url $(L1_RPC_URL)
 
 .PHONY: check-nonce
-check-nonce:
+check-nonce: bootstrap-mise
 	@echo "Incident Safe: $(INCIDENT_MULTISIG)"
-	@cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL)
+	@$(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL)

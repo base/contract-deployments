@@ -18,13 +18,13 @@ validate-config:
 deps: new-forge-deps
 
 .PHONY: new-forge-deps
-new-forge-deps:
-	forge install --no-git safe-global/safe-smart-account@186a21a74b327f17fc41217a927dea7064f74604
+new-forge-deps: bootstrap-mise
+	$(MISE_EXEC) forge install --no-git safe-global/safe-smart-account@186a21a74b327f17fc41217a927dea7064f74604
 
 .PHONY: gen-validation
-gen-validation: validate-config deps-signer-tool
+gen-validation: bootstrap-mise validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
 
 .PHONY: execute
-execute: validate-config
+execute: bootstrap-mise validate-config
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))

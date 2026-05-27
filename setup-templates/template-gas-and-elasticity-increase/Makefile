@@ -46,11 +46,11 @@ endif
 	@echo "TO_DA_FOOTPRINT_GAS_SCALAR=$$(( $(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) ))"
 
 .PHONY: gen-validation
-gen-validation: validate-config deps-signer-tool
+gen-validation: bootstrap-mise validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,NEW_GAS_LIMIT=$(TO_GAS_LIMIT) OLD_GAS_LIMIT=$(FROM_GAS_LIMIT) NEW_ELASTICITY=$(TO_ELASTICITY) OLD_ELASTICITY=$(FROM_ELASTICITY) NEW_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) OLD_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR))
 
 .PHONY: execute
-execute: validate-config
+execute: bootstrap-mise validate-config
 	NEW_GAS_LIMIT=$(TO_GAS_LIMIT) \
 	OLD_GAS_LIMIT=$(FROM_GAS_LIMIT) \
 	NEW_ELASTICITY=$(TO_ELASTICITY) \
@@ -63,11 +63,11 @@ execute: validate-config
 # SAFE_NONCE is set to current_nonce + ROLLBACK_NONCE_OFFSET so the rollback
 # transaction targets the correct future nonce.
 .PHONY: gen-validation-rollback
-gen-validation-rollback: validate-config deps-signer-tool
+gen-validation-rollback: bootstrap-mise validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer-rollback.json,OLD_GAS_LIMIT=$(TO_GAS_LIMIT) NEW_GAS_LIMIT=$(FROM_GAS_LIMIT) OLD_ELASTICITY=$(TO_ELASTICITY) NEW_ELASTICITY=$(FROM_ELASTICITY) OLD_DA_FOOTPRINT_GAS_SCALAR=$(TO_DA_FOOTPRINT_GAS_SCALAR) NEW_DA_FOOTPRINT_GAS_SCALAR=$(FROM_DA_FOOTPRINT_GAS_SCALAR) SAFE_NONCE=$(shell expr $(call GET_NONCE,$(OWNER_SAFE)) + $(ROLLBACK_NONCE_OFFSET)))
 
 .PHONY: execute-rollback
-execute-rollback: validate-config
+execute-rollback: bootstrap-mise validate-config
 	OLD_GAS_LIMIT=$(TO_GAS_LIMIT) \
 	NEW_GAS_LIMIT=$(FROM_GAS_LIMIT) \
 	OLD_ELASTICITY=$(TO_ELASTICITY) \

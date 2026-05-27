@@ -29,17 +29,17 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: gen-validation
-gen-validation: validate-config deps-signer-tool
+gen-validation: bootstrap-mise validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,IS_PAUSED=true)
 
 .PHONY: sign-pause
-sign-pause: validate-config
+sign-pause: bootstrap-mise validate-config
 	@rm -f signatures-pause.txt
 	@for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
 		echo "Signing with nonce $$nonce"; \
 		IS_PAUSED=true SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
 		echo "Nonce: $$nonce" >> signatures-pause.txt; \
 		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-pause.txt || true; \
@@ -48,13 +48,13 @@ sign-pause: validate-config
 	done
 
 .PHONY: sign-unpause
-sign-unpause: validate-config
+sign-unpause: bootstrap-mise validate-config
 	@rm -f signatures-unpause.txt
 	@for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
 		echo "Signing with nonce $$nonce"; \
 		IS_PAUSED=false SAFE_NONCE=$$nonce $(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-		forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
+		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(SCRIPT_NAME) \
 		--sig "sign(address[])" "[]" --sender $(SENDER) | tee sign_output.tmp; \
 		echo "Nonce: $$nonce" >> signatures-unpause.txt; \
 		grep -E "^Data:|^Signer:|^Signature:" sign_output.tmp >> signatures-unpause.txt || true; \
@@ -64,13 +64,13 @@ sign-unpause: validate-config
 
 # Execute
 .PHONY: execute-pause
-execute-pause: validate-config
+execute-pause: bootstrap-mise validate-config
 	IS_PAUSED=true $(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: execute-unpause
-execute-unpause: validate-config
+execute-unpause: bootstrap-mise validate-config
 	IS_PAUSED=false $(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: check-status
-check-status:
-	cast call $(L2_BRIDGE) "paused()" --rpc-url $(L2_RPC_URL)
+check-status: bootstrap-mise
+	$(MISE_EXEC) cast call $(L2_BRIDGE) "paused()" --rpc-url $(L2_RPC_URL)

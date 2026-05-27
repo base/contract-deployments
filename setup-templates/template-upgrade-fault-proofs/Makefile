@@ -22,8 +22,8 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: deploy
-deploy: validate-config
-	forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
+deploy: bootstrap-mise validate-config
+	$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 RPC_URL = $(L1_RPC_URL)
@@ -31,19 +31,19 @@ SCRIPT_NAME = UpgradeDGF
 
 # CB
 .PHONY: approve-cb
-approve-cb:
+approve-cb: bootstrap-mise
 	$(call MULTISIG_APPROVE,$(CB_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
 .PHONY: approve-cb-sc
-approve-cb-sc:
+approve-cb-sc: bootstrap-mise
 	$(call MULTISIG_APPROVE,$(CB_SC_SAFE_ADDR),$(SIGNATURES))
 
 # OP
 .PHONY: approve-op
-approve-op:
+approve-op: bootstrap-mise
 	$(call MULTISIG_APPROVE,$(OP_SIGNER_SAFE_ADDR),$(SIGNATURES))
 
 # Execute
 .PHONY: execute
-execute: validate-config
+execute: bootstrap-mise validate-config
 	$(call MULTISIG_EXECUTE,0x)

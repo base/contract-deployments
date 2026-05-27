@@ -1,3 +1,9 @@
+# Absolute path to the repo root (the directory containing this Makefile).
+# Captured at parse time so the value is correct whether `make` is invoked from
+# the repo root or from a task subdirectory whose Makefile does
+# `include ../../Makefile`.
+REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+
 PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 GAS_AND_ELASTICITY_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-and-elasticity-limit
@@ -20,9 +26,36 @@ TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
 TEMPLATE_SWITCH_TO_PERMISSIONED_GAME = setup-templates/template-switch-to-permissioned-game
 TEMPLATE_PAUSE_SUPERCHAIN_CONFIG = setup-templates/template-pause-superchain-config
 
-ifndef $(GOPATH)
-    GOPATH=$(shell go env GOPATH)
-    export GOPATH
+##
+# Toolchain bootstrap (mise)
+##
+# Every signer- and contributor-facing target depends on `bootstrap-mise`, so a
+# fresh clone needs nothing more than `make sign-task` (or `make deps`, etc.) to
+# get the exact pinned toolchain from `mise.toml`. We deliberately invoke each
+# tool via `mise exec --` rather than relying on `mise activate`, so that the
+# user's interactive shell environment (e.g. a global `foundryup` install) is
+# left untouched.
+#
+# Resolve mise: prefer one already on PATH, otherwise the path the vendored
+# installer writes to (`$HOME/.local/bin/mise`).
+MISE := $(shell command -v mise 2>/dev/null || echo $(HOME)/.local/bin/mise)
+MISE_EXEC := $(MISE) exec --
+
+.PHONY: bootstrap-mise
+bootstrap-mise:
+	@if ! command -v mise >/dev/null 2>&1 && [ ! -x "$(HOME)/.local/bin/mise" ]; then \
+		echo "mise not found — installing to \$$HOME/.local/bin/mise"; \
+		MISE_QUIET=1 MISE_INSTALL_HELP=0 sh $(REPO_ROOT)/scripts/install-mise.sh; \
+	fi
+	@$(MISE) trust --quiet $(REPO_ROOT)/mise.toml >/dev/null
+	@$(MISE) install --quiet --cd $(REPO_ROOT)
+
+# Resolve GOPATH lazily via mise so it works after `bootstrap-mise` installs go.
+# Recursive (`=`) expansion defers `go env GOPATH` to recipe time, when mise is
+# guaranteed to be on disk.
+ifndef GOPATH
+GOPATH = $(shell $(MISE_EXEC) go env GOPATH 2>/dev/null)
+export GOPATH
 endif
 
 ##
@@ -93,19 +126,19 @@ setup-superchain-config-pause:
 OZ_UPGRADEABLE_TAG=v4.7.3
 
 .PHONY: deps
-deps: install-eip712sign clean-lib forge-deps clone-oz-upgradeable checkout-base-contracts-commit
+deps: bootstrap-mise install-eip712sign clean-lib forge-deps clone-oz-upgradeable checkout-base-contracts-commit
 
 .PHONY: install-eip712sign
-install-eip712sign:
-	go install github.com/base/eip712sign@v0.0.11
+install-eip712sign: bootstrap-mise
+	$(MISE_EXEC) go install github.com/base/eip712sign@v0.0.11
 
 .PHONY: clean-lib
 clean-lib:
 	rm -rf lib
 
 .PHONY: forge-deps
-forge-deps:
-	forge install --no-git github.com/foundry-rs/forge-std@0844d7e1fc5e60d77b68e469bff60265f236c398 \
+forge-deps: bootstrap-mise
+	$(MISE_EXEC) forge install --no-git github.com/foundry-rs/forge-std@0844d7e1fc5e60d77b68e469bff60265f236c398 \
 		github.com/OpenZeppelin/openzeppelin-contracts@v4.9.3 \
 		github.com/rari-capital/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
 		github.com/Saw-mon-and-Natalie/clones-with-immutable-args@105efee1b9127ed7f6fedf139e1fc796ce8791f2 \
@@ -129,9 +162,9 @@ clone-oz-upgradeable:
 	rm -rf lib/openzeppelin-contracts-upgradeable/.git
 
 .PHONY: checkout-base-contracts-commit
-checkout-base-contracts-commit:
+checkout-base-contracts-commit: bootstrap-mise
 	[ -n "$(BASE_CONTRACTS_COMMIT)" ] || (echo "BASE_CONTRACTS_COMMIT must be set in .env" && exit 1)
-	forge install --no-git github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
+	$(MISE_EXEC) forge install --no-git github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
 
 ##
 # Task Signer Tool
@@ -152,14 +185,14 @@ checkout-signer-tool:
 
 # Checkout and install signer-tool dependencies (used as a prerequisite by gen-validation targets)
 .PHONY: deps-signer-tool
-deps-signer-tool: checkout-signer-tool
-	cd $(SIGNER_TOOL_PATH) && npm ci
+deps-signer-tool: bootstrap-mise checkout-signer-tool
+	cd $(SIGNER_TOOL_PATH) && $(MISE_EXEC) npm ci
 
 .PHONY: sign-task
-sign-task: checkout-signer-tool
+sign-task: bootstrap-mise checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH); \
-	npm ci; \
-	npm run dev
+	$(MISE_EXEC) npm ci; \
+	$(MISE_EXEC) npm run dev
 
 # Task origin signature variables (auto-derived, overridable).
 # These targets are designed to be invoked from task subdirectories
@@ -170,14 +203,14 @@ SIGNATURE_DIR ?= $(CURDIR)/../signatures/$(TASK_NAME)
 .PHONY: sign-as-task-creator
 sign-as-task-creator: deps-signer-tool
 	cd $(SIGNER_TOOL_PATH) && \
-		npx tsx scripts/genTaskOriginSig.ts sign \
+		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder $(CURDIR) \
 		--signature-path $(SIGNATURE_DIR)
 
 .PHONY: sign-as-base-facilitator
 sign-as-base-facilitator: deps-signer-tool
 	cd $(SIGNER_TOOL_PATH) && \
-		npx tsx scripts/genTaskOriginSig.ts sign \
+		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder $(CURDIR) \
 		--signature-path $(SIGNATURE_DIR) \
 		--facilitator base
@@ -185,7 +218,7 @@ sign-as-base-facilitator: deps-signer-tool
 .PHONY: sign-as-sc-facilitator
 sign-as-sc-facilitator: deps-signer-tool
 	cd $(SIGNER_TOOL_PATH) && \
-		npx tsx scripts/genTaskOriginSig.ts sign \
+		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder $(CURDIR) \
 		--signature-path $(SIGNATURE_DIR) \
 		--facilitator security-council
@@ -194,5 +227,5 @@ sign-as-sc-facilitator: deps-signer-tool
 # Solidity Testing
 ##
 .PHONY: solidity-test
-solidity-test:
-	forge test --ffi -vvv
+solidity-test: bootstrap-mise
+	$(MISE_EXEC) forge test --ffi -vvv
