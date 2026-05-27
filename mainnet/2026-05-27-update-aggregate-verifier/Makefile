@@ -15,10 +15,14 @@ SC_SENDER = $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" 
 # Read the freshly deployed AggregateVerifier from addresses.json.
 NEW_AGGREGATE_VERIFIER = $(shell jq -r '.aggregateVerifier' addresses.json)
 
-# Env passed to forge for each phase. The script picks up
-# TARGET_AGGREGATE_VERIFIER and points DGF.setImplementation at it.
-UPGRADE_ENV  = TARGET_AGGREGATE_VERIFIER=$(NEW_AGGREGATE_VERIFIER)
-ROLLBACK_ENV = TARGET_AGGREGATE_VERIFIER=$(OLD_AGGREGATE_VERIFIER)
+# Env passed to forge for each phase. The script points
+# DGF.setImplementation at TARGET_AGGREGATE_VERIFIER, and uses
+# ASSUMED_CURRENT_AGGREGATE_VERIFIER both for the immutable-continuity check
+# and as a simulation storage override so that rollback validations show a
+# real NEW -> OLD state diff even when the chain has not yet executed the
+# upgrade.
+UPGRADE_ENV  = TARGET_AGGREGATE_VERIFIER=$(NEW_AGGREGATE_VERIFIER) ASSUMED_CURRENT_AGGREGATE_VERIFIER=$(OLD_AGGREGATE_VERIFIER)
+ROLLBACK_ENV = TARGET_AGGREGATE_VERIFIER=$(OLD_AGGREGATE_VERIFIER) ASSUMED_CURRENT_AGGREGATE_VERIFIER=$(NEW_AGGREGATE_VERIFIER)
 
 # Rollback validation must simulate against post-upgrade nonces. Default = 1
 # because the upgrade consumes one nonce on each safe in the nested path.

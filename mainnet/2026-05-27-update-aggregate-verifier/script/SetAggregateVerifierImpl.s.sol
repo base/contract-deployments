@@ -19,33 +19,46 @@ interface IDisputeGameFactoryAdmin {
 ///         from the `PROXY_ADMIN_OWNER` 2/2 nested safe.
 ///
 ///         The same script is reused for both the forward upgrade and the
-///         rollback by varying `TARGET_AGGREGATE_VERIFIER`:
-///           - upgrade:  the freshly deployed AggregateVerifier (addresses.json)
-///           - rollback: the previously registered AggregateVerifier
-///                       (`OLD_AGGREGATE_VERIFIER` from `.env`).
+///         rollback by varying `TARGET_AGGREGATE_VERIFIER` and
+///         `ASSUMED_CURRENT_AGGREGATE_VERIFIER`:
+///           - upgrade flow:
+///               * TARGET                  = NEW (addresses.json)
+///               * ASSUMED_CURRENT         = OLD (= live chain pre-upgrade)
+///           - rollback flow:
+///               * TARGET                  = OLD
+///               * ASSUMED_CURRENT         = NEW (= live chain post-upgrade)
+///
+///         If the simulation runs against a chain that has not yet executed
+///         the upgrade, the rollback simulation will see
+///         `DGF.gameImpls(GAME_TYPE) == OLD`, which differs from the assumed
+///         NEW. In that case `_simulationOverrides()` rewrites the
+///         `gameImpls[GAME_TYPE]` storage slot to `ASSUMED_CURRENT` so the
+///         simulated rollback shows a real state diff (NEW -> OLD) for
+///         signers. This mirrors the pattern in
+///         `mainnet/2026-03-25-increase-gas-and-elasticity-limit`.
 ///
 ///         Continuity is enforced by asserting that every immutable on the
-///         target AggregateVerifier matches the AggregateVerifier currently
-///         registered in the DisputeGameFactory, except for the three hashes
-///         (`TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, `ZK_AGGREGATE_HASH`). This
-///         check is direction-agnostic: it holds for both the upgrade and
-///         the rollback.
+///         target AggregateVerifier matches `ASSUMED_CURRENT`, except for the
+///         three hashes (`TEE_IMAGE_HASH`, `ZK_RANGE_HASH`,
+///         `ZK_AGGREGATE_HASH`). This holds in both directions.
 contract SetAggregateVerifierImpl is MultisigScript {
-    address internal immutable ownerSafeEnv;
-    address internal immutable disputeGameFactoryProxyEnv;
-    GameType internal immutable gameTypeEnv;
-    address internal immutable targetAggregateVerifierEnv;
+    /// @dev Storage slot of `gameImpls` in `DisputeGameFactory`, from the
+    ///      pinned base-contracts storage layout snapshot
+    ///      (`lib/contracts/snapshots/storageLayout/DisputeGameFactory.json`).
+    uint256 internal constant GAME_IMPLS_SLOT = 101;
 
-    // Live multiproof implementation currently registered in the DGF.
-    address internal immutable currentAggregateVerifier;
+    address internal immutable OWNER_SAFE_ENV;
+    address internal immutable DISPUTE_GAME_FACTORY_PROXY_ENV;
+    GameType internal immutable GAME_TYPE_ENV;
+    address internal immutable TARGET_AGGREGATE_VERIFIER_ENV;
+    address internal immutable ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV;
 
     constructor() {
-        ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
-        disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
-        gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
-        targetAggregateVerifierEnv = vm.envAddress("TARGET_AGGREGATE_VERIFIER");
-
-        currentAggregateVerifier = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv);
+        OWNER_SAFE_ENV = vm.envAddress("PROXY_ADMIN_OWNER");
+        DISPUTE_GAME_FACTORY_PROXY_ENV = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
+        GAME_TYPE_ENV = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
+        TARGET_AGGREGATE_VERIFIER_ENV = vm.envAddress("TARGET_AGGREGATE_VERIFIER");
+        ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV = vm.envAddress("ASSUMED_CURRENT_AGGREGATE_VERIFIER");
     }
 
     function setUp() public view {
@@ -57,10 +70,10 @@ contract SetAggregateVerifierImpl is MultisigScript {
 
         calls[0] = Call({
             operation: Enum.Operation.Call,
-            target: disputeGameFactoryProxyEnv,
+            target: DISPUTE_GAME_FACTORY_PROXY_ENV,
             data: abi.encodeCall(
                 IDisputeGameFactoryAdmin.setImplementation,
-                (gameTypeEnv, targetAggregateVerifierEnv, "")
+                (GAME_TYPE_ENV, TARGET_AGGREGATE_VERIFIER_ENV, "")
             ),
             value: 0
         });
@@ -68,44 +81,75 @@ contract SetAggregateVerifierImpl is MultisigScript {
         return calls;
     }
 
+    /// @dev Forces the simulation to see `DGF.gameImpls[GAME_TYPE]` equal to
+    ///      `ASSUMED_CURRENT_AGGREGATE_VERIFIER`. No-op when the live chain
+    ///      already matches the assumed pre-state.
+    function _simulationOverrides() internal view override returns (Simulation.StateOverride[] memory) {
+        address liveCurrent =
+            IDisputeGameFactoryAdmin(DISPUTE_GAME_FACTORY_PROXY_ENV).gameImpls(GAME_TYPE_ENV);
+        if (liveCurrent == ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV) {
+            return new Simulation.StateOverride[](0);
+        }
+
+        Simulation.StateOverride[] memory stateOverrides = new Simulation.StateOverride[](1);
+        Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](1);
+
+        storageOverrides[0] = Simulation.StorageOverride({
+            key: _gameImplsSlotKey(GAME_TYPE_ENV),
+            value: bytes32(uint256(uint160(ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV)))
+        });
+
+        stateOverrides[0] = Simulation.StateOverride({
+            contractAddress: DISPUTE_GAME_FACTORY_PROXY_ENV,
+            overrides: storageOverrides
+        });
+
+        return stateOverrides;
+    }
+
     function _preCheck() internal view {
         require(
-            IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).owner() == ownerSafeEnv,
+            IDisputeGameFactoryAdmin(DISPUTE_GAME_FACTORY_PROXY_ENV).owner() == OWNER_SAFE_ENV,
             "DGF owner != PROXY_ADMIN_OWNER"
         );
 
-        require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
-        require(targetAggregateVerifierEnv != address(0), "target aggregate verifier not set");
-        require(targetAggregateVerifierEnv != currentAggregateVerifier, "target equals current (no-op)");
-
-        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
-        AggregateVerifier targetAggregate = AggregateVerifier(targetAggregateVerifierEnv);
-
-        // GameType is preserved and matches the env-declared value.
         require(
-            GameType.unwrap(currentAggregate.gameType()) == GameType.unwrap(gameTypeEnv),
-            "current game type mismatch"
+            ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV != address(0),
+            "assumed current aggregate verifier not set"
+        );
+        require(TARGET_AGGREGATE_VERIFIER_ENV != address(0), "target aggregate verifier not set");
+        require(
+            TARGET_AGGREGATE_VERIFIER_ENV != ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV,
+            "target equals assumed current (no-op)"
+        );
+
+        AggregateVerifier assumedCurrent = AggregateVerifier(ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV);
+        AggregateVerifier target = AggregateVerifier(TARGET_AGGREGATE_VERIFIER_ENV);
+
+        require(
+            GameType.unwrap(assumedCurrent.gameType()) == GameType.unwrap(GAME_TYPE_ENV),
+            "assumed current game type mismatch"
         );
         require(
-            GameType.unwrap(targetAggregate.gameType()) == GameType.unwrap(gameTypeEnv),
+            GameType.unwrap(target.gameType()) == GameType.unwrap(GAME_TYPE_ENV),
             "target game type mismatch"
         );
 
-        // Every non-hash immutable must match between current and target.
-        _assertImmutableContinuity(currentAggregate, targetAggregate);
+        // Every non-hash immutable must match between assumed current and target.
+        _assertImmutableContinuity(assumedCurrent, target);
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
-        IDisputeGameFactoryAdmin dgf = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv);
+        IDisputeGameFactoryAdmin dgf = IDisputeGameFactoryAdmin(DISPUTE_GAME_FACTORY_PROXY_ENV);
         require(
-            dgf.gameImpls(gameTypeEnv) == targetAggregateVerifierEnv,
+            dgf.gameImpls(GAME_TYPE_ENV) == TARGET_AGGREGATE_VERIFIER_ENV,
             "game impl not set to target"
         );
 
-        // Re-run the continuity check against the now-registered target.
-        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
-        AggregateVerifier targetAggregate = AggregateVerifier(targetAggregateVerifierEnv);
-        _assertImmutableContinuity(currentAggregate, targetAggregate);
+        // Re-run the continuity check against the assumed-current vs target pair.
+        AggregateVerifier assumedCurrent = AggregateVerifier(ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV);
+        AggregateVerifier target = AggregateVerifier(TARGET_AGGREGATE_VERIFIER_ENV);
+        _assertImmutableContinuity(assumedCurrent, target);
     }
 
     /// @dev Asserts that every immutable on `target` matches `current`, except
@@ -140,7 +184,16 @@ contract SetAggregateVerifierImpl is MultisigScript {
         );
     }
 
+    /// @dev Storage slot key for `gameImpls[gameType]` in the
+    ///      `DisputeGameFactory` proxy. For a Solidity
+    ///      `mapping(GameType => IDisputeGame)` at storage slot `p`, the slot
+    ///      for `mapping[k]` is `keccak256(abi.encode(k, p))` (the key is
+    ///      left-padded to 32 bytes by `abi.encode`).
+    function _gameImplsSlotKey(GameType gameType) internal pure returns (bytes32) {
+        return keccak256(abi.encode(gameType, GAME_IMPLS_SLOT));
+    }
+
     function _ownerSafe() internal view override returns (address) {
-        return ownerSafeEnv;
+        return OWNER_SAFE_ENV;
     }
 }
