@@ -14,7 +14,7 @@ RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = PauseSuperchainConfig
 
 .PHONY: sign-pause
-sign-pause: bootstrap-mise
+sign-pause:
 	@rm -f signatures-pause.txt
 	@start_nonce=$$($(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL) | xargs printf "%d"); \
 	echo "Starting nonce: $$start_nonce"; \
@@ -33,17 +33,17 @@ sign-pause: bootstrap-mise
 
 # Execute
 .PHONY: execute-pause
-execute-pause: bootstrap-mise
+execute-pause:
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: check-status
-check-status: bootstrap-mise
+check-status:
 	@superchain_config=$$($(MISE_EXEC) cast call $(SYSTEM_CONFIG) "superchainConfig()" --rpc-url $(L1_RPC_URL)); \
 	superchain_config=$$(echo $$superchain_config | sed 's/0x000000000000000000000000//'); \
 	echo "SuperchainConfig address: 0x$$superchain_config"; \
 	$(MISE_EXEC) cast call 0x$$superchain_config "paused()" --rpc-url $(L1_RPC_URL)
 
 .PHONY: check-nonce
-check-nonce: bootstrap-mise
+check-nonce:
 	@echo "Incident Safe: $(INCIDENT_MULTISIG)"
 	@$(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL)

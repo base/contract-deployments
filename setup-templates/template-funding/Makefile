@@ -15,5 +15,5 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: execute
-execute: bootstrap-mise validate-config
+execute: validate-config
 	$(call MULTISIG_EXECUTE,$(SIGNATURES))

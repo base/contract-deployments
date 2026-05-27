@@ -29,11 +29,11 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 .PHONY: gen-validation
-gen-validation: bootstrap-mise validate-config deps-signer-tool
+gen-validation: validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,IS_PAUSED=true)
 
 .PHONY: sign-pause
-sign-pause: bootstrap-mise validate-config
+sign-pause: validate-config
 	@rm -f signatures-pause.txt
 	@for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
@@ -48,7 +48,7 @@ sign-pause: bootstrap-mise validate-config
 	done
 
 .PHONY: sign-unpause
-sign-unpause: bootstrap-mise validate-config
+sign-unpause: validate-config
 	@rm -f signatures-unpause.txt
 	@for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
@@ -64,13 +64,13 @@ sign-unpause: bootstrap-mise validate-config
 
 # Execute
 .PHONY: execute-pause
-execute-pause: bootstrap-mise validate-config
+execute-pause: validate-config
 	IS_PAUSED=true $(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: execute-unpause
-execute-unpause: bootstrap-mise validate-config
+execute-unpause: validate-config
 	IS_PAUSED=false $(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: check-status
-check-status: bootstrap-mise
+check-status:
 	$(MISE_EXEC) cast call $(L2_BRIDGE) "paused()" --rpc-url $(L2_RPC_URL)

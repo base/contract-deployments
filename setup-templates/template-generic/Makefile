@@ -16,15 +16,15 @@ validate-config:
 
 # L1_0
 .PHONY: approve-l1-0
-approve-l1-0: bootstrap-mise
+approve-l1-0:
 	$(call MULTISIG_APPROVE,$(L1_0),$(SIGNATURES))
 
 # L1_1
 .PHONY: approve-l1-1
-approve-l1-1: bootstrap-mise
+approve-l1-1:
 	$(call MULTISIG_APPROVE,$(L1_1),$(SIGNATURES))
 
 # Execute
 .PHONY: execute
-execute: bootstrap-mise validate-config
+execute: validate-config
 	$(call MULTISIG_EXECUTE,0x)
