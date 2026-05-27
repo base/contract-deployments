@@ -5,56 +5,86 @@ import {Script, console} from "forge-std/Script.sol";
 
 import {IAnchorStateRegistry} from "interfaces/dispute/IAnchorStateRegistry.sol";
 import {IDelayedWETH} from "interfaces/dispute/IDelayedWETH.sol";
+import {IDisputeGameFactory} from "interfaces/dispute/IDisputeGameFactory.sol";
 import {IVerifier} from "interfaces/multiproof/IVerifier.sol";
 
 import {GameType} from "@base-contracts/src/dispute/lib/Types.sol";
 import {AggregateVerifier} from "@base-contracts/src/multiproof/AggregateVerifier.sol";
-import {TEEVerifier} from "@base-contracts/src/multiproof/tee/TEEVerifier.sol";
-import {ZkVerifier} from "@base-contracts/src/multiproof/zk/ZKVerifier.sol";
 
 /// @notice Deploys a single new AggregateVerifier implementation that reuses the
 ///         existing multiproof stack (DelayedWETH, TEEVerifier, ZKVerifier,
-///         AnchorStateRegistry) from `mainnet/2026-05-21-activate-multiproof`.
-///         Only `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
-///         change between the old and new implementation.
+///         AnchorStateRegistry, DisputeGameFactory) from the currently
+///         registered AggregateVerifier on chain. Only `TEE_IMAGE_HASH`,
+///         `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH` are taken from `.env`;
+///         every other immutable is read directly from
+///         `DisputeGameFactory.gameImpls(GAME_TYPE)` to guarantee continuity.
 contract DeployAggregateVerifier is Script {
-    // Existing L1 dependencies — reused unchanged.
-    address internal anchorStateRegistryProxyEnv;
-    address internal delayedWethProxyEnv;
-    address internal teeVerifierEnv;
-    address internal zkVerifierEnv;
-    address internal disputeGameFactoryProxyEnv;
+    // Task config from .env.
+    address internal immutable disputeGameFactoryProxyEnv;
+    GameType internal immutable gameTypeEnv;
+    bytes32 internal immutable teeImageHashEnv;
+    bytes32 internal immutable zkRangeHashEnv;
+    bytes32 internal immutable zkAggregateHashEnv;
 
-    // Multiproof identity and chain-level parameters.
-    uint32 internal gameTypeEnv;
-    bytes32 internal teeImageHashEnv;
-    bytes32 internal zkRangeHashEnv;
-    bytes32 internal zkAggregateHashEnv;
-    bytes32 internal configHashEnv;
-    uint256 internal l2ChainIdEnv;
-    uint256 internal blockIntervalEnv;
-    uint256 internal intermediateBlockIntervalEnv;
+    // Live multiproof implementation currently registered in the DGF.
+    address internal immutable currentAggregateVerifier;
 
-    // Output.
+    // Immutable constructor args copied from the live AggregateVerifier.
+    GameType internal immutable currentGameType;
+    IAnchorStateRegistry internal immutable currentAnchorStateRegistry;
+    IDelayedWETH internal immutable currentDelayedWeth;
+    address internal immutable currentTeeVerifier;
+    address internal immutable currentZkVerifier;
+    bytes32 internal immutable currentConfigHash;
+    uint256 internal immutable currentL2ChainId;
+    uint256 internal immutable currentBlockInterval;
+    uint256 internal immutable currentIntermediateBlockInterval;
+
+    // Deployment output written to addresses.json.
     address public aggregateVerifier;
 
-    function setUp() public {
-        anchorStateRegistryProxyEnv = vm.envAddress("ANCHOR_STATE_REGISTRY_PROXY");
-        delayedWethProxyEnv = vm.envAddress("DELAYED_WETH_PROXY");
-        teeVerifierEnv = vm.envAddress("TEE_VERIFIER");
-        zkVerifierEnv = vm.envAddress("ZK_VERIFIER");
+    constructor() {
         disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
-
-        gameTypeEnv = uint32(vm.envUint("GAME_TYPE"));
+        gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
         teeImageHashEnv = vm.envBytes32("TEE_IMAGE_HASH");
         zkRangeHashEnv = vm.envBytes32("ZK_RANGE_HASH");
         zkAggregateHashEnv = vm.envBytes32("ZK_AGGREGATE_HASH");
-        configHashEnv = vm.envBytes32("CONFIG_HASH");
-        l2ChainIdEnv = vm.envUint("L2_CHAIN_ID");
-        blockIntervalEnv = vm.envUint("BLOCK_INTERVAL");
-        intermediateBlockIntervalEnv = vm.envUint("INTERMEDIATE_BLOCK_INTERVAL");
 
-        _preCheckInputs();
+        currentAggregateVerifier = address(IDisputeGameFactory(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv));
+
+        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
+        currentGameType = currentAggregate.gameType();
+        currentAnchorStateRegistry = currentAggregate.anchorStateRegistry();
+        currentDelayedWeth = currentAggregate.DELAYED_WETH();
+        currentTeeVerifier = address(currentAggregate.TEE_VERIFIER());
+        currentZkVerifier = address(currentAggregate.ZK_VERIFIER());
+        currentConfigHash = currentAggregate.CONFIG_HASH();
+        currentL2ChainId = currentAggregate.L2_CHAIN_ID();
+        currentBlockInterval = currentAggregate.BLOCK_INTERVAL();
+        currentIntermediateBlockInterval = currentAggregate.INTERMEDIATE_BLOCK_INTERVAL();
+    }
+
+    function setUp() public view {
+        require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
+        require(
+            GameType.unwrap(currentGameType) == GameType.unwrap(gameTypeEnv),
+            "current game type mismatch"
+        );
+        require(currentTeeVerifier != address(0), "current tee verifier not found");
+        require(currentZkVerifier != address(0), "current zk verifier not found");
+        require(teeImageHashEnv != bytes32(0), "tee image hash not set");
+        require(zkRangeHashEnv != bytes32(0), "zk range hash not set");
+        require(zkAggregateHashEnv != bytes32(0), "zk aggregate hash not set");
+
+        // At least one of the three hashes must differ from the live verifier
+        // (otherwise the new deployment is a no-op).
+        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
+        require(
+            teeImageHashEnv != currentAggregate.TEE_IMAGE_HASH()
+                || zkRangeHashEnv != currentAggregate.ZK_RANGE_HASH()
+                || zkAggregateHashEnv != currentAggregate.ZK_AGGREGATE_HASH(),
+            "all hashes are identical to the current aggregate verifier"
+        );
     }
 
     function run() external {
@@ -62,17 +92,17 @@ contract DeployAggregateVerifier is Script {
 
         aggregateVerifier = address(
             new AggregateVerifier({
-                gameType_: GameType.wrap(gameTypeEnv),
-                anchorStateRegistry_: IAnchorStateRegistry(anchorStateRegistryProxyEnv),
-                delayedWETH: IDelayedWETH(payable(delayedWethProxyEnv)),
-                teeVerifier: TEEVerifier(teeVerifierEnv),
-                zkVerifier: IVerifier(zkVerifierEnv),
+                gameType_: currentGameType,
+                anchorStateRegistry_: currentAnchorStateRegistry,
+                delayedWETH: currentDelayedWeth,
+                teeVerifier: IVerifier(currentTeeVerifier),
+                zkVerifier: IVerifier(currentZkVerifier),
                 teeImageHash: teeImageHashEnv,
                 zkHashes: AggregateVerifier.ZkHashes({rangeHash: zkRangeHashEnv, aggregateHash: zkAggregateHashEnv}),
-                configHash: configHashEnv,
-                l2ChainId: l2ChainIdEnv,
-                blockInterval: blockIntervalEnv,
-                intermediateBlockInterval: intermediateBlockIntervalEnv
+                configHash: currentConfigHash,
+                l2ChainId: currentL2ChainId,
+                blockInterval: currentBlockInterval,
+                intermediateBlockInterval: currentIntermediateBlockInterval
             })
         );
 
@@ -82,36 +112,32 @@ contract DeployAggregateVerifier is Script {
         _writeAddresses();
     }
 
-    /// @dev Sanity checks on the wired-in stack components before deploying.
-    ///      These prevent accidentally constructing the new AggregateVerifier
-    ///      against the wrong stack.
-    function _preCheckInputs() internal view {
-        require(
-            address(TEEVerifier(teeVerifierEnv).ANCHOR_STATE_REGISTRY()) == anchorStateRegistryProxyEnv,
-            "tee verifier asr mismatch"
-        );
-        require(
-            address(ZkVerifier(zkVerifierEnv).ANCHOR_STATE_REGISTRY()) == anchorStateRegistryProxyEnv,
-            "zk verifier asr mismatch"
-        );
-    }
-
     function _postCheck() internal view {
+        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
         AggregateVerifier av = AggregateVerifier(aggregateVerifier);
 
-        require(GameType.unwrap(av.gameType()) == gameTypeEnv, "aggregate game type mismatch");
-        require(address(av.anchorStateRegistry()) == anchorStateRegistryProxyEnv, "aggregate asr mismatch");
-        require(address(av.DISPUTE_GAME_FACTORY()) == disputeGameFactoryProxyEnv, "aggregate dgf mismatch");
-        require(address(av.DELAYED_WETH()) == delayedWethProxyEnv, "aggregate delayed weth mismatch");
-        require(address(av.TEE_VERIFIER()) == teeVerifierEnv, "aggregate tee verifier mismatch");
-        require(address(av.ZK_VERIFIER()) == zkVerifierEnv, "aggregate zk verifier mismatch");
+        // Updated hashes are present.
         require(av.TEE_IMAGE_HASH() == teeImageHashEnv, "aggregate tee image hash mismatch");
         require(av.ZK_RANGE_HASH() == zkRangeHashEnv, "aggregate zk range hash mismatch");
         require(av.ZK_AGGREGATE_HASH() == zkAggregateHashEnv, "aggregate zk aggregate hash mismatch");
-        require(av.CONFIG_HASH() == configHashEnv, "aggregate config hash mismatch");
-        require(av.L2_CHAIN_ID() == l2ChainIdEnv, "aggregate l2 chain mismatch");
-        require(av.BLOCK_INTERVAL() == blockIntervalEnv, "aggregate block interval mismatch");
-        require(av.INTERMEDIATE_BLOCK_INTERVAL() == intermediateBlockIntervalEnv, "aggregate intermediate mismatch");
+
+        // Every other immutable matches the live AggregateVerifier.
+        require(GameType.unwrap(av.gameType()) == GameType.unwrap(currentGameType), "aggregate game type mismatch");
+        require(address(av.anchorStateRegistry()) == address(currentAnchorStateRegistry), "aggregate asr mismatch");
+        require(
+            address(av.DISPUTE_GAME_FACTORY()) == address(currentAggregate.DISPUTE_GAME_FACTORY()),
+            "aggregate dgf mismatch"
+        );
+        require(address(av.DELAYED_WETH()) == address(currentDelayedWeth), "aggregate delayed weth mismatch");
+        require(address(av.TEE_VERIFIER()) == currentTeeVerifier, "aggregate tee verifier mismatch");
+        require(address(av.ZK_VERIFIER()) == currentZkVerifier, "aggregate zk verifier mismatch");
+        require(av.CONFIG_HASH() == currentConfigHash, "aggregate config hash mismatch");
+        require(av.L2_CHAIN_ID() == currentL2ChainId, "aggregate l2 chain id mismatch");
+        require(av.BLOCK_INTERVAL() == currentBlockInterval, "aggregate block interval mismatch");
+        require(
+            av.INTERMEDIATE_BLOCK_INTERVAL() == currentIntermediateBlockInterval,
+            "aggregate intermediate interval mismatch"
+        );
     }
 
     function _writeAddresses() internal {

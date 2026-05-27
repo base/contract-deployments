@@ -21,10 +21,12 @@ Before deploying, replace the placeholder values in `.env`:
 - `ZK_RANGE_HASH`
 - `ZK_AGGREGATE_HASH`
 
-`CONFIG_HASH`, `BLOCK_INTERVAL`, `INTERMEDIATE_BLOCK_INTERVAL`, and every
-reused stack component (`DELAYED_WETH_PROXY`, `TEE_VERIFIER`, `ZK_VERIFIER`,
-`ANCHOR_STATE_REGISTRY_PROXY`) are intentionally unchanged from
-`mainnet/2026-05-21-activate-multiproof` — do not modify them.
+Every other AggregateVerifier immutable (`CONFIG_HASH`, `BLOCK_INTERVAL`,
+`INTERMEDIATE_BLOCK_INTERVAL`, `L2_CHAIN_ID`, `DELAYED_WETH`, `TEE_VERIFIER`,
+`ZK_VERIFIER`, `ANCHOR_STATE_REGISTRY`) is read directly from the live
+`AggregateVerifier` currently registered in the `DisputeGameFactory` at
+deploy/upgrade/rollback time, so it cannot drift from the production stack
+and does not appear in `.env`.
 
 ## 3. Deploy The New AggregateVerifier
 

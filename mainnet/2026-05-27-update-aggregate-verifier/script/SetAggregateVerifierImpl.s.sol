@@ -24,24 +24,31 @@ interface IDisputeGameFactoryAdmin {
 ///           - rollback: the previously registered AggregateVerifier
 ///                       (`OLD_AGGREGATE_VERIFIER` from `.env`).
 ///
-///         No other state on the DGF, ASR, OptimismPortal2, TEEProverRegistry,
-///         DelayedWETH, TEEVerifier, or ZkVerifier is touched.
+///         Continuity is enforced by asserting that every immutable on the
+///         target AggregateVerifier matches the AggregateVerifier currently
+///         registered in the DisputeGameFactory, except for the three hashes
+///         (`TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, `ZK_AGGREGATE_HASH`). This
+///         check is direction-agnostic: it holds for both the upgrade and
+///         the rollback.
 contract SetAggregateVerifierImpl is MultisigScript {
-    address internal ownerSafeEnv;
-    address internal disputeGameFactoryProxyEnv;
-    address internal anchorStateRegistryProxyEnv;
+    address internal immutable ownerSafeEnv;
+    address internal immutable disputeGameFactoryProxyEnv;
+    GameType internal immutable gameTypeEnv;
+    address internal immutable targetAggregateVerifierEnv;
 
-    uint32 internal gameTypeEnv;
-    address internal targetAggregateVerifierEnv;
+    // Live multiproof implementation currently registered in the DGF.
+    address internal immutable currentAggregateVerifier;
 
-    function setUp() public {
+    constructor() {
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
         disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
-        anchorStateRegistryProxyEnv = vm.envAddress("ANCHOR_STATE_REGISTRY_PROXY");
-
-        gameTypeEnv = uint32(vm.envUint("GAME_TYPE"));
+        gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
         targetAggregateVerifierEnv = vm.envAddress("TARGET_AGGREGATE_VERIFIER");
 
+        currentAggregateVerifier = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv);
+    }
+
+    function setUp() public view {
         _preCheck();
     }
 
@@ -53,7 +60,7 @@ contract SetAggregateVerifierImpl is MultisigScript {
             target: disputeGameFactoryProxyEnv,
             data: abi.encodeCall(
                 IDisputeGameFactoryAdmin.setImplementation,
-                (GameType.wrap(gameTypeEnv), targetAggregateVerifierEnv, "")
+                (gameTypeEnv, targetAggregateVerifierEnv, "")
             ),
             value: 0
         });
@@ -67,23 +74,69 @@ contract SetAggregateVerifierImpl is MultisigScript {
             "DGF owner != PROXY_ADMIN_OWNER"
         );
 
-        AggregateVerifier av = AggregateVerifier(targetAggregateVerifierEnv);
-        require(GameType.unwrap(av.gameType()) == gameTypeEnv, "target gameType mismatch");
+        require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
+        require(targetAggregateVerifierEnv != address(0), "target aggregate verifier not set");
+        require(targetAggregateVerifierEnv != currentAggregateVerifier, "target equals current (no-op)");
+
+        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
+        AggregateVerifier targetAggregate = AggregateVerifier(targetAggregateVerifierEnv);
+
+        // GameType is preserved and matches the env-declared value.
         require(
-            address(av.anchorStateRegistry()) == anchorStateRegistryProxyEnv,
-            "target anchor state registry mismatch"
+            GameType.unwrap(currentAggregate.gameType()) == GameType.unwrap(gameTypeEnv),
+            "current game type mismatch"
         );
         require(
-            address(av.DISPUTE_GAME_FACTORY()) == disputeGameFactoryProxyEnv,
-            "target dispute game factory mismatch"
+            GameType.unwrap(targetAggregate.gameType()) == GameType.unwrap(gameTypeEnv),
+            "target game type mismatch"
         );
+
+        // Every non-hash immutable must match between current and target.
+        _assertImmutableContinuity(currentAggregate, targetAggregate);
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
         IDisputeGameFactoryAdmin dgf = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv);
         require(
-            dgf.gameImpls(GameType.wrap(gameTypeEnv)) == targetAggregateVerifierEnv,
+            dgf.gameImpls(gameTypeEnv) == targetAggregateVerifierEnv,
             "game impl not set to target"
+        );
+
+        // Re-run the continuity check against the now-registered target.
+        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
+        AggregateVerifier targetAggregate = AggregateVerifier(targetAggregateVerifierEnv);
+        _assertImmutableContinuity(currentAggregate, targetAggregate);
+    }
+
+    /// @dev Asserts that every immutable on `target` matches `current`, except
+    ///      for the three hashes that this task is explicitly rotating.
+    function _assertImmutableContinuity(AggregateVerifier current, AggregateVerifier target) internal view {
+        require(
+            address(target.anchorStateRegistry()) == address(current.anchorStateRegistry()),
+            "target asr mismatch"
+        );
+        require(
+            address(target.DISPUTE_GAME_FACTORY()) == address(current.DISPUTE_GAME_FACTORY()),
+            "target dgf mismatch"
+        );
+        require(
+            address(target.DELAYED_WETH()) == address(current.DELAYED_WETH()),
+            "target delayed weth mismatch"
+        );
+        require(
+            address(target.TEE_VERIFIER()) == address(current.TEE_VERIFIER()),
+            "target tee verifier mismatch"
+        );
+        require(
+            address(target.ZK_VERIFIER()) == address(current.ZK_VERIFIER()),
+            "target zk verifier mismatch"
+        );
+        require(target.CONFIG_HASH() == current.CONFIG_HASH(), "target config hash mismatch");
+        require(target.L2_CHAIN_ID() == current.L2_CHAIN_ID(), "target l2 chain id mismatch");
+        require(target.BLOCK_INTERVAL() == current.BLOCK_INTERVAL(), "target block interval mismatch");
+        require(
+            target.INTERMEDIATE_BLOCK_INTERVAL() == current.INTERMEDIATE_BLOCK_INTERVAL(),
+            "target intermediate interval mismatch"
         );
     }
 
