@@ -27,7 +27,7 @@ require_vars = $(foreach _var,$(2),$(if $(strip $($(_var))),,$(error $(1): requi
 # MULTISIG_APPROVE: $(1)=address list (space-separated), $(2)=signatures (e.g., 0x or $(SIGNATURES))
 define MULTISIG_APPROVE
 $(call require_vars,MULTISIG_APPROVE,LEDGER_ACCOUNT RPC_URL SCRIPT_NAME) \
-	forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
+	$(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
 	--sig "approve(address[],bytes)" "[$(call comma_join,$(1))]" $(2) \
 	--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 endef
@@ -35,7 +35,7 @@ endef
 # MULTISIG_EXECUTE: $(1)=signatures for run(bytes) (e.g., 0x or $(SIGNATURES))
 define MULTISIG_EXECUTE
 $(call require_vars,MULTISIG_EXECUTE,LEDGER_ACCOUNT RPC_URL SCRIPT_NAME) \
-	forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
+	$(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
 	--sig "run(bytes)" $(1) \
 	--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 endef
@@ -48,10 +48,10 @@ endef
 define GEN_VALIDATION
 $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 	cd $(SIGNER_TOOL_PATH) && \
-		npx tsx scripts/genValidationFile.ts \
+		$(MISE_EXEC) npx tsx scripts/genValidationFile.ts \
 			--rpc-url $(RPC_URL) \
 			--workdir $(CURDIR) \
-			--forge-cmd '$(if $(5),$(5) )forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
+			--forge-cmd '$(if $(5),$(5) )$(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
 			--ledger-id $(LEDGER_ACCOUNT) \
 			--out $(CURDIR)/validations/$(4)
 endef
@@ -61,7 +61,7 @@ endef
 # GET_NONCE: Fetch the current nonce of a Safe contract.
 # $(1)=safe_address
 define GET_NONCE
-$(shell cast call $(1) "nonce()" --rpc-url $(RPC_URL) | cast to-dec)
+$(shell $(MISE_EXEC) cast call $(1) "nonce()" --rpc-url $(RPC_URL) | $(MISE_EXEC) cast to-dec)
 endef
 
 # ADDR_UPPER: Convert an address to uppercase (for env var construction).
