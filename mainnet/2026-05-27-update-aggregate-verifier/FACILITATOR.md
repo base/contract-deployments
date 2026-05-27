@@ -13,9 +13,9 @@ cd mainnet/2026-05-27-update-aggregate-verifier
 make deps
 ```
 
-## 2. Fill In Placeholder Hashes
+## 2. Confirm New Hashes
 
-Before deploying, replace the placeholder values in `.env`:
+The three hashes carried by the new `AggregateVerifier` are set in `.env`:
 
 - `TEE_IMAGE_HASH`
 - `ZK_RANGE_HASH`
