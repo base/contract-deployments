@@ -129,7 +129,7 @@ OZ_UPGRADEABLE_TAG=v4.7.3
 deps: bootstrap-mise install-eip712sign clean-lib forge-deps clone-oz-upgradeable checkout-base-contracts-commit
 
 .PHONY: install-eip712sign
-install-eip712sign: bootstrap-mise
+install-eip712sign:
 	$(MISE_EXEC) go install github.com/base/eip712sign@v0.0.11
 
 .PHONY: clean-lib
@@ -137,7 +137,7 @@ clean-lib:
 	rm -rf lib
 
 .PHONY: forge-deps
-forge-deps: bootstrap-mise
+forge-deps:
 	$(MISE_EXEC) forge install --no-git github.com/foundry-rs/forge-std@0844d7e1fc5e60d77b68e469bff60265f236c398 \
 		github.com/OpenZeppelin/openzeppelin-contracts@v4.9.3 \
 		github.com/rari-capital/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
@@ -162,7 +162,7 @@ clone-oz-upgradeable:
 	rm -rf lib/openzeppelin-contracts-upgradeable/.git
 
 .PHONY: checkout-base-contracts-commit
-checkout-base-contracts-commit: bootstrap-mise
+checkout-base-contracts-commit:
 	[ -n "$(BASE_CONTRACTS_COMMIT)" ] || (echo "BASE_CONTRACTS_COMMIT must be set in .env" && exit 1)
 	$(MISE_EXEC) forge install --no-git github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
 
@@ -223,9 +223,3 @@ sign-as-sc-facilitator: deps-signer-tool
 		--signature-path $(SIGNATURE_DIR) \
 		--facilitator security-council
 
-##
-# Solidity Testing
-##
-.PHONY: solidity-test
-solidity-test: bootstrap-mise
-	$(MISE_EXEC) forge test --ffi -vvv
