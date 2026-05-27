@@ -42,10 +42,24 @@ interface IDisputeGameFactoryAdmin {
 ///         three hashes (`TEE_IMAGE_HASH`, `ZK_RANGE_HASH`,
 ///         `ZK_AGGREGATE_HASH`). This holds in both directions.
 contract SetAggregateVerifierImpl is MultisigScript {
-    /// @dev Storage slot of `gameImpls` in `DisputeGameFactory`, from the
-    ///      pinned base-contracts storage layout snapshot
-    ///      (`lib/contracts/snapshots/storageLayout/DisputeGameFactory.json`).
-    uint256 internal constant GAME_IMPLS_SLOT = 101;
+    /// @dev Storage slot of `gameImpls[GAME_TYPE]` in the `DisputeGameFactory`
+    ///      proxy. `gameImpls` is declared at slot 101 in
+    ///      `lib/contracts/snapshots/storageLayout/DisputeGameFactory.json`,
+    ///      and the slot of a Solidity mapping entry is
+    ///      `keccak256(abi.encode(key, p))` where the key is left-padded to
+    ///      32 bytes:
+    ///
+    ///        keccak256(abi.encode(GameType.wrap(uint32(621)), uint256(101)))
+    ///          = 0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6
+    ///
+    ///      Verified against mainnet:
+    ///
+    ///        cast storage 0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e \
+    ///          0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6
+    ///          -> 0x0000000000000000000000004c0daf5d9abe92e8a26a60698a657b03538a3028
+    ///                                       (OLD_AGGREGATE_VERIFIER)
+    bytes32 internal constant GAME_IMPLS_SLOT_FOR_GAME_TYPE_621 =
+        0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6;
 
     address internal immutable OWNER_SAFE_ENV;
     address internal immutable DISPUTE_GAME_FACTORY_PROXY_ENV;
@@ -95,7 +109,7 @@ contract SetAggregateVerifierImpl is MultisigScript {
         Simulation.StorageOverride[] memory storageOverrides = new Simulation.StorageOverride[](1);
 
         storageOverrides[0] = Simulation.StorageOverride({
-            key: _gameImplsSlotKey(GAME_TYPE_ENV),
+            key: GAME_IMPLS_SLOT_FOR_GAME_TYPE_621,
             value: bytes32(uint256(uint160(ASSUMED_CURRENT_AGGREGATE_VERIFIER_ENV)))
         });
 
@@ -182,15 +196,6 @@ contract SetAggregateVerifierImpl is MultisigScript {
             target.INTERMEDIATE_BLOCK_INTERVAL() == current.INTERMEDIATE_BLOCK_INTERVAL(),
             "target intermediate interval mismatch"
         );
-    }
-
-    /// @dev Storage slot key for `gameImpls[gameType]` in the
-    ///      `DisputeGameFactory` proxy. For a Solidity
-    ///      `mapping(GameType => IDisputeGame)` at storage slot `p`, the slot
-    ///      for `mapping[k]` is `keccak256(abi.encode(k, p))` (the key is
-    ///      left-padded to 32 bytes by `abi.encode`).
-    function _gameImplsSlotKey(GameType gameType) internal pure returns (bytes32) {
-        return keccak256(abi.encode(gameType, GAME_IMPLS_SLOT));
     }
 
     function _ownerSafe() internal view override returns (address) {
