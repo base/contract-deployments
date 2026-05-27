@@ -1,0 +1,96 @@
+{
+  "cmd": "TARGET_AGGREGATE_VERIFIER=0x327DdE84C9173DD799A4f74b04a69d9d385D31a4 ASSUMED_CURRENT_AGGREGATE_VERIFIER=0x4c0DAF5d9ABe92e8A26a60698a657B03538a3028 /Users/leopoldjoy/.local/bin/mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io script/SetAggregateVerifierImpl.s.sol:SetAggregateVerifierImpl --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0xbDE1845c879942fC326F247Ad708677733Dd5594",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x24c0e3d296b2247447c24ab2f6858127299124bd58e76d335b4b39bdd0638f10"
+  },
+  "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x7ea01a6392de271c0411be746ad8f71944ff1fbb12be036f9940a9b31d068449",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000004c0daf5d9abe92e8a26a60698a657b03538a3028",
+          "after": "0x000000000000000000000000327dde84c9173dd799a4f74b04a69d9d385d31a4",
+          "description": "Updates the multiproof game implementation (gameImpls[621]) to the new AggregateVerifier.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000010",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000011",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x3a04fc7d2c3c1b2d4585bd1df5419ccf643bdd27ffa2aa257667402714aa01cb",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the Security Council Safe approval on the Proxy Admin Owner Safe.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}
