@@ -6,28 +6,6 @@ Status: TODO[READY TO SIGN|EXECUTED]
 
 We wish to update the owners of our Incident Multisig to be consistent with the current state of our Base Chain Eng team. This involves removing signers that are no longer closely involved with the team, and adding new team members as signers. The exact signer changes are outlined in the [OwnerDiff.json](./OwnerDiff.json) file.
 
-## Install dependencies
-
-### 1. Update foundry
-
-```bash
-foundryup
-```
-
-### 2. Install Node.js if needed
-
-First, check if you have node installed
-
-```bash
-node --version
-```
-
-If you see a version output from the above command, you can move on. Otherwise, install node
-
-```bash
-brew install node
-```
-
 ## Approving Signers Update
 
 ### 1. Update repo:

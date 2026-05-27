@@ -6,28 +6,6 @@ Status: READY TO SIGN
 
 Switches Base to Permissioned Fault Dispute Games and retires existing games.
 
-## Install dependencies
-
-### 1. Update foundry
-
-```bash
-foundryup
-```
-
-### 2. Install Node.js if needed
-
-First, check if you have node installed
-
-```bash
-node --version
-```
-
-If you see a version output from the above command, you can move on. Otherwise, install node
-
-```bash
-brew install node
-```
-
 ## Sign Task
 
 ### 1. Update repo:

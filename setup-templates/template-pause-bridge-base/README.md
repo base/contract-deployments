@@ -6,14 +6,6 @@ Status: READY TO SIGN
 
 Pauses the Base side of [Base Bridge](https://github.com/base/bridge).
 
-## Install dependencies
-
-### 1. Update foundry
-
-```bash
-foundryup
-```
-
 ## Sign Task
 
 ### 1. Update repo:
