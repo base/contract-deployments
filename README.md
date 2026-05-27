@@ -352,3 +352,4 @@ This template is used to pause or un-pause the L1 SuperchainConfig contract.
 
 ## Contributing
 PRs welcome!
+\n## Improvements\n- Added deployment verification checklist\n- Improved logging format
