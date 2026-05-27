@@ -2,6 +2,10 @@
 
 Status: READY TO SIGN
 
+## Transactions
+
+- New `AggregateVerifier` deployment ([`0x327DdE84C9173DD799A4f74b04a69d9d385D31a4`](https://etherscan.io/address/0x327DdE84C9173DD799A4f74b04a69d9d385D31a4)): [`0xc75f7dd2924ca3d42560a9bee058cb556abd5b58177817e6238988cef6d8ed96`](https://etherscan.io/tx/0xc75f7dd2924ca3d42560a9bee058cb556abd5b58177817e6238988cef6d8ed96) (artefacts: [run-1779918379562.json](./records/DeployAggregateVerifier.s.sol/1/run-1779918379562.json))
+
 ## Description
 
 This task rotates the `AggregateVerifier` implementation registered for
