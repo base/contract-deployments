@@ -2,6 +2,10 @@
 
 Status: READY TO SIGN
 
+## Transactions
+
+- New `AggregateVerifier` deployment ([`0xeCe9c5b9DCa09f1a0Ed85DA97f8F1396dC5634Ce`](https://sepolia.etherscan.io/address/0xeCe9c5b9DCa09f1a0Ed85DA97f8F1396dC5634Ce)): [`0xaef9dc2499802c3d437da82b2a9c39da785ca23b5c3a135672b80a99306a7ac4`](https://sepolia.etherscan.io/tx/0xaef9dc2499802c3d437da82b2a9c39da785ca23b5c3a135672b80a99306a7ac4) (artefacts: [run-1779990011323.json](./records/DeployAggregateVerifier.s.sol/11155111/run-1779990011323.json))
+
 ## Description
 
 This task updates the TEE and ZK verifier hashes of the multiproof implementation on `sepolia`.
