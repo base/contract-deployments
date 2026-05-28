@@ -49,6 +49,21 @@ bootstrap-mise:
 	fi
 	@$(MISE) trust --quiet $(REPO_ROOT)/mise.toml >/dev/null
 	@$(MISE) install --quiet --cd $(REPO_ROOT)
+	@# The signer-tool re-executes the validation file's `cmd` in a fresh shell.
+	@# That command uses bare `mise exec --` (see Multisig.mk GEN_VALIDATION) so
+	@# the validation JSON stays portable across machines. If `mise` is not on
+	@# the user's PATH, that re-execution will fail with "command not found".
+	@if ! command -v mise >/dev/null 2>&1; then \
+		echo ""; \
+		echo "WARNING: 'mise' is installed at $(HOME)/.local/bin/mise but is not on your PATH."; \
+		echo "         The signer-tool needs 'mise' on PATH to re-execute validation file 'cmd' fields."; \
+		echo "         Add this to your shell config (e.g. ~/.zshrc or ~/.bashrc) and restart your shell:"; \
+		echo ""; \
+		echo "             export PATH=\"\$$HOME/.local/bin:\$$PATH\""; \
+		echo ""; \
+		echo "         (Or, for full mise integration: eval \"\$$(mise activate \$$(basename \$$SHELL))\")"; \
+		echo ""; \
+	fi
 
 # Resolve GOPATH lazily via mise so it works after `bootstrap-mise` installs go.
 # Recursive (`=`) expansion defers `go env GOPATH` to recipe time, when mise is
