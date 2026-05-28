@@ -37,8 +37,8 @@ make gen-validation-update-verifier-hashes-sc
 
 This produces:
 
-- `validations/base-signer.json`
-- `validations/base-signer-2.json`
+- `validations/coinbase-signer.json`
+- `validations/security-council-signer.json`
 
 ### Disable task-origin validation
 
