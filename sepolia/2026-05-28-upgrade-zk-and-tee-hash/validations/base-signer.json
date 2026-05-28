@@ -1,0 +1,92 @@
+{
+  "cmd": "mise exec -- forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net script/UpdateVerifierHashes.s.sol:UpdateVerifierHashes --sig sign(address[]) [0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
+    "messageHash": "0xfee106fe11c5a19c9efee4d782a1dd880389b122e1bbf6e02393f92280043f3f"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x114a2b55212ffe6bca5aab6626298e7d3c8f466296b71c53d3a5eca70d20df1d",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000024",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000025",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe30e1b3688eccade1336dd8d8faacabf5e18f6c3688e3f3d4c2003ed6b1b39d8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Approves the transaction hash for execution by the nested multisig.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000018",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactoryProxy - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000dc3e4db1947f57fb18b093924ca95b96ddc1ef2e",
+          "after": "0x000000000000000000000000ece9c5b9dca09f1a0ed85da97f8f1396dc5634ce",
+          "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}

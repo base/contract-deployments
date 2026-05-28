@@ -1,0 +1,86 @@
+{
+  "cmd": "mise exec -- forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net script/UpdateVerifierHashes.s.sol:UpdateVerifierHashes --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0x122f3d0179ceffa7336cb9115ab0004f7bbb32597256f3b7181c32ea6cf80f7d"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0xddd706d4f270fdcf7d48365d32133c29f7dc542f44dd2dc57fd44cc2c6dee278",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000024",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000025",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe008b4f193112812599b82037c5d3f829007c9668a4ef083f15b4f7c013483a8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Approves the transaction hash for execution by the nested multisig.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000022",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000023",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactoryProxy - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000dc3e4db1947f57fb18b093924ca95b96ddc1ef2e",
+          "after": "0x000000000000000000000000ece9c5b9dca09f1a0ed85da97f8f1396dc5634ce",
+          "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
