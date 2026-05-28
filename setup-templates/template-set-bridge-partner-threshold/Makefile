@@ -21,10 +21,15 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 # TODO: ensure `sender` is a signer for `OWNER_SAFE`
+# NOTE: Uses bare literal `mise exec --` (not `$(MISE_EXEC)`) so the forge
+# command written into validations/signer.json by state-diff stays portable
+# across signer machines. See Multisig.mk's GEN_VALIDATION macro for the
+# full rationale and the README's "Toolchain (mise)" section for the PATH
+# requirement on the signer-tool subprocess.
 .PHONY: gen-validation
 gen-validation: validate-config
 	$(GOPATH)/bin/state-diff --rpc $(L1_RPC_URL) -o validations/signer.json \
-	-- $(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) SetThreshold \
+	-- mise exec -- forge script --rpc-url $(L1_RPC_URL) SetThreshold \
 	--sig "sign(address[])" "[$(OWNER_SAFE)]" \
 	--sender 0xb2d9a52e76841279EF0372c534C539a4f68f8C0B
 
