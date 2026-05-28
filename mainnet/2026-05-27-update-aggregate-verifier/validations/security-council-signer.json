@@ -1,5 +1,5 @@
 {
-  "cmd": "TARGET_AGGREGATE_VERIFIER=0x327DdE84C9173DD799A4f74b04a69d9d385D31a4 ASSUMED_CURRENT_AGGREGATE_VERIFIER=0x4c0DAF5d9ABe92e8A26a60698a657B03538a3028 /Users/leopoldjoy/.local/bin/mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io script/SetAggregateVerifierImpl.s.sol:SetAggregateVerifierImpl --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0xbDE1845c879942fC326F247Ad708677733Dd5594",
+  "cmd": "TARGET_AGGREGATE_VERIFIER=0x327DdE84C9173DD799A4f74b04a69d9d385D31a4 ASSUMED_CURRENT_AGGREGATE_VERIFIER=0x4c0DAF5d9ABe92e8A26a60698a657B03538a3028 mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io script/SetAggregateVerifierImpl.s.sol:SetAggregateVerifierImpl --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0xbDE1845c879942fC326F247Ad708677733Dd5594",
   "ledgerId": 0,
   "rpcUrl": "https://eth-mainnet.public.blastapi.io",
   "expectedDomainAndMessageHashes": {
