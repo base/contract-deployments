@@ -45,13 +45,23 @@ endef
 # GEN_VALIDATION: Generate a validation JSON file for multisig signing.
 # $(1)=script_name, $(2)=safe_addr (comma-separated, or empty for []),
 # $(3)=sender, $(4)=output_file, $(5)=env_vars (optional prefix)
+#
+# NOTE: The embedded `--forge-cmd` uses the bare literal `mise exec --` rather
+# than `$(MISE_EXEC)`. The latter expands at Makefile parse time to either
+# `mise exec --` (mise on PATH) or `$(HOME)/.local/bin/mise exec --` (fallback),
+# which would bake a machine-specific absolute path into the generated validation
+# JSON's `cmd` field — and that JSON is committed to the repo and re-hashed at
+# verification time on other machines. By keeping the literal token, the
+# committed file is portable; the trade-off is that `mise` must be discoverable
+# on the signer-tool subprocess's PATH (see the bootstrap-mise warning and the
+# README "Toolchain (mise)" section for the PATH requirement).
 define GEN_VALIDATION
 $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genValidationFile.ts \
 			--rpc-url $(RPC_URL) \
 			--workdir $(CURDIR) \
-			--forge-cmd '$(if $(5),$(5) )$(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
+			--forge-cmd '$(if $(5),$(5) )mise exec -- forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
 			--ledger-id $(LEDGER_ACCOUNT) \
 			--out $(CURDIR)/validations/$(4)
 endef
