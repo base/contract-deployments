@@ -12,7 +12,13 @@ git pull
 cd zeronet/2026-05-28-upgrade-zk-and-tee-hash
 make deps
 make deploy-aggregate-verifier VERIFIER_API_KEY=...
+make deploy-anchor-state-registry VERIFIER_API_KEY=...
 ```
+
+`make deps` runs `task-extra-deps` and then `apply-patches`, which patches
+`lib/contracts/src/dispute/AnchorStateRegistry.sol` to bump
+`ReinitializableBase(2)` to `ReinitializableBase(5)` (matching the live proxy's
+`initVersion() + 1 = 5`) and to clear `anchorGame` inside `initialize()`.
 
 `make deploy-aggregate-verifier` runs `DeployAggregateVerifier`:
 
@@ -20,9 +26,54 @@ make deploy-aggregate-verifier VERIFIER_API_KEY=...
 - reuses the existing `ZkVerifier` from the current on-chain AggregateVerifier
 - writes `aggregateVerifier` to `addresses.json`
 
+`make deploy-anchor-state-registry` runs `DeployAnchorStateRegistry`:
+
+- snapshots `disputeGameFinalityDelaySeconds` and `initVersion` from the live ASR proxy
+- deploys a new `AnchorStateRegistry` impl preserving the finality delay
+- asserts `nextImpl.initVersion() == currentInitVersion + 1`
+- writes `anchorStateRegistryImpl` to `addresses.json`
+
 Expected `addresses.json` keys:
 
 - `aggregateVerifier`
+- `anchorStateRegistryImpl`
+
+## Pre-sign check: `STARTING_ANCHOR_*` correctness
+
+`STARTING_ANCHOR_ROOT` and `STARTING_ANCHOR_L2_BLOCK_NUMBER` are chain-critical.
+Before collecting signatures, verify both values against the zeronet op-node
+proofs RPC.
+
+### 1. Validate the anchor block number is recent and finalised
+
+Confirm `STARTING_ANCHOR_L2_BLOCK_NUMBER` from `.env` is at or below the
+finalised L2 block:
+
+```bash
+cast rpc optimism_syncStatus --rpc-url https://base-zeronet-reth-proofs-donotuse.cbhq.net:7545 \
+  | jq -r '.finalized_l2.number'
+```
+
+Expected result:
+
+- `finalized_l2.number >= STARTING_ANCHOR_L2_BLOCK_NUMBER`.
+
+### 2. Validate the anchor root matches the chain
+
+Use `optimism_outputAtBlock` with the same block and compare to
+`STARTING_ANCHOR_ROOT` from `.env`:
+
+```bash
+BLOCK=$STARTING_ANCHOR_L2_BLOCK_NUMBER
+OUTPUT_ROOT=$(cast rpc optimism_outputAtBlock $(cast 2h $BLOCK) \
+  --rpc-url https://base-zeronet-reth-proofs-donotuse.cbhq.net:7545 | jq -r '.outputRoot')
+echo $OUTPUT_ROOT
+echo $STARTING_ANCHOR_ROOT
+```
+
+Expected result:
+
+- `OUTPUT_ROOT == STARTING_ANCHOR_ROOT`.
 
 ## Generate validation files
 
@@ -100,6 +151,13 @@ make execute-update-verifier-hashes
 
 Post-checks enforced by script:
 
+- `AnchorStateRegistry` proxy implementation equals the newly deployed `anchorStateRegistryImpl`
+- `AnchorStateRegistry.anchorGame() == address(0)` (stale anchor game cleared)
+- `AnchorStateRegistry.getStartingAnchorRoot()` root + l2SequenceNumber equal `STARTING_ANCHOR_ROOT` / `STARTING_ANCHOR_L2_BLOCK_NUMBER`
+- `AnchorStateRegistry.getAnchorRoot()` equals the same
+- `AnchorStateRegistry.respectedGameType()` equals `GAME_TYPE`
+- `AnchorStateRegistry.disputeGameFinalityDelaySeconds()` unchanged from before
+- `AnchorStateRegistry.initVersion() == previous + 1`
 - `DisputeGameFactory.gameImpls(gameType)` equals the newly deployed `aggregateVerifier`
 - `aggregateVerifier.TEE_IMAGE_HASH()` equals the configured `TEE_IMAGE_HASH`
 - `aggregateVerifier.ZK_RANGE_HASH()` equals the configured `ZK_RANGE_HASH`
