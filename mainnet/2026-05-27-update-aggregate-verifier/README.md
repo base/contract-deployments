@@ -43,7 +43,6 @@ git pull
 ### 2. Run the signing tool
 
 ```bash
-cd contract-deployments
 make sign-task
 ```
 
