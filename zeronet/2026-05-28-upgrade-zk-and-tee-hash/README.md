@@ -1,11 +1,14 @@
 # Upgrade ZK and TEE Hash
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xe6922e67dcf68464904923147d1aa48dd15d6e7a1730292707713245ba98ff32)
 
 ## Transactions
 
 - New `AggregateVerifier` deployment ([`0x3a80c85f3Ac6C305B2F8f869A35e70D821Ab7c3a`](https://hoodi.etherscan.io/address/0x3a80c85f3Ac6C305B2F8f869A35e70D821Ab7c3a)): [`0xaa13b9f1a738e6cde840cc0993cb9120e4ef42e6f404df5c54e6c903c027aa9e`](https://hoodi.etherscan.io/tx/0xaa13b9f1a738e6cde840cc0993cb9120e4ef42e6f404df5c54e6c903c027aa9e) (artefacts: [run-1779995783324.json](./records/DeployAggregateVerifier.s.sol/560048/run-1779995783324.json))
 - New `AnchorStateRegistry` implementation deployment ([`0xB70064953c333956E324dFBb7Ef666978B4B2962`](https://hoodi.etherscan.io/address/0xB70064953c333956E324dFBb7Ef666978B4B2962)): [`0xf9cf675a477bbf40944ffe3e6fd37353b64db76035d1418231b3d00eaf4a75d4`](https://hoodi.etherscan.io/tx/0xf9cf675a477bbf40944ffe3e6fd37353b64db76035d1418231b3d00eaf4a75d4) (artefacts: [run-1780003155542.json](./records/DeployAnchorStateRegistry.s.sol/560048/run-1780003155542.json))
+- Coinbase Multisig approval ([`0x856611eD7E07D83243b15E93f6321f2df6865852`](https://hoodi.etherscan.io/address/0x856611eD7E07D83243b15E93f6321f2df6865852)): [`0x49fe28b348543b707eda24ae6d7dce71ab69d432ca9cd41decf556ec074e385b`](https://hoodi.etherscan.io/tx/0x49fe28b348543b707eda24ae6d7dce71ab69d432ca9cd41decf556ec074e385b) (artefacts: [run-1780016668403.json](./records/UpdateVerifierHashes.s.sol/560048/run-1780016668403.json))
+- Security Council approval ([`0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA`](https://hoodi.etherscan.io/address/0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA)): [`0xbfd290548327ed6f18ff55dbd459f0ef3562e7ddf552153a9a16c4c90021299a`](https://hoodi.etherscan.io/tx/0xbfd290548327ed6f18ff55dbd459f0ef3562e7ddf552153a9a16c4c90021299a) (artefacts: [run-1780016858403.json](./records/UpdateVerifierHashes.s.sol/560048/run-1780016858403.json))
+- Execute via Proxy Admin Owner ([`0x3d59999977e0896ee1f8783bB8251DF16fb483E9`](https://hoodi.etherscan.io/address/0x3d59999977e0896ee1f8783bB8251DF16fb483E9)): [`0xe6922e67dcf68464904923147d1aa48dd15d6e7a1730292707713245ba98ff32`](https://hoodi.etherscan.io/tx/0xe6922e67dcf68464904923147d1aa48dd15d6e7a1730292707713245ba98ff32) (artefacts: [run-1780016929145.json](./records/UpdateVerifierHashes.s.sol/560048/run-1780016929145.json))
 
 ## Description
 
