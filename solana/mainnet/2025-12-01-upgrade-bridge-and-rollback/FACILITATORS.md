@@ -7,7 +7,7 @@ As a Facilitator, you are responsible for:
 2. Preparing the rollback buffer (current program bytecode)
 3. Creating a merged upgrade/rollback proposal
 4. Coordinating with Signers and collecting signatures
-5. Executing the upgrade on-chain
+5. Executing the upgrade onchain
 6. Executing the rollback if needed
 
 ## Prerequisites
@@ -131,7 +131,7 @@ Then run:
 make step6-dump-current-program
 ```
 
-This dumps the current on-chain program bytecode to `rollback.so`.
+This dumps the current onchain program bytecode to `rollback.so`.
 
 ### 2.2. Write rollback buffer
 

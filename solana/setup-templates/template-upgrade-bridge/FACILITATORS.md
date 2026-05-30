@@ -6,7 +6,7 @@ As a Facilitator, you are responsible for:
 1. Preparing the bridge program upgrade buffer
 2. Creating the upgrade proposal
 3. Coordinating with Signers and collecting signatures
-4. Executing the proposal on-chain
+4. Executing the proposal onchain
 
 ## Prerequisites
 

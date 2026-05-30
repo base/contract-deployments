@@ -17,7 +17,7 @@ make deploy-aggregate-verifier VERIFIER_API_KEY=...
 `make deploy-aggregate-verifier` runs `DeployAggregateVerifier`:
 
 - redeploys `AggregateVerifier` with the same immutables as the existing one, overriding `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
-- reuses the existing `ZkVerifier` from the current on-chain AggregateVerifier
+- reuses the existing `ZkVerifier` from the current onchain AggregateVerifier
 - writes `aggregateVerifier` to `addresses.json`
 
 Expected `addresses.json` keys:

@@ -10,7 +10,7 @@ As a Facilitator, you are responsible for:
 5. Committing and pushing the merged proposal to the repo
 6. Coordinating with Signers
 7. Collecting signatures
-8. Executing the merged proposal on-chain
+8. Executing the merged proposal onchain
 
 ## Prerequisites
 

@@ -9,7 +9,7 @@ As a Facilitator, you are responsible for:
 3. Committing and pushing the proposals to the repo
 4. Coordinating with Signers
 5. Collecting signatures for a range of nonces
-6. Executing the specific proposal (pause or unpause) on-chain when needed
+6. Executing the specific proposal (pause or unpause) onchain when needed
 
 ## Prerequisites
 

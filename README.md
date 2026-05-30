@@ -137,14 +137,14 @@ All task templates use global macros defined in [`Multisig.mk`](Multisig.mk) for
 | Macro              | Purpose                                                        | Key arguments                                                  |
 | ------------------ | -------------------------------------------------------------- | -------------------------------------------------------------- |
 | `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy)                  | `(address_list, signatures)`                                   |
-| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain                       | `(signatures)`                                                 |
+| `MULTISIG_EXECUTE` | Execute an approved transaction onchain                       | `(signatures)`                                                 |
 | `GEN_VALIDATION`   | Generate a validation JSON file for signers via the signer-tool | `(script_name, safe_addr, sender, output_file, env_vars)`     |
 
 Two helper macros are also available for tasks that need nonce offset calculations or address manipulation:
 
 | Macro        | Purpose                                                 | Key arguments    |
 | ------------ | ------------------------------------------------------- | ---------------- |
-| `GET_NONCE`  | Fetch the current nonce of a Safe contract on-chain     | `(safe_address)` |
+| `GET_NONCE`  | Fetch the current nonce of a Safe contract onchain     | `(safe_address)` |
 | `ADDR_UPPER` | Convert an address to uppercase (for env var construction) | `(address)`     |
 
 Signing is handled externally by the [task-signing-tool](https://github.com/base/task-signing-tool).
