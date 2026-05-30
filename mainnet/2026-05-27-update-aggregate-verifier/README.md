@@ -1,6 +1,6 @@
 # Update AggregateVerifier (Game Type 621)
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x3ddfe6f96ea84cd60fc92aafa64bdee06d16593ebef3206ce16d64dc0a357893)
 
 ## Transactions
 
