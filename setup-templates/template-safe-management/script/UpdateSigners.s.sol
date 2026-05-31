@@ -45,11 +45,19 @@ contract UpdateSigners is MultisigScript {
         require(OWNERS_TO_ADD.length > 0, "Precheck 00");
         require(OWNERS_TO_REMOVE.length > 0, "Precheck 01");
 
+        // Validate threshold does not exceed final owners count
+        require(
+            THRESHOLD <= EXISTING_OWNERS.length + OWNERS_TO_ADD.length - OWNERS_TO_REMOVE.length,
+            "Precheck: threshold > owners"
+        );
+
         GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         address prevOwner = SENTINEL_OWNERS;
 
         for (uint256 i = OWNERS_TO_ADD.length; i > 0; i--) {
             uint256 index = i - 1;
+            // Prevent zero-address additions
+            require(OWNERS_TO_ADD[index] != address(0), "Precheck: zero address");
             // Make sure owners to add are not already owners
             require(!ownerSafe.isOwner(OWNERS_TO_ADD[index]), "Precheck 03");
             // Prevent duplicates
