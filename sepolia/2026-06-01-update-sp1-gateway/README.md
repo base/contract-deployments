@@ -2,6 +2,12 @@
 
 Status: READY TO SIGN
 
+## Transactions
+
+- New `SP1VerifierGateway` deployment ([`0x07967e51F0d9b60294E7D746162438298B71F868`](https://sepolia.etherscan.io/address/0x07967e51F0d9b60294E7D746162438298B71F868)): [`0xf4efe7e1370f71e29b90577174382315bf60e600ea14bfadabce96a5d87df271`](https://sepolia.etherscan.io/tx/0xf4efe7e1370f71e29b90577174382315bf60e600ea14bfadabce96a5d87df271) (artefacts: [run-1780334248135.json](./records/DeploySp1Gateway.s.sol/11155111/run-1780334248135.json))
+- New `ZkVerifier` deployment ([`0xa738E13d97A3f10b307C2CD190edd3E227A72D68`](https://sepolia.etherscan.io/address/0xa738E13d97A3f10b307C2CD190edd3E227A72D68)): [`0x5e0f25894c4f3fdd7f48f566b6205531b45c45fbe5b88b2131c63ccbc45eea25`](https://sepolia.etherscan.io/tx/0x5e0f25894c4f3fdd7f48f566b6205531b45c45fbe5b88b2131c63ccbc45eea25) (artefacts: [run-1780334336796.json](./records/DeployZkVerifier.s.sol/11155111/run-1780334336796.json))
+- New `AggregateVerifier` deployment ([`0xc45dC8a279b2fDB7efEF72044e53514eD1bc2c08`](https://sepolia.etherscan.io/address/0xc45dC8a279b2fDB7efEF72044e53514eD1bc2c08)): [`0x572a9c4c7b5daebd57dc40e6715955352f45059253b3e89f7b3f5dd1a76d6984`](https://sepolia.etherscan.io/tx/0x572a9c4c7b5daebd57dc40e6715955352f45059253b3e89f7b3f5dd1a76d6984) (artefacts: [run-1780334861591.json](./records/DeployAggregateVerifier.s.sol/11155111/run-1780334861591.json))
+
 ## Description
 
 This task updates the multiproof ZK verifier path on `sepolia` to use a `PROXY_ADMIN_OWNER`-owned SP1 verifier gateway.
