@@ -184,7 +184,7 @@ checkout-base-contracts-commit:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=a19dcdaccb1fb9b9c5ee8837870052f5b79a02eb
+SIGNER_TOOL_COMMIT=ccad9176f677bab4defe57e56870972f924f83b1
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool
@@ -237,4 +237,3 @@ sign-as-sc-facilitator: deps-signer-tool
 		--task-folder $(CURDIR) \
 		--signature-path $(SIGNATURE_DIR) \
 		--facilitator security-council
-
