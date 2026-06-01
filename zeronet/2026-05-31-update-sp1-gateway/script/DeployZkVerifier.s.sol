@@ -23,27 +23,27 @@ interface ISP1VerifierWithHashView {
 /// @notice Deploys the ZK verifier used by the multiproof AggregateVerifier.
 contract DeployZkVerifier is Script {
     // Task config from .env.
-    address internal immutable disputeGameFactoryProxyEnv;
-    GameType internal immutable gameTypeEnv;
-    address internal immutable ownerSafeEnv;
-    address internal immutable sp1VerifierRouteEnv;
+    address internal disputeGameFactoryProxyEnv;
+    GameType internal gameTypeEnv;
+    address internal ownerSafeEnv;
+    address internal sp1VerifierRouteEnv;
 
     // Live multiproof implementation currently registered in the DGF.
-    address internal immutable currentAggregateVerifier;
+    address internal currentAggregateVerifier;
 
     // Constructor args copied from the live AggregateVerifier.
-    address internal immutable currentAnchorStateRegistry;
+    address internal currentAnchorStateRegistry;
 
     // Deployment input produced by DeploySp1Gateway and read from addresses.json.
-    address internal immutable sp1VerifierGateway;
+    address internal sp1VerifierGateway;
 
     // Derived route metadata.
-    bytes4 internal immutable sp1VerifierSelector;
+    bytes4 internal sp1VerifierSelector;
 
     // Deployment output written to addresses.json.
     address public zkVerifier;
 
-    constructor() {
+    function setUp() public {
         disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
         gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
@@ -59,9 +59,7 @@ contract DeployZkVerifier is Script {
         sp1VerifierGateway = vm.parseJsonAddress({json: json, key: ".sp1VerifierGateway"});
 
         sp1VerifierSelector = bytes4(ISP1VerifierWithHashView(sp1VerifierRouteEnv).VERIFIER_HASH());
-    }
 
-    function setUp() public view {
         require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
         require(
             GameType.unwrap(AggregateVerifier(currentAggregateVerifier).gameType()) == GameType.unwrap(gameTypeEnv),

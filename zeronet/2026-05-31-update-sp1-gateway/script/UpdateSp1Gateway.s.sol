@@ -29,26 +29,26 @@ interface ISP1VerifierWithHashView {
 /// @notice Points the live multiproof implementation at a ZkVerifier backed by a PROXY_ADMIN_OWNER-owned SP1 gateway.
 contract UpdateSp1Gateway is MultisigScript {
     // Task config from .env.
-    address internal immutable ownerSafeEnv;
-    address internal immutable disputeGameFactoryProxyEnv;
-    GameType internal immutable gameTypeEnv;
-    address internal immutable sp1VerifierRouteEnv;
+    address internal ownerSafeEnv;
+    address internal disputeGameFactoryProxyEnv;
+    GameType internal gameTypeEnv;
+    address internal sp1VerifierRouteEnv;
 
     // Live onchain state.
-    address internal immutable currentAggregateVerifier;
+    address internal currentAggregateVerifier;
 
     // Deployment outputs produced by the EOA scripts and read from addresses.json.
-    address internal immutable sp1VerifierGateway;
-    address internal immutable nextZkVerifier;
-    address internal immutable nextAggregateVerifier;
+    address internal sp1VerifierGateway;
+    address internal nextZkVerifier;
+    address internal nextAggregateVerifier;
 
     // AggregateVerifier metadata used by the multisig update call and post-checks.
-    GameType internal immutable nextGameType;
+    GameType internal nextGameType;
 
     // Derived route metadata.
-    bytes4 internal immutable sp1VerifierSelector;
+    bytes4 internal sp1VerifierSelector;
 
-    constructor() {
+    function setUp() public {
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
         disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
         gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
@@ -65,9 +65,7 @@ contract UpdateSp1Gateway is MultisigScript {
 
         nextGameType = AggregateVerifier(nextAggregateVerifier).gameType();
         sp1VerifierSelector = bytes4(ISP1VerifierWithHashView(sp1VerifierRouteEnv).VERIFIER_HASH());
-    }
 
-    function setUp() public view {
         require(IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).owner() == ownerSafeEnv, "dgf owner mismatch");
         require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
         require(sp1VerifierGateway != address(0), "sp1 verifier gateway not set");

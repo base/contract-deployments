@@ -24,39 +24,39 @@ interface ISP1VerifierWithHashView {
 /// @notice Deploys a new AggregateVerifier that uses the PROXY_ADMIN_OWNER-owned SP1 gateway.
 contract DeployAggregateVerifier is Script {
     // Task config from .env.
-    address internal immutable disputeGameFactoryProxyEnv;
-    GameType internal immutable gameTypeEnv;
-    address internal immutable ownerSafeEnv;
-    address internal immutable sp1VerifierRouteEnv;
+    address internal disputeGameFactoryProxyEnv;
+    GameType internal gameTypeEnv;
+    address internal ownerSafeEnv;
+    address internal sp1VerifierRouteEnv;
 
     // Live multiproof implementation currently registered in the DGF.
-    address internal immutable currentAggregateVerifier;
+    address internal currentAggregateVerifier;
 
-    // Immutable constructor args copied from the live AggregateVerifier.
-    GameType internal immutable currentGameType;
-    IAnchorStateRegistry internal immutable currentAnchorStateRegistry;
-    IDelayedWETH internal immutable currentDelayedWeth;
-    address internal immutable currentTeeVerifier;
-    address internal immutable currentZkVerifier;
-    bytes32 internal immutable currentTeeImageHash;
-    bytes32 internal immutable currentZkRangeHash;
-    bytes32 internal immutable currentZkAggregateHash;
-    bytes32 internal immutable currentConfigHash;
-    uint256 internal immutable currentL2ChainId;
-    uint256 internal immutable currentBlockInterval;
-    uint256 internal immutable currentIntermediateBlockInterval;
+    // Constructor args copied from the live AggregateVerifier.
+    GameType internal currentGameType;
+    IAnchorStateRegistry internal currentAnchorStateRegistry;
+    IDelayedWETH internal currentDelayedWeth;
+    address internal currentTeeVerifier;
+    address internal currentZkVerifier;
+    bytes32 internal currentTeeImageHash;
+    bytes32 internal currentZkRangeHash;
+    bytes32 internal currentZkAggregateHash;
+    bytes32 internal currentConfigHash;
+    uint256 internal currentL2ChainId;
+    uint256 internal currentBlockInterval;
+    uint256 internal currentIntermediateBlockInterval;
 
     // Deployment inputs produced by earlier EOA scripts and read from addresses.json.
-    address internal immutable sp1VerifierGateway;
-    address internal immutable nextZkVerifier;
+    address internal sp1VerifierGateway;
+    address internal nextZkVerifier;
 
     // Derived route metadata.
-    bytes4 internal immutable sp1VerifierSelector;
+    bytes4 internal sp1VerifierSelector;
 
     // Deployment output written to addresses.json.
     address public aggregateVerifier;
 
-    constructor() {
+    function setUp() public {
         disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
         gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
@@ -85,9 +85,7 @@ contract DeployAggregateVerifier is Script {
         nextZkVerifier = vm.parseJsonAddress({json: json, key: ".zkVerifier"});
 
         sp1VerifierSelector = bytes4(ISP1VerifierWithHashView(sp1VerifierRouteEnv).VERIFIER_HASH());
-    }
 
-    function setUp() public view {
         require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
         require(GameType.unwrap(currentGameType) == GameType.unwrap(gameTypeEnv), "current game type mismatch");
         require(currentTeeVerifier != address(0), "current tee verifier not found");
