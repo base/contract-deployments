@@ -1,0 +1,109 @@
+{
+  "cmd": "mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpdateSp1Gateway.s.sol:UpdateSp1Gateway --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x0be28ef4ed6fcee34fc720467751564c2d0a47020bdc3ec7c721f172903f3d33"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9f7448b2943cf91a0b7dfa4d272f855d5dec700d7d32f24a933f645cfecdc57c",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "DisputeGameFactory Proxy - Zeronet",
+      "address": "0x154972aB98A5e321a9c7aB7677973f1F501a8090",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000003a80c85f3ac6c305b2f8f869a35e70d821ab7c3a",
+          "after": "0x0000000000000000000000002df6e2864913d366d7e2008801eb659e9d9854a2",
+          "description": "Updates gameImpls[621] in the DisputeGameFactory to the new AggregateVerifier using the new ZkVerifier.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x3f79b1d97e6d95bf42465cac7bbae0e150f5b4bf06f6e6e383666b9315787e1f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the approval of this task's transaction hash by the CB Signer Safe on the Proxy Admin Owner Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "SP1VerifierGateway - Zeronet",
+      "address": "0x60E2473b0806A0e41609F175ebD292cD75DF6369",
+      "changes": [
+        {
+          "key": "0x601647bc9d853ef009027ff58015c6988f1fc1ce39301670b10970ca5bde07c6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
+          "description": "Adds the SP1 verifier route for selector 0x4388a21c to the new SP1VerifierGateway; the route points to SP1_VERIFIER_ROUTE and remains unfrozen.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}
