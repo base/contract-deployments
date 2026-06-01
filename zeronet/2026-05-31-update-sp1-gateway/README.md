@@ -40,3 +40,17 @@ make sign-task
 Copy the signature output and send it to the designated facilitator via the agreed communication channel.
 
 For facilitator instructions, see `FACILITATOR.md`.
+
+## Troubleshooting
+
+If the signer UI fails validation after dependency installation times out, pre-install the task dependencies and restart the signer tool with `mise exec --`:
+
+```bash
+cd contract-deployments/zeronet/2026-05-31-update-sp1-gateway
+rm -rf lib
+mise exec -- make deps
+cd ../../
+mise exec -- make sign-task
+```
+
+If validation fails because the wrong `forge` version is being used, run commands through `mise exec --` instead of invoking `forge` directly. The task Makefile and validation command already use `mise exec --`, but `mise` must be available on your `PATH` for the signer tool to re-run validation commands. If `mise` was installed to `~/.local/bin/mise`, add `~/.local/bin` to your `PATH` and restart your shell before running `mise exec -- make sign-task`.
