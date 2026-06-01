@@ -26,7 +26,6 @@ git pull
 #### 2. Run signing tool
 
 ```bash
-cd contract-deployments
 make sign-task
 ```
 
