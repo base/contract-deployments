@@ -95,9 +95,5 @@
     }
   ],
   "balanceChanges": [],
-  "taskOriginConfig": {
-    "taskCreator": {
-      "commonName": "leopold.joy@coinbase.com"
-    }
-  }
+  "skipTaskOriginValidation": true
 }
