@@ -1,12 +1,15 @@
 # Update SP1 Gateway
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x00e1302bf383bc621bd8d1a04c31109f4f30ba13d7d94fd4267d7a1e17fcf5c5)
 
 ## Transactions
 
 - New `SP1VerifierGateway` deployment ([`0x07967e51F0d9b60294E7D746162438298B71F868`](https://sepolia.etherscan.io/address/0x07967e51F0d9b60294E7D746162438298B71F868)): [`0xf4efe7e1370f71e29b90577174382315bf60e600ea14bfadabce96a5d87df271`](https://sepolia.etherscan.io/tx/0xf4efe7e1370f71e29b90577174382315bf60e600ea14bfadabce96a5d87df271) (artefacts: [run-1780334248135.json](./records/DeploySp1Gateway.s.sol/11155111/run-1780334248135.json))
 - New `ZkVerifier` deployment ([`0xa738E13d97A3f10b307C2CD190edd3E227A72D68`](https://sepolia.etherscan.io/address/0xa738E13d97A3f10b307C2CD190edd3E227A72D68)): [`0x5e0f25894c4f3fdd7f48f566b6205531b45c45fbe5b88b2131c63ccbc45eea25`](https://sepolia.etherscan.io/tx/0x5e0f25894c4f3fdd7f48f566b6205531b45c45fbe5b88b2131c63ccbc45eea25) (artefacts: [run-1780334336796.json](./records/DeployZkVerifier.s.sol/11155111/run-1780334336796.json))
 - New `AggregateVerifier` deployment ([`0xc45dC8a279b2fDB7efEF72044e53514eD1bc2c08`](https://sepolia.etherscan.io/address/0xc45dC8a279b2fDB7efEF72044e53514eD1bc2c08)): [`0x572a9c4c7b5daebd57dc40e6715955352f45059253b3e89f7b3f5dd1a76d6984`](https://sepolia.etherscan.io/tx/0x572a9c4c7b5daebd57dc40e6715955352f45059253b3e89f7b3f5dd1a76d6984) (artefacts: [run-1780334861591.json](./records/DeployAggregateVerifier.s.sol/11155111/run-1780334861591.json))
+- Coinbase Multisig approval ([`0x646132A1667ca7aD00d36616AFBA1A28116C770A`](https://sepolia.etherscan.io/address/0x646132A1667ca7aD00d36616AFBA1A28116C770A)): [`0x841a180427a0e28432001b9c544e8753587b2425080a38f710d1fcdf76d2c861`](https://sepolia.etherscan.io/tx/0x841a180427a0e28432001b9c544e8753587b2425080a38f710d1fcdf76d2c861) (artefacts: [run-1780343377102.json](./records/UpdateSp1Gateway.s.sol/11155111/run-1780343377102.json))
+- Security Council approval ([`0x6AF0674791925f767060Dd52f7fB20984E8639d8`](https://sepolia.etherscan.io/address/0x6AF0674791925f767060Dd52f7fB20984E8639d8)): [`0x129e63af8605ba839cc819a2cb05c7bef77b60679340b4fecfecf4f4b622ff24`](https://sepolia.etherscan.io/tx/0x129e63af8605ba839cc819a2cb05c7bef77b60679340b4fecfecf4f4b622ff24) (artefacts: [run-1780343460932.json](./records/UpdateSp1Gateway.s.sol/11155111/run-1780343460932.json))
+- Execute via Proxy Admin Owner ([`0x0fe884546476dDd290eC46318785046ef68a0BA9`](https://sepolia.etherscan.io/address/0x0fe884546476dDd290eC46318785046ef68a0BA9)): [`0x00e1302bf383bc621bd8d1a04c31109f4f30ba13d7d94fd4267d7a1e17fcf5c5`](https://sepolia.etherscan.io/tx/0x00e1302bf383bc621bd8d1a04c31109f4f30ba13d7d94fd4267d7a1e17fcf5c5) (artefacts: [run-1780343544694.json](./records/UpdateSp1Gateway.s.sol/11155111/run-1780343544694.json))
 
 ## Description
 
