@@ -42,14 +42,14 @@ For facilitator instructions, see `FACILITATOR.md`.
 
 ## Troubleshooting
 
-If the signer UI fails validation after dependency installation times out, pre-install the task dependencies and restart the signer tool with `mise exec --`:
+If the signer UI fails validation after dependency installation times out, pre-install the task dependencies and restart the signer tool:
 
 ```bash
 cd contract-deployments/zeronet/2026-05-31-update-sp1-gateway
 rm -rf lib
-mise exec -- make deps
+make deps
 cd ../../
-mise exec -- make sign-task
+make sign-task
 ```
 
-If validation fails because the wrong `forge` version is being used, run commands through `mise exec --` instead of invoking `forge` directly. The task Makefile and validation command already use `mise exec --`, but `mise` must be available on your `PATH` for the signer tool to re-run validation commands. If `mise` was installed to `~/.local/bin/mise`, add `~/.local/bin` to your `PATH` and restart your shell before running `mise exec -- make sign-task`.
+The task Makefile already runs Foundry and Node commands through `mise exec --` internally. If validation still fails because the wrong `forge` version is being used, or because the signer tool cannot find `mise`, make sure `mise` is available on your `PATH`. If `mise` was installed to `~/.local/bin/mise`, add `~/.local/bin` to your `PATH`, restart your shell, and then rerun `make sign-task`. As a manual check, `mise exec -- forge --version` should report the repo-pinned Foundry version.
