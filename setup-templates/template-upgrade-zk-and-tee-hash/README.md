@@ -1,6 +1,6 @@
 # Upgrade ZK and TEE Hash
 
-Status: TEMPLATE
+Status: READY TO SIGN
 
 ## Description
 
