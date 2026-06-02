@@ -46,12 +46,12 @@ execute-pause:
 
 .PHONY: check-status
 check-status:
-	@superchain_config=$$(cast call $(SYSTEM_CONFIG) "superchainConfig()" --rpc-url $(L1_RPC_URL)); \
+	@superchain_config=$$($(MISE_EXEC) cast call $(SYSTEM_CONFIG) "superchainConfig()" --rpc-url $(L1_RPC_URL)); \
 	superchain_config=$$(echo $$superchain_config | sed 's/0x000000000000000000000000//'); \
 	echo "SuperchainConfig address: 0x$$superchain_config"; \
-	cast call 0x$$superchain_config "paused()" --rpc-url $(L1_RPC_URL)
+	$(MISE_EXEC) cast call 0x$$superchain_config "paused()" --rpc-url $(L1_RPC_URL)
 
 .PHONY: check-nonce
 check-nonce:
 	@echo "Incident Safe: $(INCIDENT_MULTISIG)"
-	@cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL)
+	@$(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "nonce()" --rpc-url $(L1_RPC_URL)

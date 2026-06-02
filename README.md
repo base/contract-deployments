@@ -33,32 +33,42 @@ This repo is structured with each network having a high-level directory which co
 
 All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise.toml) so that every contributor — and especially every signer — runs identical versions. This eliminates a class of bugs where domain separators, build artifacts, or generated signatures differ between machines.
 
-1. Install [`mise`](https://mise.jdx.dev/getting-started.html). On macOS the simplest path is:
+**Signers and facilitators don't need to install anything.** `make sign-task` (and `make deps`, `make execute`, etc.) automatically:
 
-   ```bash
-   brew install mise
-   ```
+1. Installs [`mise`](https://mise.jdx.dev) to `~/.local/bin/mise` if it's not already present, using the vendored installer at [`scripts/install-mise.sh`](scripts/install-mise.sh).
+2. Trusts the repo's `mise.toml` and runs `mise install` to fetch the pinned `foundry`, `node`, `bun`, and `go` versions.
+3. Invokes every toolchain command through `mise exec --`, so the pinned versions are used without modifying your shell environment or `PATH`. This deliberately avoids conflicts with any existing `foundryup` or system-level installs.
 
-   Then follow the [shell activation instructions](https://mise.jdx.dev/getting-started.html#activate-mise) for your shell (e.g. add `eval "$(mise activate zsh)"` to `~/.zshrc`).
+> **Important — `mise` must be on your PATH for the signer-tool.** The generated validation files contain a `cmd` field with `mise exec --` (deliberately, so the JSON is portable across machines), and the signer-tool re-executes that command in a fresh shell. If `mise` is not on your PATH, that subprocess will fail with "command not found". `make bootstrap-mise` will warn you if this is the case. To fix it, add this to your shell config (e.g. `~/.zshrc` or `~/.bashrc`) and restart your shell:
+>
+> ```bash
+> export PATH="$HOME/.local/bin:$PATH"
+> ```
+>
+> Alternatively, install `mise` system-wide so it lands on your default PATH.
 
-2. From the repo root, install and activate the pinned versions:
+#### Verifying the pinned Foundry version (optional)
 
-   ```bash
-   mise trust    # one-time, approves this repo's mise.toml
-   mise install  # downloads pinned foundry, node, bun, go
-   ```
+```bash
+$ mise exec -- forge --version
+forge Version: 1.5.1-...
+Commit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2
+```
 
-3. Verify Foundry is on the pinned version (currently `1.5.1`):
+The `Commit SHA` is the source of truth — it must match the commit pinned in `mise.toml`.
 
-   ```bash
-   $ forge --version
-   forge Version: 1.5.1-...
-   Commit SHA: b0a9dd9ceda36f63e2326ce530c10e6916f4b8a2
-   ```
+#### For contributors authoring new tasks (optional)
 
-   The `Commit SHA` is the source of truth — it must match the commit pinned in `mise.toml`. The `Version` suffix may differ (`-stable` vs `-v1.5.1`) depending on which release artifact you installed; both are built from the same source.
+If you want bare `forge`/`cast`/`bun`/`go` invocations in your interactive shell to resolve to the pinned versions while you're working inside this repo, add mise's shell hook to your shell config:
 
-Once `mise install` has run, `forge`, `cast`, `anvil`, `node`, `npm`, `npx`, `bun`, and `go` will all be on the pinned versions whenever you `cd` into this repo (assuming `mise activate` is set up in your shell).
+```bash
+# zsh
+echo 'eval "$(mise activate zsh)"' >> ~/.zshrc
+# bash
+echo 'eval "$(mise activate bash)"' >> ~/.bashrc
+```
+
+This is purely a convenience for task authors — `make` targets work correctly without it.
 
 ### Running a task
 

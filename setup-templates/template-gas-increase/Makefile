@@ -30,7 +30,7 @@ sign-upgrade: validate-config
 	FROM_GAS_LIMIT=$(OLD_GAS_LIMIT) \
 	TO_GAS_LIMIT=$(NEW_GAS_LIMIT) \
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) lib/base-contracts/script/deploy/l1/SetGasLimit.sol \
+	$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) lib/base-contracts/script/deploy/l1/SetGasLimit.sol \
 	--sig "sign()"
 
 .PHONY: execute-upgrade
@@ -45,7 +45,7 @@ sign-rollback: validate-config
 	TO_GAS_LIMIT=$(OLD_GAS_LIMIT) \
 	SAFE_NONCE=$(shell expr $(call GET_NONCE,$(SYSTEM_CONFIG_OWNER)) + $(ROLLBACK_NONCE_OFFSET)) \
 	$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -- \
-	forge script --rpc-url $(L1_RPC_URL) lib/base-contracts/script/deploy/l1/SetGasLimit.sol \
+	$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) lib/base-contracts/script/deploy/l1/SetGasLimit.sol \
 	--sig "sign()"
 
 .PHONY: execute-rollback

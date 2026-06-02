@@ -91,4 +91,4 @@ execute-unpause: validate-config
 
 .PHONY: check-status
 check-status:
-	cast call $(L2_BRIDGE) "paused()" --rpc-url $(L2_RPC_URL)
+	$(MISE_EXEC) cast call $(L2_BRIDGE) "paused()" --rpc-url $(L2_RPC_URL)

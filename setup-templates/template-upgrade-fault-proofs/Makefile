@@ -23,7 +23,7 @@ validate-config:
 
 .PHONY: deploy
 deploy: validate-config
-	forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
+	$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) DeployDisputeGames \
 	--ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" --broadcast -vvvv
 
 RPC_URL = $(L1_RPC_URL)

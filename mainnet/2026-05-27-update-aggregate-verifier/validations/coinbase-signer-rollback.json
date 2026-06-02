@@ -1,0 +1,120 @@
+{
+  "cmd": "TARGET_AGGREGATE_VERIFIER=0x4c0DAF5d9ABe92e8A26a60698a657B03538a3028 ASSUMED_CURRENT_AGGREGATE_VERIFIER=0x327DdE84C9173DD799A4f74b04a69d9d385D31a4 SAFE_NONCE_0X7BB41C3008B3F03FE483B28B8DB90E19CF07595C=17 SAFE_NONCE_0X9855054731540A48B28990B63DCF4F33D8AE46A1=31 mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io script/SetAggregateVerifierImpl.s.sol:SetAggregateVerifierImpl --sig sign(address[]) [0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0xf9e320f3dA12E68af219d9E2A490Dd649f6B177c",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x88aac3dc27cc1618ec43a87b3df21482acd24d172027ba3fbb5a5e625d895a0b",
+    "messageHash": "0x70b1191179809d0c7765247b60d6d948a450a88730e971fdb13f369b732c8e17"
+  },
+  "stateOverrides": [
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
+      "overrides": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "value": "0x000000000000000000000000327dde84c9173dd799a4f74b04a69d9d385d31a4",
+          "description": "Simulation override: forces the pre-state of gameImpls[621] to the post-upgrade AggregateVerifier (0x327DdE84C9173DD799A4f74b04a69d9d385D31a4) so the rollback simulation produces a real new -> old state diff even when the chain has not yet executed the forward upgrade. No-op once the chain has executed the forward upgrade.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000011",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "value": "0x000000000000000000000000000000000000000000000000000000000000001f",
+          "description": "Override the nonce to be our expected value after initial execution.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x447801a737c8d2e1d75ca1bfdcefd59ad00ee09b40122277dd4e33c3fc18a4b4",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000327dde84c9173dd799a4f74b04a69d9d385d31a4",
+          "after": "0x0000000000000000000000004c0daf5d9abe92e8a26a60698a657b03538a3028",
+          "description": "Reverts the multiproof game implementation (gameImpls[621]) to the previous AggregateVerifier.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000011",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000012",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x49db9f1be09ada90449dedf40d194f153b2f4cd7e39b0954f9494e382af8c8aa",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the CB Coordinator Safe approval on the Proxy Admin Owner Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000020",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}

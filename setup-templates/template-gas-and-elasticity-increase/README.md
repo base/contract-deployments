@@ -44,28 +44,6 @@ The values we are sending are statically defined in the `.env` file.
 > "Approving the Rollback transaction". Hopefully we only need
 > the former, but will have the latter available if needed.
 
-## Install dependencies
-
-### 1. Update foundry
-
-```bash
-foundryup
-```
-
-### 2. Install Node.js if needed
-
-First, check if you have node installed
-
-```bash
-node --version
-```
-
-If you see a version output from the above command, you can move on. Otherwise, install node
-
-```bash
-brew install node
-```
-
 ## Approving the Update transaction
 
 ### 1. Update repo:

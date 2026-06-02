@@ -1,0 +1,127 @@
+{
+  "cmd": "mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpdateVerifierHashes.s.sol:UpdateVerifierHashes --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0x53ce8ff75889327a3690e5207918b12feb3a6e173896f908edcea1bfdf6825e3"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xb12cf0d96f7fd3725152aea484337eb4954daf00063825fad17ebfc443e002f9",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "DisputeGameFactory Proxy - Zeronet",
+      "address": "0x154972aB98A5e321a9c7aB7677973f1F501a8090",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000682332fa3f931734cf6e742ff47f1e4ac27cc5cf",
+          "after": "0x0000000000000000000000003a80c85f3ac6c305b2f8f869a35e70d821ab7c3a",
+          "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x229f21c33bdf0a6988dbc3342df0936e1eac54ba6c6c7c4dc0f0a6461ba2e7aa",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Approves the transaction hash for execution by the nested multisig.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Zeronet",
+      "address": "0x60A6C389F0BC5cE4269A40d9695927bC58700328",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800004",
+          "after": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800005",
+          "description": "Bumps the AnchorStateRegistry ReinitializableBase init version from 4 to 5 to allow re-initialisation; high bytes are the unchanged packed SystemConfig address.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "before": "0x00000000000000000000000032f3eac8f9db543e766a0ab89704c1a8dbca5884",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Clears the stale anchorGame reference in the AnchorStateRegistry so re-initialisation starts from a pristine anchor.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x4373f15239be5592ac833621e7a4af2e3e1e5bb9212a938613ac5201b1da0539",
+          "after": "0xcc7faffb8f23e867ebe781797d4b73f2b7f189cdbd937edefae937e0f1eb5e50",
+          "description": "Sets the new STARTING_ANCHOR_ROOT (output root for L2 block 3020400).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x000000000000000000000000000000000000000000000000000000000016e288",
+          "after": "0x00000000000000000000000000000000000000000000000000000000002e1670",
+          "description": "Sets the new STARTING_ANCHOR_L2_BLOCK_NUMBER to 3020400 (0x2e1670).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000596c4145fb7a5030fb063bfc89ff5d81724d86e7",
+          "after": "0x000000000000000000000000b70064953c333956e324dfbb7ef666978b4b2962",
+          "description": "Update address of AnchorStateRegistry to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000009",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
