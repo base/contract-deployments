@@ -3,10 +3,10 @@ pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
 
-import {MultisigScript, Enum} from "@base-contracts/script/universal/MultisigScript.sol";
-import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {GameType} from "@base-contracts/src/dispute/lib/Types.sol";
-import {AggregateVerifier} from "@base-contracts/src/multiproof/AggregateVerifier.sol";
+import {MultisigScript, Enum} from "@base-contracts/scripts/universal/MultisigScript.sol";
+import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
+import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier.sol";
+import {GameType} from "@base-contracts/src/libraries/bridge/Types.sol";
 
 interface IDisputeGameFactoryAdmin {
     function owner() external view returns (address);

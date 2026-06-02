@@ -3,13 +3,13 @@ pragma solidity 0.8.15;
 
 import {Script, console} from "forge-std/Script.sol";
 
-import {IAnchorStateRegistry} from "interfaces/dispute/IAnchorStateRegistry.sol";
-import {IDelayedWETH} from "interfaces/dispute/IDelayedWETH.sol";
-import {IDisputeGameFactory} from "interfaces/dispute/IDisputeGameFactory.sol";
-import {IVerifier} from "interfaces/multiproof/IVerifier.sol";
+import {IAnchorStateRegistry} from "interfaces/L1/proofs/IAnchorStateRegistry.sol";
+import {IDelayedWETH} from "interfaces/L1/proofs/IDelayedWETH.sol";
+import {IDisputeGameFactory} from "interfaces/L1/proofs/IDisputeGameFactory.sol";
+import {IVerifier} from "interfaces/L1/proofs/IVerifier.sol";
 
-import {GameType} from "@base-contracts/src/dispute/lib/Types.sol";
-import {AggregateVerifier} from "@base-contracts/src/multiproof/AggregateVerifier.sol";
+import {GameType} from "@base-contracts/src/libraries/bridge/Types.sol";
+import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier.sol";
 
 /// @notice Redeploys AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH,
 /// and ZK_AGGREGATE_HASH. All other immutables (including the existing ZkVerifier)
