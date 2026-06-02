@@ -16,30 +16,30 @@ import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier
 /// are read onchain from the current AggregateVerifier to guarantee continuity.
 contract DeployAggregateVerifier is Script {
     // Task config from .env.
-    address internal disputeGameFactoryProxyEnv;
-    GameType internal gameTypeEnv;
-    bytes32 internal teeImageHashEnv;
-    bytes32 internal zkRangeHashEnv;
-    bytes32 internal zkAggregateHashEnv;
+    address internal immutable disputeGameFactoryProxyEnv;
+    GameType internal immutable gameTypeEnv;
+    bytes32 internal immutable teeImageHashEnv;
+    bytes32 internal immutable zkRangeHashEnv;
+    bytes32 internal immutable zkAggregateHashEnv;
 
     // Live multiproof implementation currently registered in the DGF.
-    address internal currentAggregateVerifier;
+    address internal immutable currentAggregateVerifier;
 
     // Immutable constructor args copied from the live AggregateVerifier.
-    GameType internal currentGameType;
-    IAnchorStateRegistry internal currentAnchorStateRegistry;
-    IDelayedWETH internal currentDelayedWeth;
-    address internal currentTeeVerifier;
-    address internal currentZkVerifier;
-    bytes32 internal currentConfigHash;
-    uint256 internal currentL2ChainId;
-    uint256 internal currentBlockInterval;
-    uint256 internal currentIntermediateBlockInterval;
+    GameType internal immutable currentGameType;
+    IAnchorStateRegistry internal immutable currentAnchorStateRegistry;
+    IDelayedWETH internal immutable currentDelayedWeth;
+    address internal immutable currentTeeVerifier;
+    address internal immutable currentZkVerifier;
+    bytes32 internal immutable currentConfigHash;
+    uint256 internal immutable currentL2ChainId;
+    uint256 internal immutable currentBlockInterval;
+    uint256 internal immutable currentIntermediateBlockInterval;
 
     // Deployment output written to addresses.json.
     address public aggregateVerifier;
 
-    function setUp() public {
+    constructor() {
         disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
         gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
         teeImageHashEnv = vm.envBytes32("TEE_IMAGE_HASH");
@@ -47,7 +47,6 @@ contract DeployAggregateVerifier is Script {
         zkAggregateHashEnv = vm.envBytes32("ZK_AGGREGATE_HASH");
 
         currentAggregateVerifier = address(IDisputeGameFactory(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv));
-        require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
 
         AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
         currentGameType = currentAggregate.gameType();
@@ -59,17 +58,19 @@ contract DeployAggregateVerifier is Script {
         currentL2ChainId = currentAggregate.L2_CHAIN_ID();
         currentBlockInterval = currentAggregate.BLOCK_INTERVAL();
         currentIntermediateBlockInterval = currentAggregate.INTERMEDIATE_BLOCK_INTERVAL();
+    }
 
-        require(
-            GameType.unwrap(AggregateVerifier(currentAggregateVerifier).gameType()) == GameType.unwrap(gameTypeEnv),
-            "current game type mismatch"
-        );
+    function setUp() public view {
+        require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
+        require(GameType.unwrap(currentGameType) == GameType.unwrap(gameTypeEnv), "current game type mismatch");
+        require(currentTeeVerifier != address(0), "current tee verifier not found");
         require(currentZkVerifier != address(0), "current zk verifier not found");
         require(teeImageHashEnv != bytes32(0), "tee image hash not set");
         require(zkRangeHashEnv != bytes32(0), "zk range hash not set");
         require(zkAggregateHashEnv != bytes32(0), "zk aggregate hash not set");
 
         // Verify new hashes differ from current.
+        AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
         require(
             teeImageHashEnv != currentAggregate.TEE_IMAGE_HASH() || zkRangeHashEnv != currentAggregate.ZK_RANGE_HASH()
                 || zkAggregateHashEnv != currentAggregate.ZK_AGGREGATE_HASH(),
