@@ -17,18 +17,18 @@ SAFE_TX_ABI = f(bytes32,address,uint256,bytes32,uint8,uint256,uint256,uint256,ad
 sign-pause:
 	@rm -f signatures-pause.txt
 	@set -e; \
-	start_nonce_hex=$$(cast call $(INCIDENT_MULTISIG) "nonce()(uint256)" --rpc-url $(L1_RPC_URL)); \
-	start_nonce=$$(cast to-dec "$$start_nonce_hex"); \
-	superchain_config=$$(cast call $(SYSTEM_CONFIG) "superchainConfig()(address)" --rpc-url $(L1_RPC_URL)); \
-	domain_separator=$$(cast call $(INCIDENT_MULTISIG) "domainSeparator()(bytes32)" --rpc-url $(L1_RPC_URL)); \
-	call_data=$$(cast calldata "pause(address)" $(ZERO_ADDRESS)); \
-	call_data_hash=$$(cast keccak "$$call_data"); \
+	start_nonce_hex=$$($(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "nonce()(uint256)" --rpc-url $(L1_RPC_URL)); \
+	start_nonce=$$($(MISE_EXEC) cast to-dec "$$start_nonce_hex"); \
+	superchain_config=$$($(MISE_EXEC) cast call $(SYSTEM_CONFIG) "superchainConfig()(address)" --rpc-url $(L1_RPC_URL)); \
+	domain_separator=$$($(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "domainSeparator()(bytes32)" --rpc-url $(L1_RPC_URL)); \
+	call_data=$$($(MISE_EXEC) cast calldata "pause(address)" $(ZERO_ADDRESS)); \
+	call_data_hash=$$($(MISE_EXEC) cast keccak "$$call_data"); \
 	echo "Starting nonce: $$start_nonce"; \
 	for i in $$(seq 0 19); do \
 		nonce=$$(($$start_nonce + $$i)); \
 		echo "Signing with nonce $$nonce"; \
-		safe_tx=$$(cast abi-encode '$(SAFE_TX_ABI)' $(SAFE_TX_TYPEHASH) $$superchain_config 0 $$call_data_hash 0 0 0 0 $(ZERO_ADDRESS) $(ZERO_ADDRESS) $$nonce); \
-		message_hash=$$(cast keccak "$$safe_tx"); \
+		safe_tx=$$($(MISE_EXEC) cast abi-encode '$(SAFE_TX_ABI)' $(SAFE_TX_TYPEHASH) $$superchain_config 0 $$call_data_hash 0 0 0 0 $(ZERO_ADDRESS) $(ZERO_ADDRESS) $$nonce); \
+		message_hash=$$($(MISE_EXEC) cast keccak "$$safe_tx"); \
 		signing_data="0x1901$${domain_separator#0x}$${message_hash#0x}"; \
 		$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -data "$$signing_data" > sign_output.tmp; \
 		cat sign_output.tmp; \

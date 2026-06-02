@@ -40,15 +40,15 @@ gen-validation: validate-config deps-signer-tool
 sign-pause: validate-config
 	@rm -f signatures-pause.txt
 	@set -e; \
-	domain_separator=$$(cast call $(OWNER_SAFE) "domainSeparator()(bytes32)" --rpc-url $(L1_RPC_URL)); \
-	bridge_data=$$(cast calldata "setPaused(bool)" true); \
-	portal_data=$$(cast calldata "depositTransaction(address,uint256,uint64,bool,bytes)" $(L2_BRIDGE) 0 100000 false $$bridge_data); \
-	portal_data_hash=$$(cast keccak "$$portal_data"); \
+	domain_separator=$$($(MISE_EXEC) cast call $(OWNER_SAFE) "domainSeparator()(bytes32)" --rpc-url $(L1_RPC_URL)); \
+	bridge_data=$$($(MISE_EXEC) cast calldata "setPaused(bool)" true); \
+	portal_data=$$($(MISE_EXEC) cast calldata "depositTransaction(address,uint256,uint64,bool,bytes)" $(L2_BRIDGE) 0 100000 false $$bridge_data); \
+	portal_data_hash=$$($(MISE_EXEC) cast keccak "$$portal_data"); \
 	for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
 		echo "Signing with nonce $$nonce"; \
-		safe_tx=$$(cast abi-encode '$(SAFE_TX_ABI)' $(SAFE_TX_TYPEHASH) $(L1_PORTAL) 0 $$portal_data_hash 0 0 0 0 $(ZERO_ADDRESS) $(ZERO_ADDRESS) $$nonce); \
-		message_hash=$$(cast keccak "$$safe_tx"); \
+		safe_tx=$$($(MISE_EXEC) cast abi-encode '$(SAFE_TX_ABI)' $(SAFE_TX_TYPEHASH) $(L1_PORTAL) 0 $$portal_data_hash 0 0 0 0 $(ZERO_ADDRESS) $(ZERO_ADDRESS) $$nonce); \
+		message_hash=$$($(MISE_EXEC) cast keccak "$$safe_tx"); \
 		signing_data="0x1901$${domain_separator#0x}$${message_hash#0x}"; \
 		$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -data "$$signing_data" > sign_output.tmp; \
 		cat sign_output.tmp; \
@@ -62,15 +62,15 @@ sign-pause: validate-config
 sign-unpause: validate-config
 	@rm -f signatures-unpause.txt
 	@set -e; \
-	domain_separator=$$(cast call $(OWNER_SAFE) "domainSeparator()(bytes32)" --rpc-url $(L1_RPC_URL)); \
-	bridge_data=$$(cast calldata "setPaused(bool)" false); \
-	portal_data=$$(cast calldata "depositTransaction(address,uint256,uint64,bool,bytes)" $(L2_BRIDGE) 0 100000 false $$bridge_data); \
-	portal_data_hash=$$(cast keccak "$$portal_data"); \
+	domain_separator=$$($(MISE_EXEC) cast call $(OWNER_SAFE) "domainSeparator()(bytes32)" --rpc-url $(L1_RPC_URL)); \
+	bridge_data=$$($(MISE_EXEC) cast calldata "setPaused(bool)" false); \
+	portal_data=$$($(MISE_EXEC) cast calldata "depositTransaction(address,uint256,uint64,bool,bytes)" $(L2_BRIDGE) 0 100000 false $$bridge_data); \
+	portal_data_hash=$$($(MISE_EXEC) cast keccak "$$portal_data"); \
 	for i in $$(seq 0 19); do \
 		nonce=$$(($(SAFE_NONCE) + $$i)); \
 		echo "Signing with nonce $$nonce"; \
-		safe_tx=$$(cast abi-encode '$(SAFE_TX_ABI)' $(SAFE_TX_TYPEHASH) $(L1_PORTAL) 0 $$portal_data_hash 0 0 0 0 $(ZERO_ADDRESS) $(ZERO_ADDRESS) $$nonce); \
-		message_hash=$$(cast keccak "$$safe_tx"); \
+		safe_tx=$$($(MISE_EXEC) cast abi-encode '$(SAFE_TX_ABI)' $(SAFE_TX_TYPEHASH) $(L1_PORTAL) 0 $$portal_data_hash 0 0 0 0 $(ZERO_ADDRESS) $(ZERO_ADDRESS) $$nonce); \
+		message_hash=$$($(MISE_EXEC) cast keccak "$$safe_tx"); \
 		signing_data="0x1901$${domain_separator#0x}$${message_hash#0x}"; \
 		$(GOPATH)/bin/eip712sign --ledger --hd-paths "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0" -data "$$signing_data" > sign_output.tmp; \
 		cat sign_output.tmp; \
