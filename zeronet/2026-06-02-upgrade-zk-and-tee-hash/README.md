@@ -4,36 +4,10 @@ Status: READY TO SIGN
 
 ## Description
 
-This template updates the TEE and ZK verifier hashes of a multiproof implementation by:
+This task updates the TEE and ZK verifier hashes of the multiproof implementation on `zeronet` by:
 
 - redeploying `AggregateVerifier` with identical immutables, overriding `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
 - pointing `DisputeGameFactory.gameImpls(gameType)` at the new `AggregateVerifier`
-
-## Setup
-
-From the repository root:
-
-```bash
-make setup-upgrade-zk-and-tee-hash network=<network>
-cd <network>/<date>-upgrade-zk-and-tee-hash
-```
-
-Fill in all required values in `.env`:
-
-- `BASE_CONTRACTS_COMMIT`
-- `GAME_TYPE`
-- `TEE_IMAGE_HASH`
-- `ZK_RANGE_HASH`
-- `ZK_AGGREGATE_HASH`
-- `PROXY_ADMIN_OWNER`
-- `DISPUTE_GAME_FACTORY_PROXY`
-
-Then install dependencies and build:
-
-```bash
-make deps
-forge build
-```
 
 ## Procedure
 

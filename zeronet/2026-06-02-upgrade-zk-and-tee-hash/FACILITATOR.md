@@ -9,7 +9,7 @@ Before collecting signatures, complete the EOA-authorized phase:
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<date>-upgrade-zk-and-tee-hash
+cd zeronet/2026-06-02-upgrade-zk-and-tee-hash
 make deps
 make deploy-aggregate-verifier VERIFIER_API_KEY=...
 ```
@@ -24,34 +24,12 @@ Expected `addresses.json` keys:
 
 - `aggregateVerifier`
 
-## Task origin signing
-
-After setting up the task, generate cryptographic attestations to prove who created and facilitated the task. These signatures are stored in `<network>/signatures/<task-name>/`.
-
-### Task creator
-
-```bash
-make sign-as-task-creator
-```
-
-### Base facilitator
-
-```bash
-make sign-as-base-facilitator
-```
-
-### Security Council facilitator
-
-```bash
-make sign-as-sc-facilitator
-```
-
 ## Generate validation files
 
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<date>-upgrade-zk-and-tee-hash
+cd zeronet/2026-06-02-upgrade-zk-and-tee-hash
 make deps
 make gen-validation-update-verifier-hashes-cb
 make gen-validation-update-verifier-hashes-sc
@@ -60,7 +38,7 @@ make gen-validation-update-verifier-hashes-sc
 This produces:
 
 - `validations/base-signer.json`
-- `validations/security-council-signer.json`
+- `validations/base-signer-2.json`
 
 ## Execute the transaction
 
@@ -69,7 +47,7 @@ This produces:
 ```bash
 cd contract-deployments
 git pull
-cd <network>/<date>-upgrade-zk-and-tee-hash
+cd zeronet/2026-06-02-upgrade-zk-and-tee-hash
 make deps
 ```
 

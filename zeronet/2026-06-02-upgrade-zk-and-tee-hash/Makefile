@@ -58,7 +58,7 @@ gen-validation-update-verifier-hashes-cb: validate-config deps-signer-tool
 
 .PHONY: gen-validation-update-verifier-hashes-sc
 gen-validation-update-verifier-hashes-sc: validate-config deps-signer-tool
-	$(call GEN_VALIDATION,$(UPDATE_VERIFIER_HASHES_SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(UPDATE_VERIFIER_HASHES_SC_SENDER),security-council-signer.json,)
+	$(call GEN_VALIDATION,$(UPDATE_VERIFIER_HASHES_SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(UPDATE_VERIFIER_HASHES_SC_SENDER),base-signer-2.json,)
 
 .PHONY: approve-update-verifier-hashes-cb
 approve-update-verifier-hashes-cb: validate-config
