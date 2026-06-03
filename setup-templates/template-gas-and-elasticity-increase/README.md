@@ -10,32 +10,30 @@ This runbook invokes the following script which allows our signers to sign the s
 
 `IncreaseEip1559ElasticityAndIncreaseGasLimitScript` -- This script will update the gas limit to our new limit of TODO gas, TODO elasticity, and TODO DA footprint gas scalar if invoked as part of the "upgrade" process, or revert to the old limit of TODO gas, TODO elasticity, and TODO DA footprint gas scalar if invoked as part of the "rollback" process.
 
-### DA Footprint Gas Scalar Formula
+### DA Footprint Gas Scalar
 
-We typically set the DA footprint gas scalar to cause base fees to rise if and only if the DA usage exceeds the L1 target blob throughput. (Below that level of DA usage, the normal base fee rules apply.) We use the following formula:
+Calculate the DA footprint gas scalar from the DA limits runbook:
 
-```
-da_footprint_gas_scalar = gas_limit / (elasticity * l2_block_time * l1_target_throughput * estimation_ratio)
-```
+`go/base-da-config`
 
-Where:
-- `gas_limit` = L2 gas limit per block
-- `elasticity` = EIP-1559 elasticity multiplier
-- `l2_block_time` = 2 seconds
-- `l1_target_throughput = (target_blob_count * 128,000 bytes/blob) / 12 sec/block`
-- `target_blob_count` = target number of blobs per L1 block
-- `estimation_ratio` = 1.5 to account for differences between compression estimates and actual usage
+`make da-scalar TARGET_BLOB_COUNT=<value>` is the source of truth for the standard soft-cap policy. Since BPO2, Base has used a DA soft-cap blob count of 21, passed as `TARGET_BLOB_COUNT=21`, to allow the chain to use all L1 DA before raising the L2 base fee. Do not read this as Ethereum's target blob count; it is the blob-count input to Base's DA footprint scalar calculation.
 
-This simplifies to:
+Record the inputs used for this task:
 
-```
-da_footprint_gas_scalar = gas_limit / (elasticity * target_blob_count * 32,000)
-```
+Use the target network's `op_batcher_throttle_block_size_upper_limit` Config Service value for the builder hard cap row.
 
-Example with gas_limit = 120,000,000, elasticity = 2, and target_blob_count = 6:
-```
-da_footprint_gas_scalar = 120,000,000 / (2 * 6 * 32,000) = 312.5 ≈ 312
-```
+- Mainnet: `https://config.cbhq.net/web3-shared-prod/protocols/base-mainnet-batcherproposer-k8s?q=op_batcher_throttle_block_size_upper_limit`
+- Sepolia: `https://config.cbhq.net/web3-shared-prod/protocols/base-sepolia-batcherproposer-k8s?q=op_batcher_throttle_block_size_upper_limit`
+- Zeronet: `https://config.cbhq.net/web3-shared-dev/protocols/base-zeronet-batcherproposer-k8s?q=op_batcher_throttle_block_size_upper_limit`
+
+| Field | Value |
+|-------|-------|
+| Gas limit | TODO |
+| Elasticity | TODO |
+| DA soft-cap blob count (`TARGET_BLOB_COUNT`) | TODO |
+| Calculated scalar | TODO |
+| Implied soft cap | TODO estimated DA bytes per L2 block |
+| Builder hard cap | TODO estimated DA bytes per L2 block |
 
 The values we are sending are statically defined in the `.env` file.
 

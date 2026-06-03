@@ -12,6 +12,7 @@ endif
 
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = IncreaseEip1559ElasticityAndIncreaseGasLimitScript
+BUILDER_HARD_CAP ?= TODO
 
 # Validate required configuration before execution
 .PHONY: validate-config
@@ -29,7 +30,7 @@ validate-config:
 	@echo "Configuration validated successfully"
 
 # Calculate the DA footprint gas scalar based on the formula:
-# da_footprint_gas_scalar = gas_limit / (elasticity * target_blob_count * 32,000)
+# da_footprint_gas_scalar = gas_limit / (elasticity * da_soft_cap_blob_count * 32,000)
 # Uses TO_GAS_LIMIT and TO_ELASTICITY from .env
 .PHONY: da-scalar
 da-scalar:
@@ -42,8 +43,24 @@ endif
 ifeq ($(TO_ELASTICITY),TODO)
 	$(error TO_ELASTICITY is not set. Please set it in .env before running this command.)
 endif
-	@echo "$(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) ="
-	@echo "TO_DA_FOOTPRINT_GAS_SCALAR=$$(( $(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) ))"
+	@scalar=$$(( $(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) )); \
+	soft_cap=$$(( $(TARGET_BLOB_COUNT) * 32000 )); \
+	echo "$(TO_GAS_LIMIT) / ($(TO_ELASTICITY) * $(TARGET_BLOB_COUNT) * 32000) = $$scalar"; \
+	echo; \
+	echo "Set in .env:"; \
+	echo "TO_DA_FOOTPRINT_GAS_SCALAR=$$scalar"; \
+	echo; \
+	echo "Copy into README.md:"; \
+	echo "Set BUILDER_HARD_CAP=<value> from Config Service to fill the builder hard cap row."; \
+	echo; \
+	echo "| Field | Value |"; \
+	echo "|-------|-------|"; \
+	echo "| Gas limit | \`$(TO_GAS_LIMIT)\` |"; \
+	echo "| Elasticity | \`$(TO_ELASTICITY)\` |"; \
+	echo "| DA soft-cap blob count (\`TARGET_BLOB_COUNT\`) | \`$(TARGET_BLOB_COUNT)\` |"; \
+	echo "| Calculated scalar | \`$$scalar\` |"; \
+	echo "| Implied soft cap | \`$$soft_cap\` estimated DA bytes per L2 block |"; \
+	echo "| Builder hard cap | \`$(BUILDER_HARD_CAP)\` estimated DA bytes per L2 block |"
 
 .PHONY: gen-validation
 gen-validation: validate-config deps-signer-tool
