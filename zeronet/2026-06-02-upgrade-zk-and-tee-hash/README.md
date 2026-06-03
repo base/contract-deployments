@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-This task updates the TEE and ZK verifier hashes of the multiproof implementation on `zeronet` by:
+This task updates the TEE and ZK verifier hashes of the multiproof implementation on `zeronet`.
 
 - redeploying `AggregateVerifier` with identical immutables, overriding `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
 - pointing `DisputeGameFactory.gameImpls(gameType)` at the new `AggregateVerifier`
@@ -23,7 +23,6 @@ git pull
 #### 2. Run signing tool
 
 ```bash
-cd contract-deployments
 make sign-task
 ```
 
