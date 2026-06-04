@@ -5,7 +5,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
     "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
-    "messageHash": "0x3e4750c417e55730f7ad2e175c13be6bddbd5186ad28e051e996c7b74d8ef5d9"
+    "messageHash": "0x563ce0f9fec8850fe8bcb365eb4d79b03a22c916432697f58ffd29d934d3dabd"
   },
   "stateOverrides": [
     {
@@ -25,7 +25,7 @@
       "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
       "overrides": [
         {
-          "key": "0x524ec13f97415c9907e9d3882db941472403d8ba6e9ca2a10d2b7ddee05238fc",
+          "key": "0x8b3125fc85a2fcf278cd7aa4c16db750c4b672dec49a9e2f8d2d5d7319adbb84",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -41,7 +41,7 @@
         {
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x0000000000000000000000002df6e2864913d366d7e2008801eb659e9d9854a2",
-          "after": "0x000000000000000000000000bd3a1c3914287fe09924679e13ee40f9ed343c94",
+          "after": "0x0000000000000000000000007e64eb14c6cc115cd78f02df13152708a5b21a4e",
           "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",
           "allowDifference": false
         }
@@ -59,7 +59,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x84c265a6f3b87e17b51e99060efa588e3a639b4423f11d2181064400cff20d89",
+          "key": "0x767d416a72cc012be11bd2e566936ccc4922c9cbf332a24b404c2dd8f6fc653e",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Approves the transaction hash for execution by the nested multisig.",

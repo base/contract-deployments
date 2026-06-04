@@ -5,7 +5,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
     "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
-    "messageHash": "0x42822ac9f48799f354005a66f8292f0d473bc7b44ae6c31e3c32eb47b1799d7d"
+    "messageHash": "0x92ba95fa83ad564c51891a15a135320fb8a2f89ebafaa5218052a45c1a307099"
   },
   "stateOverrides": [
     {
@@ -31,7 +31,7 @@
           "allowDifference": false
         },
         {
-          "key": "0xed5de49b3482522fbed245c6e43d6d347caff4fa3f162e9d5a0a1382386a57cf",
+          "key": "0x3feaed1f8adc02ed6aa283a156dd806531ad36040a791c487945bafa85b0336f",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -47,8 +47,8 @@
         {
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x0000000000000000000000002df6e2864913d366d7e2008801eb659e9d9854a2",
-          "after": "0x000000000000000000000000bd3a1c3914287fe09924679e13ee40f9ed343c94",
-          "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",
+          "after": "0x0000000000000000000000007e64eb14c6cc115cd78f02df13152708a5b21a4e",
+          "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",          
           "allowDifference": false
         }
       ]
@@ -65,7 +65,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x0e864c31a99a8ad6e017bde15f2ed300d5076d313dd9e2f9098d8e0dbf581622",
+          "key": "0x1f361f894011fa257e0b1597ac07dd18e63d592c24e8d486eca7120cfff8bf13",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Approves the transaction hash for execution by the nested multisig.",
