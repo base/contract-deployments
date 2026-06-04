@@ -1,6 +1,6 @@
 # Upgrade ZK and TEE Hash
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xcf18f5263ff17247f66db315a3156d7ba042d75fc760946961ed7d40c0824ee9)
 
 ## Description
 
