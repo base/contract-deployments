@@ -2,9 +2,9 @@
 
 Guide for facilitators managing this task.
 
-## Finalize Hash Inputs
+## Verify Hash Inputs
 
-Before deploying or generating validation files, replace the placeholder zero values in `.env`:
+Before deploying or generating validation files, verify the configured hashes in `.env`:
 
 - `TEE_IMAGE_HASH`
 - `ZK_RANGE_HASH`
