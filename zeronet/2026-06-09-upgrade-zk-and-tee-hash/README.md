@@ -2,6 +2,10 @@
 
 Status: READY TO SIGN
 
+## Transactions
+
+- New `AggregateVerifier` deployment ([`0x3322f6aBe3EEDd835c24323e27B0433e701e9908`](https://hoodi.etherscan.io/address/0x3322f6aBe3EEDd835c24323e27B0433e701e9908)): [`0x017a351436eaba6d08bb7bd28554c48d638e5ad78ff4cd589c1f617157939c87`](https://hoodi.etherscan.io/tx/0x017a351436eaba6d08bb7bd28554c48d638e5ad78ff4cd589c1f617157939c87) (artefacts: [run-1781032840067.json](./records/DeployAggregateVerifier.s.sol/560048/run-1781032840067.json))
+
 ## Description
 
 This task updates the TEE and ZK verifier hashes of the multiproof implementation on `zeronet`.
