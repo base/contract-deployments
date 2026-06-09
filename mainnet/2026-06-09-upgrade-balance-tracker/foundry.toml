@@ -1,0 +1,23 @@
+[profile.default]
+src = 'src'
+out = 'out'
+libs = ['lib']
+broadcast = 'records'
+fs_permissions = [{ access = "read-write", path = "./" }]
+optimizer = true
+optimizer_runs = 999999
+solc_version = "0.8.15"
+via-ir = false
+remappings = [
+    '@base-contracts/=lib/contracts/',
+    '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
+    '@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/',
+    'forge-std/=lib/forge-std/src/',
+    'interfaces/=lib/contracts/interfaces/',
+    'src/=lib/contracts/src/',
+]
+
+[lint]
+lint_on_build = false
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config
