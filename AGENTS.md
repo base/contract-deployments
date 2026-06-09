@@ -6,7 +6,7 @@ Task writing:
   - Good: `pragma solidity 0.8.15`
   - Bad: `pragma solidity ^0.8.20`
 - Always use "onchain" instead of "on-chain"
-- Config values loaded from a `.env` should be loaded in a dedicated `setUp()` function in Solidity scripts/tests; avoid constructor-based setup unless immutables are specifically needed
+- Config values loaded from a `.env` should be stored as immutable variables in the solidity script(s)
 - We only need task origin validation for mainnet scripts that go through proxy admin owner
 - `RECORD_STATE_DIFF=true` is needed in the task `.env` file in order for the signer tool to work
 - Include a `FACILITATOR.md` file directed to the task facilitator (explains generating validation file, executing approvals + executing the task)
