@@ -19,21 +19,21 @@ interface IDisputeGameFactoryAdmin {
 /// ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.
 contract UpdateVerifierHashes is MultisigScript {
     // Task config from .env.
-    address internal ownerSafeEnv;
-    address internal disputeGameFactoryProxyEnv;
-    GameType internal gameTypeEnv;
-    bytes32 internal teeImageHashEnv;
-    bytes32 internal zkRangeHashEnv;
-    bytes32 internal zkAggregateHashEnv;
+    address internal immutable ownerSafeEnv;
+    address internal immutable disputeGameFactoryProxyEnv;
+    GameType internal immutable gameTypeEnv;
+    bytes32 internal immutable teeImageHashEnv;
+    bytes32 internal immutable zkRangeHashEnv;
+    bytes32 internal immutable zkAggregateHashEnv;
 
     // Live onchain state.
-    address internal currentAggregateVerifier;
+    address internal immutable currentAggregateVerifier;
 
     // Deployment output produced by the EOA script and read from addresses.json.
-    address internal nextAggregateVerifier;
-    GameType internal nextGameType;
+    address internal immutable nextAggregateVerifier;
+    GameType internal immutable nextGameType;
 
-    function setUp() public {
+    constructor() {
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
         disputeGameFactoryProxyEnv = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
         gameTypeEnv = GameType.wrap(uint32(vm.envUint("GAME_TYPE")));
@@ -48,6 +48,10 @@ contract UpdateVerifierHashes is MultisigScript {
         string memory json = vm.readFile(path);
         nextAggregateVerifier = vm.parseJsonAddress({json: json, key: ".aggregateVerifier"});
 
+        nextGameType = AggregateVerifier(nextAggregateVerifier).gameType();
+    }
+
+    function setUp() public view {
         require(IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).owner() == ownerSafeEnv, "dgf owner mismatch");
         require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
         require(nextAggregateVerifier != address(0), "next aggregate verifier not set");
@@ -58,7 +62,6 @@ contract UpdateVerifierHashes is MultisigScript {
 
         AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
         AggregateVerifier nextAggregate = AggregateVerifier(nextAggregateVerifier);
-        nextGameType = nextAggregate.gameType();
 
         require(
             GameType.unwrap(currentAggregate.gameType()) == GameType.unwrap(gameTypeEnv), "current game type mismatch"
