@@ -1,0 +1,137 @@
+{
+  "cmd": "mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io UpgradeBalanceTracker --sig sign(address[]) [] --sender 0x1841CB3C2ce6870D0417844C817849da64E6e937",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+    "domainHash": "0xf3474c66ee08325b410c3f442c878d01ec97dd55a415a307e9d7d2ea24336289",
+    "messageHash": "0x4ffe067337fd4a61c0eee3ca9181b4a5ae748ba2e6ed3b87323e0ce2407d072d"
+  },
+  "stateOverrides": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xee850b54bbf66d506a4fa0839ceec7ab017986d608b89674b72bcdc9f1797957",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Incident Safe - Mainnet",
+      "address": "0x14536667Cd30e52C0b458BaACcB9faDA7046E056",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000006b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "BalanceTracker - Mainnet",
+      "address": "0x23B597f33f6f2621F77DA117523Dffd634cDf4ea",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Bumps the OpenZeppelin Initializable `_initialized` version from 2 to 3 as the proxy is re-initialized through `initialize`'s `reinitializer(3)` guard.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000033",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "description": "Updates the `systemAddresses` array length from 2 to 4 (batch sender, proposer, challenger, registrar).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000034",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "description": "Updates the `targetBalances` array length from 2 to 4, one entry per system address.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000b00fb2ead6c6150b11fc8b3a8cf7f8944c7dba7b",
+          "after": "0x0000000000000000000000005054e041aeeb9ca87e23d6aac90281837abafe2c",
+          "description": "Upgrades the proxy implementation (EIP-1967 implementation slot) from 0xb00fb2ead6c6150b11fc8b3a8cf7f8944c7dba7b to the newly deployed 0x5054e041aeeB9CA87E23D6aAC90281837ABafE2c.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x46bddb1178e94d7f2892ff5f366840eb658911794f2c3a44c450aa2c505186c1",
+          "before": "0x000000000000000000000000000000000000000000000002b5e3af16b1880000",
+          "after": "0x00000000000000000000000000000000000000000000001dd0c885f9a0d80000",
+          "description": "Sets `targetBalances[0]` to 550 ETH — the batch sender target balance (was 50 ETH, the legacy output proposer's target).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x46bddb1178e94d7f2892ff5f366840eb658911794f2c3a44c450aa2c505186c2",
+          "before": "0x00000000000000000000000000000000000000000000001dd0c885f9a0d80000",
+          "after": "0x0000000000000000000000000000000000000000000000015af1d78b58c40000",
+          "description": "Sets `targetBalances[1]` to 25 ETH — the proposer target balance (was 550 ETH, the batch sender's target).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x46bddb1178e94d7f2892ff5f366840eb658911794f2c3a44c450aa2c505186c3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000004563918244f40000",
+          "description": "Sets `targetBalances[2]` to 5 ETH — the challenger target balance (new entry).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x46bddb1178e94d7f2892ff5f366840eb658911794f2c3a44c450aa2c505186c4",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000004563918244f40000",
+          "description": "Sets `targetBalances[3]` to 5 ETH — the registrar target balance (new entry).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x82a75bdeeae8604d839476ae9efd8b0e15aa447e21bfd7f41283bb54e22c9a82",
+          "before": "0x000000000000000000000000642229f238fb9de03374be34b0ed8d9de80752c5",
+          "after": "0x0000000000000000000000005050f69a9786f081509234f1a7f4684b5e5b76c9",
+          "description": "Sets `systemAddresses[0]` to the batch sender 0x5050f69a9786f081509234f1a7f4684b5e5b76c9 (replacing the legacy output proposer 0x642229f238fb9dE03374Be34B0eD8D9De80752c5, which is removed from the set).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x82a75bdeeae8604d839476ae9efd8b0e15aa447e21bfd7f41283bb54e22c9a83",
+          "before": "0x0000000000000000000000005050f69a9786f081509234f1a7f4684b5e5b76c9",
+          "after": "0x000000000000000000000000c1366fabe614d42d367a1ece61821238a1d31cf5",
+          "description": "Sets `systemAddresses[1]` to the proposer 0xc1366Fabe614d42D367A1ecE61821238A1d31cF5 (previously held the batch sender).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x82a75bdeeae8604d839476ae9efd8b0e15aa447e21bfd7f41283bb54e22c9a84",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000819501cda743a606a93dbef254fe0d263ce7d102",
+          "description": "Sets `systemAddresses[2]` to the challenger 0x819501cdA743a606A93dbEF254FE0D263Ce7d102 (new entry).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x82a75bdeeae8604d839476ae9efd8b0e15aa447e21bfd7f41283bb54e22c9a85",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000d87488dbb5b6f47cc6c15dd95bb60c83d3031b04",
+          "description": "Sets `systemAddresses[3]` to the registrar 0xd87488Dbb5b6F47cc6c15Dd95Bb60c83D3031b04 (new entry).",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
