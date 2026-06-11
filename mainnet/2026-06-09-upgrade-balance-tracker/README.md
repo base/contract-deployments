@@ -1,6 +1,6 @@
 # Upgrade Mainnet `BalanceTracker` system addresses
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x282f780a9ed3150ca949f0bf116e2ec9e77400550c2fe7cc7ad313fa5e9218e8)
 
 ## Description
 
