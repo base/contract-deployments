@@ -9,11 +9,6 @@ export SYSTEM_CONFIG
 RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = PauseSuperchainConfig
 
-# The default internal Go proxy can stall on the large go-ethereum module used
-# by eip712sign. Install into GOPATH/bin because sign-pause invokes that path.
-install-eip712sign: export GOPROXY := https://proxy.golang.org,direct
-install-eip712sign: export GOBIN := $(GOPATH)/bin
-
 ZERO_ADDRESS = 0x0000000000000000000000000000000000000000
 SAFE_TX_TYPEHASH = 0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8
 SAFE_TX_ABI = f(bytes32,address,uint256,bytes32,uint8,uint256,uint256,uint256,address,address,uint256)
