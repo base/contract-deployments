@@ -4,26 +4,20 @@
 # `include ../../Makefile`.
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
-PROJECT_DIR = $(network)/$(shell date +'%Y-%m-%d')-$(task)
 GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 GAS_AND_ELASTICITY_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-and-elasticity-limit
-FAULT_PROOF_UPGRADE_DIR = $(network)/$(shell date +'%Y-%m-%d')-upgrade-fault-proofs
 SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-management
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
 SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
-SWITCH_TO_PERMISSIONED_GAME_DIR=$(network)/$(shell date +'%Y-%m-%d')-switch-to-permissioned-game
 PAUSE_SUPERCHAIN_CONFIG_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-superchain-config
 
-TEMPLATE_GENERIC = setup-templates/template-generic
 TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
 TEMPLATE_GAS_AND_ELASTICITY_INCREASE = setup-templates/template-gas-and-elasticity-increase
-TEMPLATE_UPGRADE_FAULT_PROOFS = setup-templates/template-upgrade-fault-proofs
 TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
 TEMPLATE_FUNDING = setup-templates/template-funding
 TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
 TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
-TEMPLATE_SWITCH_TO_PERMISSIONED_GAME = setup-templates/template-switch-to-permissioned-game
 TEMPLATE_PAUSE_SUPERCHAIN_CONFIG = setup-templates/template-pause-superchain-config
 
 ##
@@ -76,12 +70,6 @@ endif
 ##
 # Project Setup
 ##
-# Run `make setup-task network=<network> task=<task>`
-setup-task:
-	rm -rf $(TEMPLATE_GENERIC)/cache $(TEMPLATE_GENERIC)/lib $(TEMPLATE_GENERIC)/out
-	cp -r $(TEMPLATE_GENERIC) $(PROJECT_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(PROJECT_DIR))
-
 # Run `make setup-gas-increase network=<network>`
 setup-gas-increase:
 	rm -rf $(TEMPLATE_GAS_INCREASE)/cache $(TEMPLATE_GAS_INCREASE)/lib $(TEMPLATE_GAS_INCREASE)/out
@@ -93,11 +81,6 @@ setup-gas-and-elasticity-increase:
 	rm -rf $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/cache $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/lib $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/out
 	cp -r $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE) $(GAS_AND_ELASTICITY_INCREASE_DIR)
 	mkdir -p $(network)/signatures/$(notdir $(GAS_AND_ELASTICITY_INCREASE_DIR))
-
-# Run `make setup-upgrade-fault-proofs network=<network>`
-setup-upgrade-fault-proofs:
-	cp -r $(TEMPLATE_UPGRADE_FAULT_PROOFS) $(FAULT_PROOF_UPGRADE_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(FAULT_PROOF_UPGRADE_DIR))
 
 # Run `make setup-safe-management network=<network>`
 setup-safe-management:
@@ -122,11 +105,6 @@ setup-bridge-pause:
 	rm -rf $(TEMPLATE_PAUSE_BRIDGE_BASE)/cache $(TEMPLATE_PAUSE_BRIDGE_BASE)/lib $(TEMPLATE_PAUSE_BRIDGE_BASE)/out
 	cp -r $(TEMPLATE_PAUSE_BRIDGE_BASE) $(PAUSE_BRIDGE_BASE_DIR)
 	mkdir -p $(network)/signatures/$(notdir $(PAUSE_BRIDGE_BASE_DIR))
-
-setup-switch-to-permissioned-game:
-	rm -rf $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/cache $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/lib $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME)/out
-	cp -r $(TEMPLATE_SWITCH_TO_PERMISSIONED_GAME) $(SWITCH_TO_PERMISSIONED_GAME_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(SWITCH_TO_PERMISSIONED_GAME_DIR))
 
 # Run `make setup-superchain-config-pause network=<network>`
 setup-superchain-config-pause:

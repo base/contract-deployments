@@ -4,7 +4,7 @@
 
 This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base/contracts](https://github.com/base/contracts).
 
-This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network. Supported networks are `mainnet`, `sepolia`, `sepolia-alpha`, and `zeronet`.
+This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network.
 
 <!-- Badge row 1 - status -->
 
@@ -74,15 +74,12 @@ This is purely a convenience for task authors — `make` targets work correctly 
 
 To execute a new task, run one of the following commands (depending on the type of change you're making):
 
-- For a generic task: `make setup-task network=<network> task=<task-name>`
 - For gas increase tasks: `make setup-gas-increase network=<network>`
 - For combined gas, elasticity, and DA footprint gas scalar tasks: `make setup-gas-and-elasticity-increase network=<network>`
-- For fault proof upgrade: `make setup-upgrade-fault-proofs network=<network>`
 - For safe management tasks: `make setup-safe-management network=<network>`
 - For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
-- For switching to a permissioned game and retiring dispute games: `make setup-switch-to-permissioned-game network=<network>`
 - For pausing SuperchainConfig: `make setup-superchain-config-pause network=<network>`
 
 Each `setup-*` command also creates a matching `<network>/signatures/<task-dir-basename>/` directory for [task origin signing](#task-origin-signing). The parent `signatures/` directory is created automatically via `mkdir -p` for networks that do not yet have one.
@@ -144,18 +141,18 @@ Templates are validated in parallel using a matrix strategy, so failures are iso
 
 All task templates use global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
 
-| Macro              | Purpose                                                        | Key arguments                                                  |
-| ------------------ | -------------------------------------------------------------- | -------------------------------------------------------------- |
-| `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy)                  | `(address_list, signatures)`                                   |
-| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain                       | `(signatures)`                                                 |
-| `GEN_VALIDATION`   | Generate a validation JSON file for signers via the signer-tool | `(script_name, safe_addr, sender, output_file, env_vars)`     |
+| Macro              | Purpose                                                         | Key arguments                                             |
+| ------------------ | --------------------------------------------------------------- | --------------------------------------------------------- |
+| `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy)                   | `(address_list, signatures)`                              |
+| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain                        | `(signatures)`                                            |
+| `GEN_VALIDATION`   | Generate a validation JSON file for signers via the signer-tool | `(script_name, safe_addr, sender, output_file, env_vars)` |
 
 Two helper macros are also available for tasks that need nonce offset calculations or address manipulation:
 
-| Macro        | Purpose                                                 | Key arguments    |
-| ------------ | ------------------------------------------------------- | ---------------- |
-| `GET_NONCE`  | Fetch the current nonce of a Safe contract on-chain     | `(safe_address)` |
-| `ADDR_UPPER` | Convert an address to uppercase (for env var construction) | `(address)`     |
+| Macro        | Purpose                                                    | Key arguments    |
+| ------------ | ---------------------------------------------------------- | ---------------- |
+| `GET_NONCE`  | Fetch the current nonce of a Safe contract on-chain        | `(safe_address)` |
+| `ADDR_UPPER` | Convert an address to uppercase (for env var construction) | `(address)`      |
 
 Signing is handled externally by the [task-signing-tool](https://github.com/base/task-signing-tool).
 
@@ -184,46 +181,20 @@ Templates should use these macros rather than inline `forge script` / `eip712sig
 
 The root Makefile provides three targets for generating cryptographic attestations (sigstore bundles) that prove who created and facilitated a task. These are inherited by all task Makefiles via `include ../../Makefile`.
 
-| Target                         | Purpose                                          |
-| ------------------------------ | ------------------------------------------------ |
-| `make sign-as-task-creator`    | Attest authorship of the task (run after setup)  |
-| `make sign-as-base-facilitator`| Attest Base team facilitation                    |
-| `make sign-as-sc-facilitator`  | Attest Security Council facilitation             |
+| Target                          | Purpose                                         |
+| ------------------------------- | ----------------------------------------------- |
+| `make sign-as-task-creator`     | Attest authorship of the task (run after setup) |
+| `make sign-as-base-facilitator` | Attest Base team facilitation                   |
+| `make sign-as-sc-facilitator`   | Attest Security Council facilitation            |
 
 Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. This directory is created automatically when you run any `setup-*` target (in both the root and Solana Makefiles), so it is ready for the signing tool when you invoke one of the targets below. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
 
-| Variable        | Default                                           | Description                        |
-| --------------- | ------------------------------------------------- | ---------------------------------- |
-| `TASK_NAME`     | `$(notdir $(CURDIR))` (directory basename)        | Name used to locate signature dir  |
-| `SIGNATURE_DIR` | `$(CURDIR)/../signatures/$(TASK_NAME)`            | Directory where signatures are stored |
+| Variable        | Default                                    | Description                           |
+| --------------- | ------------------------------------------ | ------------------------------------- |
+| `TASK_NAME`     | `$(notdir $(CURDIR))` (directory basename) | Name used to locate signature dir     |
+| `SIGNATURE_DIR` | `$(CURDIR)/../signatures/$(TASK_NAME)`     | Directory where signatures are stored |
 
 All three targets depend on `deps-signer-tool`, which checks out and installs the [task-signing-tool](https://github.com/base/task-signing-tool) automatically.
-
-## Using the incident response template
-
-This template contains scripts that will help us respond to incidents efficiently.
-
-To use the template during an incident:
-
-1. Fill in the `.env` file with dependency commit numbers and any variables that need to be defined for the script you're running.
-1. Delete the other scripts that are not being used so that you don't run into build issues.
-1. Make sure the code compiles and check in the code.
-1. Have each signer pull the branch, and run the relevant signing command from the Makefile.
-
-To add new incident response scripts:
-
-1. Any incident response-related scripts should be included in this template (should be generic, not specific to network), with specific TODOs wherever addresses or other details need to be filled in.
-1. Add the relevant make commands that would need to be run for the script to the template Makefile
-1. Add relevant mainnet addresses in comments to increase efficiency responding to an incident.
-
-## Using the generic template
-
-This template can be used to do contract calls, upgrades, or one-off deployments.
-
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file
-1. Run `make deps`
-1. Put scripts in the `script` directory (see examples that are part of the template, for example, there is a file `BasicScript.s.sol`). See note below if running a task that requires a multisig to sign.
-1. Call scripts from the Makefile (see examples in the template Makefile that's copied over).
 
 ## Using the gas limit increase template
 
@@ -252,21 +223,6 @@ This template is used to update the gas limit, elasticity, and DA footprint gas 
 1. Double check the `cmd` field at the top of both of the generated validation files and ensure that the value passed to the `--sender` flag matches the `SENDER` env var already defined in the `.env` file.
 1. Ensure that all of the fields marked as `TODO` in the tasks's `README.md` have been properly filled out.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the fault proof upgrade template
-
-This template is used to upgrade the fault proof contracts. This is commonly done in conjunction with a hard fork.
-
-1. Ensure you have followed the instructions above in `setup`
-1. Go to the folder that was created using the `make setup-upgrade-fault-proofs network=<network>` step
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file
-1. Run `make deps`
-1. Add the new absolute prestate to the `.env` file. This can be found in the op-program prestates [standard-prestates.toml](https://github.com/ethereum-optimism/superchain-registry/blob/main/validation/standard/standard-prestates.toml) file.
-1. Network-specific contract addresses are loaded automatically from the network `.env` file. Fill in any remaining task-specific variables in the task's `.env` file.
-1. Build the contracts with `forge build`
-1. Remove the unneeded validations from `VALIDATION.md` and update the relevant validations accordingly
-1. Check in the task when it's ready to sign and collect signatures from signers
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
 ## Using the safe management template
@@ -327,20 +283,6 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 1. Fill in any task-specific variables in the `.env` file that have per-network comments (e.g., `L2_BRIDGE`), using the value for your target network.
 1. Set the `IS_PAUSED` variable to `true` or `false` in the `.env` file depending on if you intend to pause or unpause the bridge.
 1. Ensure the `SENDER` variable in the Makefile is set to a signer for `OWNER_SAFE`.
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the Switch to Permissioned Game template
-
-This template is used to switch Base to a Permissioned Game.
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-switch-to-permissioned-game network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments (e.g., `OWNER_SAFE`, `OP_SECURITY_COUNCIL_SAFE`, `SENDER`), using the value for your target network.
 1. Build the contracts with `forge build`.
 1. Generate the validation file for signers with `make gen-validation`.
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
