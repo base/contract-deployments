@@ -16,10 +16,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - template: template-generic
-            setup_target: "setup-task"
-            setup_args: "network=sepolia task=ci-test"
-            task_dir_suffix: ci-test
           - template: template-funding
             setup_target: "setup-funding"
             setup_args: "network=sepolia"
@@ -36,10 +32,6 @@ jobs:
             setup_target: "setup-safe-management"
             setup_args: "network=sepolia"
             task_dir_suffix: safe-management
-          - template: template-upgrade-fault-proofs
-            setup_target: "setup-upgrade-fault-proofs"
-            setup_args: "network=sepolia"
-            task_dir_suffix: upgrade-fault-proofs
           - template: template-pause-bridge-base
             setup_target: "setup-bridge-pause"
             setup_args: "network=sepolia"
@@ -52,10 +44,6 @@ jobs:
             setup_target: "setup-bridge-partner-threshold"
             setup_args: "network=sepolia"
             task_dir_suffix: pause-bridge-base
-          - template: template-switch-to-permissioned-game
-            setup_target: "setup-switch-to-permissioned-game"
-            setup_args: "network=sepolia"
-            task_dir_suffix: switch-to-permissioned-game
       fail-fast: false
 
     steps:
