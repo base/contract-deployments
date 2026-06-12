@@ -36,6 +36,7 @@ sign-pause:
 		sig=$$(grep "^Signature:" sign_output.tmp | awk '{print $$2}'); \
 		printf "%s," "$$signer:$$nonce:$$sig" >> signatures-pause.txt; \
 		rm -f sign_output.tmp; \
+		sleep 2; \
 	done; \
 	echo "" >> signatures-pause.txt
 
