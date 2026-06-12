@@ -6,6 +6,8 @@ Status: READY TO SIGN
 
 This task transfers the Base mainnet [`FeeDisburser`](https://basescan.org/address/0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA) proxy owner from the aliased old Coinbase L1 multisig to the aliased new Coinbase L1 multisig.
 
+Superchain separation migrated Coinbase upgrade signers to a new multisig address, but this `FeeDisburser` proxy is still owned by the old multisig's L2 alias.
+
 | Role | L1 address | L2 alias |
 | -- | -- | -- |
 | Current owner | `0x9C4a57Feb77e294Fd7BF5EBE9AB01CAA0a90A110` | `0xaD5B57FEB77e294fD7BF5EBE9aB01caA0a90B221` |
