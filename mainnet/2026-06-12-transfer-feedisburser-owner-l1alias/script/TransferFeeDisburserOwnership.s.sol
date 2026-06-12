@@ -3,15 +3,16 @@ pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
 
-import {MultisigScript, Enum} from "@base-contracts/script/universal/MultisigScript.sol";
+import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
+import {IOptimismPortal2, MultisigScriptDeposit} from "@base-contracts/script/universal/MultisigScriptDeposit.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
 import {Proxy} from "@base-contracts/src/universal/Proxy.sol";
 import {AddressAliasHelper} from "@base-contracts/src/vendor/AddressAliasHelper.sol";
-import {IOptimismPortal2} from "@base-contracts/interfaces/L1/IOptimismPortal2.sol";
+import {Call3Value} from "src/utils/ICBMulticall.sol";
 
 /// @title TransferFeeDisburserOwnership
 /// @notice Transfers the Base mainnet FeeDisburser proxy owner to the alias of the new Coinbase L1 multisig.
-contract TransferFeeDisburserOwnership is MultisigScript {
+contract TransferFeeDisburserOwnership is MultisigScriptDeposit {
     using AddressAliasHelper for address;
 
     /// @notice L1 Safe that currently owns the FeeDisburser proxy through its L2 alias.
@@ -53,18 +54,33 @@ contract TransferFeeDisburserOwnership is MultisigScript {
     /// @notice Post-check is a no-op because the L1 simulation cannot verify post-deposit L2 state.
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal override {}
 
+    function _optimismPortal() internal view override returns (address) {
+        return OPTIMISM_PORTAL;
+    }
+
+    function _l2GasLimit() internal view override returns (uint64) {
+        return L2_GAS_LIMIT;
+    }
+
+    function _buildL2Calls() internal pure override returns (Call3Value[] memory) {
+        return new Call3Value[](0);
+    }
+
     /// @notice Builds the L1 deposit transaction that calls changeAdmin on the FeeDisburser proxy on L2.
-    function _buildCalls() internal view override returns (MultisigScript.Call[] memory) {
-        MultisigScript.Call[] memory calls = new MultisigScript.Call[](1);
+    function _buildCalls() internal view override returns (Call[] memory) {
+        Call[] memory calls = new Call[](1);
 
         bytes memory transferOwnerCalldata = abi.encodeCall(Proxy.changeAdmin, (NEW_OWNER_ALIAS));
 
-        calls[0] = MultisigScript.Call({
+        // MultisigScriptDeposit's default L2 batching route calls through CBMulticall,
+        // which would make CBMulticall the L2 msg.sender. This proxy admin transfer
+        // must be called directly by OWNER_SAFE's L2 alias, so target the proxy itself.
+        calls[0] = Call({
             operation: Enum.Operation.Call,
-            target: OPTIMISM_PORTAL,
+            target: _optimismPortal(),
             data: abi.encodeCall(
                 IOptimismPortal2.depositTransaction,
-                (FEE_DISBURSER_PROXY, 0, L2_GAS_LIMIT, false, transferOwnerCalldata)
+                (FEE_DISBURSER_PROXY, 0, _l2GasLimit(), false, transferOwnerCalldata)
             ),
             value: 0
         });
