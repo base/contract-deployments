@@ -8,7 +8,7 @@ GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
 GAS_AND_ELASTICITY_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-and-elasticity-limit
 SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-management
 FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
-SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
+SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-set-bridge-partner-threshold
 PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
 PAUSE_SUPERCHAIN_CONFIG_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-superchain-config
 
