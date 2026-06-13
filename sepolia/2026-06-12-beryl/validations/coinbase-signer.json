@@ -1,0 +1,92 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x0fe884546476dDd290eC46318785046ef68a0BA9 DISPUTE_GAME_FACTORY_PROXY=0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1 GAME_TYPE=621 TEE_IMAGE_HASH=0x0f4c9f7b78162181ab5091680885fd8b657d67dd5aa4a466c78dbf3763ffcfab ZK_RANGE_HASH=0x0d561a5146c64c983616b7433ad3a4244298c85f27b724d239167ffb1720c160 ZK_AGGREGATE_HASH=0x0079eb47fae3287155f38d8733a2f809fcbb28da00063330d3db126a0fb0f274 mise exec -- forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net UpdateVerifierHashes --sig sign(address[]) [0x646132A1667ca7aD00d36616AFBA1A28116C770A] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
+    "messageHash": "0xd0091748c37cfe39745bb15bfe8542ae5ce400a7a066884df30d012ad2002e52"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdaee0e8662173042e49ecf6dd32b0a4ce27d7021b74d02ed4ed73b96476b733f",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000026",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000027",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb64b054853fc4d88bad0b74a4570aaa56ade98b1feab33215ba733b0d261d55b",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the approval of this task's transaction hash by the CB Coordinator Safe on the Proxy Admin Owner Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactoryProxy - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000c45dc8a279b2fdb7efef72044e53514ed1bc2c08",
+          "after": "0x0000000000000000000000007db62c503ba562911d8a79967d19590f47b8f39d",
+          "description": "Updates the game type 621 implementation in the DisputeGameFactory from the old AggregateVerifier to the new Beryl AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH, and ZK_AGGREGATE_HASH.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
