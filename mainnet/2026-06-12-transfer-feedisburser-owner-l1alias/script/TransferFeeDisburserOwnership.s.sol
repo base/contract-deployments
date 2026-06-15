@@ -3,16 +3,15 @@ pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
 
-import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
-import {IOptimismPortal2, MultisigScriptDeposit} from "@base-contracts/script/universal/MultisigScriptDeposit.sol";
+import {MultisigScript, Enum} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+import {IOptimismPortal2} from "@base-contracts/interfaces/L1/IOptimismPortal2.sol";
 import {Proxy} from "@base-contracts/src/universal/Proxy.sol";
 import {AddressAliasHelper} from "@base-contracts/src/vendor/AddressAliasHelper.sol";
-import {Call3Value} from "src/utils/ICBMulticall.sol";
 
 /// @title TransferFeeDisburserOwnership
 /// @notice Transfers the Base mainnet FeeDisburser proxy owner to the alias of the new Coinbase L1 multisig.
-contract TransferFeeDisburserOwnership is MultisigScriptDeposit {
+contract TransferFeeDisburserOwnership is MultisigScript {
     using AddressAliasHelper for address;
 
     /// @notice L1 Safe that currently owns the FeeDisburser proxy through its L2 alias.
@@ -26,6 +25,9 @@ contract TransferFeeDisburserOwnership is MultisigScriptDeposit {
 
     /// @notice Expected L2 alias of NEW_OWNER_SAFE.
     address public immutable NEW_OWNER_ALIAS = vm.envAddress("NEW_OWNER_ALIAS");
+
+    /// @notice OptimismPortal2 contract on L1 used for deposit transactions.
+    address public immutable OPTIMISM_PORTAL = vm.envAddress("OPTIMISM_PORTAL_ADDR");
 
     /// @notice FeeDisburser proxy contract on Base mainnet L2.
     address public immutable FEE_DISBURSER_PROXY = vm.envAddress("FEE_DISBURSER_ADDR");
@@ -51,15 +53,6 @@ contract TransferFeeDisburserOwnership is MultisigScriptDeposit {
     /// @notice Post-check is a no-op because the L1 simulation cannot verify post-deposit L2 state.
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal override {}
 
-    function _l2GasLimit() internal view override returns (uint64) {
-        return L2_GAS_LIMIT;
-    }
-
-    /// @notice Unused because this task must deposit directly to the proxy to preserve the L2 caller alias.
-    function _buildL2Calls() internal pure override returns (Call3Value[] memory) {
-        return new Call3Value[](0);
-    }
-
     /// @notice Builds the L1 deposit transaction that calls changeAdmin on the FeeDisburser proxy on L2.
     function _buildCalls() internal view override returns (Call[] memory) {
         Call[] memory calls = new Call[](1);
@@ -71,10 +64,10 @@ contract TransferFeeDisburserOwnership is MultisigScriptDeposit {
         // OWNER_SAFE's L2 alias, so the deposit targets the proxy itself.
         calls[0] = Call({
             operation: Enum.Operation.Call,
-            target: _optimismPortal(),
+            target: OPTIMISM_PORTAL,
             data: abi.encodeCall(
                 IOptimismPortal2.depositTransaction,
-                (FEE_DISBURSER_PROXY, 0, _l2GasLimit(), false, transferOwnerCalldata)
+                (FEE_DISBURSER_PROXY, 0, L2_GAS_LIMIT, false, transferOwnerCalldata)
             ),
             value: 0
         });

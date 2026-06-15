@@ -11,6 +11,7 @@ via-ir = false
 evm_version = "shanghai"
 remappings = [
     '@base-contracts/=lib/contracts',
+    '@lib-keccak/=lib/lib-keccak/contracts/lib/',
     '@solady/=lib/solady/src/',
     'src/=lib/contracts/src/'
 ]
