@@ -27,9 +27,6 @@ contract TransferFeeDisburserOwnership is MultisigScriptDeposit {
     /// @notice Expected L2 alias of NEW_OWNER_SAFE.
     address public immutable NEW_OWNER_ALIAS = vm.envAddress("NEW_OWNER_ALIAS");
 
-    /// @notice OptimismPortal2 contract on L1 used for deposit transactions.
-    address public immutable OPTIMISM_PORTAL = vm.envAddress("OPTIMISM_PORTAL_ADDR");
-
     /// @notice FeeDisburser proxy contract on Base mainnet L2.
     address public immutable FEE_DISBURSER_PROXY = vm.envAddress("FEE_DISBURSER_ADDR");
 
@@ -54,14 +51,11 @@ contract TransferFeeDisburserOwnership is MultisigScriptDeposit {
     /// @notice Post-check is a no-op because the L1 simulation cannot verify post-deposit L2 state.
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal override {}
 
-    function _optimismPortal() internal view override returns (address) {
-        return OPTIMISM_PORTAL;
-    }
-
     function _l2GasLimit() internal view override returns (uint64) {
         return L2_GAS_LIMIT;
     }
 
+    /// @notice Unused because this task must deposit directly to the proxy to preserve the L2 caller alias.
     function _buildL2Calls() internal pure override returns (Call3Value[] memory) {
         return new Call3Value[](0);
     }
@@ -72,9 +66,9 @@ contract TransferFeeDisburserOwnership is MultisigScriptDeposit {
 
         bytes memory transferOwnerCalldata = abi.encodeCall(Proxy.changeAdmin, (NEW_OWNER_ALIAS));
 
-        // MultisigScriptDeposit's default L2 batching route calls through CBMulticall,
-        // which would make CBMulticall the L2 msg.sender. This proxy admin transfer
-        // must be called directly by OWNER_SAFE's L2 alias, so target the proxy itself.
+        // A batched L2 route through CBMulticall would call the proxy with CBMulticall
+        // as msg.sender. This proxy admin transfer must be called directly by
+        // OWNER_SAFE's L2 alias, so the deposit targets the proxy itself.
         calls[0] = Call({
             operation: Enum.Operation.Call,
             target: _optimismPortal(),
