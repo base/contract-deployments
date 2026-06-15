@@ -5,6 +5,7 @@ Status: READY TO SIGN
 ## Transactions
 
 - New `AggregateVerifier` deployment ([`0xbdF244c72D059039Ac3332B7D759e1F1380d03DA`](https://hoodi.etherscan.io/address/0xbdF244c72D059039Ac3332B7D759e1F1380d03DA)): [`0xc38dc268da2486e5734de4de9b12b5456dd054abbc10acdffba3c2791365cd4f`](https://hoodi.etherscan.io/tx/0xc38dc268da2486e5734de4de9b12b5456dd054abbc10acdffba3c2791365cd4f) (artefacts: [run-1781319464299.json](./records/DeployAggregateVerifier.s.sol/560048/run-1781319464299.json))
+- New `AnchorStateRegistry` implementation deployment ([`0x2d87aFA7b2871Ac90732E96974cefE4C3DD2c025`](https://hoodi.etherscan.io/address/0x2d87aFA7b2871Ac90732E96974cefE4C3DD2c025)): [`0x224ccdd61ebd56a642242db00117978c17d9db094d2c3af9b49e6d9a9a3568d5`](https://hoodi.etherscan.io/tx/0x224ccdd61ebd56a642242db00117978c17d9db094d2c3af9b49e6d9a9a3568d5) (artefacts: [run-1781550547058.json](./records/DeployAnchorStateRegistry.s.sol/560048/run-1781550547058.json))
 
 ## Description
 
