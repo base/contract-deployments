@@ -16,6 +16,7 @@ remappings = [
     'interfaces/legacy/=lib/contracts/interfaces/legacy/',
     'interfaces/universal/=lib/contracts/interfaces/universal/',
     'src/libraries/=lib/contracts/src/libraries/',
+    'src/universal/=lib/contracts/src/universal/',
 ]
 
 [lint]

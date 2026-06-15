@@ -130,10 +130,6 @@ contract DeployAggregateVerifier is Script {
 
     function _writeAddresses() internal {
         console.log("AggregateVerifier:", aggregateVerifier);
-
-        string memory root = "root";
-        string memory json =
-            vm.serializeAddress({objectKey: root, valueKey: "aggregateVerifier", value: aggregateVerifier});
-        vm.writeJson({json: json, path: "addresses.json"});
+        vm.writeJson({json: vm.toString(aggregateVerifier), path: "addresses.json", valueKey: ".aggregateVerifier"});
     }
 }

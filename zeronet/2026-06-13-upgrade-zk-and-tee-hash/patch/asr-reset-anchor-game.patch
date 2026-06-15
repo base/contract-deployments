@@ -1,0 +1,16 @@
+diff --git a/src/L1/proofs/AnchorStateRegistry.sol b/src/L1/proofs/AnchorStateRegistry.sol
+--- a/src/L1/proofs/AnchorStateRegistry.sol
++++ b/src/L1/proofs/AnchorStateRegistry.sol
+@@ -79,5 +79,5 @@ contract AnchorStateRegistry is ProxyAdminOwnedBase, Initializable, Reinitializa
+     /// @param _disputeGameFinalityDelaySeconds The dispute game finality delay in seconds.
+-    constructor(uint256 _disputeGameFinalityDelaySeconds) ReinitializableBase(2) {
++    constructor(uint256 _disputeGameFinalityDelaySeconds) ReinitializableBase(6) {
+         DISPUTE_GAME_FINALITY_DELAY_SECONDS = _disputeGameFinalityDelaySeconds;
+         _disableInitializers();
+     }
+@@ -102,4 +102,5 @@ contract AnchorStateRegistry is ProxyAdminOwnedBase, Initializable, Reinitializa
+         systemConfig = _systemConfig;
+         disputeGameFactory = _disputeGameFactory;
+         startingAnchorRoot = _startingAnchorRoot;
++        anchorGame = IDisputeGame(address(0));
+         respectedGameType = _startingRespectedGameType;

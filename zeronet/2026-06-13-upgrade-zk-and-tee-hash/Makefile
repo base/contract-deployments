@@ -11,6 +11,13 @@ UPDATE_VERIFIER_HASHES_SCRIPT_NAME = script/UpdateVerifierHashes.s.sol:UpdateVer
 UPDATE_VERIFIER_HASHES_CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 UPDATE_VERIFIER_HASHES_SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 
+.PHONY: apply-patches
+apply-patches:
+	cd lib/contracts && patch -p1 < ../../patch/asr-reset-anchor-game.patch
+
+.PHONY: deps
+deps: apply-patches
+
 ##
 # Deployment (EOA)
 ##
@@ -20,6 +27,18 @@ ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
 	$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) script/DeployAggregateVerifier.s.sol:DeployAggregateVerifier \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
+		--verifier custom \
+		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) \
+		-vvvv --sender $(DEPLOYER)
+
+.PHONY: deploy-anchor-state-registry
+deploy-anchor-state-registry:
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
+	$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) script/DeployAnchorStateRegistry.s.sol:DeployAnchorStateRegistry \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
 		--verifier custom \
 		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \

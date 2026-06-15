@@ -1,4 +1,4 @@
-# Upgrade ZK and TEE Hash
+# Upgrade ZK and TEE Hash + Anchor Root
 
 Status: READY TO SIGN
 
@@ -8,9 +8,11 @@ Status: READY TO SIGN
 
 ## Description
 
-This task updates the TEE and ZK verifier hashes of the multiproof implementation on `zeronet`.
+This task updates the TEE and ZK verifier hashes of the multiproof implementation on `zeronet` and resets the `AnchorStateRegistry` starting anchor root.
 
 - redeploying `AggregateVerifier` with identical immutables, overriding `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
+- deploying a new `AnchorStateRegistry` implementation with the same finality delay and bumped init version
+- upgrading and reinitializing `AnchorStateRegistry` with `STARTING_ANCHOR_ROOT` / `STARTING_ANCHOR_L2_BLOCK_NUMBER`, clearing the stale `anchorGame`
 - pointing `DisputeGameFactory.gameImpls(gameType)` at the new `AggregateVerifier`
 
 ## Procedure
