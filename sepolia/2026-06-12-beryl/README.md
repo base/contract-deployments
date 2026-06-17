@@ -1,6 +1,6 @@
 # Sepolia Beryl Upgrade
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xd3ca868290c76e2a5a794e16aeb7a037f05ee0b96af60599fd7a548fd31e3046)
 
 ## Description
 
