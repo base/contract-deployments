@@ -10,7 +10,7 @@ Before deploying or generating validation files, verify the configured hashes in
 - `ZK_RANGE_HASH`
 - `ZK_AGGREGATE_HASH`
 
-The placeholder values are intentionally invalid. Replace them before deployment; the scripts also reject zero hashes.
+Confirm these match the final Mainnet Beryl values before deployment; the scripts also reject zero hashes.
 
 ## Deployment Prerequisites
 
