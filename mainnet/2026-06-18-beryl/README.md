@@ -2,6 +2,10 @@
 
 Status: READY TO SIGN
 
+## Transactions
+
+- New `AggregateVerifier` deployment ([`0x1bd8db5139Ba7aC9277684650c15e6E341761919`](https://etherscan.io/address/0x1bd8db5139Ba7aC9277684650c15e6E341761919)): [`0xda9240db370b784bb621aca01937db27256fe9aad73df6555356c6cd36c286b6`](https://etherscan.io/tx/0xda9240db370b784bb621aca01937db27256fe9aad73df6555356c6cd36c286b6) (artefacts: [run-1781824443277.json](./records/DeployAggregateVerifier.s.sol/1/run-1781824443277.json))
+
 ## Description
 
 This task updates the TEE and ZK verifier hashes of the multiproof implementation on Base mainnet.
