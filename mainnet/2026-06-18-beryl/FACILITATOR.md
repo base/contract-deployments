@@ -19,7 +19,7 @@ Before collecting signatures, complete the EOA-authorized phase:
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2026-06-12-beryl
+cd mainnet/2026-06-18-beryl
 make deps
 make deploy-aggregate-verifier VERIFIER_API_KEY=...
 ```
@@ -39,7 +39,7 @@ Expected `addresses.json` keys:
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2026-06-12-beryl
+cd mainnet/2026-06-18-beryl
 make deps
 make gen-validation-update-verifier-hashes-cb
 make gen-validation-update-verifier-hashes-sc
@@ -65,7 +65,7 @@ After `.env`, `addresses.json`, and validation files are final, collect task ori
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2026-06-12-beryl
+cd mainnet/2026-06-18-beryl
 make deps
 ```
 
