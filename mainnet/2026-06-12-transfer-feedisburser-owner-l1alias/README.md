@@ -1,6 +1,6 @@
 # Transfer Mainnet `FeeDisburser` Owner
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x266c1a601a9782dfb340276d0895022764e597be5990aef8f5720ac0e190e9b5)
 
 ## Description
 
