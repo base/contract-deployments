@@ -117,6 +117,7 @@ setup-superchain-config-pause:
 ##
 # Pinned tag for openzeppelin-contracts-upgradeable, installed via clone-oz-upgradeable.
 OZ_UPGRADEABLE_TAG=v4.7.3
+LIB_KECCAK_COMMIT=3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
 .PHONY: deps
 deps: bootstrap-mise install-eip712sign clean-lib forge-deps
@@ -134,6 +135,7 @@ forge-deps:
 	[ -n "$(BASE_CONTRACTS_COMMIT)" ] || (echo "BASE_CONTRACTS_COMMIT must be set in .env" && exit 1)
 	$(MISE_EXEC) forge install --no-git github.com/foundry-rs/forge-std@0844d7e1fc5e60d77b68e469bff60265f236c398 \
 	github.com/Vectorized/solady@502cc1ea718e6fa73b380635ee0868b0740595f0 \
+	github.com/ethereum-optimism/lib-keccak@$(LIB_KECCAK_COMMIT) \
 	github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
 
 ##
