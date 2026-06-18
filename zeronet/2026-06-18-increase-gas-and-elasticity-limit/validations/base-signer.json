@@ -1,0 +1,99 @@
+{
+  "cmd": "NEW_GAS_LIMIT=1200000000 OLD_GAS_LIMIT=25000000 NEW_ELASTICITY=15 OLD_ELASTICITY=0 NEW_DENOMINATOR=100 OLD_DENOMINATOR=0 NEW_DA_FOOTPRINT_GAS_SCALAR=119 OLD_DA_FOOTPRINT_GAS_SCALAR=0 OWNER_SAFE=0x3d59999977e0896ee1f8783bb8251df16fb483e9 SYSTEM_CONFIG=0xcc7c76564bea74a963a0bd75e0bc9bce3ff0ea80 forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net IncreaseEip1559ElasticityAndIncreaseGasLimitScript --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x4f8d38f9f82ae70adbc3fa8ce237d265cd13c68bfc3e62c7d16fa8a76501bb45"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x5e5e7b178f93204cc6904e39e5601c26793a83a4cf578b8f60d318a999ffe268",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000007",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000008",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x758d09f60f742d9c32cae23e9c701bf57bd7bfc992ef1285e5bf9195a45474f3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Approves the transaction hash for execution by the nested CB Signer Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Zeronet",
+      "address": "0xcC7c76564bea74A963A0Bd75E0bC9BcE3FF0EA80",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x00000000000000000000000000000000000c3c9d0000055800000000017d7840",
+          "after": "0x00000000000000000000000000000000000c3c9d000005580000000047868c00",
+          "description": "Updates the gas limit from 25M to 1.2B (lower 64 bits of the packed gas config slot).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000770000000000000000000000000000000f00000064",
+          "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}

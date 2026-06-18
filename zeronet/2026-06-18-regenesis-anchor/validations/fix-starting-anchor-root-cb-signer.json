@@ -1,0 +1,111 @@
+{
+  "cmd": "forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/FixStartingAnchorRoot.s.sol:FixStartingAnchorRoot --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x931E24B032511d8dD029AedeB44837FAc251f3d8",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x0ff6fce4b7c10174db087292441af48396dfad7c508efaf595a6f34c6fcba7fd"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe9540050175d15c3a95106fc8495f17742778c434e1c5f5b6c1ebe00b852c90a",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x6d7df9aa194cec9a6ec1e34c70c8bb742ca231d9226ade7c1a0817a139c311c8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the approval of this task's transaction hash by the CB Signer Safe (nested approver of the Proxy Admin Owner).",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "AnchorStateRegistry - Zeronet",
+      "address": "0x60A6C389F0BC5cE4269A40d9695927bC58700328",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800003",
+          "after": "0x00000000000000000000cc7c76564bea74a963a0bd75e0bc9bce3ff0ea800004",
+          "description": "Runs the AnchorStateRegistry reinitializer for the starting anchor root correction, keeping the packed SystemConfig address unchanged and bumping initVersion from 3 to 4.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x333041604fff095bd1f06c0d4e9294c64522d9a780e5a497559045e724f1f696",
+          "after": "0x4373f15239be5592ac833621e7a4af2e3e1e5bb9212a938613ac5201b1da0539",
+          "description": "Corrects the starting anchor root for the multiproof game type from 0x333041604fff095bd1f06c0d4e9294c64522d9a780e5a497559045e724f1f696 to 0x4373f15239be5592ac833621e7a4af2e3e1e5bb9212a938613ac5201b1da0539.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000097cf8c67e0bca7b55909191a731f4d762c9d5ff1",
+          "after": "0x000000000000000000000000596c4145fb7a5030fb063bfc89ff5d81724d86e7",
+          "description": "Update address of AnchorStateRegistry to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000006",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "baptiste.oueriagli@coinbase.com"
+    }
+  }
+}
