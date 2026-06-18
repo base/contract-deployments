@@ -117,7 +117,7 @@ setup-superchain-config-pause:
 ##
 # Pinned tag for openzeppelin-contracts-upgradeable, installed via clone-oz-upgradeable.
 OZ_UPGRADEABLE_TAG=v4.7.3
-LIB_KECCAK_COMMIT=b1c60dc34b927e69be7e2281cc07dc065409e1fe
+LIB_KECCAK_COMMIT=3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
 
 .PHONY: deps
 deps: bootstrap-mise install-eip712sign clean-lib forge-deps
