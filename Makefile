@@ -174,6 +174,7 @@ SIGNATURE_DIR ?= $(CURDIR)/../signatures/$(TASK_NAME)
 
 .PHONY: sign-as-task-creator
 sign-as-task-creator: deps-signer-tool
+	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder $(CURDIR) \
@@ -181,6 +182,7 @@ sign-as-task-creator: deps-signer-tool
 
 .PHONY: sign-as-base-facilitator
 sign-as-base-facilitator: deps-signer-tool
+	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder $(CURDIR) \
@@ -189,6 +191,7 @@ sign-as-base-facilitator: deps-signer-tool
 
 .PHONY: sign-as-sc-facilitator
 sign-as-sc-facilitator: deps-signer-tool
+	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder $(CURDIR) \
