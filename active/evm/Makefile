@@ -1,9 +1,18 @@
 include ../../Makefile
 include ../../Multisig.mk
-include ../.env
-include .env
+include config/mainnet/network.env
+include config/mainnet/.env
+
+export BASE_CONTRACTS_COMMIT
+export GAME_TYPE
+export TEE_IMAGE_HASH
+export ZK_RANGE_HASH
+export ZK_AGGREGATE_HASH
 
 SIGNER_TOOL_PATH = ../../signer-tool
+VALIDATIONS_DIR = $(CURDIR)/config/mainnet/validations
+TASK_ORIGIN_DIR = $(CURDIR)/config/mainnet
+SIGNATURE_DIR = $(CURDIR)/config/signatures/mainnet
 RPC_URL = $(L1_RPC_URL)
 
 SCRIPT_NAME = UpdateVerifierHashes

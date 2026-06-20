@@ -19,7 +19,7 @@ Before collecting signatures, complete the EOA-authorized phase:
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2026-06-18-beryl
+cd active/evm
 make deps
 make deploy-aggregate-verifier VERIFIER_API_KEY=...
 ```
@@ -39,7 +39,7 @@ Expected `addresses.json` keys:
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2026-06-18-beryl
+cd active/evm
 make deps
 make gen-validation-update-verifier-hashes-cb
 make gen-validation-update-verifier-hashes-sc
@@ -47,8 +47,8 @@ make gen-validation-update-verifier-hashes-sc
 
 This produces:
 
-- `validations/coinbase-signer.json`
-- `validations/security-council-signer.json`
+- `config/mainnet/validations/coinbase-signer.json`
+- `config/mainnet/validations/security-council-signer.json`
 
 Do not generate validation files until `.env` and `addresses.json` are final.
 
@@ -56,7 +56,7 @@ Mainnet validation files must not contain `skipTaskOriginValidation`.
 
 ## Collect Task Origin Signatures
 
-After `.env`, `addresses.json`, and validation files are final, collect task origin signatures. Follow `TASK_ORIGIN.md`.
+After `config/mainnet/.env`, `addresses.json`, and validation files are final, collect task origin signatures. Follow `config/mainnet/TASK_ORIGIN.md`.
 
 ## Execute The Transaction
 
@@ -65,7 +65,7 @@ After `.env`, `addresses.json`, and validation files are final, collect task ori
 ```bash
 cd contract-deployments
 git pull
-cd mainnet/2026-06-18-beryl
+cd active/evm
 make deps
 ```
 

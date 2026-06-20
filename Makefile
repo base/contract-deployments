@@ -141,7 +141,7 @@ forge-deps:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=8b50397aa06533e2ccbad1fe8b0694367177d87f
+SIGNER_TOOL_COMMIT=d746230df4a919305592fb3714c27a3dd955994a
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool
@@ -167,9 +167,10 @@ sign-task: bootstrap-mise checkout-signer-tool
 	$(MISE_EXEC) npm run dev
 
 # Task origin signature variables (auto-derived, overridable).
-# These targets are designed to be invoked from task subdirectories
-# (e.g. sepolia/2026-02-19-superchain-separation/) that include this Makefile.
+# Legacy task subdirectories sign their own folder by default. The active EVM
+# task overrides TASK_ORIGIN_DIR to sign active/evm/config/mainnet.
 TASK_NAME ?= $(notdir $(CURDIR))
+TASK_ORIGIN_DIR ?= $(CURDIR)
 SIGNATURE_DIR ?= $(CURDIR)/../signatures/$(TASK_NAME)
 
 .PHONY: sign-as-task-creator
@@ -177,16 +178,16 @@ sign-as-task-creator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder $(CURDIR) \
-		--signature-path $(SIGNATURE_DIR)
+		--task-folder "$(TASK_ORIGIN_DIR)" \
+		--signature-path "$(SIGNATURE_DIR)"
 
 .PHONY: sign-as-base-facilitator
 sign-as-base-facilitator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder $(CURDIR) \
-		--signature-path $(SIGNATURE_DIR) \
+		--task-folder "$(TASK_ORIGIN_DIR)" \
+		--signature-path "$(SIGNATURE_DIR)" \
 		--facilitator base
 
 .PHONY: sign-as-sc-facilitator
@@ -194,6 +195,6 @@ sign-as-sc-facilitator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder $(CURDIR) \
-		--signature-path $(SIGNATURE_DIR) \
+		--task-folder "$(TASK_ORIGIN_DIR)" \
+		--signature-path "$(SIGNATURE_DIR)" \
 		--facilitator security-council
