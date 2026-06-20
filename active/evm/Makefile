@@ -18,7 +18,7 @@ TASK_ORIGIN_DIR = $(CURDIR)/config/$(TASK_NETWORK)
 SIGNATURE_DIR = $(CURDIR)/config/$(TASK_NETWORK)/signatures
 RPC_URL = $(L1_RPC_URL)
 
-SCRIPT_NAME = UpdateVerifierHashes
+SCRIPT_NAME = script/common/verifier-update/UpdateVerifierHashes.s.sol:UpdateVerifierHashes
 CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 UPDATE_VERIFIER_HASHES_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) DISPUTE_GAME_FACTORY_PROXY=$(DISPUTE_GAME_FACTORY_PROXY) GAME_TYPE=$(GAME_TYPE) TEE_IMAGE_HASH=$(TEE_IMAGE_HASH) ZK_RANGE_HASH=$(ZK_RANGE_HASH) ZK_AGGREGATE_HASH=$(ZK_AGGREGATE_HASH)
@@ -31,7 +31,7 @@ deploy-aggregate-verifier:
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
-	$(MISE_EXEC) forge script --rpc-url $(RPC_URL) script/DeployAggregateVerifier.s.sol:DeployAggregateVerifier \
+	$(MISE_EXEC) forge script --rpc-url $(RPC_URL) script/common/verifier-update/DeployAggregateVerifier.s.sol:DeployAggregateVerifier \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
 		--verifier custom \
 		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \

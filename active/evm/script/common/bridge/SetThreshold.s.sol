@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.15;
+pragma solidity 0.8.28;
 
 import {Vm} from "forge-std/Vm.sol";
 
-import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
-import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
+import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
+import {MultisigScript, Enum} from "@base-contracts/scripts/universal/MultisigScript.sol";
 
 interface IOptimismPortal2 {
     function depositTransaction(address _to, uint256 _value, uint64 _gasLimit, bool _isCreation, bytes memory _data)
@@ -13,24 +12,24 @@ interface IOptimismPortal2 {
         payable;
 }
 
-interface IBridge {
-    function setPaused(bool) external;
+interface IBridgeValidator {
+    function setPartnerThreshold(uint256 newThreshold) external;
 }
 
-contract PauseBridge is MultisigScript {
+contract SetThreshold is MultisigScript {
     address public immutable OWNER_SAFE = vm.envAddress("OWNER_SAFE");
     address public immutable L1_PORTAL = vm.envAddress("L1_PORTAL");
-    address public immutable L2_BRIDGE = vm.envAddress("L2_BRIDGE");
-    bool public immutable IS_PAUSED = vm.envBool("IS_PAUSED");
+    address public immutable L2_BRIDGE_VALIDATOR = vm.envAddress("L2_BRIDGE_VALIDATOR");
+    uint256 public immutable NEW_THRESHOLD = vm.envUint("NEW_THRESHOLD");
 
     function _buildCalls() internal view override returns (Call[] memory) {
         Call[] memory calls = new Call[](1);
 
-        address to = L2_BRIDGE;
+        address to = L2_BRIDGE_VALIDATOR;
         uint256 value = 0;
         uint64 gasLimit = 100_000;
         bool isCreation = false;
-        bytes memory data = abi.encodeCall(IBridge.setPaused, (IS_PAUSED));
+        bytes memory data = abi.encodeCall(IBridgeValidator.setPartnerThreshold, (NEW_THRESHOLD));
 
         calls[0] = Call({
             operation: Enum.Operation.Call,

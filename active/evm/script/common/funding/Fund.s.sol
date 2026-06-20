@@ -3,9 +3,8 @@ pragma solidity 0.8.15;
 
 import {Vm} from "forge-std/Vm.sol";
 
-import {MultisigScript} from "@base-contracts/script/universal/MultisigScript.sol";
-import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-import {Enum} from "@base-contracts/script/universal/IGnosisSafe.sol";
+import {MultisigScript, Enum} from "@base-contracts/scripts/universal/MultisigScript.sol";
+import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
 
 contract FundScript is MultisigScript {
     address internal immutable OWNER_SAFE;
