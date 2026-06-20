@@ -4,7 +4,7 @@ Guide for facilitators managing this task.
 
 ## Verify Hash Inputs
 
-Before deploying or generating validation files, verify the configured hashes in `.env`:
+Before deploying or generating validation files, verify the configured hashes in `config/mainnet/.env`:
 
 - `TEE_IMAGE_HASH`
 - `ZK_RANGE_HASH`
@@ -56,7 +56,15 @@ Mainnet validation files must not contain `skipTaskOriginValidation`.
 
 ## Collect Task Origin Signatures
 
-After `config/mainnet/.env`, `addresses.json`, and validation files are final, collect task origin signatures. Follow `config/mainnet/TASK_ORIGIN.md`.
+After `config/mainnet/.env`, `addresses.json`, and validation files are final, collect task origin signatures. Follow `TASK_ORIGIN.md`.
+
+Mainnet signatures are stored in:
+
+- `config/mainnet/signatures/creator-signature.json`
+- `config/mainnet/signatures/base-facilitator-signature.json`
+- `config/mainnet/signatures/base-sc-facilitator-signature.json`
+
+The sepolia and zeronet configs are copied from mainnet for signer-tool layout demonstration only.
 
 ## Execute The Transaction
 

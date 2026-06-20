@@ -90,9 +90,18 @@ Please note, for some older tasks (that have not yet been adapted to use the sig
 
 ## Network configuration
 
-Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`, `zeronet/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
+Legacy task history lives under `archive/legacy/`. The active EVM task layout keeps network-specific configuration under `active/evm/config/<network>/`.
 
-The network `.env` files contain:
+Each active network config contains a `.env` file for task-specific values and a `network.env` file for contract addresses and network metadata. The active EVM Makefile loads these with `TASK_NETWORK=mainnet` by default:
+
+```makefile
+include config/$(TASK_NETWORK)/network.env
+include config/$(TASK_NETWORK)/.env
+```
+
+For demo or testnet configs, pass `TASK_NETWORK=<network>` when invoking active task targets.
+
+The network `network.env` files contain:
 
 - **Network metadata** — `NETWORK`, `L1_RPC_URL`, `L2_RPC_URL`, `L1_CHAIN_ID`, `L2_CHAIN_ID`, `LEDGER_ACCOUNT`
 - **Admin addresses** — multisig addresses, proposer, challenger, batch sender, etc.
@@ -187,12 +196,20 @@ The root Makefile provides three targets for generating cryptographic attestatio
 | `make sign-as-base-facilitator` | Attest Base team facilitation                   |
 | `make sign-as-sc-facilitator`   | Attest Security Council facilitation            |
 
-Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. This directory is created automatically when you run any `setup-*` target (in both the root and Solana Makefiles), so it is ready for the signing tool when you invoke one of the targets below. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
+Legacy task directories store signatures in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. The active EVM layout overrides this and stores task origin signatures with the selected network config:
+
+```text
+active/evm/config/<network>/signatures/
+```
+
+The task origin folder is `active/evm/config/<network>`. The signer tool excludes the nested `signatures/` directory from the task-origin tarball, so generating signatures does not change the signed payload. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
 
 | Variable        | Default                                    | Description                           |
 | --------------- | ------------------------------------------ | ------------------------------------- |
 | `TASK_NAME`     | `$(notdir $(CURDIR))` (directory basename) | Name used to locate signature dir     |
 | `SIGNATURE_DIR` | `$(CURDIR)/../signatures/$(TASK_NAME)`     | Directory where signatures are stored |
+
+The active EVM Makefile also overrides `TASK_ORIGIN_DIR` to `$(CURDIR)/config/$(TASK_NETWORK)`.
 
 All three targets depend on `deps-signer-tool`, which checks out and installs the [task-signing-tool](https://github.com/base/task-signing-tool) automatically.
 

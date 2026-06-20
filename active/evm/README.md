@@ -13,7 +13,11 @@ This task updates the TEE and ZK verifier hashes of the multiproof implementatio
 - redeploying `AggregateVerifier` with identical immutables, overriding `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
 - pointing `DisputeGameFactory.gameImpls(gameType)` at the new `AggregateVerifier`
 
-The final Mainnet Beryl hash values are configured in `.env`.
+The final Mainnet Beryl hash values are configured in `config/mainnet/.env`.
+
+## Demo Networks
+
+The sepolia and zeronet configs in this branch are copied from mainnet for signer-tool layout demonstration only. They are not independent testnet upgrade tasks.
 
 ## Procedure
 
