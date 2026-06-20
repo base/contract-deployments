@@ -19,7 +19,6 @@ This task updates the TEE and ZK verifier hashes of the multiproof implementatio
 git pull
 cd sepolia/2026-06-12-beryl
 
-```
 
 #### 2. Run signing tool
 
