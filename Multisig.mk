@@ -43,6 +43,7 @@ $(if $(strip $(1)),,$(error MULTISIG_EXECUTE macro error: Execution signatures p
         --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 endef
 
+
 # ---------- Validation file generation ----------
 
 # GEN_VALIDATION: Generate a validation JSON file for multisig signing.
