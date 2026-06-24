@@ -2,27 +2,21 @@
 
 Full L1 system deployment on zeronet using `SystemDeploy.s.sol` from the sibling `contracts/` repo.
 
-## Prerequisites
-
-Fill in all `"TODO"` placeholders in `deploy-config/zeronet.json` before running:
-
-| Field | How to obtain |
-|---|---|
-| `finalSystemOwner` | Confirm with team (likely `PROXY_ADMIN_OWNER` or `CB_MULTISIG`) |
-| `superchainConfigGuardian` | Confirm with team |
-| `p2pSequencerAddress` | Check zeronet node config |
-| `sp1Verifier` | Confirm verifier contract address |
-| `baseFeeVaultRecipient` / `l1FeeVaultRecipient` / etc. | Confirm fee recipient addresses |
-| `operatorFeeVaultRecipient` / `sequencerFeeVaultRecipient` | Confirm fee recipient addresses |
-| `l2OutputOracleStartingTimestamp` | Genesis timestamp from chain config |
-| `multiproofConfigHash` | Compute from multiproof config |
-| `multiproofGenesisOutputRoot` | Fetch from chain at genesis block |
-| `zkRangeHash` | `cast call <AGGREGATE_VERIFIER> "zkRangeHash()(bytes32)" --rpc-url <L1_RPC_URL>` |
-| `zkAggregationHash` | `cast call <AGGREGATE_VERIFIER> "zkAggregationHash()(bytes32)" --rpc-url <L1_RPC_URL>` |
-
-Active AggregateVerifier on zeronet: check `zeronet/.env` or existing task outputs.
 
 ## Steps
+
+### 0. Refresh genesis anchor values before executing
+
+`multiproofGenesisBlockNumber` and `multiproofGenesisOutputRoot` must point to a block that is still available in the proof node at the time of deployment. Refresh them immediately before running `make simulate` or `make deploy`:
+
+```sh
+BLOCK=$(cast rpc optimism_syncStatus --rpc-url https://base-zeronet-reth-proofs-donotuse.cbhq.net:7545 | jq -r '.finalized_l2.number')
+OUTPUT_ROOT=$(cast rpc optimism_outputAtBlock "$(printf '0x%x' "$BLOCK")" --rpc-url https://base-zeronet-reth-rpc-donotuse.cbhq.net:7545 | jq -r '.outputRoot')
+echo "multiproofGenesisBlockNumber: $BLOCK"
+echo "multiproofGenesisOutputRoot:  $OUTPUT_ROOT"
+```
+
+Update `deploy-config/zeronet.json` with the printed values before proceeding.
 
 ### 1. Simulate (no broadcast)
 
@@ -30,21 +24,8 @@ Active AggregateVerifier on zeronet: check `zeronet/.env` or existing task outpu
 make simulate
 ```
 
-Runs the deployment script against the live L1 RPC without broadcasting any transactions. Use this to validate configuration before spending gas.
-
 ### 2. Deploy (broadcast via Ledger)
 
 ```sh
 make deploy
 ```
-
-Broadcasts all transactions. Requires a Ledger connected and unlocked at account index `LEDGER_ACCOUNT` (set in `zeronet/.env`).
-
-## Output
-
-Broadcast records are written by Foundry to the contracts repo under:
-```
-contracts/broadcast/SystemDeploy.s.sol/<l1ChainId>/run-latest.json
-```
-
-Record deployed contract addresses from there and update `zeronet/.env` as needed.
