@@ -26,7 +26,7 @@
   "operatorFeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
   "operatorFeeVaultRecipient": "0x856611ed7e07d83243b15e93f6321f2df6865852",
   "operatorFeeVaultWithdrawalNetwork": 0,
-  "p2pSequencerAddress": "TODO",
+  "p2pSequencerAddress": "0xcf17274338d3128f6C96d9af54511a17e8b38a08",
   "proofMaturityDelaySeconds": 604800,
   "proxyAdminOwner": "0x3d59999977e0896ee1f8783bb8251df16fb483e9",
   "respectedGameType": 621,
