@@ -17,10 +17,10 @@
   "l2OutputOracleStartingBlockNumber": 0,
   "l2OutputOracleStartingTimestamp": 0,
   "multiproofBlockInterval": 600,
-  "multiproofConfigHash": "TODO",
+  "multiproofConfigHash": "0xab64b3118d2d030a3fd3fe3005239a2f332e48848bbedddca9e10df77ac7303e",
   "multiproofGameType": 621,
-  "multiproofGenesisBlockNumber": 0,
-  "multiproofGenesisOutputRoot": "TODO",
+  "multiproofGenesisBlockNumber": 3792549,
+  "multiproofGenesisOutputRoot": "0x11eac1622a097a1cb3ca9db19ec1552113836e5905620a73cebb9e5adc8b415d",
   "multiproofIntermediateBlockInterval": 30,
   "nitroEnclaveVerifier": "0x4e3E30E148E803667913bE97A8ce9EBA39b65563",
   "operatorFeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
@@ -39,6 +39,6 @@
   "teeChallenger": "0xad3b1402b3ec6a23c3913258d3811f132e7e35e0",
   "teeImageHash": "0x0f4c9f7b78162181ab5091680885fd8b657d67dd5aa4a466c78dbf3763ffcfab",
   "teeProposer": "0x5679a6b3817a014d6f3dcd64569d6858f4e92f5e",
-  "zkAggregationHash": "TODO",
-  "zkRangeHash": "TODO"
+  "zkAggregationHash": "0x0079eb47fae3287155f38d8733a2f809fcbb28da00063330d3db126a0fb0f274",
+  "zkRangeHash": "0x0d561a5146c64c983616b7433ad3a4244298c85f27b724d239167ffb1720c160"
 }
