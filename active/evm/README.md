@@ -1,48 +1,39 @@
-# Mainnet Beryl Upgrade
+# Active EVM Tasks
 
-Status: READY TO SIGN
+Active EVM tasks live under `tasks/<task-id>/`. Shared Foundry setup and reusable scripts stay at this `active/evm` root so multiple active tasks can use the same `script/common/<category>/` implementations.
 
-## Transactions
+## Layout
 
-- New `AggregateVerifier` deployment ([`0x1bd8db5139Ba7aC9277684650c15e6E341761919`](https://etherscan.io/address/0x1bd8db5139Ba7aC9277684650c15e6E341761919)): [`0xda9240db370b784bb621aca01937db27256fe9aad73df6555356c6cd36c286b6`](https://etherscan.io/tx/0xda9240db370b784bb621aca01937db27256fe9aad73df6555356c6cd36c286b6) (artefacts: [run-1781824443277.json](./records/DeployAggregateVerifier.s.sol/1/run-1781824443277.json))
-
-## Description
-
-This task updates the TEE and ZK verifier hashes of the multiproof implementation on Base mainnet.
-
-- redeploying `AggregateVerifier` with identical immutables, overriding `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
-- pointing `DisputeGameFactory.gameImpls(gameType)` at the new `AggregateVerifier`
-
-The final Mainnet Beryl hash values are configured in `config/mainnet/.env`.
-
-## Demo Networks
-
-The sepolia and zeronet configs in this branch are copied from mainnet for signer-tool layout demonstration only. They are not independent testnet upgrade tasks.
-
-## Procedure
-
-### Sign task
-
-#### 1. Update repo
-
-```bash
-cd contract-deployments
-git pull
+```text
+active/evm/
+  foundry.toml
+  Makefile
+  script/common/
+  tasks/
+    2026-06-18-beryl-1/
+      README.md
+      FACILITATOR.md
+      addresses.json
+      config/<network>/
+        .env
+        network.env
+        validations/
+        signatures/
+    2026-06-18-beryl-2/
+      ...
 ```
 
-#### 2. Run signing tool
+## Running A Task
+
+Run task commands from `active/evm` and select the task with `TASK_ID`:
 
 ```bash
-make sign-task
+cd active/evm
+TASK_ID=2026-06-18-beryl-1 TASK_NETWORK=mainnet make gen-validation-update-verifier-hashes-cb
 ```
 
-#### 3. Open the UI at [http://localhost:3000](http://localhost:3000)
+The root Makefile runs Forge from `active/evm`, while task-specific files are read from `tasks/<task-id>/`. Common scripts that need task-local artifacts receive paths through environment variables such as `ADDRESSES_JSON=tasks/<task-id>/addresses.json`.
 
-- Select the correct signer role from the list of available users to sign.
-- After completion, close the signer tool with `Ctrl + C`.
+## Demo Tasks
 
-#### 4. Send signature to facilitator
-
-Copy the signature output and send it to the designated facilitator via the agreed communication channel.
-
-For facilitator instructions, see `FACILITATOR.md`.
+`2026-06-18-beryl-1` and `2026-06-18-beryl-2` are duplicated from the same Beryl task so the signer UI can exercise multiple active task discovery on this branch.

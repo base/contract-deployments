@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-Demo copy of the Mainnet Beryl signer-tool config. This is present only to exercise the `active/evm/config/<network>` layout in the signer UI.
+Demo copy of the Mainnet Beryl signer-tool config. This is present only to exercise the `active/evm/tasks/<task-id>/config/<network>` layout in the signer UI.
 
 ## Notes
 

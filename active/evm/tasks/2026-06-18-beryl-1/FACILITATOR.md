@@ -21,14 +21,14 @@ cd contract-deployments
 git pull
 cd active/evm
 make deps
-make deploy-aggregate-verifier VERIFIER_API_KEY=...
+TASK_ID=2026-06-18-beryl-1 make deploy-aggregate-verifier VERIFIER_API_KEY=...
 ```
 
 `make deploy-aggregate-verifier` runs `DeployAggregateVerifier`:
 
 - redeploys `AggregateVerifier` with the same immutables as the existing one, overriding `TEE_IMAGE_HASH`, `ZK_RANGE_HASH`, and `ZK_AGGREGATE_HASH`
 - reuses the existing `TEE_VERIFIER` and `ZK_VERIFIER` from the current onchain `AggregateVerifier`
-- writes `aggregateVerifier` to `addresses.json`
+- writes `aggregateVerifier` to `tasks/2026-06-18-beryl-1/addresses.json`
 
 Expected `addresses.json` keys:
 
@@ -41,14 +41,14 @@ cd contract-deployments
 git pull
 cd active/evm
 make deps
-make gen-validation-update-verifier-hashes-cb
-make gen-validation-update-verifier-hashes-sc
+TASK_ID=2026-06-18-beryl-1 make gen-validation-update-verifier-hashes-cb
+TASK_ID=2026-06-18-beryl-1 make gen-validation-update-verifier-hashes-sc
 ```
 
 This produces:
 
-- `config/mainnet/validations/coinbase-signer.json`
-- `config/mainnet/validations/security-council-signer.json`
+- `tasks/2026-06-18-beryl-1/config/mainnet/validations/coinbase-signer.json`
+- `tasks/2026-06-18-beryl-1/config/mainnet/validations/security-council-signer.json`
 
 Do not generate validation files until `.env` and `addresses.json` are final.
 
@@ -60,9 +60,9 @@ After `config/mainnet/.env`, `addresses.json`, and validation files are final, c
 
 Mainnet signatures are stored in:
 
-- `config/mainnet/signatures/creator-signature.json`
-- `config/mainnet/signatures/base-facilitator-signature.json`
-- `config/mainnet/signatures/base-sc-facilitator-signature.json`
+- `tasks/2026-06-18-beryl-1/config/mainnet/signatures/creator-signature.json`
+- `tasks/2026-06-18-beryl-1/config/mainnet/signatures/base-facilitator-signature.json`
+- `tasks/2026-06-18-beryl-1/config/mainnet/signatures/base-sc-facilitator-signature.json`
 
 The sepolia and zeronet configs are copied from mainnet for signer-tool layout demonstration only.
 
@@ -88,7 +88,7 @@ export SIGNATURES="[SIGNATURE1][SIGNATURE2]..."
 Then run:
 
 ```bash
-SIGNATURES=$SIGNATURES make approve-update-verifier-hashes-cb
+SIGNATURES=$SIGNATURES TASK_ID=2026-06-18-beryl-1 make approve-update-verifier-hashes-cb
 ```
 
 ### 3. Collect signatures for `BASE_SECURITY_COUNCIL`
@@ -102,11 +102,11 @@ export SIGNATURES="[SIGNATURE1][SIGNATURE2]..."
 Then run:
 
 ```bash
-SIGNATURES=$SIGNATURES make approve-update-verifier-hashes-sc
+SIGNATURES=$SIGNATURES TASK_ID=2026-06-18-beryl-1 make approve-update-verifier-hashes-sc
 ```
 
 ### 4. Execute upgrade batch
 
 ```bash
-make execute-update-verifier-hashes
+TASK_ID=2026-06-18-beryl-1 make execute-update-verifier-hashes
 ```

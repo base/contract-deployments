@@ -72,7 +72,7 @@ This is purely a convenience for task authors — `make` targets work correctly 
 
 ### Running a task
 
-Active EVM work lives under `active/evm`. Network-specific config lives under `active/evm/config/<network>`, and reusable scripts live under `active/evm/script/common/<category>`.
+Active EVM work lives under `active/evm`. Network-specific config lives under `active/evm/tasks/<task-id>/config/<network>`, and reusable scripts live under `active/evm/script/common/<category>`.
 
 For the current active task:
 
@@ -82,22 +82,22 @@ make deps
 make sign-task
 ```
 
-For non-default network config, pass `TASK_NETWORK=<network>` to task targets.
+For non-default active EVM task or network config, pass `TASK_ID=<task-id>` and `TASK_NETWORK=<network>` to task targets.
 
 Common scripts are documented in [`active/evm/script/common/README.md`](active/evm/script/common/README.md). If a script will be used regularly, put it under the appropriate category folder in `script/common/`; keep one-off task-specific scripts outside `common/`.
 
 ## Network configuration
 
-Legacy task history lives under `archive/legacy/`. The active EVM task layout keeps network-specific configuration under `active/evm/config/<network>/`.
+Legacy task history lives under `archive/legacy/`. The active EVM task layout keeps network-specific configuration under `active/evm/tasks/<task-id>/config/<network>/`.
 
-Each active network config contains a `.env` file for task-specific values and a `network.env` file for contract addresses and network metadata. The active EVM Makefile loads these with `TASK_NETWORK=mainnet` by default:
+Each active network config contains a `.env` file for task-specific values and a `network.env` file for contract addresses and network metadata. The active EVM Makefile loads these with `TASK_ID=2026-06-18-beryl-1` and `TASK_NETWORK=mainnet` by default:
 
 ```makefile
-include config/$(TASK_NETWORK)/network.env
-include config/$(TASK_NETWORK)/.env
+include $(TASK_DIR)/config/$(TASK_NETWORK)/network.env
+include $(TASK_DIR)/config/$(TASK_NETWORK)/.env
 ```
 
-For demo or testnet configs, pass `TASK_NETWORK=<network>` when invoking active task targets.
+For other active tasks, demo configs, or testnet configs, pass `TASK_ID=<task-id>` and `TASK_NETWORK=<network>` when invoking active task targets.
 
 The network `network.env` files contain:
 
@@ -172,16 +172,16 @@ The root Makefile provides three targets for generating cryptographic attestatio
 Legacy task directories store signatures in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. The active EVM layout overrides this and stores task origin signatures with the selected network config:
 
 ```text
-active/evm/config/<network>/signatures/
+active/evm/tasks/<task-id>/config/<network>/signatures/
 ```
 
-The task origin folder is `active/evm/config/<network>`. The signer tool excludes the nested `signatures/` directory from the task-origin tarball, so generating signatures does not change the signed payload. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
+The task origin folder is `active/evm/tasks/<task-id>/config/<network>`. The signer tool excludes the nested `signatures/` directory from the task-origin tarball, so generating signatures does not change the signed payload. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
 
 | Variable        | Default                                    | Description                           |
 | --------------- | ------------------------------------------ | ------------------------------------- |
 | `TASK_NAME`     | `$(notdir $(CURDIR))` (directory basename) | Name used to locate signature dir     |
 | `SIGNATURE_DIR` | `$(CURDIR)/../signatures/$(TASK_NAME)`     | Directory where signatures are stored |
 
-The active EVM Makefile also overrides `TASK_ORIGIN_DIR` to `$(CURDIR)/config/$(TASK_NETWORK)`.
+The active EVM Makefile also overrides `TASK_ORIGIN_DIR` to `$(CURDIR)/$(TASK_DIR)/config/$(TASK_NETWORK)`.
 
 All three targets depend on `deps-signer-tool`, which checks out and installs the [task-signing-tool](https://github.com/base/task-signing-tool) automatically.

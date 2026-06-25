@@ -80,7 +80,7 @@ forge-deps:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=81535584aaf5de2039cb5937db01cefdae673912
+SIGNER_TOOL_COMMIT=96fe71884395834f32d3929ccc8b3ea902202116
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool
@@ -106,8 +106,8 @@ sign-task: bootstrap-mise checkout-signer-tool
 	$(MISE_EXEC) npm run dev
 
 # Task origin signature variables (auto-derived, overridable).
-# Legacy task subdirectories sign their own folder by default. The active EVM
-# task overrides TASK_ORIGIN_DIR to sign active/evm/config/mainnet.
+# Legacy task subdirectories sign their own folder by default. Active EVM tasks
+# override TASK_ORIGIN_DIR to sign active/evm/tasks/<task-id>/config/<network>.
 TASK_NAME ?= $(notdir $(CURDIR))
 TASK_ORIGIN_DIR ?= $(CURDIR)
 SIGNATURE_DIR ?= $(CURDIR)/../signatures/$(TASK_NAME)
