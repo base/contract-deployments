@@ -11,7 +11,6 @@ cd contract-deployments
 git pull
 cd zeronet/2026-07-08-activate-multiproof
 make deps
-make deploy-cb-multicall
 make deploy-nitro-verifier
 make deploy-multiproof
 make setup-nitro
