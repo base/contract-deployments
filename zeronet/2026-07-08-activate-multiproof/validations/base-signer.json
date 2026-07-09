@@ -1,5 +1,5 @@
 {
-  "cmd": "mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 L1_PROXY_ADMIN=0xf2d2c097be80fb87844b7e259ef67efb98b26f87 SYSTEM_CONFIG=0x0a111c7980152bde41d71f48e2e1d8184f5f6187 OPTIMISM_PORTAL=0x7e3b97c95c823f385ff6770411f6e12f8e09ac9b DISPUTE_GAME_FACTORY_PROXY=0xd930e0cebd52d7c77b8f900de242e818506c5474 ANCHOR_STATE_REGISTRY_PROXY=0xbfb20170b82c474b136bc5a062aca47a3cb8cf68 PROPOSER=0x5679a6b3817a014d6f3dcd64569d6858f4e92f5e CHALLENGER=0xad3b1402b3ec6a23c3913258d3811f132e7e35e0 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
   "ledgerId": 1,
   "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
   "skipTaskOriginValidation": true,
