@@ -56,5 +56,6 @@
     }
   ],
   "balanceChanges": [],
-  "skipTaskOriginValidation": true
+  "skipTaskOriginValidation": true,
+  "hideTaskOriginSkippedPage": true
 }

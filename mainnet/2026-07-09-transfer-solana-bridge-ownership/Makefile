@@ -8,7 +8,7 @@ SCRIPT_NAME = TransferSolanaBridgeOwnership
 
 .PHONY: gen-validation
 gen-validation: deps-signer-tool
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),coinbase-signer.json,)
 
 .PHONY: execute
 execute:

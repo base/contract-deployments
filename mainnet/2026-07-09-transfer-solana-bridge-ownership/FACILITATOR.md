@@ -15,7 +15,7 @@ make deps
 make gen-validation
 ```
 
-This produces `validations/base-signer.json`. Check that the `cmd` field uses:
+This produces `validations/coinbase-signer.json`. Check that the `cmd` field uses:
 
 ```text
 --sender 0x6CD3850756b7894774Ab715D136F9dD02837De50
@@ -26,14 +26,15 @@ This produces `validations/base-signer.json`. Check that the `cmd` field uses:
 ### Disable task-origin validation
 
 This task does not ship task-origin signatures. After generating the validation
-file, ensure `validations/base-signer.json` carries the following field at the JSON
-root (add it if the signer-tool did not emit it automatically):
+file, ensure `validations/coinbase-signer.json` carries the following fields at the
+JSON root (add them if the signer-tool did not emit them automatically):
 
 ```json
-"skipTaskOriginValidation": true
+"skipTaskOriginValidation": true,
+"hideTaskOriginSkippedPage": true
 ```
 
-Commit the file only after that field is set; otherwise signers' UI will demand
+Commit the file only after those fields are set; otherwise signers' UI will demand
 task-origin attestations that do not exist for this task.
 
 ## 2. Collect signatures
