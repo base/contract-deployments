@@ -5,7 +5,7 @@ include .env
 
 SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
-DEPLOYER := $(shell cast wallet address --account testnet-admin)
+DEPLOYER = 0x8C1a617BdB47342F9C17Ac8750E0b070c372C721
 ACTIVATE_MULTIPROOF_SCRIPT_NAME = script/ActivateMultiproofStack.s.sol:ActivateMultiproofStack
 MULTIPROOF_CB_SENDER := $(shell cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 MULTIPROOF_SC_SENDER := $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
