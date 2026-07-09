@@ -1,0 +1,15 @@
+{
+  "nitroEnclaveVerifier": "0xe44231D6dCdeeDdb5b781c4Bb24d309b695d9119",
+  "riscZeroSetVerifier": "0x42d9453109e194d929984d31105c294CF67D42B3",
+  "riscZeroVerifierRouter": "0x32Db7dc407AC886807277636a1633A1381748DD8",
+  "teeProverRegistryImpl": "0xbC54b421f508f18B05e70FA7326ac9e7Cb600058",
+  "teeProverRegistryProxy": "0xc5555440ACa82225E98c2E9cD9c3921c96f42205",
+  "teeVerifier": "0x42FA446d95A5B61A7bE02949042954a60315Fb0f",
+  "zkVerifier": "0x482062B4915311fd717015d711a35DA63bdf28cc",
+  "delayedWETHImpl": "0xd33467Cb60a4C0c9F703Fc5cFc3D4313d21C7A3c",
+  "delayedWETHProxy": "0x5af90fdE02b46e202F6232b3eDE25b3F602AC673",
+  "aggregateVerifier": "0xdD3903FB1f91e0f14913399efb98Ca9cbc9936a2",
+  "optimismPortal2Impl": "0xc1ad6D4E8DA1403B9eb6A99491899577050f4863",
+  "disputeGameFactoryImpl": "0x3a0a9E5B91709bbA0bcb4bb4b66730DCfef6E926",
+  "anchorStateRegistryImpl": "0xA96Ea2941F6c6cd143C2F0372B3CBa171eF5A95e"
+}
