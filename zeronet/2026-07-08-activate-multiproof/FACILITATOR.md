@@ -60,7 +60,7 @@ Use `optimism_outputAtBlock` with the same block and compare to `STARTING_ANCHOR
 
 ```bash
 BLOCK=$STARTING_ANCHOR_L2_BLOCK_NUMBER
-OUTPUT_ROOT=$(cast rpc optimism_outputAtBlock $(cast 2h $BLOCK) --rpc-url $OP_NODE_RPC_URL | jq -r '.outputRoot')
+OUTPUT_ROOT=$(cast rpc optimism_outputAtBlock $(cast 2h 629934) --rpc-url https://base-zeronet-reth-mempool-k8s-donotuse.cbhq.net:7545 | jq -r '.outputRoot')
 echo $OUTPUT_ROOT
 echo $STARTING_ANCHOR_ROOT
 ```
