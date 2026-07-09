@@ -5,7 +5,7 @@ include .env
 
 SIGNER_TOOL_PATH = ../../signer-tool
 RPC_URL = $(L1_RPC_URL)
-DEPLOYER = $(shell cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
+DEPLOYER = 0x8C1a617BdB47342F9C17Ac8750E0b070c372C721
 SCRIPT_NAME = script/ReplayTeeRegistryNitroFixes.s.sol:ReplayTeeRegistryNitroFixes
 CB_SENDER := $(shell cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 SC_SENDER := $(shell cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
@@ -41,7 +41,7 @@ ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
 	forge script --rpc-url $(L1_RPC_URL) script/DeployAndSetupNitroFinal.s.sol:DeployAndSetupNitroFinal \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
+		--account testnet-admin --broadcast --verify \
 		--verifier custom \
 		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
 		--verifier-api-key $(VERIFIER_API_KEY) \
@@ -53,7 +53,7 @@ ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
 	forge script --rpc-url $(L1_RPC_URL) script/DeployReplayImplementations.s.sol:DeployReplayImplementations \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
+		--account testnet-admin --broadcast --verify \
 		--verifier custom \
 		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
 		--verifier-api-key $(VERIFIER_API_KEY) \
