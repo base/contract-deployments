@@ -6,7 +6,7 @@
   "expectedDomainAndMessageHashes": {
     "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
     "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
-    "messageHash": "0xd4029dab1eb8dcbe87453a69d4e9c1a056f1dbed890d67eb74f5a72d67acecfc"
+    "messageHash": "0x36c3f6498359b99da56305c6dfb9ebccd5b6ce8be00fa311709d9740fc879134"
   },
   "stateOverrides": [
     {
@@ -32,7 +32,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x011a1afa327ed57ed8525f216de5f6d7becda960612893a641fa3a93de562e9e",
+          "key": "0xfffdfc3365aa25d50ddfd82c80b5db2c7ef292069d000e602f4a5f8624d917cc",
           "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
           "allowDifference": false
@@ -53,7 +53,7 @@
           "allowDifference": false
         },
         {
-          "key": "0x2841d9fb30b10c860b7a7bfca9bf1b2203c62a952a5082202b3e3fa35a6a3abc",
+          "key": "0xe00128e63babaaa019d5d4e100384662a0a3476329b907030fabbab7c2dba47c",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
           "description": "Records the CB Signer Safe approval on the Proxy Admin Owner Safe.",
