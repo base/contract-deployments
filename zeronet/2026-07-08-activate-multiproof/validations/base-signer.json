@@ -101,14 +101,14 @@
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
           "before": "0xdead000000000000000000000000000000000000000000000000000000000000",
-          "after": "0xaaada834ea301486fdf3fc2cb72efa2bbee04bccc29af4d03a4bfbf272a2664a",
+          "after": "0xb0cb707867858a732ba7b0c11b61bd2700c614a65ca68255ddc758f78fcf194d",
           "description": "Sets the starting anchor root for the new multiproof game type.",
           "allowDifference": false
         },
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
-          "after": "0x00000000000000000000000000000000000000000000000000000000000867a4",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000099cae",
           "description": "Sets the starting anchor L2 block number for the new multiproof game type.",
           "allowDifference": false
         },
