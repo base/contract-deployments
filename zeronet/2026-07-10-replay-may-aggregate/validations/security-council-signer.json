@@ -114,7 +114,7 @@
       "changes": [
         {
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
-          "before": "0x000000000000000000000000376bbc764b51fecaeb9a4f6164aaad7809eaf026",
+          "before": "0x00000000000000000000000066c5002e363cffb3928716e6a6a3cc978692513d",
           "after": "0x0000000000000000000000009bb23ba3346348b60feba5ded20c6baee6f64047",
           "description": "Updates `gameImpls[621]` in the DisputeGameFactory to the final replay AggregateVerifier using the replay ZkVerifier and SP1 gateway.",
           "allowDifference": false
