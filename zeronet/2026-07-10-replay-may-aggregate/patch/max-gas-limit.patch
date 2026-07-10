@@ -1,0 +1,25 @@
+diff --git a/src/L1/SystemConfig.sol b/src/L1/SystemConfig.sol
+index 1234567..abcdefg 100644
+--- a/src/L1/SystemConfig.sol
++++ b/src/L1/SystemConfig.sol
+@@ -97,7 +97,7 @@ contract SystemConfig is OwnableUpgradeable, ISemver, IOptimismPortalInterop {
+     /// @notice The maximum gas limit that can be set for L2 blocks. This limit is used to enforce that the blocks
+     ///         on L2 are not too large to process and prove. Over time, this value can be increased as various
+     ///         optimizations and improvements are made to the system at large.
+-    uint64 internal constant MAX_GAS_LIMIT = 500_000_000;
++    uint64 internal constant MAX_GAS_LIMIT = 2_000_000_000;
+ 
+     /// @notice Fixed L2 gas overhead. Used as part of the L2 fee calculation.
+     ///         Deprecated since the Ecotone network upgrade
+@@ -172,9 +172,9 @@ contract SystemConfig is OwnableUpgradeable, ISemver, IOptimismPortalInterop {
+     error SystemConfig_InvalidFeatureState();
+ 
+     /// @notice Semantic version.
+-    /// @custom:semver 3.13.2
++    /// @custom:semver 3.13.2+max-gas-limit-2000M
+     function version() public pure virtual returns (string memory) {
+-        return "3.13.2";
++        return "3.13.2+max-gas-limit-2000M";
+     }
+ 
+     /// @notice Constructs the SystemConfig contract.
