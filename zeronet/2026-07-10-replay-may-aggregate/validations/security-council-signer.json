@@ -36,28 +36,28 @@
   ],
   "stateChanges": [
     {
-      "name": "<<ContractName>>",
+      "name": "System Config - Zeronet",
       "address": "0x0a111C7980152bDe41D71f48e2E1d8184f5f6187",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
           "before": "0x00000000000000000000000000000000000c3c9d0000055800000000017d7840",
           "after": "0x00000000000000000000000000000000000c3c9d000005580000000047868c00",
-          "description": "<<Summary>>",
+          "description": "Updates the gas limit from 25M to 1.2B (lower 64 bits of the packed gas config slot).",
           "allowDifference": false
         },
         {
           "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000770000000000000000000000000000000f00000064",
-          "description": "<<Summary>>",
+          "description": "Updates EIP-1559 params (denominator, elasticity) and DA Footprint Gas Scalar for the chain.",
           "allowDifference": false
         },
         {
           "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
           "before": "0x0000000000000000000000002fa28989fc559836e9d66dff3010c7f7f41c65ed",
           "after": "0x000000000000000000000000b54d7ff110995029b89a0045128cae42c931aa83",
-          "description": "<<Summary>>",
+          "description": "Updates SystemConfig proxy implementation address to the replay implementation with 2B maximum gas limit.",
           "allowDifference": false
         }
       ]
@@ -77,7 +77,7 @@
           "key": "0x59f8a0531fd2366235f8518be263206517f7e615da8753a61cc09c90e3fa235d",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Records the Security Council Safe approval on the Proxy Admin Owner Safe.",
           "allowDifference": false
         }
       ]
@@ -96,27 +96,27 @@
       ]
     },
     {
-      "name": "<<ContractName>>",
+      "name": "SP1VerifierGateway - Zeronet",
       "address": "0xc61E9D7c9c9BF8C62694F55191A697eCC356a6C7",
       "changes": [
         {
           "key": "0x601647bc9d853ef009027ff58015c6988f1fc1ce39301670b10970ca5bde07c6",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
-          "description": "<<Summary>>",
+          "description": "Adds the SP1 verifier route for selector 0x4388a21c to the replay SP1VerifierGateway; the route points to SP1_VERIFIER_ROUTE and remains unfrozen.",
           "allowDifference": false
         }
       ]
     },
     {
-      "name": "<<ContractName>>",
+      "name": "DisputeGameFactory Proxy - Zeronet",
       "address": "0xD930e0cebD52D7C77b8F900dE242E818506C5474",
       "changes": [
         {
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x000000000000000000000000376bbc764b51fecaeb9a4f6164aaad7809eaf026",
           "after": "0x0000000000000000000000009bb23ba3346348b60feba5ded20c6baee6f64047",
-          "description": "<<Summary>>",
+          "description": "Updates `gameImpls[621]` in the DisputeGameFactory to the final replay AggregateVerifier using the replay ZkVerifier and SP1 gateway.",
           "allowDifference": false
         }
       ]
