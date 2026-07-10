@@ -1,6 +1,6 @@
 # Replay TEE Registry and Nitro Fixes
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x8c5e6806da977c3159faa33aac725f7d02c75620f230f2ac243d453940ce0da5)
 
 ## Description
 
