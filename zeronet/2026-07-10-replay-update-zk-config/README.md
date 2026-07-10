@@ -1,6 +1,6 @@
 # Replay Update ZK Config
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x6526df7d2a01724fe7433f3d1f4e34699543f34ce2d95636295756337574d34f)
 
 ## Description
 
