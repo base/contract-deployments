@@ -56,7 +56,7 @@
           "key": "0x5cc61eea073ea02956a982ff716c45a7f7422fd56f67e63a155814a68de97cc1",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Records the CB Signer Safe approval on the Proxy Admin Owner Safe.",
           "allowDifference": false
         }
       ]
@@ -75,14 +75,14 @@
       ]
     },
     {
-      "name": "<<ContractName>>",
+      "name": "DisputeGameFactory Proxy - Zeronet",
       "address": "0xD930e0cebD52D7C77b8F900dE242E818506C5474",
       "changes": [
         {
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x000000000000000000000000376bbc764b51fecaeb9a4f6164aaad7809eaf026",
           "after": "0x00000000000000000000000066c5002e363cffb3928716e6a6a3cc978692513d",
-          "description": "<<Summary>>",
+          "description": "Updates `gameImpls[621]` in the DisputeGameFactory to the replay AggregateVerifier wired to the replay ZkVerifier.",
           "allowDifference": false
         }
       ]
