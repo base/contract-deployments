@@ -12,8 +12,8 @@ import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier
 import {GameType} from "@base-contracts/src/libraries/bridge/Types.sol";
 
 /// @notice Redeploys AggregateVerifier with updated TEE_IMAGE_HASH, ZK_RANGE_HASH,
-/// and ZK_AGGREGATE_HASH. All other immutables are read from the current
-/// onchain AggregateVerifier to guarantee continuity.
+/// ZK_AGGREGATE_HASH, and CONFIG_HASH. All other immutables are read from the
+/// current onchain AggregateVerifier to guarantee continuity.
 contract DeployAggregateVerifier is Script {
     // Task config from .env.
     address internal immutable disputeGameFactoryProxyEnv;
@@ -21,6 +21,7 @@ contract DeployAggregateVerifier is Script {
     bytes32 internal immutable teeImageHashEnv;
     bytes32 internal immutable zkRangeHashEnv;
     bytes32 internal immutable zkAggregateHashEnv;
+    bytes32 internal immutable configHashEnv;
 
     // Live multiproof implementation currently registered in the DGF.
     address internal immutable currentAggregateVerifier;
@@ -31,7 +32,6 @@ contract DeployAggregateVerifier is Script {
     IDelayedWETH internal immutable currentDelayedWeth;
     address internal immutable currentTeeVerifier;
     address internal immutable currentZkVerifier;
-    bytes32 internal immutable currentConfigHash;
     uint256 internal immutable currentL2ChainId;
     uint256 internal immutable currentBlockInterval;
     uint256 internal immutable currentIntermediateBlockInterval;
@@ -45,6 +45,7 @@ contract DeployAggregateVerifier is Script {
         teeImageHashEnv = vm.envBytes32("TEE_IMAGE_HASH");
         zkRangeHashEnv = vm.envBytes32("ZK_RANGE_HASH");
         zkAggregateHashEnv = vm.envBytes32("ZK_AGGREGATE_HASH");
+        configHashEnv = vm.envBytes32("CONFIG_HASH");
 
         currentAggregateVerifier = address(IDisputeGameFactory(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv));
 
@@ -54,7 +55,6 @@ contract DeployAggregateVerifier is Script {
         currentDelayedWeth = currentAggregate.DELAYED_WETH();
         currentTeeVerifier = address(currentAggregate.TEE_VERIFIER());
         currentZkVerifier = address(currentAggregate.ZK_VERIFIER());
-        currentConfigHash = currentAggregate.CONFIG_HASH();
         currentL2ChainId = currentAggregate.L2_CHAIN_ID();
         currentBlockInterval = currentAggregate.BLOCK_INTERVAL();
         currentIntermediateBlockInterval = currentAggregate.INTERMEDIATE_BLOCK_INTERVAL();
@@ -68,12 +68,14 @@ contract DeployAggregateVerifier is Script {
         require(teeImageHashEnv != bytes32(0), "tee image hash not set");
         require(zkRangeHashEnv != bytes32(0), "zk range hash not set");
         require(zkAggregateHashEnv != bytes32(0), "zk aggregate hash not set");
+        require(configHashEnv != bytes32(0), "config hash not set");
 
         AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
         require(
             teeImageHashEnv != currentAggregate.TEE_IMAGE_HASH() || zkRangeHashEnv != currentAggregate.ZK_RANGE_HASH()
-                || zkAggregateHashEnv != currentAggregate.ZK_AGGREGATE_HASH(),
-            "all hashes are identical to the current aggregate verifier"
+                || zkAggregateHashEnv != currentAggregate.ZK_AGGREGATE_HASH()
+                || configHashEnv != currentAggregate.CONFIG_HASH(),
+            "all config values are identical to the current aggregate verifier"
         );
     }
 
@@ -89,7 +91,7 @@ contract DeployAggregateVerifier is Script {
                 zkVerifier: IVerifier(currentZkVerifier),
                 teeImageHash: teeImageHashEnv,
                 zkHashes: AggregateVerifier.ZkHashes({rangeHash: zkRangeHashEnv, aggregateHash: zkAggregateHashEnv}),
-                configHash: currentConfigHash,
+                configHash: configHashEnv,
                 l2ChainId: currentL2ChainId,
                 blockInterval: currentBlockInterval,
                 intermediateBlockInterval: currentIntermediateBlockInterval
@@ -119,7 +121,7 @@ contract DeployAggregateVerifier is Script {
         require(address(av.DELAYED_WETH()) == address(currentDelayedWeth), "aggregate delayed weth mismatch");
         require(address(av.TEE_VERIFIER()) == currentTeeVerifier, "aggregate tee verifier mismatch");
         require(address(av.ZK_VERIFIER()) == currentZkVerifier, "aggregate zk verifier mismatch");
-        require(av.CONFIG_HASH() == currentConfigHash, "aggregate config hash mismatch");
+        require(av.CONFIG_HASH() == configHashEnv, "aggregate config hash mismatch");
         require(av.L2_CHAIN_ID() == currentL2ChainId, "aggregate l2 chain id mismatch");
         require(av.BLOCK_INTERVAL() == currentBlockInterval, "aggregate block interval mismatch");
         require(

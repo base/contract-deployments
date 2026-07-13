@@ -22,6 +22,7 @@ contract ReplayJuneAggregate is MultisigScript {
     bytes32 internal immutable teeImageHashEnv;
     bytes32 internal immutable zkRangeHashEnv;
     bytes32 internal immutable zkAggregateHashEnv;
+    bytes32 internal immutable configHashEnv;
 
     address internal immutable currentAggregateVerifier;
     address internal immutable nextAggregateVerifier;
@@ -34,6 +35,7 @@ contract ReplayJuneAggregate is MultisigScript {
         teeImageHashEnv = vm.envBytes32("TEE_IMAGE_HASH");
         zkRangeHashEnv = vm.envBytes32("ZK_RANGE_HASH");
         zkAggregateHashEnv = vm.envBytes32("ZK_AGGREGATE_HASH");
+        configHashEnv = vm.envBytes32("CONFIG_HASH");
 
         currentAggregateVerifier = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv);
 
@@ -90,6 +92,7 @@ contract ReplayJuneAggregate is MultisigScript {
         require(nextAggregate.TEE_IMAGE_HASH() == teeImageHashEnv, "next aggregate tee image hash mismatch");
         require(nextAggregate.ZK_RANGE_HASH() == zkRangeHashEnv, "next aggregate zk range hash mismatch");
         require(nextAggregate.ZK_AGGREGATE_HASH() == zkAggregateHashEnv, "next aggregate zk aggregate hash mismatch");
+        require(nextAggregate.CONFIG_HASH() == configHashEnv, "next aggregate config hash mismatch");
     }
 
     function _assertImmutableContinuity(AggregateVerifier currentAggregate, AggregateVerifier nextAggregate)
@@ -116,7 +119,6 @@ contract ReplayJuneAggregate is MultisigScript {
             address(nextAggregate.ZK_VERIFIER()) == address(currentAggregate.ZK_VERIFIER()),
             "next aggregate zk verifier mismatch"
         );
-        require(nextAggregate.CONFIG_HASH() == currentAggregate.CONFIG_HASH(), "next aggregate config hash mismatch");
         require(nextAggregate.L2_CHAIN_ID() == currentAggregate.L2_CHAIN_ID(), "next aggregate l2 chain id mismatch");
         require(
             nextAggregate.BLOCK_INTERVAL() == currentAggregate.BLOCK_INTERVAL(),

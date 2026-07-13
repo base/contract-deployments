@@ -10,7 +10,7 @@ This task replays the June Zeronet historical tasks that share `BASE_CONTRACTS_C
 - `2026-06-09-upgrade-zk-and-tee-hash`
 - `2026-06-13-upgrade-zk-and-tee-hash`
 
-It deploys one final replay `AggregateVerifier` with the final TEE and ZK hashes from the June task group, then points `DisputeGameFactory.gameImpls(gameType)` at it.
+It deploys one final replay `AggregateVerifier` with the final TEE, ZK, and config hashes from the June task group, then points `DisputeGameFactory.gameImpls(gameType)` at it.
 
 ## Procedure
 
