@@ -9,7 +9,7 @@ Before collecting signatures, deploy the replay contract:
 ```bash
 cd contract-deployments
 git pull
-cd zeronet/2026-07-10-replay-june-aggregate
+cd zeronet/2026-07-13-replay-june-aggregate
 make deps
 make deploy
 ```
@@ -25,7 +25,7 @@ Expected `addresses.json` keys:
 ```bash
 cd contract-deployments
 git pull
-cd zeronet/2026-07-10-replay-june-aggregate
+cd zeronet/2026-07-13-replay-june-aggregate
 make deps
 make gen-validation-cb
 make gen-validation-sc
@@ -43,7 +43,7 @@ This produces:
 ```bash
 cd contract-deployments
 git pull
-cd zeronet/2026-07-10-replay-june-aggregate
+cd zeronet/2026-07-13-replay-june-aggregate
 make deps
 ```
 
