@@ -1,6 +1,6 @@
 # Replay June Aggregate
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x605604d4e228834efb5ab8266518d7c4ef3827073d77ed30d168104b3b729ea2)
 
 ## Description
 
