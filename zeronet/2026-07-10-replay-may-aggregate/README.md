@@ -1,6 +1,8 @@
 # Replay May Aggregate
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xd9962f7985b37204cf51ae033b21dc572761beaf2f218965b270b45fb3f35846)
+
+Nitro status: [EXECUTED](https://hoodi.etherscan.io/tx/0x61c5eceae86597714a77484ba68f795fe308c6cbace9b5f7bb4877c4f44b1e67)
 
 ## Description
 
