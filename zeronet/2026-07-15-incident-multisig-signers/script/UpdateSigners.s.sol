@@ -4,8 +4,8 @@ pragma solidity 0.8.15;
 import {Vm} from "forge-std/Vm.sol";
 import {stdJson} from "forge-std/StdJson.sol";
 
-import {MultisigScript, Enum} from "@base-contracts/script/universal/MultisigScript.sol";
-import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
+import {MultisigScript, Enum} from "@base-contracts/scripts/universal/MultisigScript.sol";
+import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
 import {GnosisSafe} from "safe-smart-account/GnosisSafe.sol";
 import {OwnerManager} from "safe-smart-account/base/OwnerManager.sol";
 
