@@ -1,6 +1,6 @@
 # Replay May Aggregate
 
-Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xd9962f7985b37204cf51ae033b21dc572761beaf2f218965b270b45fb3f35846)
+Status: READY TO SIGN
 
 ## Description
 
