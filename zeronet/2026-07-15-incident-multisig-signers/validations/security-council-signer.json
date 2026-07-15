@@ -2,7 +2,6 @@
   "cmd": "OWNER_SAFE=0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpdateSigners.s.sol:UpdateSigners --sig sign(address[]) [] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
   "ledgerId": 1,
   "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
-  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
     "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
@@ -87,9 +86,5 @@
     }
   ],
   "balanceChanges": [],
-  "taskOriginConfig": {
-    "taskCreator": {
-      "commonName": "leopold.joy@coinbase.com"
-    }
-  }
+  "skipTaskOriginValidation": true
 }
