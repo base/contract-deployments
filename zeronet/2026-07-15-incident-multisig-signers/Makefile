@@ -16,6 +16,13 @@ validate-config:
 	@test -n "$(OWNER_SAFE)" || (echo "OWNER_SAFE required" && exit 1)
 	@test -n "$(SECURITY_COUNCIL_SAFE)" || (echo "SECURITY_COUNCIL_SAFE required" && exit 1)
 
+.PHONY: deps
+deps: task-extra-deps
+
+.PHONY: task-extra-deps
+task-extra-deps:
+	$(MISE_EXEC) forge install --no-git safe-global/safe-smart-account@186a21a74b327f17fc41217a927dea7064f74604
+
 .PHONY: gen-validation
 gen-validation: gen-validation-incident gen-validation-security-council
 

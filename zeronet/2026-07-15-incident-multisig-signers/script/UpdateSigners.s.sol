@@ -6,14 +6,8 @@ import {stdJson} from "forge-std/StdJson.sol";
 
 import {MultisigScript, Enum} from "@base-contracts/script/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/script/universal/Simulation.sol";
-
-interface ISafeOwnerManager {
-    function getOwners() external view returns (address[] memory);
-    function getThreshold() external view returns (uint256);
-    function isOwner(address owner) external view returns (bool);
-    function addOwnerWithThreshold(address owner, uint256 threshold) external;
-    function removeOwner(address prevOwner, address owner, uint256 threshold) external;
-}
+import {GnosisSafe} from "safe-smart-account/GnosisSafe.sol";
+import {OwnerManager} from "safe-smart-account/base/OwnerManager.sol";
 
 contract UpdateSigners is MultisigScript {
     using stdJson for string;
@@ -34,7 +28,7 @@ contract UpdateSigners is MultisigScript {
     mapping(address => bool) public expectedOwner;
 
     constructor() {
-        ISafeOwnerManager ownerSafe = ISafeOwnerManager(OWNER_SAFE);
+        GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         THRESHOLD = ownerSafe.getThreshold();
         EXISTING_OWNERS = ownerSafe.getOwners();
 
@@ -53,7 +47,7 @@ contract UpdateSigners is MultisigScript {
         uint256 expectedLength = EXISTING_OWNERS.length + OWNERS_TO_ADD.length - OWNERS_TO_REMOVE.length;
         require(expectedLength >= THRESHOLD, "Precheck 03");
 
-        ISafeOwnerManager ownerSafe = ISafeOwnerManager(OWNER_SAFE);
+        GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         address prevOwner = SENTINEL_OWNERS;
 
         for (uint256 i = OWNERS_TO_ADD.length; i > 0; i--) {
@@ -96,7 +90,7 @@ contract UpdateSigners is MultisigScript {
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
-        ISafeOwnerManager ownerSafe = ISafeOwnerManager(OWNER_SAFE);
+        GnosisSafe ownerSafe = GnosisSafe(payable(OWNER_SAFE));
         address[] memory postCheckOwners = ownerSafe.getOwners();
         uint256 postCheckThreshold = ownerSafe.getThreshold();
 
@@ -125,7 +119,7 @@ contract UpdateSigners is MultisigScript {
             calls[i] = Call({
                 operation: Enum.Operation.Call,
                 target: OWNER_SAFE,
-                data: abi.encodeCall(ISafeOwnerManager.addOwnerWithThreshold, (OWNERS_TO_ADD[i], THRESHOLD)),
+                data: abi.encodeCall(OwnerManager.addOwnerWithThreshold, (OWNERS_TO_ADD[i], THRESHOLD)),
                 value: 0
             });
         }
@@ -135,8 +129,7 @@ contract UpdateSigners is MultisigScript {
                 operation: Enum.Operation.Call,
                 target: OWNER_SAFE,
                 data: abi.encodeCall(
-                    ISafeOwnerManager.removeOwner,
-                    (ownerToPrevOwner[OWNERS_TO_REMOVE[i]], OWNERS_TO_REMOVE[i], THRESHOLD)
+                    OwnerManager.removeOwner, (ownerToPrevOwner[OWNERS_TO_REMOVE[i]], OWNERS_TO_REMOVE[i], THRESHOLD)
                 ),
                 value: 0
             });
