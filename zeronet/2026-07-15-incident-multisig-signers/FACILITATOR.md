@@ -2,10 +2,6 @@
 
 Guide for facilitators managing this task.
 
-## Before generating validations
-
-Replace the placeholder addresses in [OwnerDiff.json](./OwnerDiff.json) with the final signer addresses.
-
 The same signer diff is applied to both Safes:
 
 - Incident Multisig: `OWNER_SAFE` in [.env](./.env)
