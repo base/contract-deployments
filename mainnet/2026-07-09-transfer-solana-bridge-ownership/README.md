@@ -1,6 +1,6 @@
 # Transfer Base Mainnet Solana Bridge Owner
 
-Status: `READY TO SIGN`
+Status: [EXECUTED](https://etherscan.io/tx/0x3930fbbc44aa0331ec3da944b23112a5ce427cea3192133cdde476ddfe1b804a)
 
 ## Description
 
