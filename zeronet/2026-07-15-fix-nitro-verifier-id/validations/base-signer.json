@@ -2,6 +2,7 @@
   "cmd": "mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/FixNitroVerifierId.s.sol:FixNitroVerifierId --sig sign(address[]) [] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
   "ledgerId": 1,
   "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
     "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
