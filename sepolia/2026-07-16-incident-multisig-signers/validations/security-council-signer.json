@@ -1,0 +1,87 @@
+{
+  "cmd": "OWNER_SAFE=0x6AF0674791925f767060Dd52f7fB20984E8639d8 mise exec -- forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net script/UpdateSigners.s.sol:UpdateSigners --sig sign(address[]) [] --sender 0x821Ff2A3fB66B008fA668B40Eca9d3535B246575",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xec1d79d36c822bf60780722aeea1616c3e490e2f51a9e2454d41ffde6bcf0ed0"
+  },
+  "stateOverrides": [
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0x73bf98235762a776b82fdb5de75de8b2b08f6dd10f6b1f63b4da7f1639d381ae",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000c",
+          "description": "Updates the owner count",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000025",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000026",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xa17f6b5d5c5960e10cb741113b64d7f023e3513339475444585747297bf07208",
+          "before": "0x000000000000000000000000644d0f5c2c55a4679b4bfe057b87ba203af9ac0d",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Removes `0x4ffd98B5EEA905eC25aA3daF180552F67873Ed78` from the owners mapping.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xceb0c5d13f4f619e5f8efdae7187fef9059df56bd34e0650a02c1c72dd716dfa",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000821ff2a3fb66b008fa668b40eca9d3535b246575",
+          "description": "Adds `0x72069542Ca378553A3D479c82Adc31f21CA6dE4a` to the owners mapping and points it to previous head owner `0x821Ff2A3fB66B008fA668B40Eca9d3535B246575`.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdbe1c9b8b04b880813d25a9c5e89056031fb59c22374b4ee4da23606ff9ee5f5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Removes `0x644d0F5c2C55A4679b4BFe057B87ba203AF9aC0D` from the owners mapping.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xdd723b4c2a66aea3d2ac26f837bd1e7dea4ce6cca7e4fa76af2185076784453f",
+          "before": "0x0000000000000000000000004ffd98b5eea905ec25aa3daf180552f67873ed78",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Updates `0x420c8fE1dDb0593c71487445576c87c17f177179` to skip removed owners `0x4ffd98B5EEA905eC25aA3daF180552F67873Ed78` and `0x644d0F5c2C55A4679b4BFe057B87ba203AF9aC0D`, pointing it to the sentinel owner.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "before": "0x000000000000000000000000821ff2a3fb66b008fa668b40eca9d3535b246575",
+          "after": "0x00000000000000000000000072069542ca378553a3d479c82adc31f21ca6de4a",
+          "description": "Sets the head of the owners linked list to newly added owner `0x72069542Ca378553A3D479c82Adc31f21CA6dE4a`.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "leopold.joy@coinbase.com"
+    }
+  }
+}
