@@ -62,5 +62,3 @@ SIGNATURES=$SIGNATURES make approve-sc
 ```bash
 make execute
 ```
-
-Batch: `addRoute(PLONK)`, `freezeRoute(Groth16)`, `setImplementation(new AggregateVerifier)`.
