@@ -4,10 +4,10 @@ Status: READY TO SIGN
 
 ## Description
 
-This task switches Zeronet multiproof ZK verification to SP1 PLONK and updates the ZK range verification key.
+This task switches Zeronet multiproof ZK verification to SP1 PLONK and updates the ZK verification keys.
 
 - adds the SP1 PLONK v6.1.0 route and freezes Groth16 on the existing PAO-owned gateway
-- redeploys `AggregateVerifier` with the new `ZK_RANGE_HASH` (preserves `TEE_IMAGE_HASH` and `ZK_AGGREGATE_HASH`)
+- redeploys `AggregateVerifier` with the new `ZK_RANGE_HASH` and `ZK_AGGREGATE_HASH` (preserves `TEE_IMAGE_HASH`)
 - points `DisputeGameFactory.gameImpls(621)` at the new `AggregateVerifier`
 
 ## Procedure
