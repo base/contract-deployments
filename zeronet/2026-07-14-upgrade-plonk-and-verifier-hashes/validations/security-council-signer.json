@@ -1,0 +1,106 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 DISPUTE_GAME_FACTORY_PROXY=0xd930e0cebd52d7c77b8f900de242e818506c5474 GAME_TYPE=621 SP1_VERIFIER_ROUTE=0xc3c6dDDAc8829b233Dc6536Ec024775a57b0AF2A ZK_RANGE_HASH=0x72c6f2594544548f39d9d9ad6240b7823b2f49ec10bd9b905de5cf0359ce9a3d ZK_AGGREGATE_HASH=0x0048e70c8c33bb2792da2ffd9da19d9ed52f67661047cd4ed451c8fe824c804b mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpgradePlonkAndVerifierHashes.s.sol:UpgradePlonkAndVerifierHashes --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x72069542Ca378553A3D479c82Adc31f21CA6dE4a",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0xafed7bc6353078943b9f7e84ed803f82b8458a020c07843a094262363afd0647"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xececd6da73b6c5d018287e9709fa57596213f078891aa5ffad60652e822af5cf",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000012",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x1adc0921f96a26d1671f3f23d650e083109d4f7086df6baa7c8f54f727670560",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the approval of this task's transaction hash by the Security Council Safe on the Proxy Admin Owner Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "SP1VerifierGateway - Zeronet",
+      "address": "0xc61E9D7c9c9BF8C62694F55191A697eCC356a6C7",
+      "changes": [
+        {
+          "key": "0x601647bc9d853ef009027ff58015c6988f1fc1ce39301670b10970ca5bde07c6",
+          "before": "0x000000000000000000000000b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
+          "after": "0x000000000000000000000001b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
+          "description": "Freezes the SP1 Groth16 verifier route for selector 0x4388a21c on the existing PAO-owned SP1VerifierGateway.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x8040770227d7756062c0cbdd9a7c3ccbf601f81daea9444755991f1b03d83954",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000c3c6dddac8829b233dc6536ec024775a57b0af2a",
+          "description": "Adds the SP1 PLONK verifier route for selector 0x5a093a2f; the route points to SP1_VERIFIER_ROUTE and remains unfrozen.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactory Proxy - Zeronet",
+      "address": "0xD930e0cebD52D7C77b8F900dE242E818506C5474",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000000b1cfe89f6c464e7dccf4850c5a129afad550100",
+          "after": "0x0000000000000000000000002edd9408a8aab62ea9c6b1f26aa5b13fe662afe0",
+          "description": "Updates gameImpls[621] in the DisputeGameFactory to the new AggregateVerifier with updated ZK vkeys.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
