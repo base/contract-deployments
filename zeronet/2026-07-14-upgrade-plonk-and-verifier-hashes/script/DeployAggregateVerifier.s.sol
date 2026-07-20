@@ -86,12 +86,23 @@ contract DeployAggregateVerifier is Script {
 
         vm.stopBroadcast();
 
+        AggregateVerifier current = AggregateVerifier(currentAggregateVerifier);
         AggregateVerifier av = AggregateVerifier(aggregateVerifier);
         require(av.TEE_IMAGE_HASH() == currentTeeImageHash, "tee hash mismatch");
         require(av.ZK_RANGE_HASH() == zkRangeHashEnv, "zk range hash mismatch");
         require(av.ZK_AGGREGATE_HASH() == zkAggregateHashEnv, "zk aggregate hash mismatch");
+        require(GameType.unwrap(av.gameType()) == GameType.unwrap(currentGameType), "game type mismatch");
+        require(address(av.anchorStateRegistry()) == address(currentAnchorStateRegistry), "asr mismatch");
+        require(address(av.DISPUTE_GAME_FACTORY()) == address(current.DISPUTE_GAME_FACTORY()), "dgf mismatch");
+        require(address(av.DELAYED_WETH()) == address(currentDelayedWeth), "delayed weth mismatch");
         require(address(av.TEE_VERIFIER()) == currentTeeVerifier, "tee verifier mismatch");
         require(address(av.ZK_VERIFIER()) == currentZkVerifier, "zk verifier mismatch");
+        require(av.CONFIG_HASH() == currentConfigHash, "config hash mismatch");
+        require(av.L2_CHAIN_ID() == currentL2ChainId, "l2 chain id mismatch");
+        require(av.BLOCK_INTERVAL() == currentBlockInterval, "block interval mismatch");
+        require(
+            av.INTERMEDIATE_BLOCK_INTERVAL() == currentIntermediateBlockInterval, "intermediate interval mismatch"
+        );
 
         console.log("AggregateVerifier:", aggregateVerifier);
         string memory root = "root";

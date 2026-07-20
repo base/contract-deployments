@@ -143,9 +143,23 @@ contract UpgradePlonkAndVerifierHashes is MultisigScript {
     }
 
     function _assertContinuity(AggregateVerifier current, AggregateVerifier next) internal view {
+        require(GameType.unwrap(next.gameType()) == GameType.unwrap(current.gameType()), "game type mismatch");
+        require(
+            address(next.anchorStateRegistry()) == address(current.anchorStateRegistry()), "asr mismatch"
+        );
+        require(
+            address(next.DISPUTE_GAME_FACTORY()) == address(current.DISPUTE_GAME_FACTORY()), "dgf mismatch"
+        );
+        require(address(next.DELAYED_WETH()) == address(current.DELAYED_WETH()), "delayed weth mismatch");
         require(address(next.TEE_VERIFIER()) == address(current.TEE_VERIFIER()), "tee verifier mismatch");
         require(address(next.ZK_VERIFIER()) == address(current.ZK_VERIFIER()), "zk verifier mismatch");
         require(next.CONFIG_HASH() == current.CONFIG_HASH(), "config hash mismatch");
+        require(next.L2_CHAIN_ID() == current.L2_CHAIN_ID(), "l2 chain id mismatch");
+        require(next.BLOCK_INTERVAL() == current.BLOCK_INTERVAL(), "block interval mismatch");
+        require(
+            next.INTERMEDIATE_BLOCK_INTERVAL() == current.INTERMEDIATE_BLOCK_INTERVAL(),
+            "intermediate interval mismatch"
+        );
     }
 
     function _ownerSafe() internal view override returns (address) {
