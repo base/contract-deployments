@@ -61,7 +61,7 @@
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x0000000000000000000000001bd8db5139ba7ac9277684650c15e6e341761919",
           "after": "0x000000000000000000000000ee303ba054c5f1e14a8ef87f1c7e285af45a1ba2",
-          "description": "Updates the `X` implementation address.",
+          "description": "Updates gameImpls[621] in the DisputeGameFactory to the new AggregateVerifier with updated ZK vkeys.",
           "allowDifference": false
         }
       ]
@@ -81,27 +81,27 @@
           "key": "0x2145cf124a8b91b4c47774c0a0a059234c4b8341df5bcb60a94911708c706a80",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Records the approval of this task's transaction hash by the Security Council Safe on the Proxy Admin Owner Safe.",
           "allowDifference": false
         }
       ]
     },
     {
-      "name": "<<ContractName>>",
+      "name": "SP1VerifierGateway - Mainnet",
       "address": "0xdc32E228636273285Befa5F001dBB5142517C106",
       "changes": [
         {
           "key": "0x601647bc9d853ef009027ff58015c6988f1fc1ce39301670b10970ca5bde07c6",
           "before": "0x000000000000000000000000b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
           "after": "0x000000000000000000000001b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
-          "description": "<<Summary>>",
+          "description": "Freezes the SP1 Groth16 verifier route for selector 0x4388a21c on the existing PAO-owned SP1VerifierGateway.",
           "allowDifference": false
         },
         {
           "key": "0x8040770227d7756062c0cbdd9a7c3ccbf601f81daea9444755991f1b03d83954",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000c3c6dddac8829b233dc6536ec024775a57b0af2a",
-          "description": "<<Summary>>",
+          "description": "Adds the SP1 PLONK verifier route for selector 0x5a093a2f; the route points to SP1_VERIFIER_ROUTE and remains unfrozen.",
           "allowDifference": false
         }
       ]
