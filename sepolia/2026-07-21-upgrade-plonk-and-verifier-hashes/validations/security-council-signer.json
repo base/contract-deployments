@@ -1,0 +1,106 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x0fe884546476dDd290eC46318785046ef68a0BA9 DISPUTE_GAME_FACTORY_PROXY=0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1 GAME_TYPE=621 SP1_VERIFIER_ROUTE=0xc3c6dDDAc8829b233Dc6536Ec024775a57b0AF2A ZK_RANGE_HASH=0x5fd09a2f4338ca7063bc37b02f9411645d0ef2784fe644cc71ab48ae64200beb ZK_AGGREGATE_HASH=0x00a147f0c69da81e3d530cca91310f9605f980dc155726bb33fbde0e493a3836 mise exec -- forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net script/UpgradePlonkAndVerifierHashes.s.sol:UpgradePlonkAndVerifierHashes --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x72069542Ca378553A3D479c82Adc31f21CA6dE4a",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xfe478a560c7b3d434ee3730225ec19a86a2bfcb353f50ef48af6dd20d356e66c"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0xc0b76fe5fd7b85bfb2f6d20ca3430c49e34a5e4a8b88801c79183c503c686a9f",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "SP1VerifierGateway - Sepolia",
+      "address": "0x07967e51F0d9b60294E7D746162438298B71F868",
+      "changes": [
+        {
+          "key": "0x601647bc9d853ef009027ff58015c6988f1fc1ce39301670b10970ca5bde07c6",
+          "before": "0x000000000000000000000000b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
+          "after": "0x000000000000000000000001b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
+          "description": "Freezes the SP1 Groth16 verifier route for selector 0x4388a21c on the existing PAO-owned SP1VerifierGateway.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x8040770227d7756062c0cbdd9a7c3ccbf601f81daea9444755991f1b03d83954",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000c3c6dddac8829b233dc6536ec024775a57b0af2a",
+          "description": "Adds the SP1 PLONK verifier route for selector 0x5a093a2f; the route points to SP1_VERIFIER_ROUTE and remains unfrozen.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000027",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000028",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x17fb549eecd0912240b8b6f4c55aaaa1181d358cf993570d8114380157f66ad9",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the approval of this task's transaction hash by the Security Council Safe on the Proxy Admin Owner Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000026",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000027",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactory Proxy - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000007db62c503ba562911d8a79967d19590f47b8f39d",
+          "after": "0x00000000000000000000000048cb1a96036b76ed420d4b8ed6977ac3a939764c",
+          "description": "Updates gameImpls[621] in the DisputeGameFactory to the new AggregateVerifier with updated ZK vkeys.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
