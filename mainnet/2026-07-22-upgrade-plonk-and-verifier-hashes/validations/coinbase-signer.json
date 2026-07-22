@@ -1,0 +1,112 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c DISPUTE_GAME_FACTORY_PROXY=0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e GAME_TYPE=621 SP1_VERIFIER_ROUTE=0xc3c6dDDAc8829b233Dc6536Ec024775a57b0AF2A ZK_RANGE_HASH=0x5fd09a2f4338ca7063bc37b02f9411645d0ef2784fe644cc71ab48ae64200beb ZK_AGGREGATE_HASH=0x00a147f0c69da81e3d530cca91310f9605f980dc155726bb33fbde0e493a3836 mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io script/UpgradePlonkAndVerifierHashes.s.sol:UpgradePlonkAndVerifierHashes --sig sign(address[]) [0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0xf9e320f3dA12E68af219d9E2A490Dd649f6B177c",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x88aac3dc27cc1618ec43a87b3df21482acd24d172027ba3fbb5a5e625d895a0b",
+    "messageHash": "0x91cd0a29dd2bbdb90b529f8830a2fd8dd2526d357de2e7d94e9f3d24d4995e4c"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x91a6f73604d74937b475d31fc88f734ed704e589984ae1b3bd00c76290320679",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000001bd8db5139ba7ac9277684650c15e6e341761919",
+          "after": "0x000000000000000000000000ee303ba054c5f1e14a8ef87f1c7e285af45a1ba2",
+          "description": "Updates the `X` implementation address.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000013",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xf1ad7201875ef69579fedd9e5ab6989bfe386175feb96abda22910957877e82d",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000021",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000022",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "<<ContractName>>",
+      "address": "0xdc32E228636273285Befa5F001dBB5142517C106",
+      "changes": [
+        {
+          "key": "0x601647bc9d853ef009027ff58015c6988f1fc1ce39301670b10970ca5bde07c6",
+          "before": "0x000000000000000000000000b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
+          "after": "0x000000000000000000000001b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0x8040770227d7756062c0cbdd9a7c3ccbf601f81daea9444755991f1b03d83954",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000c3c6dddac8829b233dc6536ec024775a57b0af2a",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}

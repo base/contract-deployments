@@ -32,8 +32,6 @@ This produces:
 
 Do not generate validation files until `.env` and `addresses.json` are final.
 
-Mainnet PAO tasks require task-origin validation (device certificate generation) during `gen-validation-*`.
-
 ## Execute the transaction
 
 ### 1. Update repo
