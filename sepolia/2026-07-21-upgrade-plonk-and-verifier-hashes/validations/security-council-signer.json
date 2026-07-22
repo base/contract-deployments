@@ -35,21 +35,21 @@
   ],
   "stateChanges": [
     {
-      "name": "<<ContractName>>",
+      "name": "SP1VerifierGateway - Sepolia",
       "address": "0x07967e51F0d9b60294E7D746162438298B71F868",
       "changes": [
         {
           "key": "0x601647bc9d853ef009027ff58015c6988f1fc1ce39301670b10970ca5bde07c6",
           "before": "0x000000000000000000000000b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
           "after": "0x000000000000000000000001b69f2584cbcff99a58c4e7002e8b89af54a6f4e2",
-          "description": "<<Summary>>",
+          "description": "Freezes the SP1 Groth16 verifier route for selector 0x4388a21c on the existing PAO-owned SP1VerifierGateway.",
           "allowDifference": false
         },
         {
           "key": "0x8040770227d7756062c0cbdd9a7c3ccbf601f81daea9444755991f1b03d83954",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x000000000000000000000000c3c6dddac8829b233dc6536ec024775a57b0af2a",
-          "description": "<<Summary>>",
+          "description": "Adds the SP1 PLONK verifier route for selector 0x5a093a2f; the route points to SP1_VERIFIER_ROUTE and remains unfrozen.",
           "allowDifference": false
         }
       ]
@@ -69,7 +69,7 @@
           "key": "0x17fb549eecd0912240b8b6f4c55aaaa1181d358cf993570d8114380157f66ad9",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Records the approval of this task's transaction hash by the Security Council Safe on the Proxy Admin Owner Safe.",
           "allowDifference": false
         }
       ]
@@ -88,14 +88,14 @@
       ]
     },
     {
-      "name": "DisputeGameFactoryProxy - Sepolia",
+      "name": "DisputeGameFactory Proxy - Sepolia",
       "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
       "changes": [
         {
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x0000000000000000000000007db62c503ba562911d8a79967d19590f47b8f39d",
           "after": "0x00000000000000000000000048cb1a96036b76ed420d4b8ed6977ac3a939764c",
-          "description": "Updates the `X` implementation address.",
+          "description": "Updates gameImpls[621] in the DisputeGameFactory to the new AggregateVerifier with updated ZK vkeys.",
           "allowDifference": false
         }
       ]
