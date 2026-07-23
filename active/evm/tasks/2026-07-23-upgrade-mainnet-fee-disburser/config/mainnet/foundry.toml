@@ -1,0 +1,21 @@
+[profile.default]
+src = 'src'
+out = 'out'
+libs = ['lib']
+broadcast = 'records'
+fs_permissions = [{ access = "read-write", path = "./" }]
+optimizer = true
+optimizer_runs = 999999
+auto_detect_solc = true
+via-ir = false
+evm_version = "prague"
+remappings = [
+    '@base-contracts/=lib/contracts/',
+    'forge-std/=lib/forge-std/src/',
+    'interfaces/=lib/contracts/interfaces/',
+    'scripts/=lib/contracts/scripts/',
+    'src/=lib/contracts/src/',
+]
+
+[lint]
+lint_on_build = false
