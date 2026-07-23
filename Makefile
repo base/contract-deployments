@@ -141,7 +141,6 @@ forge-deps:
 ##
 # Task Signer Tool
 ##
-# Needs db9a38e+ (sigstore-js signing). Older pins call removed `ottr-cli generate signature --data`.
 SIGNER_TOOL_COMMIT=566102238bc78fb023f495372d6f80282efa05dd
 SIGNER_TOOL_PATH=signer-tool
 
