@@ -3,7 +3,7 @@
 ## Deploy the AggregateVerifier
 
 ```bash
-cd contract-deployments/zeronet/2026-07-23-update-zk-program-hashes
+cd zeronet/2026-07-23-update-zk-program-hashes
 make deps
 make deploy VERIFIER_API_KEY=...
 ```
