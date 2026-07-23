@@ -1,6 +1,6 @@
 # Update ZK Program Hashes
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x5e21320ec98f5a30b07a3ab0d186e13e846601258a255c72443124d3d671a59c)
 
 ## Description
 
