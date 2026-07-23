@@ -171,6 +171,7 @@ sign-task: bootstrap-mise checkout-signer-tool
 # These targets are designed to be invoked from task subdirectories
 # (e.g. sepolia/2026-02-19-superchain-separation/) that include this Makefile.
 TASK_NAME ?= $(notdir $(CURDIR))
+TASK_ORIGIN_DIR ?= $(CURDIR)
 SIGNATURE_DIR ?= $(CURDIR)/../signatures/$(TASK_NAME)
 
 .PHONY: sign-as-task-creator
@@ -178,16 +179,16 @@ sign-as-task-creator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder $(CURDIR) \
-		--signature-path $(SIGNATURE_DIR)
+		--task-folder "$(TASK_ORIGIN_DIR)" \
+		--signature-path "$(SIGNATURE_DIR)"
 
 .PHONY: sign-as-base-facilitator
 sign-as-base-facilitator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder $(CURDIR) \
-		--signature-path $(SIGNATURE_DIR) \
+		--task-folder "$(TASK_ORIGIN_DIR)" \
+		--signature-path "$(SIGNATURE_DIR)" \
 		--facilitator base
 
 .PHONY: sign-as-sc-facilitator
@@ -195,6 +196,6 @@ sign-as-sc-facilitator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
-		--task-folder $(CURDIR) \
-		--signature-path $(SIGNATURE_DIR) \
+		--task-folder "$(TASK_ORIGIN_DIR)" \
+		--signature-path "$(SIGNATURE_DIR)" \
 		--facilitator security-council
