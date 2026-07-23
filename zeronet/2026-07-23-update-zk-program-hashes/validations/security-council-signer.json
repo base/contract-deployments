@@ -2,6 +2,7 @@
   "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 DISPUTE_GAME_FACTORY_PROXY=0xd930e0cebd52d7c77b8f900de242e818506c5474 ZK_RANGE_HASH=0x5fd09a2f4338ca7063bc37b02f9411645d0ef2784fe644cc71ab48ae64200beb ZK_AGGREGATE_HASH=0x00a147f0c69da81e3d530cca91310f9605f980dc155726bb33fbde0e493a3836 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/UpdateZkProgramHashes.s.sol:UpdateZkProgramHashes --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x72069542Ca378553A3D479c82Adc31f21CA6dE4a",
   "ledgerId": 1,
   "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "skipTaskOriginValidation": true,
   "expectedDomainAndMessageHashes": {
     "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
     "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
