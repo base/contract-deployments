@@ -108,5 +108,9 @@
     }
   ],
   "balanceChanges": [],
-  "skipTaskOriginValidation": true
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "mihir.wadekar@coinbase.com"
+    }
+  }
 }
