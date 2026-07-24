@@ -1,0 +1,75 @@
+{
+  "cmd": "mise exec -- forge script --rpc-url https://ethereum-full-sepolia-k8s-dev.cbhq.net script/UpdateSigners.s.sol:UpdateSigners --sig sign(address[]) [] --sender 0x72069542Ca378553A3D479c82Adc31f21CA6dE4a",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-full-sepolia-k8s-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+    "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
+    "messageHash": "0x675626096deeedd6a81e059ed08a267ea84419754dd808d0cd68299e0b970e89"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x1d247253a281beaef726b3b2dc11b8e164aba71a921dca0f997f6c2087b41755",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "description": "Restores the execution threshold from the simulation override value 1 to the expected value 3.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001e",
+          "description": "Increments the Safe nonce from 29 to 30.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xceb0c5d13f4f619e5f8efdae7187fef9059df56bd34e0650a02c1c72dd716dfa",
+          "before": "0x000000000000000000000000821ff2a3fb66b008fa668b40eca9d3535b246575",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "description": "Removes `0x72069542Ca378553A3D479c82Adc31f21CA6dE4a` from the owners mapping by clearing its pointer to `0x821Ff2A3fB66B008fA668B40Eca9d3535B246575`.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xd7f94929019af9a6efac262a2ba7cd160a70f89d6d1d5457a59e07618487bacb",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000821ff2a3fb66b008fa668b40eca9d3535b246575",
+          "description": "Adds `0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD` to the owners mapping and points it to `0x821Ff2A3fB66B008fA668B40Eca9d3535B246575`, the next retained owner after removed head owner `0x72069542Ca378553A3D479c82Adc31f21CA6dE4a`.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xe90b7bceb6e7df5418fb78d8ee546e97c83a08bbccc01a0644d599ccd2a7c2e0",
+          "before": "0x00000000000000000000000072069542ca378553a3d479c82adc31f21ca6de4a",
+          "after": "0x0000000000000000000000002c1475476b586d66a85bc65a5ab396bbbaa4f3ad",
+          "description": "Sets the head of the owners linked list to newly added owner `0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD`.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
