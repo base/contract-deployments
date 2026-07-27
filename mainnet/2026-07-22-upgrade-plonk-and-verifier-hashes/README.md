@@ -1,6 +1,6 @@
 # Upgrade PLONK and Verifier Hashes
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0xa9ff84a22c4de540be566f561f4ee2a0c890732b19251871b90bfe8941d9be71)
 
 ## Description
 
