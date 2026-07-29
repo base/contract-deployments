@@ -105,37 +105,83 @@ All address variables are prefixed with `export` so they are available to child 
 
 ## Directory structure
 
-Each task will have a directory structure similar to the following:
+Active EVM tasks live under `active/evm/`, which is a single shared Foundry
+project rather than a standalone project per task. A single `active/evm/Makefile`
+selects the active task via `TASK_ID` / `TASK_NETWORK`, reusable operation
+scripts are shared across tasks under `script/common/<category>/`, and each task
+directory holds only its own config, docs, and (per-network) validations and
+signatures:
+
+```text
+active/evm/
+├── Makefile                     # shared; selects the task via TASK_ID / TASK_NETWORK
+├── foundry.toml                 # shared Foundry config (base-contracts v8.2.1)
+├── script/
+│   └── common/                  # reusable scripts, shared across tasks
+│       └── <category>/          # bridge, funding, gas, ownership, safe, superchain, verifier-update
+└── tasks/
+    └── <YYYY-MM-DD-task-name>/
+        ├── FACILITATOR.md
+        ├── config/
+        │   └── <network>/
+        │       ├── .env         # task inputs + BASE_CONTRACTS_COMMIT + RECORD_STATE_DIFF
+        │       ├── network.env  # RPC, chain ids, Safe/contract addresses
+        │       ├── README.md    # status + description (parsed by the signer tool)
+        │       └── validations/ # generated per-signer validation JSON
+        └── signatures/
+            └── <network>/       # task-origin signatures (when required)
+```
+
+Task commands run from `active/evm`, selecting the task by `TASK_ID` /
+`TASK_NETWORK` (both default to the current task in the shared `Makefile`), e.g.
+`TASK_ID=<task> TASK_NETWORK=<network> make gen-validation-cb`. The shared
+Makefile runs Forge from `active/evm` using the shared `foundry.toml` and `lib/`,
+while task-specific files are read from `tasks/<task-id>/config/<network>/`.
+Reusable scripts are documented in [`active/evm/script/common/README.md`](active/evm/script/common/README.md);
+put a script under `script/common/<category>/` when it will be reused across
+tasks, and keep one-off task glue out of `common/`.
+
+The shared `active/evm/Makefile` selects a task (via `TASK_ID` / `TASK_NETWORK`)
+and sources that task's `.env` for `BASE_CONTRACTS_COMMIT`. To install
+dependencies for the shared project without selecting a task (e.g. to build the
+common scripts locally), invoke the root Makefile directly with a `PROJECT_DIR`
+override and an explicit `BASE_CONTRACTS_COMMIT`:
+
+```bash
+make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
+```
+
+### Legacy tasks
+
+Each legacy task (under a network directory, or `archive/legacy/`) has a directory structure similar to the following:
 
 - **records/** Foundry will autogenerate files here from running commands
 - **script/** place to store any one-off Foundry scripts
 - **src/** place to store any one-off smart contracts (long-lived contracts should go in [base/contracts](https://github.com/base/contracts))
 - **.env** place to store task-specific environment variables (contract addresses are inherited from the network-level `.env`)
 
-## CI — Template Validation
+## CI — Common Script Validation
 
-A GitHub Actions workflow automatically validates all 10 setup-templates on every pull request and on pushes to `main`.
+A GitHub Actions workflow automatically validates the shared `active/evm` scripts on every pull request and on pushes to `main`.
 
-**What CI checks for each template:**
+**What CI checks:**
 
 1. **Solidity formatting** — `forge fmt --check script/` ensures formatting consistency.
 2. **Compilation** — `forge build` verifies that imports resolve, types are correct, and all dependencies are present.
 
-Templates are validated in parallel using a matrix strategy, so failures are isolated per-template with clear error messages identifying the template and failure type.
-
 **How it works:**
 
 - All tooling (Foundry, Node, Bun, Go) is installed by the [`jdx/mise-action`](https://github.com/jdx/mise-action) GitHub Action using the versions pinned in [`mise.toml`](mise.toml), so CI matches local signer environments.
-- For each template, the corresponding `make setup-*` target creates a task directory from the template.
-- `make deps` installs all dependencies (including base-contracts at the commit pinned in the template's `.env`).
+- `make deps PROJECT_DIR="$PWD/active/evm"` installs dependencies into the shared `active/evm` Foundry project. `BASE_CONTRACTS_COMMIT` is supplied via the workflow's `env` block, since the shared project has no task `.env` of its own.
+- `forge fmt --check` and `forge build` then run in `active/evm` against the shared `foundry.toml` and `script/common/`.
 
 **What CI does NOT do:**
 
 - Does not run `forge script` (requires RPC URLs, env vars, and hardware wallets).
-- Does not run `forge test` (no test files exist in templates).
+- Does not run `forge test` (no test files exist for these scripts).
 - Does not run signing or execution targets (they depend on network state and hardware wallets).
 
-> See [`.github/workflows/validate-templates.yml`](.github/workflows/validate-templates.yml) for the full workflow definition.
+> See [`.github/workflows/validate-common-scripts.yml`](.github/workflows/validate-common-scripts.yml) for the full workflow definition.
 
 ## Multisig macro convention
 
@@ -195,6 +241,8 @@ Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>
 | `SIGNATURE_DIR` | `$(CURDIR)/../signatures/$(TASK_NAME)`     | Directory where signatures are stored |
 
 All three targets depend on `deps-signer-tool`, which checks out and installs the [task-signing-tool](https://github.com/base/task-signing-tool) automatically.
+
+For `active/evm` tasks, the shared Makefile overrides `TASK_ORIGIN_DIR` and `SIGNATURE_DIR`: the signer tool signs over the `active/evm/tasks/<task-id>/config/<network>` directory (`TASK_ORIGIN_DIR`), while the signatures themselves are written to `active/evm/tasks/<task-id>/signatures/<network>/` (`SIGNATURE_DIR`) — outside the signed directory, so generating signatures does not change the signed payload. A task may opt out of task-origin validation entirely by setting `skipTaskOriginValidation: true` at the root of each validation file (e.g. non-production networks such as zeronet).
 
 ## Using the gas limit increase template
 
