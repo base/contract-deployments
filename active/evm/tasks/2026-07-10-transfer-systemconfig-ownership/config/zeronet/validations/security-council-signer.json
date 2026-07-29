@@ -1,0 +1,91 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bB8251DF16fb483E9 INCIDENT_MULTISIG=0x856611ed7e07d83243b15e93f6321f2df6865852 SYSTEM_CONFIG=0x0a111C7980152bDe41D71f48e2E1d8184f5f6187 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0xae6685da5cc0a954d8dc78cffc524d14a6e664bd5b300ba55287372d80c25fad"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xd83b46009449ab7b1148bc60c09e0301c8656492806daae6ba4b607a0ff82284",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "<<ContractName>>",
+      "address": "0x0a111C7980152bDe41D71f48e2E1d8184f5f6187",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000033",
+          "before": "0x0000000000000000000000003d59999977e0896ee1f8783bb8251df16fb483e9",
+          "after": "0x000000000000000000000000856611ed7e07d83243b15e93f6321f2df6865852",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0357b2352703f016eba49e117877cc0170c3c53d22e138fd6501caa01b912570",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000017",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000018",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "thanh.trinh@coinbase.com"
+    }
+  },
+  "skipTaskOriginValidation": true
+}
