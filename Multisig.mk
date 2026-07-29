@@ -55,6 +55,8 @@ endef
 # committed file is portable; the trade-off is that `mise` must be discoverable
 # on the signer-tool subprocess's PATH (see the bootstrap-mise warning and the
 # README "Toolchain (mise)" section for the PATH requirement).
+VALIDATIONS_DIR ?= $(CURDIR)/validations
+
 define GEN_VALIDATION
 $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 	cd $(SIGNER_TOOL_PATH) && \
@@ -63,7 +65,7 @@ $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 			--workdir $(CURDIR) \
 			--forge-cmd '$(if $(5),$(5) )mise exec -- forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
 			--ledger-id $(LEDGER_ACCOUNT) \
-			--out $(CURDIR)/validations/$(4)
+			--out $(VALIDATIONS_DIR)/$(4)
 endef
 
 # ---------- Helpers ----------
