@@ -1,0 +1,70 @@
+name: Validate Common Scripts
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Least-privilege default: this workflow only reads the repo to build/lint.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # base-contracts v8.2.1 — the version the active/evm shared Foundry project
+  # (active/evm/foundry.toml) and script/common/ are written against. Bump this
+  # together with the task .env pins when moving to a newer base-contracts.
+  BASE_CONTRACTS_COMMIT: f3a33c8577c8ca1e037b45e822bfcb75f099270b
+
+jobs:
+  validate-common:
+    name: active/evm script/common
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      # ── Toolchain (mise) ─────────────────────────────────────────────
+      # Installs all tools pinned in mise.toml (foundry, node, bun, go) so
+      # CI runs match local signer environments byte-for-byte.
+      - name: Install mise-managed toolchain
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          experimental: true
+
+      # ── Dependencies ─────────────────────────────────────────────────
+      # Install Foundry deps into the shared active/evm project. PROJECT_DIR
+      # points forge install at active/evm; BASE_CONTRACTS_COMMIT is supplied
+      # via env since the shared project has no task .env of its own.
+      - name: Install dependencies
+        run: make deps PROJECT_DIR="$PWD/active/evm"
+
+      # ── Validation ───────────────────────────────────────────────────
+      - name: Check Solidity formatting
+        working-directory: active/evm
+        run: |
+          echo "==> forge fmt --check script/"
+          if ! forge fmt --check script/; then
+            echo ""
+            echo "::error::Formatting check failed. Run 'forge fmt script/' in active/evm to fix."
+            exit 1
+          fi
+
+      - name: Build (forge build)
+        working-directory: active/evm
+        run: |
+          echo "==> forge build"
+          if ! forge build; then
+            echo ""
+            echo "::error::Compilation failed. Check imports, types, and dependency versions."
+            exit 1
+          fi
