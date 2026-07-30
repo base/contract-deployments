@@ -72,21 +72,20 @@ This is purely a convenience for task authors — `make` targets work correctly 
 
 ### Running a task
 
-To execute a new task, run one of the following commands (depending on the type of change you're making):
+New EVM tasks are created under [`active/evm/tasks/<task-id>/`](#directory-structure)
+and reference a reusable script from
+[`active/evm/script/common/<category>/`](active/evm/script/common) rather than
+copying a standalone template project. See the
+[Common operation scripts](#common-operation-scripts) table below to find the
+script for your change, and [`active/evm/script/common/README.md`](active/evm/script/common/README.md)
+for the full inventory and conventions.
 
-- For gas increase tasks: `make setup-gas-increase network=<network>`
-- For combined gas, elasticity, and DA footprint gas scalar tasks: `make setup-gas-and-elasticity-increase network=<network>`
-- For safe management tasks: `make setup-safe-management network=<network>`
-- For funding tasks: `make setup-funding network=<network>`
-- For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
-- For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
-- For pausing SuperchainConfig: `make setup-superchain-config-pause network=<network>`
-
-Each `setup-*` command also creates a matching `<network>/signatures/<task-dir-basename>/` directory for [task origin signing](#task-origin-signing). The parent `signatures/` directory is created automatically via `mkdir -p` for networks that do not yet have one.
-
-Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
-
-Please note, for some older tasks (that have not yet been adapted to use the signer tool) you will need to manually create validation file(s) for your task as they are bespoke to each task and therefore not created automatically as a part of the templates. We use one validation Markdown file per multisig involved in the task, so if there's only one multisig involved in your task, then you can simply create a `VALIDATION.md` file at the root of your task containing the validation instructions, while if there are multiple multisigs involved in the task, then create a `validations/` sub-directory at the root of your task containing the corresponding validation Markdown files. If you need examples to work from, you can browse through similar past tasks in this repo and adapt them to your specific task. Also, please note that we have tooling to generate these files (like the `task-signer-tool`) which removes the manual aspect of creating these validation files, we will soon update these instructions to reflect how this process can be automated.
+To set up a task, create `active/evm/tasks/<YYYY-MM-DD-task-name>/config/<network>/`
+with its `.env`, `network.env`, `README.md`, and `validations/` (see the layout in
+[Directory structure](#directory-structure)), then run task commands from
+`active/evm` selecting the task with `TASK_ID` / `TASK_NETWORK`. Validation files
+for signers are produced with `make gen-validation-*`, and task-origin signatures
+(when required) with the [task-origin signing](#task-origin-signing) targets.
 
 ## Network configuration
 
@@ -244,108 +243,21 @@ All three targets depend on `deps-signer-tool`, which checks out and installs th
 
 For `active/evm` tasks, the shared Makefile overrides `TASK_ORIGIN_DIR` and `SIGNATURE_DIR`: the signer tool signs over the `active/evm/tasks/<task-id>/config/<network>` directory (`TASK_ORIGIN_DIR`), while the signatures themselves are written to `active/evm/tasks/<task-id>/signatures/<network>/` (`SIGNATURE_DIR`) — outside the signed directory, so generating signatures does not change the signed payload. A task may opt out of task-origin validation entirely by setting `skipTaskOriginValidation: true` at the root of each validation file (e.g. non-production networks such as zeronet).
 
-## Using the gas limit increase template
+## Common operation scripts
 
-This template is increasing the throughput on Base Chain.
+The reusable operation scripts that used to be copied from `setup-templates/` now
+live under [`active/evm/script/common/<category>/`](active/evm/script/common) and
+are shared across tasks in the [`active/evm`](#directory-structure) project. A new
+task references one of these scripts from its own `active/evm/tasks/<task-id>/`
+config and Makefile rather than copying a standalone template project. See
+[`active/evm/script/common/README.md`](active/evm/script/common/README.md) for the
+full inventory and usage.
 
-1. Ensure you have followed the instructions above in `setup`
-1. Go to the folder that was created using the `make setup-gas-increase network=<network>` step
-1. Fill in all TODOs (search for "TODO" in the folder) in the `.env` and `README` files. Tip: you can run `make deps` followed by `make sign-upgrade` to produce a Tenderly simulation which will help fill in several of the TODOs in the README (and also `make sign-rollback`).
-1. Check in the task when it's ready to sign and collect signatures from signers
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the combined gas limit, elasticity, and DA footprint gas scalar template
-
-This template is used to update the gas limit, elasticity, and DA footprint gas scalar, or roll back the changes (if needed).
-
-1. Ensure you have followed the instructions above in `setup`, including running `make setup-gas-and-elasticity-increase network=<network>` and then go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments (e.g., `OWNER_SAFE`, `SENDER`), using the value for your target network.
-1. Ensure the `SENDER` variable in the `.env` file is set to a signer of `OWNER_SAFE`.
-1. Set the `FROM_*` and `TO_*` values for gas limit and elasticity in the `.env` file.
-1. Calculate the DA footprint gas scalar using the DA limits runbook at `go/base-da-config`. `make da-scalar TARGET_BLOB_COUNT=<value>` is the source of truth for the standard soft-cap policy and calculates `gas_limit / (elasticity * da_soft_cap_blob_count * 32,000)`. Since BPO2, Base has used a DA soft-cap blob count of 21, passed as `TARGET_BLOB_COUNT=21`, to allow the chain to use all L1 DA before raising the L2 base fee. The command prints the `.env` value and the DA table to copy into the task README. Pass `BUILDER_HARD_CAP=<value>` after checking the target network's `op_batcher_throttle_block_size_upper_limit` Config Service value. The task README includes links for the standard network scopes. Set the `FROM_DA_FOOTPRINT_GAS_SCALAR` and `TO_DA_FOOTPRINT_GAS_SCALAR` values in the `.env` file.
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Generate the rollback validation file for signers with `make gen-validation-rollback`.
-1. Double check the `cmd` field at the top of both of the generated validation files and ensure that the value passed to the `--sender` flag matches the `SENDER` env var already defined in the `.env` file.
-1. Ensure that all of the fields marked as `TODO` in the tasks's `README.md` have been properly filled out.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the safe management template
-
-This template is used to perform ownership management on a Gnosis Safe, like the incident multisig, specifically it can be used to change the owners of the multisig.
-
-1. Ensure you have followed the instructions above in `setup`, including running `make setup-safe-management network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Enter the directory that was generated for the task (in the first step) and then run `make deps`.
-1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced and the `SENDER` which should be the address of a current signer of the multisig.
-1. Fill in the `OwnerDiff.json` inside the task's directory with the addresses to add to, and remove from, the multisig in their respective fields.
-1. Ensure that the `EXISTING_OWNERS_LENGTH` constant value inside the `script/UpdateSigners.s.sol` script is set appropriately, in particular that it equals the exact number of current members of the Incident Multisig Safe (prior to running the task).
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Double check the `cmd` field at the top of the generated validation file at `validations/base-signer.json` and ensure that the value passed to the `--sender` flag matches the `SENDER` env var already defined in the `.env` file.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the funding template
-
-This template is used to fund addresses from a Gnosis Safe.
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-funding network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Specify the `SAFE`, which is the safe that will fund the addresses in the `.env` file.
-1. Specify the `recipients` and `funds` arrays (in 1e18 units) in the `funding.json` file.
-1. Build the contracts with `forge build`.
-1. Simulate the task with `make sign` and update the generic validations in `VALIDATION.md` with the real values.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the Base Bridge set partner threshold template
-
-This template is used to update the partner threshold in [Base Bridge](https://github.com/base/bridge), affecting the amount of required partner signatures to approve bridge messages.
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-bridge-partner-threshold network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments, using the value for your target network.
-1. Set the `NEW_THRESHOLD` variable in the `.env` file.
-1. Ensure the `--sender` flag in the `make gen-validation` command in the `Makefile` file is set to a signer for `OWNER_SAFE` in `.env`.
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the pause Base Bridge template
-
-This template is used to pause or un-pause [Base Bridge](https://github.com/base/bridge).
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-bridge-pause network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments (e.g., `L2_BRIDGE`), using the value for your target network.
-1. Set the `IS_PAUSED` variable to `true` or `false` in the `.env` file depending on if you intend to pause or unpause the bridge.
-1. Ensure the `SENDER` variable in the Makefile is set to a signer for `OWNER_SAFE`.
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the pause SuperchainConfig template
-
-This template is used to pause or un-pause the L1 SuperchainConfig contract.
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-superchain-config-pause network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments, using the value for your target network.
-1. Build the contracts with `forge build`.
-1. Sign the pause transaction with `make sign-pause` or generate the validation file for un-pausing with `make gen-validation-unpause`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+| Former `setup-templates/` template | Common script |
+| --- | --- |
+| `template-gas-increase`, `template-gas-and-elasticity-increase` | [`gas/IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol`](active/evm/script/common/gas/IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol) |
+| `template-safe-management` | [`safe/UpdateSigners.s.sol`](active/evm/script/common/safe/UpdateSigners.s.sol) |
+| `template-funding` | [`funding/Fund.s.sol`](active/evm/script/common/funding/Fund.s.sol) |
+| `template-set-bridge-partner-threshold` | [`bridge/SetThreshold.s.sol`](active/evm/script/common/bridge/SetThreshold.s.sol) |
+| `template-pause-bridge-base` | [`bridge/PauseBridge.s.sol`](active/evm/script/common/bridge/PauseBridge.s.sol) |
+| `template-pause-superchain-config` | [`superchain/PauseSuperchainConfig.s.sol`](active/evm/script/common/superchain/PauseSuperchainConfig.s.sol) |

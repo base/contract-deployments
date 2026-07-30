@@ -4,22 +4,6 @@
 # `include ../../Makefile`.
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
-GAS_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-limit
-GAS_AND_ELASTICITY_INCREASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-increase-gas-and-elasticity-limit
-SAFE_MANAGEMENT_DIR = $(network)/$(shell date +'%Y-%m-%d')-safe-management
-FUNDING_DIR = $(network)/$(shell date +'%Y-%m-%d')-funding
-SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
-PAUSE_BRIDGE_BASE_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-bridge-base
-PAUSE_SUPERCHAIN_CONFIG_DIR = $(network)/$(shell date +'%Y-%m-%d')-pause-superchain-config
-
-TEMPLATE_GAS_INCREASE = setup-templates/template-gas-increase
-TEMPLATE_GAS_AND_ELASTICITY_INCREASE = setup-templates/template-gas-and-elasticity-increase
-TEMPLATE_SAFE_MANAGEMENT = setup-templates/template-safe-management
-TEMPLATE_FUNDING = setup-templates/template-funding
-TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD = setup-templates/template-set-bridge-partner-threshold
-TEMPLATE_PAUSE_BRIDGE_BASE = setup-templates/template-pause-bridge-base
-TEMPLATE_PAUSE_SUPERCHAIN_CONFIG = setup-templates/template-pause-superchain-config
-
 ##
 # Toolchain bootstrap (mise)
 ##
@@ -66,51 +50,6 @@ ifndef GOPATH
 GOPATH = $(shell $(MISE_EXEC) go env GOPATH 2>/dev/null)
 export GOPATH
 endif
-
-##
-# Project Setup
-##
-# Run `make setup-gas-increase network=<network>`
-setup-gas-increase:
-	rm -rf $(TEMPLATE_GAS_INCREASE)/cache $(TEMPLATE_GAS_INCREASE)/lib $(TEMPLATE_GAS_INCREASE)/out
-	cp -r $(TEMPLATE_GAS_INCREASE) $(GAS_INCREASE_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(GAS_INCREASE_DIR))
-
-# Run `make setup-gas-increase network=<network>`
-setup-gas-and-elasticity-increase:
-	rm -rf $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/cache $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/lib $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE)/out
-	cp -r $(TEMPLATE_GAS_AND_ELASTICITY_INCREASE) $(GAS_AND_ELASTICITY_INCREASE_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(GAS_AND_ELASTICITY_INCREASE_DIR))
-
-# Run `make setup-safe-management network=<network>`
-setup-safe-management:
-	rm -rf $(TEMPLATE_SAFE_MANAGEMENT)/cache $(TEMPLATE_SAFE_MANAGEMENT)/lib $(TEMPLATE_SAFE_MANAGEMENT)/out
-	cp -r $(TEMPLATE_SAFE_MANAGEMENT) $(SAFE_MANAGEMENT_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(SAFE_MANAGEMENT_DIR))
-
-# Run `make setup-funding network=<network>`
-setup-funding:
-	rm -rf $(TEMPLATE_FUNDING)/cache $(TEMPLATE_FUNDING)/lib $(TEMPLATE_FUNDING)/out
-	cp -r $(TEMPLATE_FUNDING) $(FUNDING_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(FUNDING_DIR))
-
-# Run `make setup-bridge-partner-threshold network=<network>`
-setup-bridge-partner-threshold:
-	rm -rf $(TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD)/cache $(TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD)/lib $(TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD)/out
-	cp -r $(TEMPLATE_SET_BASE_BRIDGE_PARTNER_THRESHOLD) $(SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(SET_BASE_BRIDGE_PARTNER_THRESHOLD_DIR))
-
-# Run `make setup-bridge-pause network=<network>`
-setup-bridge-pause:
-	rm -rf $(TEMPLATE_PAUSE_BRIDGE_BASE)/cache $(TEMPLATE_PAUSE_BRIDGE_BASE)/lib $(TEMPLATE_PAUSE_BRIDGE_BASE)/out
-	cp -r $(TEMPLATE_PAUSE_BRIDGE_BASE) $(PAUSE_BRIDGE_BASE_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(PAUSE_BRIDGE_BASE_DIR))
-
-# Run `make setup-superchain-config-pause network=<network>`
-setup-superchain-config-pause:
-	rm -rf $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/cache $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/lib $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG)/out
-	cp -r $(TEMPLATE_PAUSE_SUPERCHAIN_CONFIG) $(PAUSE_SUPERCHAIN_CONFIG_DIR)
-	mkdir -p $(network)/signatures/$(notdir $(PAUSE_SUPERCHAIN_CONFIG_DIR))
 
 ##
 # Solidity Setup
