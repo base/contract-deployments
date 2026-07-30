@@ -5,6 +5,28 @@
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 ##
+# Task lifecycle
+##
+# New EVM tasks are authored under `active/evm/tasks/<task-id>/` (see
+# active/evm and the root README). Once a task has been executed and its records
+# are checked in, archive it out of the active set with:
+#
+#   make archive-task TASK_ID=<YYYY-MM-DD-task-name> TASK_NETWORK=<network>
+#
+# This moves `active/evm/tasks/<TASK_ID>` to `archive/<TASK_NETWORK>/<TASK_ID>`
+# (a per-network archive, kept separate from the older `archive/legacy/` tree).
+# The move is a `git mv`, so the task must be committed/tracked first.
+.PHONY: archive-task
+archive-task:
+	@[ -n "$(TASK_ID)" ] || (echo "archive-task: TASK_ID is required (e.g. TASK_ID=2026-07-10-transfer-systemconfig-ownership)" && exit 1)
+	@[ -n "$(TASK_NETWORK)" ] || (echo "archive-task: TASK_NETWORK is required (e.g. TASK_NETWORK=zeronet)" && exit 1)
+	@test -d "$(REPO_ROOT)/active/evm/tasks/$(TASK_ID)" || (echo "archive-task: no such active task: active/evm/tasks/$(TASK_ID)" && exit 1)
+	@test ! -e "$(REPO_ROOT)/archive/$(TASK_NETWORK)/$(TASK_ID)" || (echo "archive-task: destination already exists: archive/$(TASK_NETWORK)/$(TASK_ID)" && exit 1)
+	mkdir -p "$(REPO_ROOT)/archive/$(TASK_NETWORK)"
+	git mv "$(REPO_ROOT)/active/evm/tasks/$(TASK_ID)" "$(REPO_ROOT)/archive/$(TASK_NETWORK)/$(TASK_ID)"
+	@echo "Archived active/evm/tasks/$(TASK_ID) -> archive/$(TASK_NETWORK)/$(TASK_ID)"
+
+##
 # Toolchain bootstrap (mise)
 ##
 # Every signer- and contributor-facing target depends on `bootstrap-mise`, so a

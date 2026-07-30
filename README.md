@@ -87,6 +87,11 @@ with its `.env`, `network.env`, `README.md`, and `validations/` (see the layout 
 for signers are produced with `make gen-validation-*`, and task-origin signatures
 (when required) with the [task-origin signing](#task-origin-signing) targets.
 
+> Once a task in `active/evm/tasks/` is no longer active (executed and its records
+> committed), archive it out of the active set with
+> `make archive-task TASK_ID=<id> TASK_NETWORK=<network>` — see
+> [Task lifecycle](#task-lifecycle).
+
 ## Network configuration
 
 Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`, `zeronet/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
@@ -149,6 +154,37 @@ override and an explicit `BASE_CONTRACTS_COMMIT`:
 ```bash
 make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
 ```
+
+### Task lifecycle
+
+Active tasks are authored under `active/evm/tasks/<task-id>/`. Once a task has
+been executed, it is moved out to a per-network archive, keeping `active/evm`
+holding only in-flight work:
+
+```text
+active/evm/tasks/<task-id>/     # active task: build, generate validations, sign
+  ↓ make archive-task TASK_ID=<id> TASK_NETWORK=<network>
+archive/<network>/<task-id>/    # executed task, archived per network
+```
+
+- **`active/evm/tasks/<task-id>/`** — the active home for a task (see
+  [Directory structure](#directory-structure) above). When there are no in-flight
+  tasks this directory is empty (a `.gitkeep` placeholder), leaving `active/evm`
+  as a clean scaffold — shared `foundry.toml` and `script/common/` with no tasks.
+- **`archive/<network>/<task-id>/`** — where an executed task is moved, per
+  network. This is separate from the older `archive/legacy/` tree, which holds
+  pre-`active/evm` tasks.
+
+Once a task is executed and its records are committed, archive it from the repo
+root:
+
+```bash
+make archive-task TASK_ID=<YYYY-MM-DD-task-name> TASK_NETWORK=<network>
+```
+
+This `git mv`s `active/evm/tasks/<TASK_ID>` to `archive/<TASK_NETWORK>/<TASK_ID>`
+(the task must be committed first). It refuses to run if the task does not exist
+or the destination is already present.
 
 ### Legacy tasks
 
