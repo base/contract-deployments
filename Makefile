@@ -11,26 +11,19 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 #
 #   make archive-task
 #
-# Pass TASK_ID=<YYYY-MM-DD-task-name> to skip the interactive selection.
-#
 .PHONY: archive-task
-archive-task: export TASK_ID := $(TASK_ID)
 archive-task:
 	@set -eu; \
-	task_id="$$TASK_ID"; tasks_dir="$(REPO_ROOT)/active/evm/tasks"; \
-	if [ -z "$$task_id" ]; then \
-		tasks=$$(find "$$tasks_dir" -mindepth 1 -maxdepth 1 -type d | sort); \
-		[ -n "$$tasks" ] || { echo "archive-task: no active tasks"; exit 1; }; \
-		echo "Active EVM tasks:"; \
-		printf '%s\n' "$$tasks" | awk -F/ '{ printf "  %d) %s\n", NR, $$NF }'; \
-		printf "Select a task to archive: "; read -r choice; \
-		case "$$choice" in ""|*[!0-9]*) echo "archive-task: invalid selection"; exit 1;; esac; \
-		source=$$(printf '%s\n' "$$tasks" | sed -n "$${choice}p"); \
-		[ -n "$$source" ] || { echo "archive-task: invalid selection"; exit 1; }; \
-		task_id=$${source##*/}; \
-	fi; \
+	tasks=$$(find "$(REPO_ROOT)/active/evm/tasks" -mindepth 1 -maxdepth 1 -type d | sort); \
+	[ -n "$$tasks" ] || { echo "archive-task: no active tasks"; exit 1; }; \
+	echo "Active EVM tasks:"; \
+	printf '%s\n' "$$tasks" | awk -F/ '{ printf "  %d) %s\n", NR, $$NF }'; \
+	printf "Select a task to archive: "; read -r choice; \
+	case "$$choice" in ""|*[!0-9]*) echo "archive-task: invalid selection"; exit 1;; esac; \
+	source=$$(printf '%s\n' "$$tasks" | sed -n "$${choice}p"); \
+	[ -n "$$source" ] || { echo "archive-task: invalid selection"; exit 1; }; \
+	task_id=$${source##*/}; \
 	case "$$task_id" in ""|.|..|*[!A-Za-z0-9._-]*) echo "archive-task: invalid TASK_ID"; exit 1;; esac; \
-	source="$(REPO_ROOT)/active/evm/tasks/$$task_id"; \
 	destination="$(REPO_ROOT)/archive/evm/$$task_id"; \
 	[ -d "$$source" ] || { echo "archive-task: no such active task: active/evm/tasks/$$task_id"; exit 1; }; \
 	[ ! -e "$$destination" ] || { echo "archive-task: destination already exists: archive/evm/$$task_id"; exit 1; }; \
