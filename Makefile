@@ -7,27 +7,24 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 ##
 # Task lifecycle
 ##
-# Archive a completed, single-network EVM task with:
+# Archive a completed EVM task with:
 #
-#   make archive-task TASK_ID=<YYYY-MM-DD-task-name> TASK_NETWORK=<network>
+#   make archive-task TASK_ID=<YYYY-MM-DD-task-name>
 #
 .PHONY: archive-task
 archive-task: export TASK_ID := $(TASK_ID)
-archive-task: export TASK_NETWORK := $(TASK_NETWORK)
 archive-task:
 	@set -eu; \
-	task_id="$$TASK_ID"; network="$$TASK_NETWORK"; \
+	task_id="$$TASK_ID"; \
 	case "$$task_id" in ""|.|..|*[!A-Za-z0-9._-]*) echo "archive-task: invalid TASK_ID"; exit 1;; esac; \
-	case "$$network" in ""|.|..|*[!A-Za-z0-9._-]*) echo "archive-task: invalid TASK_NETWORK"; exit 1;; esac; \
 	source="$(REPO_ROOT)/active/evm/tasks/$$task_id"; \
-	destination="$(REPO_ROOT)/archive/$$network/$$task_id"; \
+	destination="$(REPO_ROOT)/archive/evm/$$task_id"; \
 	[ -d "$$source" ] || { echo "archive-task: no such active task: active/evm/tasks/$$task_id"; exit 1; }; \
-	[ -d "$$source/config/$$network" ] || { echo "archive-task: task has no config/$$network"; exit 1; }; \
-	[ "$$(find "$$source/config" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" = 1 ] || { echo "archive-task: only single-network tasks can be archived by network"; exit 1; }; \
-	[ ! -e "$$destination" ] || { echo "archive-task: destination already exists: archive/$$network/$$task_id"; exit 1; }; \
-	mkdir -p "$(REPO_ROOT)/archive/$$network"; \
+	[ ! -e "$$destination" ] || { echo "archive-task: destination already exists: archive/evm/$$task_id"; exit 1; }; \
+	[ ! -d "$(REPO_ROOT)/active/evm/records" ] || { echo "archive-task: move shared active/evm/records into the task before archiving"; exit 1; }; \
+	mkdir -p "$(REPO_ROOT)/archive/evm"; \
 	git mv -- "$$source" "$$destination"; \
-	echo "Archived active/evm/tasks/$$task_id -> archive/$$network/$$task_id"
+	echo "Archived active/evm/tasks/$$task_id -> archive/evm/$$task_id"
 
 ##
 # Toolchain bootstrap (mise)
