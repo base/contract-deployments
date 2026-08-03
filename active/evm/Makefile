@@ -12,6 +12,8 @@ export BASE_CONTRACTS_COMMIT
 export PROXY_ADMIN_OWNER
 export INCIDENT_MULTISIG
 export SYSTEM_CONFIG
+export RECORD_STATE_DIFF
+export FOUNDRY_BROADCAST = $(TASK_DIR)
 
 SIGNER_TOOL_PATH = ../../signer-tool
 VALIDATIONS_DIR = $(CURDIR)/$(TASK_DIR)/config/$(TASK_NETWORK)/validations
@@ -26,11 +28,11 @@ RPC_URL = $(L1_RPC_URL)
 SCRIPT_NAME = script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership
 CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
-TRANSFER_OWNERSHIP_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) INCIDENT_MULTISIG=$(INCIDENT_MULTISIG) SYSTEM_CONFIG=$(SYSTEM_CONFIG)
+TRANSFER_OWNERSHIP_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) INCIDENT_MULTISIG=$(INCIDENT_MULTISIG) SYSTEM_CONFIG=$(SYSTEM_CONFIG) RECORD_STATE_DIFF=$(RECORD_STATE_DIFF)
 
 .PHONY: gen-validation-cb
 gen-validation-cb: deps-signer-tool
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(CB_MULTISIG),$(CB_SENDER),coinbase-signer.json,$(TRANSFER_OWNERSHIP_ENV))
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(CB_MULTISIG),$(CB_SENDER),base-signer.json,$(TRANSFER_OWNERSHIP_ENV))
 
 .PHONY: gen-validation-sc
 gen-validation-sc: deps-signer-tool

@@ -15,7 +15,7 @@ make gen-validation-sc
 
 This produces:
 
-- `tasks/2026-07-10-transfer-systemconfig-ownership/config/zeronet/validations/coinbase-signer.json`
+- `tasks/2026-07-10-transfer-systemconfig-ownership/config/zeronet/validations/base-signer.json`
 - `tasks/2026-07-10-transfer-systemconfig-ownership/config/zeronet/validations/security-council-signer.json`
 
 The `--sender` in each `cmd` is derived from the first owner of the respective
