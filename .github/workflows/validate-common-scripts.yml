@@ -41,6 +41,9 @@ jobs:
         with:
           experimental: true
 
+      - name: Check active EVM Make dispatcher
+        run: bash active/evm/make/check-dispatch.sh
+
       # ── Dependencies ─────────────────────────────────────────────────
       # Install Foundry deps into the shared active/evm project. PROJECT_DIR
       # points forge install at active/evm; BASE_CONTRACTS_COMMIT is supplied

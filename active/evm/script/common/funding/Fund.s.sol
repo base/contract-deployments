@@ -19,7 +19,7 @@ contract FundScript is MultisigScript {
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
 
-        string memory funding = vm.readFile("./funding.json");
+        string memory funding = vm.readFile(vm.envString("FUNDING_JSON"));
         RECIPIENTS = vm.parseJsonAddressArray(funding, ".recipients");
         FUNDS = vm.parseJsonUintArray(funding, ".funds");
 

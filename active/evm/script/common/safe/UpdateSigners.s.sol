@@ -41,9 +41,7 @@ contract UpdateSigners is MultisigScript {
         THRESHOLD = ownerSafe.getThreshold();
         EXISTING_OWNERS = ownerSafe.getOwners();
 
-        string memory rootPath = vm.projectRoot();
-        string memory path = string.concat(rootPath, "/OwnerDiff.json");
-        string memory jsonData = vm.readFile(path);
+        string memory jsonData = vm.readFile(vm.envString("OWNER_DIFF_JSON"));
 
         OWNERS_TO_ADD = abi.decode(jsonData.parseRaw(".OwnersToAdd"), (address[]));
         OWNERS_TO_REMOVE = abi.decode(jsonData.parseRaw(".OwnersToRemove"), (address[]));
