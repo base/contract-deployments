@@ -44,5 +44,6 @@ SCRIPT_NAME := script/common/ownership/TransferSystemConfigOwnership.s.sol:Trans
 EOF
 output=$(make -s -C "$evm_root" TASK_ID="$task_id" show-config)
 grep -Fq "SCRIPT_NAME=script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership" <<< "$output"
+grep -Fq "FOUNDRY_BROADCAST=tasks/$task_id" <<< "$output"
 
 echo "active/evm Make dispatcher checks passed"

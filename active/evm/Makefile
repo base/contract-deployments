@@ -46,6 +46,7 @@ endif
 
 TASK_DIR_REL := tasks/$(TASK_ID)
 CONFIG_DIR_REL := $(TASK_DIR_REL)/config/$(TASK_NETWORK)
+export FOUNDRY_BROADCAST := $(TASK_DIR_REL)
 
 include $(CONFIG_DIR)/network.env
 include $(CONFIG_DIR)/.env
@@ -74,4 +75,5 @@ show-config:
 	@echo "OPERATION=$(OPERATION)"
 	@echo "SCRIPT_NAME=$(SCRIPT_NAME)"
 	@echo "CONFIG_DIR=$(CONFIG_DIR_REL)"
+	@echo "FOUNDRY_BROADCAST=$(FOUNDRY_BROADCAST)"
 endif

@@ -15,6 +15,10 @@ tasks/<task-id>/
     └── funding.json or OwnerDiff.json  # only when required
 ```
 
+Forge writes execution artifacts directly into the task directory, grouped by
+script and chain ID. This keeps everything needed to archive a task under
+`tasks/<task-id>/` without another `records/` layer.
+
 `Task.mk` selects an operation and may set a default network. Standard
 operations provide their own `SCRIPT_NAME`; custom tasks define it locally.
 
