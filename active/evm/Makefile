@@ -5,7 +5,7 @@ TASK_NETWORK ?= zeronet
 TASK_ID ?= 2026-07-10-transfer-systemconfig-ownership
 TASK_DIR = tasks/$(TASK_ID)
 
-include $(TASK_DIR)/config/$(TASK_NETWORK)/network.env
+include $(REPO_ROOT)/config/$(TASK_NETWORK).env
 include $(TASK_DIR)/config/$(TASK_NETWORK)/.env
 
 export BASE_CONTRACTS_COMMIT
