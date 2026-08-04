@@ -8,9 +8,10 @@ Run this after any change to the task config or script:
 
 ```bash
 cd contract-deployments/active/evm
+TASK_MAKEFILE=tasks/2026-07-10-transfer-systemconfig-ownership/Makefile
 make deps
-make gen-validation-cb
-make gen-validation-sc
+make -f "$TASK_MAKEFILE" gen-validation-cb
+make -f "$TASK_MAKEFILE" gen-validation-sc
 ```
 
 This produces:
@@ -21,8 +22,8 @@ This produces:
 The `--sender` in each `cmd` is derived from the first owner of the respective
 Safe (`CB_MULTISIG` for Coinbase, `BASE_SECURITY_COUNCIL` for Security Council).
 
-Because this is a Zeronet task, keep this field at the JSON root in both
-validation files (it is committed with the generated files):
+Because this is a Zeronet task, remove the generated `taskOriginConfig` and add
+this field at the JSON root in both validation files:
 
 ```json
 "skipTaskOriginValidation": true
@@ -38,9 +39,10 @@ Ask signers to run `make sign-task` from the repository root and select
 From `active/evm`, execute the Coinbase and Security Council approvals:
 
 ```bash
-SIGNATURES=AAABBBCCC make approve-cb
-SIGNATURES=AAABBBCCC make approve-sc
-make execute
+TASK_MAKEFILE=tasks/2026-07-10-transfer-systemconfig-ownership/Makefile
+SIGNATURES=AAABBBCCC make -f "$TASK_MAKEFILE" approve-cb
+SIGNATURES=AAABBBCCC make -f "$TASK_MAKEFILE" approve-sc
+make -f "$TASK_MAKEFILE" execute
 ```
 
 ## 4. Verify onchain

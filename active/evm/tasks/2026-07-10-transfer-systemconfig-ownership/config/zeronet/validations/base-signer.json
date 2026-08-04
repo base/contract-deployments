@@ -1,5 +1,5 @@
 {
-  "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 INCIDENT_MULTISIG=0x856611ed7e07d83243b15e93f6321f2df6865852 SYSTEM_CONFIG=0x0a111c7980152bde41d71f48e2e1d8184f5f6187 RECORD_STATE_DIFF=true mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 INCIDENT_MULTISIG=0x856611ed7e07d83243b15e93f6321f2df6865852 SYSTEM_CONFIG=0x0a111c7980152bde41d71f48e2e1d8184f5f6187 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
   "ledgerId": 1,
   "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {
@@ -88,10 +88,5 @@
     }
   ],
   "balanceChanges": [],
-  "taskOriginConfig": {
-    "taskCreator": {
-      "commonName": "thanh.trinh@coinbase.com"
-    }
-  },
   "skipTaskOriginValidation": true
 }
