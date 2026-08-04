@@ -8,7 +8,6 @@ Run this after any change to the task config or script:
 
 ```bash
 cd contract-deployments/active/evm
-export TASK_ID=2026-07-10-transfer-systemconfig-ownership
 make deps
 make gen-validation-cb
 make gen-validation-sc
@@ -39,7 +38,6 @@ Ask signers to run `make sign-task` from the repository root and select
 From `active/evm`, execute the Coinbase and Security Council approvals:
 
 ```bash
-export TASK_ID=2026-07-10-transfer-systemconfig-ownership
 SIGNATURES=AAABBBCCC make approve-cb
 SIGNATURES=AAABBBCCC make approve-sc
 make execute
