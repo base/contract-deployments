@@ -85,7 +85,6 @@ endif
 # Pinned tag for openzeppelin-contracts-upgradeable, installed via clone-oz-upgradeable.
 OZ_UPGRADEABLE_TAG=v4.7.3
 LIB_KECCAK_COMMIT=3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
-ACTIVE_EVM_BASE_CONTRACTS_COMMIT=f3a33c8577c8ca1e037b45e822bfcb75f099270b
 PROJECT_DIR ?= $(CURDIR)
 
 .PHONY: deps
@@ -107,15 +106,10 @@ forge-deps:
 	github.com/ethereum-optimism/lib-keccak@$(LIB_KECCAK_COMMIT) \
 	github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
 
-.PHONY: deps-active-evm
-deps-active-evm: PROJECT_DIR := $(REPO_ROOT)/active/evm
-deps-active-evm: BASE_CONTRACTS_COMMIT := $(ACTIVE_EVM_BASE_CONTRACTS_COMMIT)
-deps-active-evm: deps
-
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=566102238bc78fb023f495372d6f80282efa05dd
+SIGNER_TOOL_COMMIT=d8e9988d8fba7cb442da35309c221c0c1eef00a5
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool
@@ -135,10 +129,14 @@ deps-signer-tool: bootstrap-mise checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH) && $(MISE_EXEC) npm ci
 
 .PHONY: sign-task
-sign-task: bootstrap-mise deps-active-evm checkout-signer-tool
+sign-task: bootstrap-mise clean-active-evm-lib checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH); \
 	$(MISE_EXEC) npm ci; \
 	$(MISE_EXEC) npm run dev
+
+.PHONY: clean-active-evm-lib
+clean-active-evm-lib:
+	rm -rf $(REPO_ROOT)/active/evm/lib
 
 # Task origin signature variables (auto-derived, overridable).
 # Legacy task subdirectories sign their own folder by default. Active EVM tasks
