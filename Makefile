@@ -108,10 +108,9 @@ forge-deps:
 	github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
 
 .PHONY: deps-active-evm
-deps-active-evm:
-	$(MAKE) -C $(REPO_ROOT) deps \
-		PROJECT_DIR=$(REPO_ROOT)/active/evm \
-		BASE_CONTRACTS_COMMIT=$(ACTIVE_EVM_BASE_CONTRACTS_COMMIT)
+deps-active-evm: PROJECT_DIR := $(REPO_ROOT)/active/evm
+deps-active-evm: BASE_CONTRACTS_COMMIT := $(ACTIVE_EVM_BASE_CONTRACTS_COMMIT)
+deps-active-evm: deps
 
 ##
 # Task Signer Tool
@@ -136,7 +135,7 @@ deps-signer-tool: bootstrap-mise checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH) && $(MISE_EXEC) npm ci
 
 .PHONY: sign-task
-sign-task: deps-active-evm checkout-signer-tool
+sign-task: bootstrap-mise deps-active-evm checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH); \
 	$(MISE_EXEC) npm ci; \
 	$(MISE_EXEC) npm run dev
