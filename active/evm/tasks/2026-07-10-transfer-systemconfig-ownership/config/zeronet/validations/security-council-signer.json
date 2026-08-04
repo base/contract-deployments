@@ -35,14 +35,14 @@
   ],
   "stateChanges": [
     {
-      "name": "<<ContractName>>",
+      "name": "SystemConfig - Zeronet",
       "address": "0x0a111C7980152bDe41D71f48e2E1d8184f5f6187",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000033",
           "before": "0x0000000000000000000000003d59999977e0896ee1f8783bb8251df16fb483e9",
           "after": "0x000000000000000000000000856611ed7e07d83243b15e93f6321f2df6865852",
-          "description": "<<Summary>>",
+          "description": "Transfers ownership to the incident multisig",
           "allowDifference": false
         }
       ]
@@ -62,7 +62,7 @@
           "key": "0x0357b2352703f016eba49e117877cc0170c3c53d22e138fd6501caa01b912570",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Records the nested Safe approval",
           "allowDifference": false
         }
       ]
