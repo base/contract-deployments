@@ -85,6 +85,7 @@ endif
 # Pinned tag for openzeppelin-contracts-upgradeable, installed via clone-oz-upgradeable.
 OZ_UPGRADEABLE_TAG=v4.7.3
 LIB_KECCAK_COMMIT=3b1e7bbb4cc23e9228097cfebe42aedaf3b8f2b9
+ACTIVE_EVM_BASE_CONTRACTS_COMMIT=f3a33c8577c8ca1e037b45e822bfcb75f099270b
 PROJECT_DIR ?= $(CURDIR)
 
 .PHONY: deps
@@ -105,6 +106,12 @@ forge-deps:
 	github.com/Vectorized/solady@502cc1ea718e6fa73b380635ee0868b0740595f0 \
 	github.com/ethereum-optimism/lib-keccak@$(LIB_KECCAK_COMMIT) \
 	github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
+
+.PHONY: deps-active-evm
+deps-active-evm:
+	$(MAKE) -C $(REPO_ROOT) deps \
+		PROJECT_DIR=$(REPO_ROOT)/active/evm \
+		BASE_CONTRACTS_COMMIT=$(ACTIVE_EVM_BASE_CONTRACTS_COMMIT)
 
 ##
 # Task Signer Tool
@@ -129,7 +136,7 @@ deps-signer-tool: bootstrap-mise checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH) && $(MISE_EXEC) npm ci
 
 .PHONY: sign-task
-sign-task: bootstrap-mise checkout-signer-tool
+sign-task: deps-active-evm checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH); \
 	$(MISE_EXEC) npm ci; \
 	$(MISE_EXEC) npm run dev

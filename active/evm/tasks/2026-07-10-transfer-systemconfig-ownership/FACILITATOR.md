@@ -9,7 +9,7 @@ Run this after any change to the task config or script:
 ```bash
 cd contract-deployments/active/evm
 TASK_MAKEFILE=tasks/2026-07-10-transfer-systemconfig-ownership/Makefile
-make deps
+make -f "$TASK_MAKEFILE" deps
 make -f "$TASK_MAKEFILE" gen-validation-cb
 make -f "$TASK_MAKEFILE" gen-validation-sc
 ```
