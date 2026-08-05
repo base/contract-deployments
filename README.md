@@ -2,11 +2,11 @@
 
 # contract-deployments
 
-This repo contains execution code and artifacts related to Base contract deployments, upgrades, and
-calls. For actual contract implementations, see [base/contracts](https://github.com/base/contracts).
+This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract
+implementations, see [base/contracts](https://github.com/base/contracts).
 
-Active EVM tasks live under `active/evm/tasks/`. Shared network configuration lives under `config/`,
-and completed historical tasks live under `archive/`.
+Active EVM tasks live under `active/evm/tasks/`. Shared network configuration lives under `config/`, and completed historical tasks live
+under `archive/`.
 
 <!-- Badge row 1 - status -->
 
@@ -33,27 +33,22 @@ and completed historical tasks live under `archive/`.
 
 ### Toolchain (mise)
 
-All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise.toml) so that every
-contributor — and especially every signer — runs identical versions. This eliminates a class of bugs
-where domain separators, build artifacts, or generated signatures differ between machines.
+All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise.toml) so that every contributor — and especially every
+signer — runs identical versions. This eliminates a class of bugs where domain separators, build artifacts, or generated signatures differ
+between machines.
 
-**Signers and facilitators don't need to install anything.** `make sign-task` (and `make deps`,
-`make execute`, etc.) automatically:
+**Signers and facilitators don't need to install anything.** `make sign-task` (and `make deps`, `make execute`, etc.) automatically:
 
-1. Installs [`mise`](https://mise.jdx.dev) to `~/.local/bin/mise` if it's not already present, using
-   the vendored installer at [`scripts/install-mise.sh`](scripts/install-mise.sh).
-2. Trusts the repo's `mise.toml` and runs `mise install` to fetch the pinned `foundry`, `node`,
-   `bun`, and `go` versions.
-3. Invokes every toolchain command through `mise exec --`, so the pinned versions are used without
-   modifying your shell environment or `PATH`. This deliberately avoids conflicts with any existing
-   `foundryup` or system-level installs.
+1. Installs [`mise`](https://mise.jdx.dev) to `~/.local/bin/mise` if it's not already present, using the vendored installer at
+   [`scripts/install-mise.sh`](scripts/install-mise.sh).
+2. Trusts the repo's `mise.toml` and runs `mise install` to fetch the pinned `foundry`, `node`, `bun`, and `go` versions.
+3. Invokes every toolchain command through `mise exec --`, so the pinned versions are used without modifying your shell environment or
+   `PATH`. This deliberately avoids conflicts with any existing `foundryup` or system-level installs.
 
-> **Important — `mise` must be on your PATH for the signer-tool.** The generated validation files
-> contain a `cmd` field with `mise exec --` (deliberately, so the JSON is portable across machines),
-> and the signer-tool re-executes that command in a fresh shell. If `mise` is not on your PATH, that
-> subprocess will fail with "command not found". `make bootstrap-mise` will warn you if this is the
-> case. To fix it, add this to your shell config (e.g. `~/.zshrc` or `~/.bashrc`) and restart your
-> shell:
+> **Important — `mise` must be on your PATH for the signer-tool.** The generated validation files contain a `cmd` field with `mise exec --`
+> (deliberately, so the JSON is portable across machines), and the signer-tool re-executes that command in a fresh shell. If `mise` is not
+> on your PATH, that subprocess will fail with "command not found". `make bootstrap-mise` will warn you if this is the case. To fix it, add
+> this to your shell config (e.g. `~/.zshrc` or `~/.bashrc`) and restart your shell:
 >
 > ```bash
 > export PATH="$HOME/.local/bin:$PATH"
@@ -73,8 +68,8 @@ The `Commit SHA` is the source of truth — it must match the commit pinned in `
 
 #### For contributors authoring new tasks (optional)
 
-If you want bare `forge`/`cast`/`bun`/`go` invocations in your interactive shell to resolve to the
-pinned versions while you're working inside this repo, add mise's shell hook to your shell config:
+If you want bare `forge`/`cast`/`bun`/`go` invocations in your interactive shell to resolve to the pinned versions while you're working
+inside this repo, add mise's shell hook to your shell config:
 
 ```bash
 # zsh
@@ -87,8 +82,8 @@ This is purely a convenience for task authors — `make` targets work correctly 
 
 ### Running a task
 
-Each active task owns its Makefile, signer README, facilitator guide, configuration, and
-validations. Run task commands from the task directory:
+Each active task owns its Makefile, signer README, facilitator guide, configuration, and validations. Run task commands from the task
+directory:
 
 ```bash
 cd active/evm/tasks/<task-id>
@@ -96,34 +91,30 @@ make deps
 make <task-target>
 ```
 
-Signers run `make sign-task` from the repository root, select the network and task in the UI, and
-follow the task README.
+Signers run `make sign-task` from the repository root, select the network and task in the UI, and follow the task README.
 
 ## Network configuration
 
-Shared network values live in `config/mainnet.env`, `config/sepolia.env`, and `config/zeronet.env`.
-Task Makefiles include the appropriate shared file and load operation-specific values from
-`config/<network>/.env` inside the task.
+Shared network values live in `config/mainnet.env`, `config/sepolia.env`, and `config/zeronet.env`. Task Makefiles include the appropriate
+shared file and load operation-specific values from `config/<network>/.env` inside the task.
 
 The network `.env` files contain:
 
-- **Network metadata** — `NETWORK`, `L1_RPC_URL`, `L2_RPC_URL`, `L1_CHAIN_ID`, `L2_CHAIN_ID`,
-  `LEDGER_ACCOUNT`
+- **Network metadata** — `NETWORK`, `L1_RPC_URL`, `L2_RPC_URL`, `L1_CHAIN_ID`, `L2_CHAIN_ID`, `LEDGER_ACCOUNT`
 - **Admin addresses** — multisig addresses, proposer, challenger, batch sender, etc.
 - **L1 contract addresses** — proxy admin, bridges, dispute game factories, system config, etc.
 - **L2 contract addresses** — fee vaults, cross-domain messenger, standard bridge, etc.
 
-All address variables are prefixed with `export` so they are available to child shell processes
-(Forge scripts, shell commands, etc.). Foundry scripts can access them via
-`vm.envAddress("VARIABLE_NAME")`.
+All address variables are prefixed with `export` so they are available to child shell processes (Forge scripts, shell commands, etc.).
+Foundry scripts can access them via `vm.envAddress("VARIABLE_NAME")`.
 
-> **Note:** Update `config/<network>.env` when a known shared address changes. Keep task-specific
-> values, including `BASE_CONTRACTS_COMMIT`, in the task `.env`.
+> **Note:** Update `config/<network>.env` when a known shared address changes. Keep task-specific values, including `BASE_CONTRACTS_COMMIT`,
+> in the task `.env`.
 
 ## Directory structure
 
-Active EVM tasks use one shared Foundry project. Dependencies and reusable Solidity are shared; Make
-targets, configuration, documentation, signatures, and execution records stay with each task:
+Active EVM tasks use one shared Foundry project. Dependencies and reusable Solidity are shared; Make targets, configuration, documentation,
+signatures, and execution records stay with each task:
 
 ```text
 active/evm/
@@ -146,12 +137,11 @@ active/evm/
         └── <script>/<chain-id>/ # Forge broadcast records after execution
 ```
 
-Task commands run from `active/evm/tasks/<task-id>`. The task Makefile installs dependencies and
-runs Forge against the shared `active/evm` project. Reusable scripts are documented in
-[`active/evm/script/common/README.md`](active/evm/script/common/README.md).
+Task commands run from `active/evm/tasks/<task-id>`. The task Makefile installs dependencies and runs Forge against the shared `active/evm`
+project. Reusable scripts are documented in [`active/evm/script/common/README.md`](active/evm/script/common/README.md).
 
-To install dependencies for the shared project without selecting a task, invoke the root Makefile
-with a project directory and explicit commit:
+To install dependencies for the shared project without selecting a task, invoke the root Makefile with a project directory and explicit
+commit:
 
 ```bash
 make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
@@ -165,30 +155,24 @@ Each task under `archive/legacy/<network>/` has a structure similar to:
 - **script/** place to store any one-off Foundry scripts
 - **src/** place to store any one-off smart contracts (long-lived contracts should go in
   [base/contracts](https://github.com/base/contracts))
-- **.env** place to store task-specific environment variables (contract addresses are inherited from
-  the network-level `.env`)
+- **.env** place to store task-specific environment variables (contract addresses are inherited from the network-level `.env`)
 
 ## CI — Common Script Validation
 
-A GitHub Actions workflow automatically validates the shared `active/evm` scripts on every pull
-request and on pushes to `main`.
+A GitHub Actions workflow automatically validates the shared `active/evm` scripts on every pull request and on pushes to `main`.
 
 **What CI checks:**
 
 1. **Solidity formatting** — `forge fmt --check script/` ensures formatting consistency.
-2. **Compilation** — `forge build` verifies that imports resolve, types are correct, and all
-   dependencies are present.
+2. **Compilation** — `forge build` verifies that imports resolve, types are correct, and all dependencies are present.
 
 **How it works:**
 
-- All tooling (Foundry, Node, Bun, Go) is installed by the
-  [`jdx/mise-action`](https://github.com/jdx/mise-action) GitHub Action using the versions pinned in
-  [`mise.toml`](mise.toml), so CI matches local signer environments.
-- `make deps PROJECT_DIR="$PWD/active/evm"` installs dependencies into the shared `active/evm`
-  Foundry project. `BASE_CONTRACTS_COMMIT` is supplied via the workflow's `env` block, since the
-  shared project has no task `.env` of its own.
-- `forge fmt --check` and `forge build` then run in `active/evm` against the shared `foundry.toml`
-  and `script/common/`.
+- All tooling (Foundry, Node, Bun, Go) is installed by the [`jdx/mise-action`](https://github.com/jdx/mise-action) GitHub Action using the
+  versions pinned in [`mise.toml`](mise.toml), so CI matches local signer environments.
+- `make deps PROJECT_DIR="$PWD/active/evm"` installs dependencies into the shared `active/evm` Foundry project. `BASE_CONTRACTS_COMMIT` is
+  supplied via the workflow's `env` block, since the shared project has no task `.env` of its own.
+- `forge fmt --check` and `forge build` then run in `active/evm` against the shared `foundry.toml` and `script/common/`.
 
 **What CI does NOT do:**
 
@@ -196,9 +180,7 @@ request and on pushes to `main`.
 - Does not run `forge test` (no test files exist for these scripts).
 - Does not run signing or execution targets (they depend on network state and hardware wallets).
 
-> See
-> [`.github/workflows/validate-common-scripts.yml`](.github/workflows/validate-common-scripts.yml)
-> for the full workflow definition.
+> See [`.github/workflows/validate-common-scripts.yml`](.github/workflows/validate-common-scripts.yml) for the full workflow definition.
 
 ## Multisig macro convention
 
@@ -210,8 +192,7 @@ Task Makefiles use global macros defined in [`Multisig.mk`](Multisig.mk) for mul
 | `MULTISIG_EXECUTE` | Execute an approved transaction onchain                         | `(signatures)`                                            |
 | `GEN_VALIDATION`   | Generate a validation JSON file for signers via the signer-tool | `(script_name, safe_addr, sender, output_file, env_vars)` |
 
-Two helper macros are also available for tasks that need nonce offset calculations or address
-manipulation:
+Two helper macros are also available for tasks that need nonce offset calculations or address manipulation:
 
 | Macro        | Purpose                                                    | Key arguments    |
 | ------------ | ---------------------------------------------------------- | ---------------- |
@@ -220,8 +201,7 @@ manipulation:
 
 Signing is handled externally by the [task-signing-tool](https://github.com/base/task-signing-tool).
 
-Each task Makefile includes the root helpers, points Forge at the shared EVM project, and defines
-the RPC and script:
+Each task Makefile includes the root helpers, points Forge at the shared EVM project, and defines the RPC and script:
 
 ```makefile
 include ../../../../Makefile
@@ -233,22 +213,21 @@ RPC_URL := $(L1_RPC_URL)       # or $(L2_RPC_URL)
 SCRIPT_NAME := script/common/<category>/<script>.s.sol:<contract>
 ```
 
-Tasks that generate validation files should use `GEN_VALIDATION` with the `deps-signer-tool`
-prerequisite, which checks out and installs the signer tool:
+Tasks that generate validation files should use `GEN_VALIDATION` with the `deps-signer-tool` prerequisite, which checks out and installs the
+signer tool:
 
 ```makefile
 gen-validation: validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
 ```
 
-Task Makefiles should use these macros rather than inline `forge script` or signer-tool invocations.
-A task that intentionally pre-signs several future nonces may keep its specialized `eip712sign` loop
-locally; approvals and execution should still use the shared macros.
+Task Makefiles should use these macros rather than inline `forge script` or signer-tool invocations. A task that intentionally pre-signs
+several future nonces may keep its specialized `eip712sign` loop locally; approvals and execution should still use the shared macros.
 
 ## Task origin signing
 
-The root Makefile provides three targets for generating cryptographic attestations that prove who
-created and facilitated a task. Active task Makefiles inherit them by including the root Makefile.
+The root Makefile provides three targets for generating cryptographic attestations that prove who created and facilitated a task. Active
+task Makefiles inherit them by including the root Makefile.
 
 | Target                          | Purpose                                         |
 | ------------------------------- | ----------------------------------------------- |
@@ -256,8 +235,8 @@ created and facilitated a task. Active task Makefiles inherit them by including 
 | `make sign-as-base-facilitator` | Attest Base team facilitation                   |
 | `make sign-as-sc-facilitator`   | Attest Security Council facilitation            |
 
-Legacy task Makefiles may use the root defaults below. Active task Makefiles override them so the
-task configuration is signed while signatures remain outside the signed payload:
+Legacy task Makefiles may use the root defaults below. Active task Makefiles override them so the task configuration is signed while
+signatures remain outside the signed payload:
 
 | Variable        | Default                                    | Description                           |
 | --------------- | ------------------------------------------ | ------------------------------------- |
@@ -267,8 +246,7 @@ task configuration is signed while signatures remain outside the signed payload:
 All three targets depend on `deps-signer-tool`, which checks out and installs the
 [task-signing-tool](https://github.com/base/task-signing-tool) automatically.
 
-For active EVM tasks, `TASK_ORIGIN_DIR` is `active/evm/tasks/<task-id>/config/<network>` and
-`SIGNATURE_DIR` is `active/evm/tasks/<task-id>/signatures/<network>`. Keeping signatures outside the
-config directory means generating them does not change the signed payload. Task-origin validation is
-required for mainnet scripts executed through the proxy admin owner. Other tasks, such as Zeronet
+For active EVM tasks, `TASK_ORIGIN_DIR` is `active/evm/tasks/<task-id>/config/<network>` and `SIGNATURE_DIR` is
+`active/evm/tasks/<task-id>/signatures/<network>`. Keeping signatures outside the config directory means generating them does not change the
+signed payload. Task-origin validation is required for mainnet scripts executed through the proxy admin owner. Other tasks, such as Zeronet
 tasks, may set `skipTaskOriginValidation: true` in each validation file.
