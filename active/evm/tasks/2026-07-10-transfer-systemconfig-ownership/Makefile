@@ -1,22 +1,27 @@
-include ../../Makefile
-include ../../Multisig.mk
+TASK_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+EVM_ROOT := $(abspath $(TASK_ROOT)/../..)
+CONTRACT_DEPLOYMENTS_ROOT := $(abspath $(EVM_ROOT)/../..)
+
+include $(CONTRACT_DEPLOYMENTS_ROOT)/Makefile
+include $(CONTRACT_DEPLOYMENTS_ROOT)/Multisig.mk
 
 TASK_NETWORK ?= zeronet
-TASK_DIR := tasks/2026-07-10-transfer-systemconfig-ownership
+PROJECT_DIR := $(EVM_ROOT)
+FORGE_WORKDIR := $(EVM_ROOT)
 
-include $(REPO_ROOT)/config/$(TASK_NETWORK).env
-include $(TASK_DIR)/config/$(TASK_NETWORK)/.env
+include $(CONTRACT_DEPLOYMENTS_ROOT)/config/$(TASK_NETWORK).env
+include $(TASK_ROOT)/config/$(TASK_NETWORK)/.env
 
 export BASE_CONTRACTS_COMMIT
 export PROXY_ADMIN_OWNER
 export INCIDENT_MULTISIG
 export SYSTEM_CONFIG
-export FOUNDRY_BROADCAST = $(TASK_DIR)
+export FOUNDRY_BROADCAST := $(TASK_ROOT)
 
-SIGNER_TOOL_PATH := ../../signer-tool
-VALIDATIONS_DIR := $(CURDIR)/$(TASK_DIR)/config/$(TASK_NETWORK)/validations
-TASK_ORIGIN_DIR := $(CURDIR)/$(TASK_DIR)/config/$(TASK_NETWORK)
-SIGNATURE_DIR := $(CURDIR)/$(TASK_DIR)/signatures/$(TASK_NETWORK)
+SIGNER_TOOL_PATH := $(CONTRACT_DEPLOYMENTS_ROOT)/signer-tool
+VALIDATIONS_DIR := $(TASK_ROOT)/config/$(TASK_NETWORK)/validations
+TASK_ORIGIN_DIR := $(TASK_ROOT)/config/$(TASK_NETWORK)
+SIGNATURE_DIR := $(TASK_ROOT)/signatures/$(TASK_NETWORK)
 RPC_URL := $(L1_RPC_URL)
 
 SCRIPT_NAME := script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership

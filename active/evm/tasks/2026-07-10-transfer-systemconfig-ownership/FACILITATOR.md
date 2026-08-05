@@ -7,11 +7,10 @@ Guide for facilitators managing the Zeronet `SystemConfig` owner transfer.
 Run this after any change to the task config or script:
 
 ```bash
-cd contract-deployments/active/evm
-TASK_MAKEFILE=tasks/2026-07-10-transfer-systemconfig-ownership/Makefile
-make -f "$TASK_MAKEFILE" deps
-make -f "$TASK_MAKEFILE" gen-validation-cb
-make -f "$TASK_MAKEFILE" gen-validation-sc
+cd contract-deployments/active/evm/tasks/2026-07-10-transfer-systemconfig-ownership
+make deps
+make gen-validation-cb
+make gen-validation-sc
 ```
 
 This produces:
@@ -36,13 +35,12 @@ Ask signers to run `make sign-task` from the repository root and select
 
 ## 3. Approve and execute
 
-From `active/evm`, execute the Coinbase and Security Council approvals:
+From the task directory, execute the Coinbase and Security Council approvals:
 
 ```bash
-TASK_MAKEFILE=tasks/2026-07-10-transfer-systemconfig-ownership/Makefile
-SIGNATURES=AAABBBCCC make -f "$TASK_MAKEFILE" approve-cb
-SIGNATURES=AAABBBCCC make -f "$TASK_MAKEFILE" approve-sc
-make -f "$TASK_MAKEFILE" execute
+SIGNATURES=AAABBBCCC make approve-cb
+SIGNATURES=AAABBBCCC make approve-sc
+make execute
 ```
 
 ## 4. Verify onchain

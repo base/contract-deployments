@@ -11,6 +11,7 @@
 # ---------- Common fragments ----------
 
 LEDGER_HD_PATH = "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"
+FORGE_WORKDIR ?= $(CURDIR)
 
 empty :=
 space := $(empty) $(empty)
@@ -27,7 +28,7 @@ require_vars = $(foreach _var,$(2),$(if $(strip $($(_var))),,$(error $(1): requi
 # MULTISIG_APPROVE: $(1)=address list (space-separated), $(2)=signatures (e.g., 0x or $(SIGNATURES))
 define MULTISIG_APPROVE
 $(call require_vars,MULTISIG_APPROVE,LEDGER_ACCOUNT RPC_URL SCRIPT_NAME) \
-	$(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
+	cd $(FORGE_WORKDIR) && $(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
 	--sig "approve(address[],bytes)" "[$(call comma_join,$(1))]" $(2) \
 	--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 endef
@@ -35,7 +36,7 @@ endef
 # MULTISIG_EXECUTE: $(1)=signatures for run(bytes) (e.g., 0x or $(SIGNATURES))
 define MULTISIG_EXECUTE
 $(call require_vars,MULTISIG_EXECUTE,LEDGER_ACCOUNT RPC_URL SCRIPT_NAME) \
-	$(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
+	cd $(FORGE_WORKDIR) && $(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) \
 	--sig "run(bytes)" $(1) \
 	--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 endef
@@ -62,7 +63,7 @@ $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 	cd $(SIGNER_TOOL_PATH) && \
 		$(MISE_EXEC) npx tsx scripts/genValidationFile.ts \
 			--rpc-url $(RPC_URL) \
-			--workdir $(CURDIR) \
+			--workdir $(FORGE_WORKDIR) \
 			--forge-cmd '$(if $(5),$(5) )mise exec -- forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
 			--ledger-id $(LEDGER_ACCOUNT) \
 			--out $(VALIDATIONS_DIR)/$(4)
