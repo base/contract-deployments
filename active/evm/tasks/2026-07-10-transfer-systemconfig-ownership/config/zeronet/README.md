@@ -1,4 +1,4 @@
-# Transfer Zeronet `SystemConfig` Owner
+# Transfer SystemConfig Ownership
 
 Status: READY TO SIGN
 
