@@ -109,7 +109,7 @@ forge-deps:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=26f38b77ed1d157cb8eb148e7a65ef06b7a3a4c4
+SIGNER_TOOL_COMMIT=b857786516bede8dc0e9eb7d1fb2335cc6a10c79
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool
@@ -129,14 +129,10 @@ deps-signer-tool: bootstrap-mise checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH) && $(MISE_EXEC) npm ci
 
 .PHONY: sign-task
-sign-task: bootstrap-mise clean-active-evm-lib checkout-signer-tool
+sign-task: bootstrap-mise checkout-signer-tool
 	cd $(SIGNER_TOOL_PATH); \
 	$(MISE_EXEC) npm ci; \
 	$(MISE_EXEC) npm run dev
-
-.PHONY: clean-active-evm-lib
-clean-active-evm-lib:
-	rm -rf $(REPO_ROOT)/active/evm/lib
 
 # Task origin signature variables (auto-derived, overridable).
 # Legacy task subdirectories sign their own folder by default. Active EVM tasks

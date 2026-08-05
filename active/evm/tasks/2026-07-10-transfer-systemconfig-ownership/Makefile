@@ -3,12 +3,10 @@ include $(REPO_ROOT)/Multisig.mk
 
 TASK_NETWORK ?= zeronet
 PROJECT_DIR := $(abspath ../..)
-FORGE_WORKDIR := $(PROJECT_DIR)
 
 include $(REPO_ROOT)/config/$(TASK_NETWORK).env
 include config/$(TASK_NETWORK)/.env
 
-export BASE_CONTRACTS_COMMIT
 export PROXY_ADMIN_OWNER
 export INCIDENT_MULTISIG
 export SYSTEM_CONFIG
@@ -16,8 +14,6 @@ export FOUNDRY_BROADCAST := $(CURDIR)
 
 SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
 VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
-TASK_ORIGIN_DIR := $(CURDIR)/config/$(TASK_NETWORK)
-SIGNATURE_DIR := $(CURDIR)/signatures/$(TASK_NETWORK)
 RPC_URL := $(L1_RPC_URL)
 
 SCRIPT_NAME := script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership
