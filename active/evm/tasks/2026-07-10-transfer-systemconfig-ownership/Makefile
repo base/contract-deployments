@@ -7,9 +7,6 @@ PROJECT_DIR := $(abspath ../..)
 include $(REPO_ROOT)/config/$(TASK_NETWORK).env
 include config/$(TASK_NETWORK)/.env
 
-export PROXY_ADMIN_OWNER
-export INCIDENT_MULTISIG
-export SYSTEM_CONFIG
 export FOUNDRY_BROADCAST := $(CURDIR)
 
 SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
