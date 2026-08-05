@@ -92,24 +92,41 @@ Shared network values live in `config/mainnet.env`, `config/sepolia.env`, and
 `config/<network>/.env` inside the task contains only task-specific values such
 as `BASE_CONTRACTS_COMMIT`.
 
+The shared network files contain:
+
+- **Network metadata** — RPC URLs, chain IDs, and Ledger account index
+- **Admin addresses** — multisigs, proposer, challenger, and batch sender
+- **L1 addresses** — proxy admin, bridges, dispute games, and system config
+- **L2 addresses** — predeploys, bridges, and fee vaults
+
+Address variables are exported so Forge scripts can read them through
+`vm.envAddress`. Update `config/<network>.env` when a known shared address
+changes; keep operation-specific values in the task `.env`.
+
 ## Directory structure
 
-`active/evm` is one shared Foundry project. Common Solidity lives under
-`script/common/`, dependencies are installed into `active/evm/lib`, and each
-task owns its operational files:
+`active/evm` is one shared Foundry project. Common Solidity and dependencies are
+shared, while each task owns its Make targets, documentation, configuration,
+signatures, and execution records:
 
 ```text
 active/evm/
-├── foundry.toml
-├── script/common/
-└── tasks/<YYYY-MM-DD-task-name>/
-    ├── Makefile
-    ├── FACILITATOR.md
-    ├── config/<network>/
-    │   ├── .env
-    │   ├── README.md
-    │   └── validations/
-    └── signatures/<network>/
+├── foundry.toml                  # shared Foundry configuration
+├── lib/                          # generated shared dependencies; not committed
+├── script/
+│   └── common/                   # reusable Solidity operations
+└── tasks/
+    └── <YYYY-MM-DD-task-name>/
+        ├── Makefile              # task dependencies, validation, and execution
+        ├── FACILITATOR.md        # facilitator runbook
+        ├── config/
+        │   └── <network>/
+        │       ├── .env          # task inputs + BASE_CONTRACTS_COMMIT
+        │       ├── README.md     # signer-facing status and instructions
+        │       └── validations/  # generated signer validation JSON
+        ├── signatures/
+        │   └── <network>/        # task-origin signatures when required
+        └── <script>/<chain-id>/  # Forge broadcast records after execution
 ```
 
 Reusable scripts are documented in
@@ -117,7 +134,7 @@ Reusable scripts are documented in
 
 ### Legacy tasks
 
-Each legacy task (under a network directory, or `archive/legacy/`) has a directory structure similar to the following:
+Each task under `archive/legacy/<network>/` has a structure similar to:
 
 - **records/** Foundry will autogenerate files here from running commands
 - **script/** place to store any one-off Foundry scripts
@@ -149,16 +166,63 @@ A GitHub Actions workflow automatically validates the shared `active/evm` script
 
 ## Multisig macro convention
 
-Task Makefiles use the shared macros in [`Multisig.mk`](Multisig.mk) for
-validation generation, nested-Safe approvals, and execution. Tasks running from
-their own directory set `FORGE_WORKDIR` to `active/evm` so Forge uses the shared
-Foundry project and common scripts.
+Task Makefiles use the shared macros in [`Multisig.mk`](Multisig.mk):
+
+| Macro | Purpose | Key arguments |
+| --- | --- | --- |
+| `GEN_VALIDATION` | Generate signer validation JSON | script, Safe path, sender, output, environment |
+| `MULTISIG_APPROVE` | Register an approval through a nested Safe | Safe path, signatures |
+| `MULTISIG_EXECUTE` | Execute after signatures or nested approvals are ready | signatures |
+
+Two helpers cover common task needs:
+
+| Helper | Purpose |
+| --- | --- |
+| `GET_NONCE` | Read the current Safe nonce |
+| `ADDR_UPPER` | Normalize an address for per-Safe environment variables |
+
+A task Makefile includes the root helpers, points dependencies and Forge at the
+shared EVM project, then selects its common script:
+
+```makefile
+include ../../../../Makefile
+include $(REPO_ROOT)/Multisig.mk
+
+PROJECT_DIR := $(abspath ../..)
+FORGE_WORKDIR := $(PROJECT_DIR)
+RPC_URL := $(L1_RPC_URL)
+SCRIPT_NAME := script/common/<category>/<script>.s.sol:<contract>
+```
+
+Validation targets should depend on `deps-signer-tool` and use a simple output
+name such as `base-signer.json`. Tasks that intentionally pre-sign several
+future nonces may keep that specialized `eip712sign` loop locally; approvals
+and execution should still use the shared macros.
 
 ## Task origin signing
 
-The root Makefile provides `sign-as-task-creator`,
-`sign-as-base-facilitator`, and `sign-as-sc-facilitator`. Active task Makefiles
-set `TASK_ORIGIN_DIR` to `config/<network>` and store signatures separately in
-`signatures/<network>` so generating signatures does not change the signed
-payload. Validation files may set `skipTaskOriginValidation: true` where task
-origin validation is not required.
+The root Makefile provides cryptographic attestations showing who created and
+facilitated a task:
+
+| Target | Purpose |
+| --- | --- |
+| `make sign-as-task-creator` | Attest task authorship |
+| `make sign-as-base-facilitator` | Attest Base facilitation |
+| `make sign-as-sc-facilitator` | Attest Security Council facilitation |
+
+Active task Makefiles set:
+
+| Variable | Active-task value |
+| --- | --- |
+| `TASK_ORIGIN_DIR` | `<task>/config/<network>` |
+| `SIGNATURE_DIR` | `<task>/signatures/<network>` |
+
+The config directory is the signed payload. Signatures are stored outside it so
+creating a signature does not change the payload being signed. The three
+targets install the signer-tool dependency automatically and write the creator,
+Base facilitator, or Security Council facilitator signature into
+`SIGNATURE_DIR`.
+
+Task-origin validation is required for mainnet scripts executed through the
+proxy admin owner. Validation files may set `skipTaskOriginValidation: true`
+when it is not required, such as a Zeronet task.
