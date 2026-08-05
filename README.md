@@ -33,8 +33,8 @@ Active EVM tasks live under `active/evm/tasks/`. Shared network configuration li
 
 ### Toolchain (mise)
 
-All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise.toml) so that every contributor — and especially every signer — runs
-identical versions. This eliminates a class of bugs where domain separators, build artifacts, or generated signatures differ between machines.
+All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise.toml) so that every contributor — and especially every signer —
+runs identical versions. This eliminates a class of bugs where domain separators, build artifacts, or generated signatures differ between machines.
 
 **Signers and facilitators don't need to install anything.** `make sign-task` (and `make deps`, `make execute`, etc.) automatically:
 
