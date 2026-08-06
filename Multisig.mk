@@ -10,6 +10,12 @@
 #
 # ---------- Common fragments ----------
 
+# Forge runs from $(PROJECT_DIR), so for a task sharing a project the relative
+# `broadcast` setting in foundry.toml resolves into the shared project rather
+# than the task. Anchor it to the task dir so records archive with the task.
+# For a task that is its own Forge project this is where records already go.
+export FOUNDRY_BROADCAST ?= $(CURDIR)/records
+
 LEDGER_HD_PATH = "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"
 
 empty :=

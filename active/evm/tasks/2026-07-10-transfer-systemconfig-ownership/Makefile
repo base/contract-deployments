@@ -7,11 +7,6 @@ PROJECT_DIR := $(abspath ../..)
 include $(REPO_ROOT)/config/$(TASK_NETWORK).env
 include config/$(TASK_NETWORK)/.env
 
-# Forge runs from the shared project ($(PROJECT_DIR)), so artifacts would
-# default to active/evm/records. Redirect into the task dir so they archive
-# with the task, keeping the legacy records/ layout the .gitignore expects.
-export FOUNDRY_BROADCAST := $(CURDIR)/records
-
 SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
 VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
 RPC_URL := $(L1_RPC_URL)
