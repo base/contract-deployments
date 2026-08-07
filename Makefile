@@ -109,7 +109,7 @@ forge-deps:
 ##
 # Task Signer Tool
 ##
-SIGNER_TOOL_COMMIT=566102238bc78fb023f495372d6f80282efa05dd
+SIGNER_TOOL_COMMIT=1fc76441a1cde3581c224023adfa79b8cfdb2fa4
 SIGNER_TOOL_PATH=signer-tool
 
 .PHONY: checkout-signer-tool
