@@ -1,6 +1,6 @@
 # Transfer SystemConfig Ownership
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x588703bac3e3c12e546ad2c3bde3042f5e0cf0912358b878da695d4208f4c8cc)
 
 ## Description
 
