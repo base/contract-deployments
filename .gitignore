@@ -27,3 +27,7 @@ yarn-error.log
 
 .DS_Store
 signer-tool/
+
+# Active EVM task-local Forge outputs
+active/evm/tasks/**/run-latest.json
+active/evm/tasks/**/dry-run/
