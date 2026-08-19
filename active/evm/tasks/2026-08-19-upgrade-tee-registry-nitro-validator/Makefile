@@ -61,9 +61,6 @@ task-extra-deps:
 	cd $(PROJECT_DIR) && $(MISE_EXEC) forge install --no-git \
 		github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@0a2cb9a445c365870ed7a8ab461b12acf3e27d63 \
 		github.com/base/nitro-validator@0ea0d12366b4fa44f9e07e4755f2ad36561cb674
-	mkdir -p $(PROJECT_DIR)/lib/contracts/lib
-	ln -sfn ../../nitro-validator $(PROJECT_DIR)/lib/contracts/lib/nitro-validator
-	ln -sfn ../../openzeppelin-contracts-upgradeable $(PROJECT_DIR)/lib/contracts/lib/openzeppelin-contracts-upgradeable
 
 .PHONY: validate-deploy-config
 validate-deploy-config:
@@ -81,12 +78,6 @@ validate-upgrade-config: validate-deploy-config
 validate-nitro-deployment: validate-deploy-config
 	@test -f "$(ADDRESSES_JSON)" || (echo "deploy Nitro validator first" && exit 1)
 	@jq -e '.p384Verifier and .certManager and .nitroValidator' "$(ADDRESSES_JSON)" >/dev/null
-
-.PHONY: prepare-registry-verification
-prepare-registry-verification:
-	mkdir -p $(PROJECT_DIR)/lib/contracts/lib
-	ln -sfn ../../nitro-validator $(PROJECT_DIR)/lib/contracts/lib/nitro-validator
-	ln -sfn ../../openzeppelin-contracts-upgradeable $(PROJECT_DIR)/lib/contracts/lib/openzeppelin-contracts-upgradeable
 
 .PHONY: deploy
 deploy: deploy-nitro-validator deploy-tee-registry-impl
@@ -128,11 +119,17 @@ endif
 		--verifier-api-key $(VERIFIER_API_KEY) --watch
 
 .PHONY: verify-tee-registry-impl
-verify-tee-registry-impl: validate-upgrade-config prepare-registry-verification
+verify-tee-registry-impl: validate-upgrade-config
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
-	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=999999 FOUNDRY_EVM_VERSION=cancun \
+	@set -e; \
+		mkdir -p $(PROJECT_DIR)/lib/contracts/lib; \
+		ln -sfn ../../nitro-validator $(PROJECT_DIR)/lib/contracts/lib/nitro-validator; \
+		ln -sfn ../../openzeppelin-contracts-upgradeable $(PROJECT_DIR)/lib/contracts/lib/openzeppelin-contracts-upgradeable; \
+		trap 'rm -f $(PROJECT_DIR)/lib/contracts/lib/nitro-validator $(PROJECT_DIR)/lib/contracts/lib/openzeppelin-contracts-upgradeable' EXIT; \
+		cd $(PROJECT_DIR); \
+		RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=999999 FOUNDRY_EVM_VERSION=cancun \
 		$(MISE_EXEC) forge verify-contract $(NEW_TEE_PROVER_REGISTRY_IMPL) src/L1/proofs/tee/TEEProverRegistry.sol:TEEProverRegistry \
 		--root $(PROJECT_DIR)/lib/contracts --compilation-profile default \
 		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address,address)" $(NEW_NITRO_VALIDATOR) $(DISPUTE_GAME_FACTORY_PROXY)) \
