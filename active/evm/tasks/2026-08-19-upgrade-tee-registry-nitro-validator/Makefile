@@ -82,6 +82,12 @@ validate-nitro-deployment: validate-deploy-config
 	@test -f "$(ADDRESSES_JSON)" || (echo "deploy Nitro validator first" && exit 1)
 	@jq -e '.p384Verifier and .certManager and .nitroValidator' "$(ADDRESSES_JSON)" >/dev/null
 
+.PHONY: prepare-registry-verification
+prepare-registry-verification:
+	mkdir -p $(PROJECT_DIR)/lib/contracts/lib
+	ln -sfn ../../nitro-validator $(PROJECT_DIR)/lib/contracts/lib/nitro-validator
+	ln -sfn ../../openzeppelin-contracts-upgradeable $(PROJECT_DIR)/lib/contracts/lib/openzeppelin-contracts-upgradeable
+
 .PHONY: deploy
 deploy: deploy-nitro-validator deploy-tee-registry-impl
 
@@ -122,7 +128,7 @@ endif
 		--verifier-api-key $(VERIFIER_API_KEY) --watch
 
 .PHONY: verify-tee-registry-impl
-verify-tee-registry-impl: validate-upgrade-config
+verify-tee-registry-impl: validate-upgrade-config prepare-registry-verification
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
