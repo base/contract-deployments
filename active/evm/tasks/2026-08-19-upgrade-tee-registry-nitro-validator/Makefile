@@ -124,7 +124,7 @@ ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
 	cd $(PROJECT_DIR) && FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=999999 FOUNDRY_EVM_VERSION=cancun \
-		FOUNDRY_REMAPPINGS='lib/nitro-validator/=$(PROJECT_DIR)/lib/nitro-validator/ lib/openzeppelin-contracts-upgradeable/=$(PROJECT_DIR)/lib/openzeppelin-contracts-upgradeable/ lib/solady/=$(PROJECT_DIR)/lib/solady/' \
+		FOUNDRY_REMAPPINGS='lib/nitro-validator/=$(PROJECT_DIR)/lib/nitro-validator/,lib/openzeppelin-contracts-upgradeable/=$(PROJECT_DIR)/lib/openzeppelin-contracts-upgradeable/,lib/solady/=$(PROJECT_DIR)/lib/solady/' \
 		$(MISE_EXEC) forge verify-contract $(NEW_TEE_PROVER_REGISTRY_IMPL) src/L1/proofs/tee/TEEProverRegistry.sol:TEEProverRegistry \
 		--root $(PROJECT_DIR)/lib/contracts --compilation-profile default \
 		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address,address)" $(NEW_NITRO_VALIDATOR) $(DISPUTE_GAME_FACTORY_PROXY)) \
