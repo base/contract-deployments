@@ -1,0 +1,86 @@
+{
+  "cmd": "RECORD_STATE_DIFF=true PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 L1_PROXY_ADMIN=0xf2d2c097be80fb87844b7e259ef67efb98b26f87 TEE_PROVER_REGISTRY_PROXY=0xc5555440ACa82225E98c2E9cD9c3921c96f42205 TEE_VERIFIER=0x42FA446d95A5B61A7bE02949042954a60315Fb0f DISPUTE_GAME_FACTORY_PROXY=0xd930e0cebd52d7c77b8f900de242e818506c5474 PROPOSER=0x5679a6b3817a014d6f3dcd64569d6858f4e92f5e CHALLENGER=0xad3b1402b3ec6a23c3913258d3811f132e7e35e0 CERT_MANAGER_OWNER=0x856611eD7E07D83243b15E93f6321f2df6865852 CERT_MANAGER_REVOKER=0x5F109182a097c40Cc936742be4B55c1A08aC4dd9 OLD_TEE_PROVER_REGISTRY_IMPL=0x98ff839d2671bbaf6394bf03a496ea634f8a39c8 NEW_TEE_PROVER_REGISTRY_IMPL=0x2729B7Cb3513306C27F2732A06a87c5Fcf80dc8a OLD_NITRO_VERIFIER=0xDC06089B0224e59bAAa9B59c3C5aAF9Ff105997C NEW_P384_VERIFIER=0x6e42e39FDDdaa54616CB345503e8a1e5E8DcfeCf NEW_CERT_MANAGER=0x2F2A6f0828e456ed928dD3279C1C21e01B3a0d75 NEW_NITRO_VALIDATOR=0x03e8867E87219E881b4655664Ed6f404F10C87eb TARGET_TEE_PROVER_REGISTRY_IMPL=0x2729B7Cb3513306C27F2732A06a87c5Fcf80dc8a ASSUMED_CURRENT_TEE_PROVER_REGISTRY_IMPL=0x98ff839d2671bbaf6394bf03a496ea634f8a39c8 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-08-19-upgrade-tee-registry-nitro-validator/script/SetTEEProverRegistryImpl.s.sol:SetTEEProverRegistryImpl --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0x704b6cf39d091bc1fd2fa6b69c127e4731f09ee7bbd0e9fdcc4eb605d298b690"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xcb092b964093e1b770716d6b5c1e842bad678bf82e8f8039992fd2d4ba1f27af",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2753d21e53b2c6605bb68d67a40ff43d0978a632cc95b98ce7f32fbd91d3cc7b",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Approves the TEEProverRegistry upgrade transaction hash through the Security Council Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000018",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "TEEProverRegistry Proxy",
+      "address": "0xc5555440ACa82225E98c2E9cD9c3921c96f42205",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000098ff839d2671bbaf6394bf03a496ea634f8a39c8",
+          "after": "0x0000000000000000000000002729b7cb3513306c27f2732a06a87c5fcf80dc8a",
+          "description": "Upgrades TEEProverRegistry from the legacy Nitro verifier implementation to the hinted Nitro validator implementation.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
