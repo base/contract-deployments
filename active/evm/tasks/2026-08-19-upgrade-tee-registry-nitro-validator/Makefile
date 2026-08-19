@@ -155,24 +155,24 @@ gen-validation-sc-rollback: validate-upgrade-config deps-signer-tool
 
 .PHONY: approve-cb
 approve-cb: validate-upgrade-config
-	$(UPGRADE_ENV) $(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
+	export $(UPGRADE_ENV); $(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
 
 .PHONY: approve-sc
 approve-sc: validate-upgrade-config
-	$(UPGRADE_ENV) $(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
+	export $(UPGRADE_ENV); $(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
 
 .PHONY: execute
 execute: validate-upgrade-config
-	$(UPGRADE_ENV) $(call MULTISIG_EXECUTE,0x)
+	export $(UPGRADE_ENV); $(call MULTISIG_EXECUTE,0x)
 
 .PHONY: approve-cb-rollback
 approve-cb-rollback: validate-upgrade-config
-	$(ROLLBACK_ENV) $(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
+	export $(ROLLBACK_ENV); $(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
 
 .PHONY: approve-sc-rollback
 approve-sc-rollback: validate-upgrade-config
-	$(ROLLBACK_ENV) $(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
+	export $(ROLLBACK_ENV); $(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
 
 .PHONY: execute-rollback
 execute-rollback: validate-upgrade-config
-	$(ROLLBACK_ENV) $(call MULTISIG_EXECUTE,0x)
+	export $(ROLLBACK_ENV); $(call MULTISIG_EXECUTE,0x)
