@@ -18,5 +18,17 @@ remappings = [
     'src/libraries/=lib/contracts/src/libraries/',
 ]
 
+[profile.nitro-deploy]
+optimizer = true
+optimizer_runs = 10000
+bytecode_hash = "none"
+evm_version = "cancun"
+
+[profile.tee-registry-deploy]
+optimizer = true
+optimizer_runs = 999999
+bytecode_hash = "none"
+evm_version = "cancun"
+
 [lint]
 lint_on_build = false
