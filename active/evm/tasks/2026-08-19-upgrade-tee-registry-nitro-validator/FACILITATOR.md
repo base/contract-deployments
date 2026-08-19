@@ -14,10 +14,13 @@ make deps
 Use the normal funded personal Ledger account:
 
 ```bash
-VERIFIER_API_KEY=<key> make deploy
+make deploy-nitro-validator
+VERIFIER_API_KEY=<key> make verify-nitro-validator
+make deploy-tee-registry-impl
+VERIFIER_API_KEY=<key> make verify-tee-registry-impl
 ```
 
-This deploys `P384Verifier`, `CertManager`, `NitroValidator`, and a `TEEProverRegistry` implementation. It writes the addresses to `addresses.json` and deployment records to `records/`.
+This deploys and verifies `P384Verifier`, `CertManager`, `NitroValidator`, and a `TEEProverRegistry` implementation. It writes the addresses to `addresses.json` and deployment records to `records/`.
 
 Review and commit `addresses.json` and the timestamped deployment records before generating validations.
 

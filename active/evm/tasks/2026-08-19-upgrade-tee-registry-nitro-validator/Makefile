@@ -74,33 +74,63 @@ validate-upgrade-config: validate-deploy-config
 	@test -f "$(ADDRESSES_JSON)" || (echo "run make deploy first" && exit 1)
 	@jq -e '.p384Verifier and .certManager and .nitroValidator and .teeProverRegistryImpl' "$(ADDRESSES_JSON)" >/dev/null
 
+.PHONY: validate-nitro-deployment
+validate-nitro-deployment: validate-deploy-config
+	@test -f "$(ADDRESSES_JSON)" || (echo "deploy Nitro validator first" && exit 1)
+	@jq -e '.p384Verifier and .certManager and .nitroValidator' "$(ADDRESSES_JSON)" >/dev/null
+
 .PHONY: deploy
 deploy: deploy-nitro-validator deploy-tee-registry-impl
 
 .PHONY: deploy-nitro-validator
 deploy-nitro-validator: validate-deploy-config
-ifndef VERIFIER_API_KEY
-	$(error VERIFIER_API_KEY is not set)
-endif
 	cd $(PROJECT_DIR) && CERT_MANAGER_OWNER=$(CERT_MANAGER_OWNER) CERT_MANAGER_REVOKER=$(CERT_MANAGER_REVOKER) ADDRESSES_JSON=$(ADDRESSES_JSON) \
 		FOUNDRY_PROFILE=nitro-deploy $(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_NITRO_SCRIPT) \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
-		--verifier custom \
-		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
-		--verifier-api-key $(VERIFIER_API_KEY) -vvvv --sender $(DEPLOYER)
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
 
 .PHONY: deploy-tee-registry-impl
 deploy-tee-registry-impl: validate-deploy-config
-ifndef VERIFIER_API_KEY
-	$(error VERIFIER_API_KEY is not set)
-endif
 	@test -f "$(ADDRESSES_JSON)" || (echo "deploy Nitro validator first" && exit 1)
 	cd $(PROJECT_DIR) && DISPUTE_GAME_FACTORY_PROXY=$(DISPUTE_GAME_FACTORY_PROXY) ADDRESSES_JSON=$(ADDRESSES_JSON) \
 		FOUNDRY_PROFILE=tee-registry-deploy $(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_REGISTRY_SCRIPT) \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --verify \
-		--verifier custom \
-		--verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
-		--verifier-api-key $(VERIFIER_API_KEY) -vvvv --sender $(DEPLOYER)
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
+
+.PHONY: verify-nitro-validator
+verify-nitro-validator: validate-nitro-deployment
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
+	cd $(PROJECT_DIR)/lib/nitro-validator && FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun \
+		$(MISE_EXEC) forge verify-contract $(NEW_P384_VERIFIER) src/P384Verifier.sol:P384Verifier \
+		--chain $(L1_CHAIN_ID) --compiler-version v0.8.26+commit.8a97fa7a --num-of-optimizations 10000 \
+		--verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) --watch
+	cd $(PROJECT_DIR)/lib/nitro-validator && FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun \
+		$(MISE_EXEC) forge verify-contract $(NEW_CERT_MANAGER) src/CertManager.sol:CertManager \
+		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address,address,address)" $(NEW_P384_VERIFIER) $(CERT_MANAGER_OWNER) $(CERT_MANAGER_REVOKER)) \
+		--chain $(L1_CHAIN_ID) --compiler-version v0.8.26+commit.8a97fa7a --num-of-optimizations 10000 \
+		--verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) --watch
+	cd $(PROJECT_DIR)/lib/nitro-validator && FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun \
+		$(MISE_EXEC) forge verify-contract $(NEW_NITRO_VALIDATOR) src/NitroValidator.sol:NitroValidator \
+		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address,address)" $(NEW_CERT_MANAGER) $(NEW_P384_VERIFIER)) \
+		--chain $(L1_CHAIN_ID) --compiler-version v0.8.26+commit.8a97fa7a --num-of-optimizations 10000 \
+		--verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) --watch
+
+.PHONY: verify-tee-registry-impl
+verify-tee-registry-impl: validate-upgrade-config
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
+	cd $(PROJECT_DIR) && FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=999999 FOUNDRY_EVM_VERSION=cancun \
+		FOUNDRY_REMAPPINGS='lib/nitro-validator/=$(PROJECT_DIR)/lib/nitro-validator/ lib/openzeppelin-contracts-upgradeable/=$(PROJECT_DIR)/lib/openzeppelin-contracts-upgradeable/ lib/solady/=$(PROJECT_DIR)/lib/solady/' \
+		$(MISE_EXEC) forge verify-contract $(NEW_TEE_PROVER_REGISTRY_IMPL) src/L1/proofs/tee/TEEProverRegistry.sol:TEEProverRegistry \
+		--root $(PROJECT_DIR)/lib/contracts --compilation-profile default \
+		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address,address)" $(NEW_NITRO_VALIDATOR) $(DISPUTE_GAME_FACTORY_PROXY)) \
+		--chain $(L1_CHAIN_ID) --compiler-version v0.8.15+commit.e14f2714 --num-of-optimizations 999999 \
+		--verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) --watch
 
 .PHONY: gen-validation-cb
 gen-validation-cb: validate-upgrade-config deps-signer-tool
