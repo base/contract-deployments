@@ -4,28 +4,19 @@
 
 This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base/contracts](https://github.com/base/contracts).
 
-This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network.
+Active EVM tasks live under `active/evm/tasks/`. Shared network configuration lives under `config/`, and completed historical tasks live under `archive/`.
 
 <!-- Badge row 1 - status -->
 
-[![GitHub contributors](https://img.shields.io/github/contributors/base/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/w/base/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors)
-[![GitHub Stars](https://img.shields.io/github/stars/base/contract-deployments.svg)](https://github.com/base/contract-deployments/stargazers)
-![GitHub repo size](https://img.shields.io/github/repo-size/base/contract-deployments)
-[![GitHub](https://img.shields.io/github/license/base/contract-deployments?color=blue)](https://github.com/base/contract-deployments/blob/main/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/base/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors) [![GitHub commit activity](https://img.shields.io/github/commit-activity/w/base/contract-deployments)](https://github.com/base/contract-deployments/graphs/contributors) [![GitHub Stars](https://img.shields.io/github/stars/base/contract-deployments.svg)](https://github.com/base/contract-deployments/stargazers) ![GitHub repo size](https://img.shields.io/github/repo-size/base/contract-deployments) [![GitHub](https://img.shields.io/github/license/base/contract-deployments?color=blue)](https://github.com/base/contract-deployments/blob/main/LICENSE)
 
 <!-- Badge row 2 - links and profiles -->
 
-[![Website base.org](https://img.shields.io/website-up-down-green-red/https/base.org.svg)](https://base.org)
-[![Blog](https://img.shields.io/badge/blog-up-green)](https://base.mirror.xyz/)
-[![Docs](https://img.shields.io/badge/docs-up-green)](https://docs.base.org/)
-[![Discord](https://img.shields.io/discord/1067165013397213286?label=discord)](https://base.org/discord)
-[![Twitter BuildOnBase](https://img.shields.io/twitter/follow/BuildOnBase?style=social)](https://x.com/BuildOnBase)
+[![Website base.org](https://img.shields.io/website-up-down-green-red/https/base.org.svg)](https://base.org) [![Blog](https://img.shields.io/badge/blog-up-green)](https://base.mirror.xyz/) [![Docs](https://img.shields.io/badge/docs-up-green)](https://docs.base.org/) [![Discord](https://img.shields.io/discord/1067165013397213286?label=discord)](https://base.org/discord) [![Twitter BuildOnBase](https://img.shields.io/twitter/follow/BuildOnBase?style=social)](https://x.com/BuildOnBase)
 
 <!-- Badge row 3 - detailed status -->
 
-[![GitHub pull requests by-label](https://img.shields.io/github/issues-pr-raw/base/contract-deployments)](https://github.com/base/contract-deployments/pulls)
-[![GitHub Issues](https://img.shields.io/github/issues-raw/base/contract-deployments.svg)](https://github.com/base/contract-deployments/issues)
+[![GitHub pull requests by-label](https://img.shields.io/github/issues-pr-raw/base/contract-deployments)](https://github.com/base/contract-deployments/pulls) [![GitHub Issues](https://img.shields.io/github/issues-raw/base/contract-deployments.svg)](https://github.com/base/contract-deployments/issues)
 
 ## Setup
 
@@ -72,25 +63,19 @@ This is purely a convenience for task authors — `make` targets work correctly 
 
 ### Running a task
 
-To execute a new task, run one of the following commands (depending on the type of change you're making):
+Each active task owns its Makefile, signer README, facilitator guide, configuration, and validations. Run task commands from the task directory:
 
-- For gas increase tasks: `make setup-gas-increase network=<network>`
-- For combined gas, elasticity, and DA footprint gas scalar tasks: `make setup-gas-and-elasticity-increase network=<network>`
-- For safe management tasks: `make setup-safe-management network=<network>`
-- For funding tasks: `make setup-funding network=<network>`
-- For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
-- For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
-- For pausing SuperchainConfig: `make setup-superchain-config-pause network=<network>`
+```bash
+cd active/evm/tasks/<task-id>
+make deps
+make <task-target>
+```
 
-Each `setup-*` command also creates a matching `<network>/signatures/<task-dir-basename>/` directory for [task origin signing](#task-origin-signing). The parent `signatures/` directory is created automatically via `mkdir -p` for networks that do not yet have one.
-
-Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
-
-Please note, for some older tasks (that have not yet been adapted to use the signer tool) you will need to manually create validation file(s) for your task as they are bespoke to each task and therefore not created automatically as a part of the templates. We use one validation Markdown file per multisig involved in the task, so if there's only one multisig involved in your task, then you can simply create a `VALIDATION.md` file at the root of your task containing the validation instructions, while if there are multiple multisigs involved in the task, then create a `validations/` sub-directory at the root of your task containing the corresponding validation Markdown files. If you need examples to work from, you can browse through similar past tasks in this repo and adapt them to your specific task. Also, please note that we have tooling to generate these files (like the `task-signer-tool`) which removes the manual aspect of creating these validation files, we will soon update these instructions to reflect how this process can be automated.
+Signers run `make sign-task` from the repository root, select the network and task in the UI, and follow the task README.
 
 ## Network configuration
 
-Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`, `zeronet/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
+Shared network values live in `config/mainnet.env`, `config/sepolia.env`, and `config/zeronet.env`. Task Makefiles include the appropriate shared file and load operation-specific values from `config/<network>/.env` inside the task.
 
 The network `.env` files contain:
 
@@ -101,51 +86,36 @@ The network `.env` files contain:
 
 All address variables are prefixed with `export` so they are available to child shell processes (Forge scripts, shell commands, etc.). Foundry scripts can access them via `vm.envAddress("VARIABLE_NAME")`.
 
-> **Note:** If you need to add or update a contract address, edit the corresponding `{network}/.env` file directly. Do not create per-task address definitions unless they are truly task-specific.
+> **Note:** Update `config/<network>.env` when a known shared address changes. Keep task-specific values, including `BASE_CONTRACTS_COMMIT`, in the task `.env`.
 
 ## Directory structure
 
-Active EVM tasks live under `active/evm/`, which is a single shared Foundry
-project rather than a standalone project per task. A single `active/evm/Makefile`
-selects the active task via `TASK_ID` / `TASK_NETWORK`, reusable operation
-scripts are shared across tasks under `script/common/<category>/`, and each task
-directory holds only its own config, docs, and (per-network) validations and
-signatures:
+Active EVM tasks use one shared Foundry project. Dependencies and reusable Solidity are shared; Make targets, configuration, documentation, signatures, and execution records stay with each task:
 
 ```text
 active/evm/
-├── Makefile                     # shared; selects the task via TASK_ID / TASK_NETWORK
 ├── foundry.toml                 # shared Foundry config (base-contracts v8.2.1)
+├── lib/                         # generated shared dependencies; not committed
 ├── script/
 │   └── common/                  # reusable scripts, shared across tasks
 │       └── <category>/          # bridge, funding, gas, ownership, safe, superchain, verifier-update
 └── tasks/
     └── <YYYY-MM-DD-task-name>/
-        ├── FACILITATOR.md
+        ├── Makefile             # task dependencies, validation, approvals, execution
+        ├── FACILITATOR.md       # facilitator runbook
         ├── config/
         │   └── <network>/
-        │       ├── .env         # task inputs + BASE_CONTRACTS_COMMIT + RECORD_STATE_DIFF
-        │       ├── network.env  # RPC, chain ids, Safe/contract addresses
+        │       ├── .env         # task inputs + BASE_CONTRACTS_COMMIT
         │       ├── README.md    # status + description (parsed by the signer tool)
         │       └── validations/ # generated per-signer validation JSON
-        └── signatures/
-            └── <network>/       # task-origin signatures (when required)
+        ├── signatures/
+        │   └── <network>/       # task-origin signatures (when required)
+        └── <script>/<chain-id>/ # Forge broadcast records after execution
 ```
 
-Task commands run from `active/evm`, selecting the task by `TASK_ID` /
-`TASK_NETWORK` (both default to the current task in the shared `Makefile`), e.g.
-`TASK_ID=<task> TASK_NETWORK=<network> make gen-validation-cb`. The shared
-Makefile runs Forge from `active/evm` using the shared `foundry.toml` and `lib/`,
-while task-specific files are read from `tasks/<task-id>/config/<network>/`.
-Reusable scripts are documented in [`active/evm/script/common/README.md`](active/evm/script/common/README.md);
-put a script under `script/common/<category>/` when it will be reused across
-tasks, and keep one-off task glue out of `common/`.
+Task commands run from `active/evm/tasks/<task-id>`. The task Makefile installs dependencies and runs Forge against the shared `active/evm` project. Reusable scripts are documented in [`active/evm/script/common/README.md`](active/evm/script/common/README.md).
 
-The shared `active/evm/Makefile` selects a task (via `TASK_ID` / `TASK_NETWORK`)
-and sources that task's `.env` for `BASE_CONTRACTS_COMMIT`. To install
-dependencies for the shared project without selecting a task (e.g. to build the
-common scripts locally), invoke the root Makefile directly with a `PROJECT_DIR`
-override and an explicit `BASE_CONTRACTS_COMMIT`:
+To install dependencies for the shared project without selecting a task, invoke the root Makefile with a project directory and explicit commit:
 
 ```bash
 make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
@@ -153,7 +123,7 @@ make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
 
 ### Legacy tasks
 
-Each legacy task (under a network directory, or `archive/legacy/`) has a directory structure similar to the following:
+Each task under `archive/legacy/<network>/` has a structure similar to:
 
 - **records/** Foundry will autogenerate files here from running commands
 - **script/** place to store any one-off Foundry scripts
@@ -185,47 +155,47 @@ A GitHub Actions workflow automatically validates the shared `active/evm` script
 
 ## Multisig macro convention
 
-All task templates use global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
+Task Makefiles use global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:
 
 | Macro              | Purpose                                                         | Key arguments                                             |
 | ------------------ | --------------------------------------------------------------- | --------------------------------------------------------- |
 | `MULTISIG_APPROVE` | Approve a transaction (nested safe hierarchy)                   | `(address_list, signatures)`                              |
-| `MULTISIG_EXECUTE` | Execute an approved transaction on-chain                        | `(signatures)`                                            |
+| `MULTISIG_EXECUTE` | Execute an approved transaction onchain                         | `(signatures)`                                            |
 | `GEN_VALIDATION`   | Generate a validation JSON file for signers via the signer-tool | `(script_name, safe_addr, sender, output_file, env_vars)` |
 
 Two helper macros are also available for tasks that need nonce offset calculations or address manipulation:
 
 | Macro        | Purpose                                                    | Key arguments    |
 | ------------ | ---------------------------------------------------------- | ---------------- |
-| `GET_NONCE`  | Fetch the current nonce of a Safe contract on-chain        | `(safe_address)` |
+| `GET_NONCE`  | Fetch the current nonce of a Safe contract onchain         | `(safe_address)` |
 | `ADDR_UPPER` | Convert an address to uppercase (for env var construction) | `(address)`      |
 
 Signing is handled externally by the [task-signing-tool](https://github.com/base/task-signing-tool).
 
-Every template Makefile should include `Multisig.mk` and define at least two variables for the macros to work:
+Each task Makefile includes the root helpers, points Forge at the shared EVM project, and defines the RPC and script:
 
 ```makefile
-include ../../Makefile
-include ../../Multisig.mk
-include ../.env
-include .env
+include ../../../../Makefile
+include $(REPO_ROOT)/Multisig.mk
 
-RPC_URL = $(L1_RPC_URL)       # or $(L2_RPC_URL)
-SCRIPT_NAME = MyScript         # class name or .sol file path
+PROJECT_DIR := $(abspath ../..)
+FORGE_WORKDIR := $(PROJECT_DIR)
+RPC_URL := $(L1_RPC_URL)       # or $(L2_RPC_URL)
+SCRIPT_NAME := script/common/<category>/<script>.s.sol:<contract>
 ```
 
-Templates that generate validation files should use `GEN_VALIDATION` with the `deps-signer-tool` prerequisite (which checks out and installs the signer-tool):
+Tasks that generate validation files should use `GEN_VALIDATION` with the `deps-signer-tool` prerequisite, which checks out and installs the signer tool:
 
 ```makefile
 gen-validation: validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
 ```
 
-Templates should use these macros rather than inline `forge script` / `eip712sign` / `bun run` invocations. The known exceptions are the incident-response pause templates, which pre-sign 20 future nonces in a loop using inline `eip712sign`; only their `execute-*` targets use `MULTISIG_EXECUTE`.
+Task Makefiles should use these macros rather than inline `forge script` or signer-tool invocations. A task that intentionally pre-signs several future nonces may keep its specialized `eip712sign` loop locally; approvals and execution should still use the shared macros.
 
 ## Task origin signing
 
-The root Makefile provides three targets for generating cryptographic attestations (sigstore bundles) that prove who created and facilitated a task. These are inherited by all task Makefiles via `include ../../Makefile`.
+The root Makefile provides three targets for generating cryptographic attestations that prove who created and facilitated a task. Active task Makefiles inherit them by including the root Makefile.
 
 | Target                          | Purpose                                         |
 | ------------------------------- | ----------------------------------------------- |
@@ -233,7 +203,7 @@ The root Makefile provides three targets for generating cryptographic attestatio
 | `make sign-as-base-facilitator` | Attest Base team facilitation                   |
 | `make sign-as-sc-facilitator`   | Attest Security Council facilitation            |
 
-Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. This directory is created automatically when you run any `setup-*` target (in both the root and Solana Makefiles), so it is ready for the signing tool when you invoke one of the targets below. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
+Legacy task Makefiles may use the root defaults below. Active task Makefiles override them so the task configuration is signed while signatures remain outside the signed payload:
 
 | Variable        | Default                                    | Description                           |
 | --------------- | ------------------------------------------ | ------------------------------------- |
@@ -242,110 +212,4 @@ Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>
 
 All three targets depend on `deps-signer-tool`, which checks out and installs the [task-signing-tool](https://github.com/base/task-signing-tool) automatically.
 
-For `active/evm` tasks, the shared Makefile overrides `TASK_ORIGIN_DIR` and `SIGNATURE_DIR`: the signer tool signs over the `active/evm/tasks/<task-id>/config/<network>` directory (`TASK_ORIGIN_DIR`), while the signatures themselves are written to `active/evm/tasks/<task-id>/signatures/<network>/` (`SIGNATURE_DIR`) — outside the signed directory, so generating signatures does not change the signed payload. A task may opt out of task-origin validation entirely by setting `skipTaskOriginValidation: true` at the root of each validation file (e.g. non-production networks such as zeronet).
-
-## Using the gas limit increase template
-
-This template is increasing the throughput on Base Chain.
-
-1. Ensure you have followed the instructions above in `setup`
-1. Go to the folder that was created using the `make setup-gas-increase network=<network>` step
-1. Fill in all TODOs (search for "TODO" in the folder) in the `.env` and `README` files. Tip: you can run `make deps` followed by `make sign-upgrade` to produce a Tenderly simulation which will help fill in several of the TODOs in the README (and also `make sign-rollback`).
-1. Check in the task when it's ready to sign and collect signatures from signers
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the combined gas limit, elasticity, and DA footprint gas scalar template
-
-This template is used to update the gas limit, elasticity, and DA footprint gas scalar, or roll back the changes (if needed).
-
-1. Ensure you have followed the instructions above in `setup`, including running `make setup-gas-and-elasticity-increase network=<network>` and then go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments (e.g., `OWNER_SAFE`, `SENDER`), using the value for your target network.
-1. Ensure the `SENDER` variable in the `.env` file is set to a signer of `OWNER_SAFE`.
-1. Set the `FROM_*` and `TO_*` values for gas limit and elasticity in the `.env` file.
-1. Calculate the DA footprint gas scalar using the DA limits runbook at `go/base-da-config`. `make da-scalar TARGET_BLOB_COUNT=<value>` is the source of truth for the standard soft-cap policy and calculates `gas_limit / (elasticity * da_soft_cap_blob_count * 32,000)`. Since BPO2, Base has used a DA soft-cap blob count of 21, passed as `TARGET_BLOB_COUNT=21`, to allow the chain to use all L1 DA before raising the L2 base fee. The command prints the `.env` value and the DA table to copy into the task README. Pass `BUILDER_HARD_CAP=<value>` after checking the target network's `op_batcher_throttle_block_size_upper_limit` Config Service value. The task README includes links for the standard network scopes. Set the `FROM_DA_FOOTPRINT_GAS_SCALAR` and `TO_DA_FOOTPRINT_GAS_SCALAR` values in the `.env` file.
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Generate the rollback validation file for signers with `make gen-validation-rollback`.
-1. Double check the `cmd` field at the top of both of the generated validation files and ensure that the value passed to the `--sender` flag matches the `SENDER` env var already defined in the `.env` file.
-1. Ensure that all of the fields marked as `TODO` in the tasks's `README.md` have been properly filled out.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the safe management template
-
-This template is used to perform ownership management on a Gnosis Safe, like the incident multisig, specifically it can be used to change the owners of the multisig.
-
-1. Ensure you have followed the instructions above in `setup`, including running `make setup-safe-management network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Enter the directory that was generated for the task (in the first step) and then run `make deps`.
-1. Specify the `OWNER_SAFE`, which is the safe multisig where an owner will be replaced and the `SENDER` which should be the address of a current signer of the multisig.
-1. Fill in the `OwnerDiff.json` inside the task's directory with the addresses to add to, and remove from, the multisig in their respective fields.
-1. Ensure that the `EXISTING_OWNERS_LENGTH` constant value inside the `script/UpdateSigners.s.sol` script is set appropriately, in particular that it equals the exact number of current members of the Incident Multisig Safe (prior to running the task).
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Double check the `cmd` field at the top of the generated validation file at `validations/base-signer.json` and ensure that the value passed to the `--sender` flag matches the `SENDER` env var already defined in the `.env` file.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the funding template
-
-This template is used to fund addresses from a Gnosis Safe.
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-funding network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Specify the `SAFE`, which is the safe that will fund the addresses in the `.env` file.
-1. Specify the `recipients` and `funds` arrays (in 1e18 units) in the `funding.json` file.
-1. Build the contracts with `forge build`.
-1. Simulate the task with `make sign` and update the generic validations in `VALIDATION.md` with the real values.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the Base Bridge set partner threshold template
-
-This template is used to update the partner threshold in [Base Bridge](https://github.com/base/bridge), affecting the amount of required partner signatures to approve bridge messages.
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-bridge-partner-threshold network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments, using the value for your target network.
-1. Set the `NEW_THRESHOLD` variable in the `.env` file.
-1. Ensure the `--sender` flag in the `make gen-validation` command in the `Makefile` file is set to a signer for `OWNER_SAFE` in `.env`.
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the pause Base Bridge template
-
-This template is used to pause or un-pause [Base Bridge](https://github.com/base/bridge).
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-bridge-pause network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments (e.g., `L2_BRIDGE`), using the value for your target network.
-1. Set the `IS_PAUSED` variable to `true` or `false` in the `.env` file depending on if you intend to pause or unpause the bridge.
-1. Ensure the `SENDER` variable in the Makefile is set to a signer for `OWNER_SAFE`.
-1. Build the contracts with `forge build`.
-1. Generate the validation file for signers with `make gen-validation`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
-
-## Using the pause SuperchainConfig template
-
-This template is used to pause or un-pause the L1 SuperchainConfig contract.
-
-1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-superchain-config-pause network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments, using the value for your target network.
-1. Build the contracts with `forge build`.
-1. Sign the pause transaction with `make sign-pause` or generate the validation file for un-pausing with `make gen-validation-unpause`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+For active EVM tasks, `TASK_ORIGIN_DIR` is `active/evm/tasks/<task-id>/config/<network>` and `SIGNATURE_DIR` is `active/evm/tasks/<task-id>/signatures/<network>`. Keeping signatures outside the config directory means generating them does not change the signed payload. Task-origin validation is required for mainnet scripts executed through the proxy admin owner. Other tasks, such as Zeronet tasks, may set `skipTaskOriginValidation: true` in each validation file.
