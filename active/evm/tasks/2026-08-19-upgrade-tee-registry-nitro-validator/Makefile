@@ -1,7 +1,12 @@
 include ../../../../Makefile
 include $(REPO_ROOT)/Multisig.mk
 
-TASK_NETWORK ?= zeronet
+ifneq ($(origin TASK_NETWORK),command line)
+$(error TASK_NETWORK must be set on the make command line; run make TASK_NETWORK=sepolia <target>)
+endif
+ifeq ($(strip $(TASK_NETWORK)),)
+$(error TASK_NETWORK cannot be empty; run make TASK_NETWORK=sepolia <target>)
+endif
 PROJECT_DIR := $(abspath ../..)
 
 include $(REPO_ROOT)/config/$(TASK_NETWORK).env
@@ -10,7 +15,7 @@ include config/$(TASK_NETWORK)/.env
 SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
 VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
 RPC_URL := $(L1_RPC_URL)
-ADDRESSES_JSON := $(CURDIR)/addresses.json
+ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
 DEPLOYER = $(shell $(MISE_EXEC) cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
 
 DEPLOY_NITRO_SCRIPT := tasks/2026-08-19-upgrade-tee-registry-nitro-validator/script/DeployNitroValidatorStack.s.sol:DeployNitroValidatorStack
