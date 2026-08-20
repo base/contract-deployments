@@ -1,6 +1,8 @@
 # Facilitator Guide
 
-Guide for deploying the hinted Nitro validator stack and upgrading the TEE registry on a selected network. Read `config/NETWORK_NAME/FACILITATOR.md` first, then replace `NETWORK_NAME` in every command below with that network, for example `sepolia`.
+Guide for deploying the hinted Nitro validator stack and upgrading the TEE registry on a selected network.
+
+Before running anything, replace every literal `NETWORK_NAME` below with the selected config directory, for example `sepolia`. The Makefile has no default and rejects an inherited or exported `TASK_NETWORK`; every invocation must visibly use `make TASK_NETWORK=<network> <target>`.
 
 ## 1. Install dependencies
 
@@ -33,7 +35,13 @@ make TASK_NETWORK=NETWORK_NAME gen-validation-cb-rollback
 make TASK_NETWORK=NETWORK_NAME gen-validation-sc-rollback
 ```
 
-Follow the selected network's facilitator notes for task-origin validation and expected state changes.
+For a non-mainnet rollout, remove each generated `taskOriginConfig` and add this root field to all four validation files:
+
+```json
+"skipTaskOriginValidation": true
+```
+
+For a mainnet rollout through the proxy admin owner, retain task-origin validation and collect the required task-origin signatures.
 
 Commit the four validation files after reviewing their state diffs.
 
