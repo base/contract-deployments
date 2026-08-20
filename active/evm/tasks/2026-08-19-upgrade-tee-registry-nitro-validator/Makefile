@@ -1,7 +1,12 @@
 include ../../../../Makefile
 include $(REPO_ROOT)/Multisig.mk
 
-TASK_NETWORK ?= sepolia
+ifneq ($(origin TASK_NETWORK),command line)
+$(error TASK_NETWORK must be set on the make command line; run make TASK_NETWORK=sepolia <target>)
+endif
+ifeq ($(strip $(TASK_NETWORK)),)
+$(error TASK_NETWORK cannot be empty; run make TASK_NETWORK=sepolia <target>)
+endif
 PROJECT_DIR := $(abspath ../..)
 
 include $(REPO_ROOT)/config/$(TASK_NETWORK).env
