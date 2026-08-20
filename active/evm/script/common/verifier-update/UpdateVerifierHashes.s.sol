@@ -43,7 +43,7 @@ contract UpdateVerifierHashes is MultisigScript {
 
         currentAggregateVerifier = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).gameImpls(gameTypeEnv);
 
-        string memory path = vm.envOr("ADDRESSES_JSON", string("addresses.json"));
+        string memory path = vm.envString("ADDRESSES_JSON");
         string memory json = vm.readFile(path);
         nextAggregateVerifier = vm.parseJsonAddress({json: json, key: ".aggregateVerifier"});
 

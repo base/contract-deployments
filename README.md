@@ -105,47 +105,36 @@ All address variables are prefixed with `export` so they are available to child 
 
 ## Directory structure
 
-Active EVM tasks live under `active/evm/`, which is a single shared Foundry
-project rather than a standalone project per task. A single `active/evm/Makefile`
-selects the active task via `TASK_ID` / `TASK_NETWORK`, reusable operation
-scripts are shared across tasks under `script/common/<category>/`, and each task
-directory holds only its own config, docs, and (per-network) validations and
-signatures:
+Active EVM tasks share the Foundry project under `active/evm/`, while each task owns its Makefile, facilitator guide, network configurations, signatures, and execution records. Reusable operation scripts live under `script/common/<category>/`; one-off scripts stay with their task.
 
 ```text
 active/evm/
-├── Makefile                     # shared; selects the task via TASK_ID / TASK_NETWORK
-├── foundry.toml                 # shared Foundry config (base-contracts v8.2.1)
+├── foundry.toml                 # shared Foundry configuration
 ├── script/
 │   └── common/                  # reusable scripts, shared across tasks
 │       └── <category>/          # bridge, funding, gas, ownership, safe, superchain, verifier-update
 └── tasks/
     └── <YYYY-MM-DD-task-name>/
-        ├── FACILITATOR.md
+        ├── Makefile             # task dependencies, validation, approvals, and execution
+        ├── FACILITATOR.md       # network-agnostic facilitator procedure
+        ├── script/              # optional one-off task scripts
         ├── config/
         │   └── <network>/
-        │       ├── .env         # task inputs + BASE_CONTRACTS_COMMIT + RECORD_STATE_DIFF
-        │       ├── network.env  # RPC, chain ids, Safe/contract addresses
-        │       ├── README.md    # status + description (parsed by the signer tool)
+        │       ├── .env         # network-specific task inputs + BASE_CONTRACTS_COMMIT
+        │       ├── addresses.json # generated network-specific deployment addresses
+        │       ├── README.md    # status + description parsed by the signer tool
         │       └── validations/ # generated per-signer validation JSON
-        └── signatures/
-            └── <network>/       # task-origin signatures (when required)
+        ├── signatures/
+        │   └── <network>/       # task-origin signatures when required
+        └── records/
+            └── <script>/<chain-id>/ # Forge broadcast records
 ```
 
-Task commands run from `active/evm`, selecting the task by `TASK_ID` /
-`TASK_NETWORK` (both default to the current task in the shared `Makefile`), e.g.
-`TASK_ID=<task> TASK_NETWORK=<network> make gen-validation-cb`. The shared
-Makefile runs Forge from `active/evm` using the shared `foundry.toml` and `lib/`,
-while task-specific files are read from `tasks/<task-id>/config/<network>/`.
-Reusable scripts are documented in [`active/evm/script/common/README.md`](active/evm/script/common/README.md);
-put a script under `script/common/<category>/` when it will be reused across
-tasks, and keep one-off task glue out of `common/`.
+Run task commands from `active/evm/tasks/<task-id>/`. A task with multiple network configurations must require `TASK_NETWORK` on each Make command line, for example `make TASK_NETWORK=sepolia gen-validation-cb`; it must not rely on a mutable default or exported environment value. Keep the root `FACILITATOR.md` authoritative and network-agnostic, and make the need to replace `TASK_NETWORK=<network>` explicit. Per-network facilitator files are discouraged; if one is unavoidable for a materially different procedure, put only that procedural delta in `config/<network>/FACILITATOR.md` and link to it from the root guide.
 
-The shared `active/evm/Makefile` selects a task (via `TASK_ID` / `TASK_NETWORK`)
-and sources that task's `.env` for `BASE_CONTRACTS_COMMIT`. To install
-dependencies for the shared project without selecting a task (e.g. to build the
-common scripts locally), invoke the root Makefile directly with a `PROJECT_DIR`
-override and an explicit `BASE_CONTRACTS_COMMIT`:
+One task directory represents one logical operation across its intended network rollouts. Add sibling `config/<network>/` directories and keep the task active until all intended networks are executed or canceled and their final artifacts are committed. Do not run `make archive-task` between network rollouts.
+
+Reusable scripts are documented in [`active/evm/script/common/README.md`](active/evm/script/common/README.md). To install dependencies for the shared project without selecting a task, invoke the root Makefile with a project directory and explicit contracts commit:
 
 ```bash
 make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
