@@ -134,7 +134,7 @@ contract DeployAggregateVerifier is Script {
         string memory root = "root";
         string memory json =
             vm.serializeAddress({objectKey: root, valueKey: "aggregateVerifier", value: aggregateVerifier});
-        string memory path = vm.envOr("ADDRESSES_JSON", string("addresses.json"));
+        string memory path = vm.envString("ADDRESSES_JSON");
         vm.writeJson({json: json, path: path});
     }
 }

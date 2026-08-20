@@ -1,4 +1,11 @@
-This is a repo of onchain operational tasks. Each network has its own directory with each individual task as a sub-directory.
+This is a repo of onchain operational tasks. Active EVM tasks live under `active/evm/tasks/`; one task directory may contain configurations for multiple networks under `config/<network>/`.
+
+Active EVM task lifecycle:
+
+- A task directory represents one logical operation and carries its shared Makefile, scripts, and facilitator guide across network rollouts. Add another `config/<network>/` to the existing task instead of creating a duplicate task solely to change networks.
+- Keep a task under `active/evm/tasks/` while any currently intended network rollout remains pending. Do not run `make archive-task` between network rollouts; archive only after every intended network configuration is executed or canceled and its final artifacts are committed.
+- Treat `archive/evm/` as historical. Do not edit or execute an archived task in place. If the same operation later needs another network rollout, restore the entire task directory to `active/evm/tasks/` before adding that network.
+- Store network-specific deployment address artifacts such as `addresses.json` under `config/<network>/`. Keep Forge broadcast records at task scope under `records/`; Foundry separates them by script and chain ID.
 
 Task writing:
 
