@@ -110,7 +110,6 @@ Active EVM tasks share the Foundry project under `active/evm/`, while each task 
 ```text
 active/evm/
 ├── foundry.toml                 # shared Foundry configuration
-├── lib/                         # generated shared dependencies; not committed
 ├── script/
 │   └── common/                  # reusable scripts, shared across tasks
 │       └── <category>/          # bridge, funding, gas, ownership, safe, superchain, verifier-update
