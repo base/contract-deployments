@@ -121,7 +121,6 @@ active/evm/
         ├── config/
         │   └── <network>/
         │       ├── .env         # network-specific task inputs + BASE_CONTRACTS_COMMIT
-        │       ├── FACILITATOR.md # network-specific operational notes
         │       ├── addresses.json # generated network-specific deployment addresses
         │       ├── README.md    # status + description parsed by the signer tool
         │       └── validations/ # generated per-signer validation JSON
@@ -131,7 +130,7 @@ active/evm/
             └── <script>/<chain-id>/ # Forge broadcast records
 ```
 
-Run task commands from `active/evm/tasks/<task-id>/`. A task with multiple network configurations must require `TASK_NETWORK` on each Make command line, for example `make TASK_NETWORK=sepolia gen-validation-cb`; it must not rely on a mutable default or exported environment value. Keep the root `FACILITATOR.md` network-agnostic and put network-specific operational details in `config/<network>/FACILITATOR.md`.
+Run task commands from `active/evm/tasks/<task-id>/`. A task with multiple network configurations must require `TASK_NETWORK` on each Make command line, for example `make TASK_NETWORK=sepolia gen-validation-cb`; it must not rely on a mutable default or exported environment value. Keep the root `FACILITATOR.md` authoritative and network-agnostic, and make the need to replace `TASK_NETWORK=<network>` explicit. Per-network facilitator files are discouraged; if one is unavoidable for a materially different procedure, put only that procedural delta in `config/<network>/FACILITATOR.md` and link to it from the root guide.
 
 One task directory represents one logical operation across its intended network rollouts. Add sibling `config/<network>/` directories and keep the task active until all intended networks are executed or canceled and their final artifacts are committed. Do not run `make archive-task` between network rollouts.
 
