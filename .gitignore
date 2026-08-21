@@ -22,6 +22,8 @@ out/
 yarn-error.log
 
 .env.local
+.env
+.env.*
 
 .gitmodules
 
