@@ -12,6 +12,10 @@ make TASK_NETWORK=sepolia deps
 make TASK_NETWORK=sepolia verify-current
 ```
 
+Review the task-specific addresses in `config/sepolia/addresses.json`. The
+shared `BalanceTracker` proxy address comes from the repository's
+`config/sepolia.env`.
+
 ## 2. Deploy the implementation
 
 Connect the Ledger account for `PROXY_ADMIN`, then run:
@@ -21,7 +25,9 @@ make TASK_NETWORK=sepolia deploy
 ```
 
 This deploys a `BalanceTracker` implementation whose immutable `PROFIT_WALLET`
-is the company wallet used on mainnet. Review and commit:
+is the company wallet used on mainnet. It adds
+`balanceTrackerImplementation` to `config/sepolia/addresses.json`. Review and
+commit:
 
 - `config/sepolia/addresses.json`
 - the deployment record under `records/DeployBalanceTracker.s.sol/11155111/`
