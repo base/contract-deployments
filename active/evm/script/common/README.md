@@ -23,6 +23,10 @@ This keeps validation JSON portable and avoids ambiguity when different files de
 
 | Folder | Script | Purpose | Required task files |
 | --- | --- | --- | --- |
+| `multiproof-game-type/` | `DeployMultiproofGameType.s.sol` | Deploys fresh TEE, ZK, and aggregate verifiers for a new game type while copying chain-level immutables from the current implementation. | `.env` deployment inputs and `ADDRESSES_JSON` |
+| `multiproof-game-type/` | `RegisterMultiproofGameType.s.sol` | Registers the deployed aggregate verifier and initialization bond in the dispute game factory. | `.env` deployment inputs and deployment `ADDRESSES_JSON` |
+| `multiproof-game-type/` | `SetTEEProverRegistryGameType.s.sol` | Generates the TEE registry owner's explicit game-type cutover. | `.env` cutover inputs and deployment `ADDRESSES_JSON` |
+| `multiproof-game-type/` | `SetRespectedGameType.s.sol` | Generates the AnchorStateRegistry guardian's explicit respected-game-type cutover. | `.env` cutover inputs and deployment `ADDRESSES_JSON` |
 | `verifier-update/` | `DeployAggregateVerifier.s.sol` | Deploys a replacement `AggregateVerifier` by copying immutable constructor inputs from the live implementation and replacing verifier hashes. | `tasks/<task-id>/config/<network>/.env`, `ADDRESSES_JSON=tasks/<task-id>/config/<network>/addresses.json` |
 | `verifier-update/` | `UpdateVerifierHashes.s.sol` | Multisig script that updates `DisputeGameFactory.gameImpls(gameType)` to a deployed `AggregateVerifier`. | `ADDRESSES_JSON=tasks/<task-id>/config/<network>/addresses.json` containing `aggregateVerifier` |
 | `funding/` | `Fund.s.sol` | Sends native token from a Safe to recipients listed in `funding.json`. | `funding.json` |

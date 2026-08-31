@@ -102,8 +102,11 @@ clean-lib:
 forge-deps:
 	[ -n "$(BASE_CONTRACTS_COMMIT)" ] || (echo "BASE_CONTRACTS_COMMIT must be set in .env" && exit 1)
 	cd $(PROJECT_DIR) && $(MISE_EXEC) forge install --no-git github.com/foundry-rs/forge-std@0844d7e1fc5e60d77b68e469bff60265f236c398 \
+	github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d \
+	github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@0a2cb9a445c365870ed7a8ab461b12acf3e27d63 \
 	github.com/Vectorized/solady@502cc1ea718e6fa73b380635ee0868b0740595f0 \
 	github.com/ethereum-optimism/lib-keccak@$(LIB_KECCAK_COMMIT) \
+	github.com/base/nitro-validator@0ea0d12366b4fa44f9e07e4755f2ad36561cb674 \
 	github.com/base/contracts@$(BASE_CONTRACTS_COMMIT)
 
 ##

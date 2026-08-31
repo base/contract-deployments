@@ -3,6 +3,7 @@ pragma solidity 0.8.15;
 
 import {Script, console} from "forge-std/Script.sol";
 
+import {IProtocolVersions} from "interfaces/L1/IProtocolVersions.sol";
 import {IAnchorStateRegistry} from "interfaces/L1/proofs/IAnchorStateRegistry.sol";
 import {IDelayedWETH} from "interfaces/L1/proofs/IDelayedWETH.sol";
 import {IDisputeGameFactory} from "interfaces/L1/proofs/IDisputeGameFactory.sol";
@@ -33,8 +34,12 @@ contract DeployAggregateVerifier is Script {
     address internal immutable currentZkVerifier;
     bytes32 internal immutable currentConfigHash;
     uint256 internal immutable currentL2ChainId;
+    uint256 internal immutable currentL2GenesisBlockNumber;
+    uint64 internal immutable currentL2GenesisTimestamp;
+    uint64 internal immutable currentL2BlockTime;
     uint256 internal immutable currentBlockInterval;
     uint256 internal immutable currentIntermediateBlockInterval;
+    IProtocolVersions internal immutable currentProtocolVersions;
 
     // Deployment output written to addresses.json.
     address public aggregateVerifier;
@@ -56,8 +61,12 @@ contract DeployAggregateVerifier is Script {
         currentZkVerifier = address(currentAggregate.ZK_VERIFIER());
         currentConfigHash = currentAggregate.CONFIG_HASH();
         currentL2ChainId = currentAggregate.L2_CHAIN_ID();
+        currentL2GenesisBlockNumber = currentAggregate.L2_GENESIS_BLOCK_NUMBER();
+        currentL2GenesisTimestamp = currentAggregate.L2_GENESIS_TIMESTAMP();
+        currentL2BlockTime = currentAggregate.L2_BLOCK_TIME();
         currentBlockInterval = currentAggregate.BLOCK_INTERVAL();
         currentIntermediateBlockInterval = currentAggregate.INTERMEDIATE_BLOCK_INTERVAL();
+        currentProtocolVersions = currentAggregate.PROTOCOL_VERSIONS();
     }
 
     function setUp() public view {
@@ -92,7 +101,13 @@ contract DeployAggregateVerifier is Script {
                 configHash: currentConfigHash,
                 l2ChainId: currentL2ChainId,
                 blockInterval: currentBlockInterval,
-                intermediateBlockInterval: currentIntermediateBlockInterval
+                intermediateBlockInterval: currentIntermediateBlockInterval,
+                scheduleConfig: AggregateVerifier.ScheduleConfig({
+                    protocolVersions: currentProtocolVersions,
+                    genesisBlockNumber: currentL2GenesisBlockNumber,
+                    genesisTimestamp: currentL2GenesisTimestamp,
+                    blockTime: currentL2BlockTime
+                })
             })
         );
 
@@ -121,10 +136,16 @@ contract DeployAggregateVerifier is Script {
         require(address(av.ZK_VERIFIER()) == currentZkVerifier, "aggregate zk verifier mismatch");
         require(av.CONFIG_HASH() == currentConfigHash, "aggregate config hash mismatch");
         require(av.L2_CHAIN_ID() == currentL2ChainId, "aggregate l2 chain id mismatch");
+        require(av.L2_GENESIS_BLOCK_NUMBER() == currentL2GenesisBlockNumber, "aggregate genesis block mismatch");
+        require(av.L2_GENESIS_TIMESTAMP() == currentL2GenesisTimestamp, "aggregate genesis timestamp mismatch");
+        require(av.L2_BLOCK_TIME() == currentL2BlockTime, "aggregate l2 block time mismatch");
         require(av.BLOCK_INTERVAL() == currentBlockInterval, "aggregate block interval mismatch");
         require(
             av.INTERMEDIATE_BLOCK_INTERVAL() == currentIntermediateBlockInterval,
             "aggregate intermediate interval mismatch"
+        );
+        require(
+            address(av.PROTOCOL_VERSIONS()) == address(currentProtocolVersions), "aggregate protocol versions mismatch"
         );
     }
 

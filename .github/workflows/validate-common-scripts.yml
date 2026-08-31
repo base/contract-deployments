@@ -14,10 +14,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # base-contracts v8.2.1 — the version the active/evm shared Foundry project
-  # (active/evm/foundry.toml) and script/common/ are written against. Bump this
-  # together with the task .env pins when moving to a newer base-contracts.
-  BASE_CONTRACTS_COMMIT: f3a33c8577c8ca1e037b45e822bfcb75f099270b
+  # The version the active/evm shared Foundry project and script/common are written against.
+  # Bump this together with the task .env pins when moving to a newer base-contracts.
+  BASE_CONTRACTS_COMMIT: a27edbf364180714c0fdfdcfdd7d3e4c2829e574
 
 jobs:
   validate-common:
