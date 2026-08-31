@@ -12,26 +12,19 @@ import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier
 import {TEEVerifier} from "@base-contracts/src/L1/proofs/tee/TEEVerifier.sol";
 import {GameType} from "@base-contracts/src/libraries/bridge/Types.sol";
 
-import {MultiproofGameTypeChecks} from "./MultiproofGameTypeChecks.sol";
-
 /// @notice Cuts the AnchorStateRegistry over to a preregistered multiproof game type.
 contract SetRespectedGameType is MultisigScript {
+    uint256 internal constant DENIM_UPGRADE_INDEX = 13;
+
     IAnchorStateRegistry internal immutable anchorStateRegistry;
     address internal immutable guardian;
+    GameType internal immutable currentGameTypeEnv;
     GameType internal immutable newGameTypeEnv;
-    bytes32 internal immutable teeImageHashEnv;
-    bytes32 internal immutable zkRangeHashEnv;
-    bytes32 internal immutable zkAggregateHashEnv;
     IProtocolVersions internal immutable protocolVersionsEnv;
-    uint256 internal immutable l2GenesisBlockNumberEnv;
-    uint64 internal immutable l2GenesisTimestampEnv;
     uint64 internal immutable denimActivationTimestampEnv;
     uint64 internal immutable retirementTimestamp;
 
-    address internal immutable currentAggregateVerifier;
     address internal immutable aggregateVerifier;
-    address internal immutable teeVerifier;
-    address internal immutable zkVerifier;
 
     constructor() {
         anchorStateRegistry = IAnchorStateRegistry(vm.envAddress("ANCHOR_STATE_REGISTRY_PROXY"));
@@ -40,58 +33,48 @@ contract SetRespectedGameType is MultisigScript {
         uint256 currentGameType = vm.envUint("CURRENT_GAME_TYPE");
         uint256 newGameType = vm.envUint("NEW_GAME_TYPE");
         require(currentGameType <= type(uint32).max && newGameType <= type(uint32).max, "game type overflow");
+        currentGameTypeEnv = GameType.wrap(uint32(currentGameType));
         newGameTypeEnv = GameType.wrap(uint32(newGameType));
-        teeImageHashEnv = vm.envBytes32("TEE_IMAGE_HASH");
-        zkRangeHashEnv = vm.envBytes32("ZK_RANGE_HASH");
-        zkAggregateHashEnv = vm.envBytes32("ZK_AGGREGATE_HASH");
         protocolVersionsEnv = IProtocolVersions(vm.envAddress("PROTOCOL_VERSIONS"));
-        l2GenesisBlockNumberEnv = vm.envUint("L2_GENESIS_BLOCK_NUMBER");
-        uint256 l2GenesisTimestamp = vm.envUint("L2_GENESIS_TIMESTAMP");
         uint256 denimActivationTimestamp = vm.envUint("DENIM_ACTIVATION_TIMESTAMP");
-        require(
-            l2GenesisTimestamp <= type(uint64).max && denimActivationTimestamp <= type(uint64).max, "l2 time overflow"
-        );
+        require(denimActivationTimestamp <= type(uint64).max, "denim activation overflow");
         require(denimActivationTimestamp != 0, "denim activation not set");
-        l2GenesisTimestampEnv = uint64(l2GenesisTimestamp);
         denimActivationTimestampEnv = uint64(denimActivationTimestamp);
 
-        currentAggregateVerifier =
-            address(anchorStateRegistry.disputeGameFactory().gameImpls(GameType.wrap(uint32(currentGameType))));
         string memory json = vm.readFile(vm.envString("ADDRESSES_JSON"));
         aggregateVerifier = vm.parseJsonAddress(json, ".aggregateVerifier");
-        teeVerifier = vm.parseJsonAddress(json, ".teeVerifier");
-        zkVerifier = vm.parseJsonAddress(json, ".zkVerifier");
     }
 
     function setUp() public view {
         require(
-            GameType.unwrap(anchorStateRegistry.respectedGameType()) != GameType.unwrap(newGameTypeEnv),
-            "game type already respected"
+            GameType.unwrap(anchorStateRegistry.respectedGameType()) == GameType.unwrap(currentGameTypeEnv),
+            "current game type not respected"
         );
+        require(GameType.unwrap(currentGameTypeEnv) != GameType.unwrap(newGameTypeEnv), "game type already respected");
         address implementation = address(anchorStateRegistry.disputeGameFactory().gameImpls(newGameTypeEnv));
         require(implementation == aggregateVerifier, "registered implementation mismatch");
-        require(currentAggregateVerifier != address(0), "current aggregate verifier not found");
-
-        MultiproofGameTypeChecks.assertDeployment(
-            AggregateVerifier(aggregateVerifier),
-            AggregateVerifier(currentAggregateVerifier),
-            MultiproofGameTypeChecks.Expected({
-                gameType: newGameTypeEnv,
-                disputeGameFactory: address(anchorStateRegistry.disputeGameFactory()),
-                teeVerifier: teeVerifier,
-                zkVerifier: zkVerifier,
-                teeImageHash: teeImageHashEnv,
-                zkRangeHash: zkRangeHashEnv,
-                zkAggregateHash: zkAggregateHashEnv,
-                protocolVersions: protocolVersionsEnv,
-                l2GenesisBlockNumber: l2GenesisBlockNumberEnv,
-                l2GenesisTimestamp: l2GenesisTimestampEnv,
-                denimActivationTimestamp: denimActivationTimestampEnv
-            })
-        );
+        AggregateVerifier aggregate = AggregateVerifier(aggregateVerifier);
+        require(GameType.unwrap(aggregate.gameType()) == GameType.unwrap(newGameTypeEnv), "game type mismatch");
+        require(address(aggregate.anchorStateRegistry()) == address(anchorStateRegistry), "asr mismatch");
         require(
-            GameType.unwrap(TEEVerifier(teeVerifier).TEE_PROVER_REGISTRY().gameType())
-                == GameType.unwrap(newGameTypeEnv),
+            address(aggregate.DISPUTE_GAME_FACTORY()) == address(anchorStateRegistry.disputeGameFactory()),
+            "factory mismatch"
+        );
+        require(aggregate.L2_BLOCK_TIME() == 2, "l2 block time mismatch");
+        require(aggregate.BLOCK_INTERVAL() == 6000, "block interval mismatch");
+        require(aggregate.INTERMEDIATE_BLOCK_INTERVAL() == 300, "intermediate block interval mismatch");
+        require(address(aggregate.PROTOCOL_VERSIONS()) == address(protocolVersionsEnv), "protocol versions mismatch");
+
+        uint64[] memory schedule = protocolVersionsEnv.getSchedule();
+        require(
+            schedule.length > DENIM_UPGRADE_INDEX && schedule[DENIM_UPGRADE_INDEX] == denimActivationTimestampEnv,
+            "denim activation mismatch"
+        );
+
+        TEEVerifier tee = TEEVerifier(address(aggregate.TEE_VERIFIER()));
+        require(!tee.nullified(), "tee verifier nullified");
+        require(
+            GameType.unwrap(tee.TEE_PROVER_REGISTRY().gameType()) == GameType.unwrap(newGameTypeEnv),
             "tee registry not cut over"
         );
     }

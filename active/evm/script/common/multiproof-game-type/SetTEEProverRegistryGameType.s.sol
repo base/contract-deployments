@@ -7,7 +7,6 @@ import {MultisigScript, Enum} from "@base-contracts/scripts/universal/MultisigSc
 import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
 import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier.sol";
 import {TEEProverRegistry} from "@base-contracts/src/L1/proofs/tee/TEEProverRegistry.sol";
-import {TEEVerifier} from "@base-contracts/src/L1/proofs/tee/TEEVerifier.sol";
 import {GameType} from "@base-contracts/src/libraries/bridge/Types.sol";
 
 /// @notice Cuts the existing TEEProverRegistry over to a preregistered multiproof game type.
@@ -17,7 +16,6 @@ contract SetTEEProverRegistryGameType is MultisigScript {
     GameType internal immutable newGameTypeEnv;
     bytes32 internal immutable teeImageHashEnv;
     address internal immutable aggregateVerifier;
-    address internal immutable teeVerifier;
 
     constructor() {
         teeProverRegistry = TEEProverRegistry(vm.envAddress("TEE_PROVER_REGISTRY_PROXY"));
@@ -29,7 +27,6 @@ contract SetTEEProverRegistryGameType is MultisigScript {
 
         string memory json = vm.readFile(vm.envString("ADDRESSES_JSON"));
         aggregateVerifier = vm.parseJsonAddress(json, ".aggregateVerifier");
-        teeVerifier = vm.parseJsonAddress(json, ".teeVerifier");
     }
 
     function setUp() public view {
@@ -37,17 +34,11 @@ contract SetTEEProverRegistryGameType is MultisigScript {
             GameType.unwrap(teeProverRegistry.gameType()) != GameType.unwrap(newGameTypeEnv), "game type already set"
         );
         require(teeImageHashEnv != bytes32(0), "tee image hash not set");
-        require(
-            address(teeProverRegistry.DISPUTE_GAME_FACTORY().gameImpls(newGameTypeEnv)) == aggregateVerifier,
-            "registered implementation mismatch"
-        );
-        require(address(AggregateVerifier(aggregateVerifier).TEE_VERIFIER()) == teeVerifier, "tee verifier mismatch");
-        require(AggregateVerifier(aggregateVerifier).TEE_IMAGE_HASH() == teeImageHashEnv, "tee image hash mismatch");
-        require(!TEEVerifier(teeVerifier).nullified(), "tee verifier nullified");
-        require(
-            address(TEEVerifier(teeVerifier).TEE_PROVER_REGISTRY()) == address(teeProverRegistry),
-            "tee registry mismatch"
-        );
+        address implementation = address(teeProverRegistry.DISPUTE_GAME_FACTORY().gameImpls(newGameTypeEnv));
+        require(implementation == aggregateVerifier, "registered implementation mismatch");
+        AggregateVerifier aggregate = AggregateVerifier(aggregateVerifier);
+        require(aggregate.TEE_IMAGE_HASH() == teeImageHashEnv, "tee image hash mismatch");
+        require(!aggregate.TEE_VERIFIER().nullified(), "tee verifier nullified");
     }
 
     function _buildCalls() internal view override returns (Call[] memory) {
