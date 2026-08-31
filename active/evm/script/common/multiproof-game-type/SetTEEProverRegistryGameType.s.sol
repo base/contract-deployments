@@ -43,6 +43,7 @@ contract SetTEEProverRegistryGameType is MultisigScript {
         );
         require(address(AggregateVerifier(aggregateVerifier).TEE_VERIFIER()) == teeVerifier, "tee verifier mismatch");
         require(AggregateVerifier(aggregateVerifier).TEE_IMAGE_HASH() == teeImageHashEnv, "tee image hash mismatch");
+        require(!TEEVerifier(teeVerifier).nullified(), "tee verifier nullified");
         require(
             address(TEEVerifier(teeVerifier).TEE_PROVER_REGISTRY()) == address(teeProverRegistry),
             "tee registry mismatch"

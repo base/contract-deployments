@@ -9,6 +9,7 @@ import {IAnchorStateRegistry} from "interfaces/L1/proofs/IAnchorStateRegistry.so
 import {MultisigScript, Enum} from "@base-contracts/scripts/universal/MultisigScript.sol";
 import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
 import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier.sol";
+import {TEEVerifier} from "@base-contracts/src/L1/proofs/tee/TEEVerifier.sol";
 import {GameType} from "@base-contracts/src/libraries/bridge/Types.sol";
 
 import {MultiproofGameTypeChecks} from "./MultiproofGameTypeChecks.sol";
@@ -87,6 +88,11 @@ contract SetRespectedGameType is MultisigScript {
                 l2GenesisTimestamp: l2GenesisTimestampEnv,
                 denimActivationTimestamp: denimActivationTimestampEnv
             })
+        );
+        require(
+            GameType.unwrap(TEEVerifier(teeVerifier).TEE_PROVER_REGISTRY().gameType())
+                == GameType.unwrap(newGameTypeEnv),
+            "tee registry not cut over"
         );
     }
 

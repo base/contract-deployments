@@ -36,6 +36,10 @@ library MultiproofGameTypeChecks {
         require(address(current.DISPUTE_GAME_FACTORY()) == expected.disputeGameFactory, "current factory mismatch");
         require(address(aggregate.DISPUTE_GAME_FACTORY()) == expected.disputeGameFactory, "factory mismatch");
         require(address(aggregate.anchorStateRegistry()) == address(current.anchorStateRegistry()), "asr mismatch");
+        require(
+            GameType.unwrap(current.anchorStateRegistry().respectedGameType()) == GameType.unwrap(current.gameType()),
+            "current game type not respected"
+        );
         require(address(aggregate.DELAYED_WETH()) == address(current.DELAYED_WETH()), "delayed weth mismatch");
         require(address(aggregate.TEE_VERIFIER()) == expected.teeVerifier, "tee verifier mismatch");
         require(address(aggregate.ZK_VERIFIER()) == expected.zkVerifier, "zk verifier mismatch");
@@ -64,6 +68,7 @@ library MultiproofGameTypeChecks {
 
         TEEVerifier tee = TEEVerifier(expected.teeVerifier);
         TEEVerifier currentTee = TEEVerifier(address(current.TEE_VERIFIER()));
+        require(!tee.nullified(), "tee verifier nullified");
         require(
             address(tee.TEE_PROVER_REGISTRY()) == address(currentTee.TEE_PROVER_REGISTRY()), "tee registry mismatch"
         );
@@ -71,6 +76,7 @@ library MultiproofGameTypeChecks {
 
         ZKVerifier zk = ZKVerifier(expected.zkVerifier);
         ZKVerifier currentZk = ZKVerifier(address(current.ZK_VERIFIER()));
+        require(!zk.nullified(), "zk verifier nullified");
         require(address(zk.SP1_VERIFIER()) == address(currentZk.SP1_VERIFIER()), "zk sp1 verifier mismatch");
         require(address(zk.ANCHOR_STATE_REGISTRY()) == address(current.anchorStateRegistry()), "zk asr mismatch");
 
