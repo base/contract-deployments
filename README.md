@@ -80,9 +80,9 @@ To execute a new task, run one of the following commands (depending on the type 
 - For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
-- For pausing SuperchainConfig: `make setup-superchain-config-pause network=<network>`
+- For pausing SuperchainConfig: `make setup-pause-task network=<network>`
 
-Each `setup-*` command also creates a matching `<network>/signatures/<task-dir-basename>/` directory for [task origin signing](#task-origin-signing). The parent `signatures/` directory is created automatically via `mkdir -p` for networks that do not yet have one.
+`setup-pause-task` creates `active/evm/tasks/<date>-pause-superchain-config/` and adds the selected network under `config/<network>/`. Running it again for another network on the same day adds that network to the same logical task.
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
@@ -222,7 +222,7 @@ The root Makefile provides three targets for generating cryptographic attestatio
 | `make sign-as-base-facilitator` | Attest Base team facilitation                   |
 | `make sign-as-sc-facilitator`   | Attest Security Council facilitation            |
 
-Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. This directory is created automatically when you run any `setup-*` target (in both the root and Solana Makefiles), so it is ready for the signing tool when you invoke one of the targets below. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
+Task-origin signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. Incident-response pause tasks do not use task-origin validation because they execute directly through the incident multisig rather than the proxy admin owner. Two variables control signature storage for tasks that do require it:
 
 | Variable        | Default                                    | Description                           |
 | --------------- | ------------------------------------------ | ------------------------------------- |
@@ -327,14 +327,10 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 
 ## Using the pause SuperchainConfig template
 
-This template is used to pause or un-pause the L1 SuperchainConfig contract.
+This command creates an incident multisig task for pre-signing 20 transactions that pause the L1 `SuperchainConfig` contract.
 
 1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-superchain-config-pause network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments, using the value for your target network.
-1. Build the contracts with `forge build`.
-1. Sign the pause transaction with `make sign-pause` or generate the validation file for un-pausing with `make gen-validation-unpause`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+1. Run `make setup-pause-task network=<network>` and go to the folder that was created by this command.
+1. Run `make TASK_NETWORK=<network> deps`.
+1. Sign the pause transactions with `make TASK_NETWORK=<network> sign-pause`.
+1. Send `signatures-pause.txt` to the facilitator through the approved secure channel.
