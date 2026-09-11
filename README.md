@@ -80,9 +80,9 @@ To execute a new task, run one of the following commands (depending on the type 
 - For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
-- For pausing SuperchainConfig: `make setup-pause-task network=<network>`
+- For creating incident bridge pause signatures: `make setup-pause-task network=<network>`
 
-`setup-pause-task` creates `active/evm/tasks/<date>-pause-superchain-config/` and adds the selected network under `config/<network>/`. Running it again for another network on the same day adds that network to the same logical task.
+`setup-pause-task` creates `active/evm/tasks/<date>-pause-bridge/` and adds the selected network under `config/<network>/`. Running it again for another network on the same day adds that network to the same logical task.
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
@@ -325,11 +325,11 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
-## Using the pause SuperchainConfig template
+## Using the incident bridge pause template
 
-This command creates an incident multisig task for pre-signing 20 transactions that pause the L1 `SuperchainConfig` contract.
+This command creates an incident multisig task for pre-signing 20 transactions that pause Base deposits and withdrawals.
 
-Pause SuperchainConfig tasks do not use task-origin validation because they execute directly through the incident multisig rather than the proxy admin owner.
+Incident bridge pause tasks do not use task-origin validation because they execute directly through the incident multisig rather than the proxy admin owner.
 
 1. Ensure you have followed the instructions above in `setup`.
 1. Run `make setup-pause-task network=<network>` and go to the folder that was created by this command.

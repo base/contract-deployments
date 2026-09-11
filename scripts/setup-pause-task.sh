@@ -19,12 +19,12 @@ esac
 	exit 1
 }
 
-task_id="$(date +%F)-pause-superchain-config"
+task_id="$(date +%F)-pause-bridge"
 task_dir="$repo_root/active/evm/tasks/$task_id"
 config_dir="$task_dir/config/$network"
 
 if [ -e "$task_dir" ]; then
-	grep -q 'active/evm/make/superchain-pause.mk' "$task_dir/Makefile" 2>/dev/null || {
+	grep -q 'active/evm/make/pause-bridge.mk' "$task_dir/Makefile" 2>/dev/null || {
 		echo "setup-pause-task: task path already exists: $task_dir" >&2
 		exit 1
 	}
@@ -46,13 +46,13 @@ include config/$(TASK_NETWORK)/.env
 
 RPC_URL := $(L1_RPC_URL)
 
-include $(REPO_ROOT)/active/evm/make/superchain-pause.mk
+include $(REPO_ROOT)/active/evm/make/pause-bridge.mk
 EOF
 
 	cat >"$task_dir/FACILITATOR.md" <<'EOF'
 # Facilitator Guide
 
-Guide for collecting pre-signed `SuperchainConfig.pause` transactions and executing an emergency pause.
+Guide for collecting pre-signed bridge pause transactions and executing an emergency pause.
 
 Replace `TASK_NETWORK=<network>` in every command with the selected task network.
 
@@ -99,7 +99,7 @@ RECORD_STATE_DIFF=true
 EOF
 
 cat >"$config_dir/README.md" <<EOF
-# Pause SuperchainConfig
+# Pause Base Bridge
 
 Status: READY TO SIGN
 

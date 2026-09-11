@@ -36,7 +36,7 @@ jobs:
       - name: Check pause task setup
         run: |
           make setup-pause-task network=mainnet
-          task=active/evm/tasks/$(date +%F)-pause-superchain-config
+          task=active/evm/tasks/$(date +%F)-pause-bridge
           grep -q "BASE_CONTRACTS_COMMIT=$BASE_CONTRACTS_COMMIT" "$task/config/mainnet/.env"
           make -C "$task" TASK_NETWORK=mainnet -n check-nonce
 
