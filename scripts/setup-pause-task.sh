@@ -92,9 +92,9 @@ fi
 mkdir -p "$config_dir"
 
 cat >"$config_dir/.env" <<'EOF'
-# Any change to this pin could break internal pauser compatibility.
-# Coordinate an internal pauser update before changing it.
-BASE_CONTRACTS_COMMIT=be7c7a642e430fa64b04b63203839f8c81f48466
+# active/evm common scripts are written against base-contracts v8.2.1.
+# Coordinate an internal pauser update before changing this pin.
+BASE_CONTRACTS_COMMIT=f3a33c8577c8ca1e037b45e822bfcb75f099270b
 RECORD_STATE_DIFF=true
 EOF
 
