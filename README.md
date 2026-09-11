@@ -222,7 +222,7 @@ The root Makefile provides three targets for generating cryptographic attestatio
 | `make sign-as-base-facilitator` | Attest Base team facilitation                   |
 | `make sign-as-sc-facilitator`   | Attest Security Council facilitation            |
 
-Task-origin signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. Incident-response pause tasks do not use task-origin validation because they execute directly through the incident multisig rather than the proxy admin owner. Two variables control signature storage for tasks that do require it:
+Signatures are stored in `<network>/signatures/<task-name>/`, where `<task-name>` is auto-derived from the task directory name. This directory is created automatically when you run any `setup-*` target (in both the root and Solana Makefiles), so it is ready for the signing tool when you invoke one of the targets below. Two variables control this behavior and can be overridden in a task's Makefile if the defaults are not appropriate:
 
 | Variable        | Default                                    | Description                           |
 | --------------- | ------------------------------------------ | ------------------------------------- |
@@ -328,6 +328,8 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 ## Using the pause SuperchainConfig template
 
 This command creates an incident multisig task for pre-signing 20 transactions that pause the L1 `SuperchainConfig` contract.
+
+Pause SuperchainConfig tasks do not use task-origin validation because they execute directly through the incident multisig rather than the proxy admin owner.
 
 1. Ensure you have followed the instructions above in `setup`.
 1. Run `make setup-pause-task network=<network>` and go to the folder that was created by this command.
