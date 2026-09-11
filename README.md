@@ -333,4 +333,4 @@ This command creates an incident multisig task for pre-signing 20 transactions t
 1. Run `make setup-pause-task network=<network>` and go to the folder that was created by this command.
 1. Run `make TASK_NETWORK=<network> deps`.
 1. Sign the pause transactions with `make TASK_NETWORK=<network> sign-pause`.
-1. Send `signatures-pause.txt` to the facilitator through the approved secure channel.
+1. Send `config/<network>/signatures-pause.txt` to the facilitator through the approved secure channel.

@@ -5,8 +5,9 @@ repo_root=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 tmp=$(mktemp -d /tmp/setup-pause-task.XXXXXX)
 trap 'rm -rf "$tmp"' EXIT
 
-mkdir -p "$tmp/config" "$tmp/active/evm/tasks"
+mkdir -p "$tmp/config" "$tmp/active/evm/make" "$tmp/active/evm/tasks"
 cp "$repo_root/Makefile" "$repo_root/Multisig.mk" "$tmp/"
+cp "$repo_root/active/evm/make/superchain-pause.mk" "$tmp/active/evm/make/"
 : >"$tmp/config/mainnet.env"
 : >"$tmp/config/sepolia.env"
 
@@ -15,8 +16,18 @@ task="$tmp/active/evm/tasks/$(date +%F)-pause-superchain-config"
 test -f "$task/Makefile"
 test -f "$task/FACILITATOR.md"
 test -f "$task/config/mainnet/.env"
+grep -q 'active/evm/make/superchain-pause.mk' "$task/Makefile"
 grep -q 'make TASK_NETWORK=mainnet sign-pause' "$task/config/mainnet/README.md"
+grep -q 'config/mainnet/signatures-pause.txt' "$task/config/mainnet/README.md"
 make -s -C "$task" TASK_NETWORK=mainnet -n check-nonce >/dev/null
+cat >>"$task/Makefile" <<'EOF'
+.PHONY: print-pause-signatures-file
+print-pause-signatures-file:
+	@echo "$(PAUSE_SIGNATURES_FILE)"
+EOF
+pause_signatures_file=$(make -s -C "$task" TASK_NETWORK=mainnet print-pause-signatures-file)
+task=$(CDPATH= cd -- "$task" && pwd -P)
+test "$pause_signatures_file" = "$task/config/mainnet/signatures-pause.txt"
 
 if make -s -C "$task" -n check-nonce >/dev/null 2>&1; then
 	echo "setup-pause-task test: TASK_NETWORK should be required" >&2
