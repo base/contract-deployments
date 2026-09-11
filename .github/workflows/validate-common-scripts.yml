@@ -34,7 +34,9 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Check pause task setup
-        run: ./scripts/setup-pause-task.test.sh
+        run: |
+          make setup-pause-task network=mainnet
+          make -C active/evm/tasks/$(date +%F)-pause-superchain-config TASK_NETWORK=mainnet -n check-nonce
 
       # ── Toolchain (mise) ─────────────────────────────────────────────
       # Installs all tools pinned in mise.toml (foundry, node, bun, go) so
