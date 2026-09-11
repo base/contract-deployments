@@ -33,6 +33,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
+      - name: Check pause task setup
+        run: ./scripts/setup-pause-task.test.sh
+
       # ── Toolchain (mise) ─────────────────────────────────────────────
       # Installs all tools pinned in mise.toml (foundry, node, bun, go) so
       # CI runs match local signer environments byte-for-byte.

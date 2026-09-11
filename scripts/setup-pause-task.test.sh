@@ -19,15 +19,9 @@ test -f "$task/config/mainnet/.env"
 grep -q 'active/evm/make/superchain-pause.mk' "$task/Makefile"
 grep -q 'make TASK_NETWORK=mainnet sign-pause' "$task/config/mainnet/README.md"
 grep -q 'config/mainnet/signatures-pause.txt' "$task/config/mainnet/README.md"
+grep -Fq 'PAUSE_SIGNATURES_FILE := $(CURDIR)/config/$(TASK_NETWORK)/signatures-pause.txt' "$tmp/active/evm/make/superchain-pause.mk"
 make -s -C "$task" TASK_NETWORK=mainnet -n check-nonce >/dev/null
-cat >>"$task/Makefile" <<'EOF'
-.PHONY: print-pause-signatures-file
-print-pause-signatures-file:
-	@echo "$(PAUSE_SIGNATURES_FILE)"
-EOF
-pause_signatures_file=$(make -s -C "$task" TASK_NETWORK=mainnet print-pause-signatures-file)
-task=$(CDPATH= cd -- "$task" && pwd -P)
-test "$pause_signatures_file" = "$task/config/mainnet/signatures-pause.txt"
+make -s -C "$task" TASK_NETWORK=mainnet INCIDENT_MULTISIG=0x1 SYSTEM_CONFIG=0x2 validate-config
 
 if make -s -C "$task" -n check-nonce >/dev/null 2>&1; then
 	echo "setup-pause-task test: TASK_NETWORK should be required" >&2

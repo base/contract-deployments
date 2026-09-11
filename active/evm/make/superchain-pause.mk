@@ -1,18 +1,16 @@
-SCRIPT_NAME ?= script/common/superchain/PauseSuperchainConfig.s.sol:PauseSuperchainConfig
+SCRIPT_NAME := script/common/superchain/PauseSuperchainConfig.s.sol:PauseSuperchainConfig
 
 ZERO_ADDRESS := 0x0000000000000000000000000000000000000000
 SAFE_TX_TYPEHASH := 0xbb8310d486368db6bd6f849402fdd73ad53d316b5a4b2644ad6efe0f941286d8
 SAFE_TX_ABI := f(bytes32,address,uint256,bytes32,uint8,uint256,uint256,uint256,address,address,uint256)
-PAUSE_SIGNATURES_FILE ?= $(CURDIR)/config/$(TASK_NETWORK)/signatures-pause.txt
-PAUSE_SIGNATURES_TMP ?= $(CURDIR)/config/$(TASK_NETWORK)/.signatures-pause.txt.tmp
-PAUSE_SIGN_OUTPUT ?= $(CURDIR)/config/$(TASK_NETWORK)/.sign-output.tmp
+PAUSE_SIGNATURES_FILE := $(CURDIR)/config/$(TASK_NETWORK)/signatures-pause.txt
+PAUSE_SIGNATURES_TMP := $(CURDIR)/config/$(TASK_NETWORK)/.signatures-pause.txt.tmp
+PAUSE_SIGN_OUTPUT := $(CURDIR)/config/$(TASK_NETWORK)/.sign-output.tmp
 SUPERCHAIN_PAUSE_ENV := RECORD_STATE_DIFF=$(RECORD_STATE_DIFF) INCIDENT_MULTISIG=$(INCIDENT_MULTISIG) SYSTEM_CONFIG=$(SYSTEM_CONFIG)
 
 .PHONY: validate-config
 validate-config:
-	@test -n "$(BASE_CONTRACTS_COMMIT)" || { echo "BASE_CONTRACTS_COMMIT is required"; exit 1; }
-	@test -n "$(INCIDENT_MULTISIG)" || { echo "INCIDENT_MULTISIG is required"; exit 1; }
-	@test -n "$(SYSTEM_CONFIG)" || { echo "SYSTEM_CONFIG is required"; exit 1; }
+	$(call require_vars,validate-config,BASE_CONTRACTS_COMMIT INCIDENT_MULTISIG SYSTEM_CONFIG)
 	@test "$(RECORD_STATE_DIFF)" = "true" || { echo "RECORD_STATE_DIFF=true is required"; exit 1; }
 
 .PHONY: sign-pause
@@ -49,7 +47,7 @@ sign-pause: validate-config
 
 .PHONY: execute-pause
 execute-pause: validate-config
-	@test -n "$(SIGNATURES)" || { echo "SIGNATURES is required"; exit 1; }
+	$(call require_vars,execute-pause,SIGNATURES)
 	export $(SUPERCHAIN_PAUSE_ENV); $(call MULTISIG_EXECUTE,$(SIGNATURES))
 
 .PHONY: check-status
