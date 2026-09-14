@@ -30,5 +30,34 @@ optimizer_runs = 999999
 bytecode_hash = "none"
 evm_version = "cancun"
 
+# Cobalt deploy profiles. base/contracts pins per-contract optimizer runs via
+# `compilation_restrictions` in its own foundry.toml; profile remappings replace
+# rather than extend the default list, so both profiles carry the full set.
+[profile.cobalt-core-deploy]
+optimizer = true
+optimizer_runs = 5000
+bytecode_hash = "none"
+evm_version = "cancun"
+remappings = [
+    '@base-contracts/=lib/contracts/',
+    '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
+    'forge-std/=lib/forge-std/src/',
+    'interfaces/=lib/contracts/interfaces/',
+    'src/=lib/contracts/src/',
+]
+
+[profile.cobalt-proofs-deploy]
+optimizer = true
+optimizer_runs = 999999
+bytecode_hash = "none"
+evm_version = "cancun"
+remappings = [
+    '@base-contracts/=lib/contracts/',
+    '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
+    'forge-std/=lib/forge-std/src/',
+    'interfaces/=lib/contracts/interfaces/',
+    'src/=lib/contracts/src/',
+]
+
 [lint]
 lint_on_build = false
