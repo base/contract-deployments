@@ -33,18 +33,18 @@ assertions in `DeployCobaltCoreImpls` and `ExecuteCobaltUpgrade` to the stock `3
 Open `config/<network>/.env` and confirm every value, in particular:
 
 - `PROTOCOL_VERSIONS_INITIAL_SCHEDULE` — the activation timestamp imported for each upgrade id.
-  **Ids must stay aligned with the Base mainnet registry**: `AggregateVerifier` hardcodes upgrade
-  index 13 (Denim) as its block-cadence gate, so inserting or reordering entries silently repoints
-  that gate. Entries may be `0` for an unscheduled fork. Zeronet was re-genesised with every fork
-  through Beryl already active, so ids 0–11 carry the genesis timestamp and Cobalt (id 12) is `0`.
+  Ids should stay aligned with the Base mainnet registry so that a given index means the same fork
+  on every chain. Entries may be `0` for an unscheduled fork. Zeronet was re-genesised with every
+  fork through Beryl already active, so ids 0–11 carry the genesis timestamp and Cobalt (id 12)
+  is `0`.
 - `PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION` — must be non-zero and fit in 128 bits.
 - `PROTOCOL_VERSIONS_INCIDENT_RESPONDER` — the address allowed to use the incident path.
 - `OLD_*` — the currently deployed implementations. `ExecuteCobaltUpgrade` asserts these match the
   live proxies before building any calls, so a stale value stops the task rather than upgrading
   from an unexpected base.
 - The `AGGREGATE_VERIFIER_*` values, which are carried over from the live implementation so the
-  redeploy changes nothing except the registry binding and the split cadence intervals. The slow
-  and fast pairs must divide to the same intermediate root count or the constructor reverts.
+  registry binding is the only change the redeploy makes. `BLOCK_INTERVAL` must be divisible by
+  `INTERMEDIATE_BLOCK_INTERVAL` or the constructor reverts.
 
 Cobalt itself is registered unscheduled. Setting its activation timestamp is a separate, later
 operation and is deliberately not part of this task.
@@ -126,9 +126,11 @@ there is nothing to reinitialize.
 - **Pause semantics.** After the upgrade `SystemConfig.paused()` stops consulting
   `superchainConfig.paused(<lockbox>)`. On a chain where the lockbox address was paused, that is a
   silent unpause. `_postCheck` asserts the effective pause state is unchanged across the upgrade.
-- **Unchanged version strings.** `OptimismPortal2` stays at `5.2.0` and `DisputeGameFactory` at
-  `1.4.0` across this change, so `version()` alone cannot tell old from new. Confirm the
-  implementation addresses, not the semver.
+- **Unchanged version strings.** `OptimismPortal2` stays at `5.2.0`, `DisputeGameFactory` at
+  `1.4.0`, and `AggregateVerifier` at `0.1.0` across this change, so `version()` alone cannot tell
+  old from new for any of them. Confirm the implementation addresses, not the semver. For the
+  verifier, the `PROTOCOL_VERSIONS()` getter is the real discriminator: the predecessor predates
+  the registry and does not have it.
 - **Existing dispute games.** Switching the factory to `CREATE2` only affects games created after
   the upgrade; existing game proxies and `gameCount()` are untouched, and `_postCheck` asserts the
   count is stable.

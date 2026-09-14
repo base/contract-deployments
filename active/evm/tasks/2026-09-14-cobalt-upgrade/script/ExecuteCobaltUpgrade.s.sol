@@ -241,9 +241,13 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             "dispute game factory implementation version mismatch"
         );
         require(
-            keccak256(bytes(IAggregateVerifier(newAggregateVerifier).version())) == keccak256(bytes("0.2.0")),
+            keccak256(bytes(IAggregateVerifier(newAggregateVerifier).version())) == keccak256(bytes("0.1.0")),
             "aggregate verifier version mismatch"
         );
+        // AggregateVerifier is back at 0.1.0, the same version the live implementation reports, so
+        // the registry binding is what actually distinguishes the two. The predecessor predates
+        // ProtocolVersions and has no such getter.
+        require(newAggregateVerifier != oldAggregateVerifier, "aggregate verifier was not redeployed");
         require(
             IAggregateVerifier(newAggregateVerifier).PROTOCOL_VERSIONS() == protocolVersionsProxy,
             "aggregate verifier is not bound to the new registry"

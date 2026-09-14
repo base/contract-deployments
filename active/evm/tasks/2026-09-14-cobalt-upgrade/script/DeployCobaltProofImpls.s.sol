@@ -16,8 +16,9 @@ import {ProtocolVersions} from "@base-contracts/src/L1/ProtocolVersions.sol";
 /// @dev AggregateVerifier binds PROTOCOL_VERSIONS as a constructor immutable, so it must be
 ///      redeployed for the registry to take effect and the proxy from DeployCobaltCoreImpls must
 ///      already exist. Every other constructor argument is carried over unchanged from the live
-///      implementation so this redeploy introduces no behavioural change beyond the binding and the
-///      split slow/fast cadence intervals.
+///      implementation, so the registry binding is the only behavioural change. Note that the
+///      pinned commit reverts AggregateVerifier to 0.1.0, the same version the live implementation
+///      reports, so version alone cannot distinguish the two.
 contract DeployCobaltProofImpls is Script {
     /// @notice Game type of the aggregate proof game.
     GameType internal constant AGGREGATE_VERIFIER_GAME_TYPE = GameType.wrap(621);
@@ -31,10 +32,8 @@ contract DeployCobaltProofImpls is Script {
     bytes32 internal immutable zkRangeHash;
     bytes32 internal immutable zkAggregateHash;
     uint256 internal immutable l2ChainId;
-    uint256 internal immutable slowBlockInterval;
-    uint256 internal immutable slowIntermediateBlockInterval;
-    uint256 internal immutable fastBlockInterval;
-    uint256 internal immutable fastIntermediateBlockInterval;
+    uint256 internal immutable blockInterval;
+    uint256 internal immutable intermediateBlockInterval;
     uint256 internal immutable l2GenesisBlockNumber;
     uint64 internal immutable l2GenesisTimestamp;
     uint64 internal immutable l2BlockTime;
@@ -54,10 +53,8 @@ contract DeployCobaltProofImpls is Script {
         zkRangeHash = vm.envBytes32("AGGREGATE_VERIFIER_ZK_RANGE_HASH");
         zkAggregateHash = vm.envBytes32("AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH");
         l2ChainId = vm.envUint("L2_CHAIN_ID");
-        slowBlockInterval = vm.envUint("AGGREGATE_VERIFIER_SLOW_BLOCK_INTERVAL");
-        slowIntermediateBlockInterval = vm.envUint("AGGREGATE_VERIFIER_SLOW_INTERMEDIATE_BLOCK_INTERVAL");
-        fastBlockInterval = vm.envUint("AGGREGATE_VERIFIER_FAST_BLOCK_INTERVAL");
-        fastIntermediateBlockInterval = vm.envUint("AGGREGATE_VERIFIER_FAST_INTERMEDIATE_BLOCK_INTERVAL");
+        blockInterval = vm.envUint("AGGREGATE_VERIFIER_BLOCK_INTERVAL");
+        intermediateBlockInterval = vm.envUint("AGGREGATE_VERIFIER_INTERMEDIATE_BLOCK_INTERVAL");
         l2GenesisBlockNumber = vm.envUint("L2_GENESIS_BLOCK_NUMBER");
         l2GenesisTimestamp = uint64(vm.envUint("L2_GENESIS_TIMESTAMP"));
         l2BlockTime = uint64(vm.envUint("L2_BLOCK_TIME"));
@@ -87,12 +84,8 @@ contract DeployCobaltProofImpls is Script {
             zkHashes: AggregateVerifier.ZkHashes({rangeHash: zkRangeHash, aggregateHash: zkAggregateHash}),
             configHash: configHash,
             l2ChainId: l2ChainId,
-            intervalConfig: AggregateVerifier.IntervalConfig({
-                slowBlockInterval: slowBlockInterval,
-                slowIntermediateBlockInterval: slowIntermediateBlockInterval,
-                fastBlockInterval: fastBlockInterval,
-                fastIntermediateBlockInterval: fastIntermediateBlockInterval
-            }),
+            blockInterval: blockInterval,
+            intermediateBlockInterval: intermediateBlockInterval,
             scheduleConfig: AggregateVerifier.ScheduleConfig({
                 protocolVersions: IProtocolVersions(protocolVersionsProxy),
                 genesisBlockNumber: l2GenesisBlockNumber,
@@ -118,8 +111,13 @@ contract DeployCobaltProofImpls is Script {
         require(protocolVersionsImpl.initVersion() == 1, "protocol versions init version mismatch");
 
         require(
-            keccak256(bytes(aggregateVerifier.version())) == keccak256(bytes("0.2.0")),
+            keccak256(bytes(aggregateVerifier.version())) == keccak256(bytes("0.1.0")),
             "aggregate verifier version mismatch"
+        );
+        require(aggregateVerifier.BLOCK_INTERVAL() == blockInterval, "aggregate verifier block interval mismatch");
+        require(
+            aggregateVerifier.INTERMEDIATE_BLOCK_INTERVAL() == intermediateBlockInterval,
+            "aggregate verifier intermediate block interval mismatch"
         );
         require(
             address(aggregateVerifier.PROTOCOL_VERSIONS()) == protocolVersionsProxy,
