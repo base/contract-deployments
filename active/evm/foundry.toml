@@ -11,11 +11,10 @@ evm_version = "prague"
 via-ir = false
 remappings = [
     '@base-contracts/=lib/contracts/',
+    '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
     'forge-std/=lib/forge-std/src/',
-    'interfaces/L1/=lib/contracts/interfaces/L1/',
-    'interfaces/legacy/=lib/contracts/interfaces/legacy/',
-    'interfaces/universal/=lib/contracts/interfaces/universal/',
-    'src/libraries/=lib/contracts/src/libraries/',
+    'interfaces/=lib/contracts/interfaces/',
+    'src/=lib/contracts/src/',
 ]
 
 [profile.nitro-deploy]
@@ -30,34 +29,21 @@ optimizer_runs = 999999
 bytecode_hash = "none"
 evm_version = "cancun"
 
-# Cobalt deploy profiles. base/contracts pins per-contract optimizer runs via
-# `compilation_restrictions` in its own foundry.toml; profile remappings replace
-# rather than extend the default list, so both profiles carry the full set.
+# Cobalt deploy profiles. These exist only because base/contracts pins per-contract
+# optimizer runs via `compilation_restrictions` in its own foundry.toml, and matching
+# its canonical build is what makes the deployed bytecode verifiable. Everything else,
+# including remappings, is inherited from the default profile above.
 [profile.cobalt-core-deploy]
 optimizer = true
 optimizer_runs = 5000
 bytecode_hash = "none"
 evm_version = "cancun"
-remappings = [
-    '@base-contracts/=lib/contracts/',
-    '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
-    'forge-std/=lib/forge-std/src/',
-    'interfaces/=lib/contracts/interfaces/',
-    'src/=lib/contracts/src/',
-]
 
 [profile.cobalt-proofs-deploy]
 optimizer = true
 optimizer_runs = 999999
 bytecode_hash = "none"
 evm_version = "cancun"
-remappings = [
-    '@base-contracts/=lib/contracts/',
-    '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
-    'forge-std/=lib/forge-std/src/',
-    'interfaces/=lib/contracts/interfaces/',
-    'src/=lib/contracts/src/',
-]
 
 [lint]
 lint_on_build = false

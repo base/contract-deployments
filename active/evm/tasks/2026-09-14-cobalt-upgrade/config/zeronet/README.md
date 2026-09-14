@@ -8,7 +8,8 @@ Upgrades Zeronet's L1 contracts for the Cobalt hardfork. One transaction from th
 makes five calls:
 
 1. Upgrade and initialize a new `ProtocolVersions` registry, importing Zeronet's hardfork activation
-   schedule. This is the registry that dynamic upgrades read from.
+   schedule and scheduling Cobalt for 2026-09-16 18:00:00 UTC. This is the registry that dynamic
+   upgrades read from.
 2. Upgrade `OptimismPortal2` to the implementation with `EthLockbox` removed.
 3. Upgrade `SystemConfig` to the matching implementation, keeping Zeronet's patched
    `MAX_GAS_LIMIT` of 2,000,000,000.
@@ -19,9 +20,6 @@ No ETH moves. Zeronet has no `EthLockbox` (`ethLockbox()` is already the zero ad
 is already held by the portal, so removing the lockbox paths changes no balances. Existing dispute
 games, the game count, the gas limit, and the pause state are all unchanged, and the transaction
 asserts each of these before and after.
-
-Cobalt is registered in the schedule as unscheduled. Choosing its activation timestamp is a separate
-future task.
 
 ## Custody
 

@@ -17,7 +17,6 @@ SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
 VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
 RPC_URL := $(L1_RPC_URL)
 ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
-DEPLOYER = $(shell $(MISE_EXEC) cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
 
 TASK_DIR := tasks/2026-09-14-cobalt-upgrade
 DEPLOY_CORE_SCRIPT := $(TASK_DIR)/script/DeployCobaltCoreImpls.s.sol:DeployCobaltCoreImpls
@@ -34,27 +33,22 @@ NEW_DISPUTE_GAME_FACTORY_IMPL = $(shell jq -er '.disputeGameFactoryImpl' $(ADDRE
 NEW_AGGREGATE_VERIFIER = $(shell jq -er '.aggregateVerifier' $(ADDRESSES_JSON) 2>/dev/null)
 PROTOCOL_VERSIONS_PROXY = $(shell jq -er '.protocolVersionsProxy' $(ADDRESSES_JSON) 2>/dev/null)
 PROTOCOL_VERSIONS_IMPL = $(shell jq -er '.protocolVersionsImpl' $(ADDRESSES_JSON) 2>/dev/null)
+OPTIMISM_PORTAL_IMPL_CTOR_ARGS = $(shell jq -er '.optimismPortalImplConstructorArgs' $(ADDRESSES_JSON) 2>/dev/null)
+PROTOCOL_VERSIONS_PROXY_CTOR_ARGS = $(shell jq -er '.protocolVersionsProxyConstructorArgs' $(ADDRESSES_JSON) 2>/dev/null)
+AGGREGATE_VERIFIER_CTOR_ARGS = $(shell jq -er '.aggregateVerifierConstructorArgs' $(ADDRESSES_JSON) 2>/dev/null)
 
 DEPLOY_ENV = ADDRESSES_JSON=$(ADDRESSES_JSON) \
 	L1_PROXY_ADMIN=$(L1_PROXY_ADMIN) \
-	PROOF_MATURITY_DELAY_SECONDS=$(PROOF_MATURITY_DELAY_SECONDS) \
-	ANCHOR_STATE_REGISTRY_PROXY=$(ANCHOR_STATE_REGISTRY_PROXY) \
-	MULTIPROOF_DELAYED_WETH_PROXY=$(MULTIPROOF_DELAYED_WETH_PROXY) \
-	TEE_VERIFIER=$(TEE_VERIFIER) \
-	ZK_VERIFIER=$(ZK_VERIFIER) \
-	L2_CHAIN_ID=$(L2_CHAIN_ID) \
+	OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) \
+	DISPUTE_GAME_FACTORY_PROXY=$(DISPUTE_GAME_FACTORY_PROXY) \
 	L2_GENESIS_BLOCK_NUMBER=$(L2_GENESIS_BLOCK_NUMBER) \
 	L2_GENESIS_TIMESTAMP=$(L2_GENESIS_TIMESTAMP) \
 	L2_BLOCK_TIME=$(L2_BLOCK_TIME) \
-	AGGREGATE_VERIFIER_CONFIG_HASH=$(AGGREGATE_VERIFIER_CONFIG_HASH) \
 	AGGREGATE_VERIFIER_TEE_IMAGE_HASH=$(AGGREGATE_VERIFIER_TEE_IMAGE_HASH) \
 	AGGREGATE_VERIFIER_ZK_RANGE_HASH=$(AGGREGATE_VERIFIER_ZK_RANGE_HASH) \
-	AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=$(AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH) \
-	AGGREGATE_VERIFIER_BLOCK_INTERVAL=$(AGGREGATE_VERIFIER_BLOCK_INTERVAL) \
-	AGGREGATE_VERIFIER_INTERMEDIATE_BLOCK_INTERVAL=$(AGGREGATE_VERIFIER_INTERMEDIATE_BLOCK_INTERVAL)
+	AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=$(AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH)
 
-UPGRADE_ENV = RECORD_STATE_DIFF=$(RECORD_STATE_DIFF) \
-	PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
+UPGRADE_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
 	L1_PROXY_ADMIN=$(L1_PROXY_ADMIN) \
 	OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) \
 	SYSTEM_CONFIG=$(SYSTEM_CONFIG) \
@@ -99,23 +93,6 @@ apply-patches:
 	cd $(PROJECT_DIR)/lib/contracts && patch -p1 --forward < $(CURDIR)/patch/max-gas-limit.patch
 
 ##
-# Validation
-##
-.PHONY: validate-deploy-config
-validate-deploy-config:
-	@test -n "$(BASE_CONTRACTS_COMMIT)" || (echo "BASE_CONTRACTS_COMMIT required" && exit 1)
-	@test -n "$(PROTOCOL_VERSIONS_INITIAL_SCHEDULE)" || (echo "PROTOCOL_VERSIONS_INITIAL_SCHEDULE required" && exit 1)
-	@test -n "$(PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION)" || (echo "PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION required" && exit 1)
-	@test -n "$(PROTOCOL_VERSIONS_INCIDENT_RESPONDER)" || (echo "PROTOCOL_VERSIONS_INCIDENT_RESPONDER required" && exit 1)
-	@grep -q 'max-gas-limit-2000M' $(PROJECT_DIR)/lib/contracts/src/L1/SystemConfig.sol \
-		|| (echo "SystemConfig patch not applied -- run make TASK_NETWORK=$(TASK_NETWORK) deps" && exit 1)
-
-.PHONY: validate-upgrade-config
-validate-upgrade-config: validate-deploy-config
-	@test -f "$(ADDRESSES_JSON)" || (echo "run make TASK_NETWORK=$(TASK_NETWORK) deploy first" && exit 1)
-	@jq -e '.optimismPortalImpl and .systemConfigImpl and .disputeGameFactoryImpl and .protocolVersionsProxy and .protocolVersionsImpl and .aggregateVerifier' "$(ADDRESSES_JSON)" >/dev/null
-
-##
 # Deployment
 ##
 .PHONY: deploy
@@ -125,18 +102,17 @@ deploy: deploy-core deploy-proofs
 # 5000 optimizer runs, and ProtocolVersions and AggregateVerifier to 999999. The two
 # deploy steps exist to reproduce those settings exactly.
 .PHONY: deploy-core
-deploy-core: validate-deploy-config
+deploy-core:
 	@test -f "$(ADDRESSES_JSON)" || echo '{}' > "$(ADDRESSES_JSON)"
 	cd $(PROJECT_DIR) && $(DEPLOY_ENV) FOUNDRY_PROFILE=cobalt-core-deploy \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_CORE_SCRIPT) \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 .PHONY: deploy-proofs
-deploy-proofs: validate-deploy-config
-	@jq -e '.protocolVersionsProxy' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || (echo "run make TASK_NETWORK=$(TASK_NETWORK) deploy-core first" && exit 1)
+deploy-proofs:
 	cd $(PROJECT_DIR) && $(DEPLOY_ENV) FOUNDRY_PROFILE=cobalt-proofs-deploy \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_PROOFS_SCRIPT) \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 ##
 # Source verification
@@ -147,13 +123,13 @@ VERIFY_COMMON = --root $(PROJECT_DIR)/lib/contracts --compilation-profile defaul
 	--verifier-api-key $(VERIFIER_API_KEY) --watch
 
 .PHONY: verify-core
-verify-core: validate-upgrade-config
+verify-core:
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
 	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=5000 FOUNDRY_EVM_VERSION=cancun \
 		$(MISE_EXEC) forge verify-contract $(NEW_OPTIMISM_PORTAL_IMPL) src/L1/OptimismPortal2.sol:OptimismPortal2 \
-		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(uint256)" $(PROOF_MATURITY_DELAY_SECONDS)) \
+		--constructor-args $(OPTIMISM_PORTAL_IMPL_CTOR_ARGS) \
 		--num-of-optimizations 5000 $(VERIFY_COMMON)
 	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=5000 FOUNDRY_EVM_VERSION=cancun \
 		$(MISE_EXEC) forge verify-contract $(NEW_SYSTEM_CONFIG_IMPL) src/L1/SystemConfig.sol:SystemConfig \
@@ -163,11 +139,11 @@ endif
 		--num-of-optimizations 5000 $(VERIFY_COMMON)
 	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=5000 FOUNDRY_EVM_VERSION=cancun \
 		$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_PROXY) src/universal/Proxy.sol:Proxy \
-		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address)" $(L1_PROXY_ADMIN)) \
+		--constructor-args $(PROTOCOL_VERSIONS_PROXY_CTOR_ARGS) \
 		--num-of-optimizations 5000 $(VERIFY_COMMON)
 
 .PHONY: verify-proofs
-verify-proofs: validate-upgrade-config
+verify-proofs:
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
@@ -176,38 +152,31 @@ endif
 		--num-of-optimizations 999999 $(VERIFY_COMMON)
 	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=999999 FOUNDRY_EVM_VERSION=cancun \
 		$(MISE_EXEC) forge verify-contract $(NEW_AGGREGATE_VERIFIER) src/L1/proofs/AggregateVerifier.sol:AggregateVerifier \
-		--constructor-args $(shell $(MISE_EXEC) cast abi-encode \
-			"constructor(uint32,address,address,address,address,bytes32,(bytes32,bytes32),bytes32,uint256,uint256,uint256,(address,uint256,uint64,uint64))" \
-			621 $(ANCHOR_STATE_REGISTRY_PROXY) $(MULTIPROOF_DELAYED_WETH_PROXY) $(TEE_VERIFIER) $(ZK_VERIFIER) \
-			$(AGGREGATE_VERIFIER_TEE_IMAGE_HASH) \
-			"($(AGGREGATE_VERIFIER_ZK_RANGE_HASH),$(AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH))" \
-			$(AGGREGATE_VERIFIER_CONFIG_HASH) $(L2_CHAIN_ID) \
-			$(AGGREGATE_VERIFIER_BLOCK_INTERVAL) $(AGGREGATE_VERIFIER_INTERMEDIATE_BLOCK_INTERVAL) \
-			"($(PROTOCOL_VERSIONS_PROXY),$(L2_GENESIS_BLOCK_NUMBER),$(L2_GENESIS_TIMESTAMP),$(L2_BLOCK_TIME))") \
+		--constructor-args $(AGGREGATE_VERIFIER_CTOR_ARGS) \
 		--num-of-optimizations 999999 $(VERIFY_COMMON)
 
 ##
 # Validation files
 ##
 .PHONY: gen-validation-cb
-gen-validation-cb: validate-upgrade-config deps-signer-tool
+gen-validation-cb: deps-signer-tool
 	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT),$(CB_MULTISIG),$(CB_SENDER),base-signer.json,$(UPGRADE_ENV))
 
 .PHONY: gen-validation-sc
-gen-validation-sc: validate-upgrade-config deps-signer-tool
+gen-validation-sc: deps-signer-tool
 	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer.json,$(UPGRADE_ENV))
 
 ##
 # Approve and execute
 ##
 .PHONY: approve-cb
-approve-cb: validate-upgrade-config
+approve-cb:
 	export $(UPGRADE_ENV); $(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
 
 .PHONY: approve-sc
-approve-sc: validate-upgrade-config
+approve-sc:
 	export $(UPGRADE_ENV); $(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
 
 .PHONY: execute
-execute: validate-upgrade-config
+execute:
 	export $(UPGRADE_ENV); $(call MULTISIG_EXECUTE,0x)

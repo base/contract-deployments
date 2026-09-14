@@ -37,17 +37,18 @@ Open `config/<network>/.env` and confirm every value, in particular:
   on every chain. Entries may be `0` for an unscheduled fork. Zeronet was re-genesised with every
   fork through Beryl already active, so ids 0–11 carry the genesis timestamp and Cobalt (id 12)
   is `0`.
-- `PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION` — must be non-zero and fit in 128 bits.
+- `PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION` — must be non-zero and fit in 128 bits. The comment
+  above it gives the `cast` command to re-derive the packed value from the human-readable version.
 - `PROTOCOL_VERSIONS_INCIDENT_RESPONDER` — the address allowed to use the incident path.
 - `OLD_*` — the currently deployed implementations. `ExecuteCobaltUpgrade` asserts these match the
   live proxies before building any calls, so a stale value stops the task rather than upgrading
   from an unexpected base.
-- The `AGGREGATE_VERIFIER_*` values, which are carried over from the live implementation so the
-  registry binding is the only change the redeploy makes. `BLOCK_INTERVAL` must be divisible by
-  `INTERMEDIATE_BLOCK_INTERVAL` or the constructor reverts.
-
-Cobalt itself is registered unscheduled. Setting its activation timestamp is a separate, later
-operation and is deliberately not part of this task.
+- `AGGREGATE_VERIFIER_TEE_IMAGE_HASH`, `AGGREGATE_VERIFIER_ZK_RANGE_HASH` and
+  `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` — the proof program hashes, derived from the Base node
+  release these games prove against. They ship blank and the deploy script refuses to run until
+  they are filled in. Every other `AggregateVerifier` constructor argument, including the config
+  hash and the block intervals, is read back from the live implementation at deploy time, so the
+  redeploy cannot change them.
 
 ## 3. Deploy
 
@@ -116,21 +117,14 @@ Five calls, all from the ProxyAdmin owner Safe:
 Calls 2–4 are bare upgrades: none of those implementations adds state or bumps its init version, so
 there is nothing to reinitialize.
 
-## Risks worth re-checking before signing
+## Worth re-checking before signing
 
-- **ETH custody.** Cobalt deletes every `EthLockbox` code path from the portal without migrating
-  balances. A chain with a live lockbox would strand the ETH held there. `_preCheck` refuses to
-  build the transaction unless `ethLockbox()` is absent or zero. Zeronet reports zero and keeps its
-  ETH in the portal already, so this upgrade moves no funds — `_postCheck` asserts the portal
-  balance and its now-spacer slot 63 are both unchanged.
-- **Pause semantics.** After the upgrade `SystemConfig.paused()` stops consulting
-  `superchainConfig.paused(<lockbox>)`. On a chain where the lockbox address was paused, that is a
-  silent unpause. `_postCheck` asserts the effective pause state is unchanged across the upgrade.
-- **Unchanged version strings.** `OptimismPortal2` stays at `5.2.0`, `DisputeGameFactory` at
-  `1.4.0`, and `AggregateVerifier` at `0.1.0` across this change, so `version()` alone cannot tell
-  old from new for any of them. Confirm the implementation addresses, not the semver. For the
-  verifier, the `PROTOCOL_VERSIONS()` getter is the real discriminator: the predecessor predates
-  the registry and does not have it.
-- **Existing dispute games.** Switching the factory to `CREATE2` only affects games created after
-  the upgrade; existing game proxies and `gameCount()` are untouched, and `_postCheck` asserts the
-  count is stable.
+- **Version strings cannot tell old from new.** `OptimismPortal2` stays at `5.2.0`,
+  `DisputeGameFactory` at `1.4.0`, and `AggregateVerifier` at `0.1.0` across this change, so
+  `version()` is not a useful check for any of them. Confirm the implementation addresses instead.
+  For the verifier, the `PROTOCOL_VERSIONS()` getter is the real discriminator: the predecessor
+  predates the registry and reverts on that call.
+- **The Cobalt activation is scheduled, so the transaction is time-sensitive.**
+  `ProtocolVersions.initialize` enforces one hour of notice on future timestamps, so it reverts if
+  the upgrade lands within the hour before the configured Cobalt activation. Execute well before
+  that window, or push the timestamp out.

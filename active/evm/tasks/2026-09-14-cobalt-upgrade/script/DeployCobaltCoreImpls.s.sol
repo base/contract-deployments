@@ -16,6 +16,8 @@ import {SystemConfig} from "@base-contracts/src/L1/SystemConfig.sol";
 ///      atomically sets the implementation and initializes it via ProxyAdmin.upgradeAndCall.
 contract DeployCobaltCoreImpls is Script {
     address internal immutable l1ProxyAdmin;
+    address internal immutable optimismPortal;
+    /// @dev Copied from the live portal so the redeploy cannot change the delay.
     uint256 internal immutable proofMaturityDelaySeconds;
     string internal addressesJson;
 
@@ -26,12 +28,14 @@ contract DeployCobaltCoreImpls is Script {
 
     constructor() {
         l1ProxyAdmin = vm.envAddress("L1_PROXY_ADMIN");
-        proofMaturityDelaySeconds = vm.envUint("PROOF_MATURITY_DELAY_SECONDS");
+        optimismPortal = vm.envAddress("OPTIMISM_PORTAL");
+        proofMaturityDelaySeconds = OptimismPortal2(payable(optimismPortal)).proofMaturityDelaySeconds();
         addressesJson = vm.envString("ADDRESSES_JSON");
     }
 
     function setUp() public view {
         require(l1ProxyAdmin.code.length != 0, "proxy admin not deployed");
+        require(optimismPortal.code.length != 0, "optimism portal not deployed");
     }
 
     function run() external {
@@ -80,5 +84,12 @@ contract DeployCobaltCoreImpls is Script {
         vm.writeJson(vm.toString(address(systemConfigImpl)), addressesJson, ".systemConfigImpl");
         vm.writeJson(vm.toString(address(disputeGameFactoryImpl)), addressesJson, ".disputeGameFactoryImpl");
         vm.writeJson(vm.toString(address(protocolVersionsProxy)), addressesJson, ".protocolVersionsProxy");
+
+        // Recorded so `make verify-core` does not have to rebuild the encoding from
+        // values the script resolved itself.
+        vm.writeJson(
+            vm.toString(abi.encode(proofMaturityDelaySeconds)), addressesJson, ".optimismPortalImplConstructorArgs"
+        );
+        vm.writeJson(vm.toString(abi.encode(l1ProxyAdmin)), addressesJson, ".protocolVersionsProxyConstructorArgs");
     }
 }
