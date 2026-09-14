@@ -3,6 +3,7 @@ set -eu
 
 repo_root=${REPO_ROOT:-$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)}
 network=${1-}
+task_id=${2-}
 
 [ -n "$network" ] || {
 	echo "setup-pause-task: network is required (make setup-pause-task network=<network>)" >&2
@@ -19,7 +20,31 @@ esac
 	exit 1
 }
 
-task_id="$(date +%F)-pause-bridge"
+tasks_dir="$repo_root/active/evm/tasks"
+mkdir -p "$tasks_dir"
+
+if [ -n "$task_id" ]; then
+	case "$task_id" in
+		.|..|*[!A-Za-z0-9._-]*)
+			echo "setup-pause-task: invalid TASK_ID: $task_id" >&2
+			exit 1
+			;;
+	esac
+else
+	existing_task=""
+	for candidate in "$tasks_dir"/*; do
+		[ -d "$candidate" ] || continue
+		grep -q 'active/evm/make/pause-bridge.mk' "$candidate/Makefile" 2>/dev/null || continue
+		[ -z "$existing_task" ] || {
+			echo "setup-pause-task: multiple active pause tasks; rerun with TASK_ID=<task-id>" >&2
+			exit 1
+		}
+		existing_task=$candidate
+	done
+	task_id=${existing_task##*/}
+	[ -n "$task_id" ] || task_id="$(date +%F)-pause-bridge"
+fi
+
 task_dir="$repo_root/active/evm/tasks/$task_id"
 config_dir="$task_dir/config/$network"
 
@@ -48,41 +73,6 @@ RPC_URL := $(L1_RPC_URL)
 
 include $(REPO_ROOT)/active/evm/make/pause-bridge.mk
 EOF
-
-	cat >"$task_dir/FACILITATOR.md" <<'EOF'
-# Facilitator Guide
-
-Guide for collecting pre-signed bridge pause transactions and executing an emergency pause.
-
-Replace `TASK_NETWORK=<network>` in every command with the selected task network.
-
-## 1. Collect pause signatures
-
-Ask each incident multisig signer to follow `config/<network>/README.md`. Each signer sends `config/<network>/signatures-pause.txt`, containing signatures for 20 consecutive Safe nonces.
-
-This task does not generate signer-tool validation JSON or use separate approval transactions. The incident multisig signatures authorize the pause directly.
-
-## 2. Aggregate signatures
-
-Combine every signer's entries into one comma-separated string with no spaces.
-
-## 3. Check onchain state
-
-```bash
-make TASK_NETWORK=<network> check-status
-make TASK_NETWORK=<network> check-nonce
-```
-
-## 4. Execute an emergency pause
-
-Select the signatures matching the current incident multisig nonce, then run:
-
-```bash
-SIGNATURES=AAABBBCCC make TASK_NETWORK=<network> execute-pause
-```
-
-Verify the pause with `make TASK_NETWORK=<network> check-status`, set the signer README status to `EXECUTED`, and commit the execution records.
-EOF
 fi
 
 [ ! -e "$config_dir" ] || {
@@ -95,17 +85,16 @@ cat >"$config_dir/.env" <<'EOF'
 # active/evm common scripts are written against base-contracts v8.2.1.
 # Coordinate an internal pauser update before changing this pin.
 BASE_CONTRACTS_COMMIT=f3a33c8577c8ca1e037b45e822bfcb75f099270b
-RECORD_STATE_DIFF=true
 EOF
 
 cat >"$config_dir/README.md" <<EOF
-# Pause Base Bridge
+# Pause Base Withdrawals
 
 Status: READY TO SIGN
 
 ## Description
 
-Pre-sign 20 transactions that pause Base through the $network incident multisig.
+Pre-sign 20 transactions that pause Base withdrawals on $network.
 
 ## Sign
 
@@ -117,7 +106,7 @@ make TASK_NETWORK=$network deps
 make TASK_NETWORK=$network sign-pause
 \`\`\`
 
-Send \`config/$network/signatures-pause.txt\` to the facilitator through the approved secure channel.
+Send \`config/$network/signatures-pause.txt\` through the approved secure channel for pauser-service aggregation.
 EOF
 
 echo "Created $config_dir"

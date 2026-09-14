@@ -7,13 +7,13 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 ##
 # Task lifecycle
 ##
-# Create a reusable incident-multisig pause task with:
+# Create a reusable bridge pause task with:
 #
 #   make setup-pause-task network=<network>
 #
 .PHONY: setup-pause-task
 setup-pause-task:
-	@$(REPO_ROOT)/scripts/setup-pause-task.sh "$(network)"
+	@$(REPO_ROOT)/scripts/setup-pause-task.sh "$(network)" "$(TASK_ID)"
 
 # Archive a completed EVM task with:
 #

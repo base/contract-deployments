@@ -27,8 +27,3 @@ yarn-error.log
 
 .DS_Store
 signer-tool/
-
-# Pre-signed emergency pause transactions
-active/evm/tasks/**/signatures-pause.txt
-active/evm/tasks/**/.signatures-pause.txt.tmp
-active/evm/tasks/**/.sign-output.tmp
