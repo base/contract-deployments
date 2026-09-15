@@ -100,9 +100,10 @@ deploy: deploy-core deploy-proofs
 
 # base/contracts pins OptimismPortal2, SystemConfig, DisputeGameFactory and Proxy to
 # 5000 optimizer runs, and ProtocolVersions and AggregateVerifier to 999999, and builds
-# both at cancun with no bytecode hash. Reproducing those settings is what makes the
-# deployed bytecode verifiable, hence the two steps and the compiler overrides, which
-# match the ones the verify targets below already use.
+# with no bytecode hash. Reproducing those settings is what makes the deployed bytecode
+# verifiable, hence the two steps and the compiler overrides, which are kept identical
+# to the ones the verify targets below use. The evm version request is inert at solc
+# 0.8.15, which caps out at london, but it is set on both sides so they cannot diverge.
 COBALT_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun
 
 .PHONY: deploy-core
@@ -121,6 +122,20 @@ deploy-proofs:
 ##
 # Source verification
 ##
+# Verification runs with lib/contracts as the project root, because that is the only
+# root from which the target paths resolve. base/contracts then imports its own
+# dependencies through literal `lib/<dep>/...` paths, which resolve against that root
+# too, but the build keeps them a level up in active/evm/lib. Link them in for the
+# duration of the command and remove them afterwards: left in place, every such import
+# matches in two locations and the build fails as ambiguous.
+VERIFY_DEPS = openzeppelin-contracts openzeppelin-contracts-upgradeable solady solmate
+CONTRACTS_LIB = $(PROJECT_DIR)/lib/contracts/lib
+LINK_VERIFY_DEPS = mkdir -p $(CONTRACTS_LIB); \
+	trap 'rm -f $(foreach d,$(VERIFY_DEPS),$(CONTRACTS_LIB)/$(d)); rmdir $(CONTRACTS_LIB) 2>/dev/null || true' EXIT; \
+	for d in $(VERIFY_DEPS); do ln -sfn ../../$$d $(CONTRACTS_LIB)/$$d; done
+
+VERIFY_ENV = RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun
+
 VERIFY_COMMON = --root $(PROJECT_DIR)/lib/contracts --compilation-profile default \
 	--chain $(L1_CHAIN_ID) --compiler-version v0.8.15+commit.e14f2714 \
 	--verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
@@ -131,33 +146,37 @@ verify-core:
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
-	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=5000 FOUNDRY_EVM_VERSION=cancun \
-		$(MISE_EXEC) forge verify-contract $(NEW_OPTIMISM_PORTAL_IMPL) src/L1/OptimismPortal2.sol:OptimismPortal2 \
-		--constructor-args $(OPTIMISM_PORTAL_IMPL_CTOR_ARGS) \
-		--num-of-optimizations 5000 $(VERIFY_COMMON)
-	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=5000 FOUNDRY_EVM_VERSION=cancun \
-		$(MISE_EXEC) forge verify-contract $(NEW_SYSTEM_CONFIG_IMPL) src/L1/SystemConfig.sol:SystemConfig \
-		--num-of-optimizations 5000 $(VERIFY_COMMON)
-	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=5000 FOUNDRY_EVM_VERSION=cancun \
-		$(MISE_EXEC) forge verify-contract $(NEW_DISPUTE_GAME_FACTORY_IMPL) src/L1/proofs/DisputeGameFactory.sol:DisputeGameFactory \
-		--num-of-optimizations 5000 $(VERIFY_COMMON)
-	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=5000 FOUNDRY_EVM_VERSION=cancun \
-		$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_PROXY) src/universal/Proxy.sol:Proxy \
-		--constructor-args $(PROTOCOL_VERSIONS_PROXY_CTOR_ARGS) \
-		--num-of-optimizations 5000 $(VERIFY_COMMON)
+	@set -e; $(LINK_VERIFY_DEPS); \
+		cd $(PROJECT_DIR); \
+		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=5000 \
+			$(MISE_EXEC) forge verify-contract $(NEW_OPTIMISM_PORTAL_IMPL) src/L1/OptimismPortal2.sol:OptimismPortal2 \
+			--constructor-args $(OPTIMISM_PORTAL_IMPL_CTOR_ARGS) \
+			--num-of-optimizations 5000 $(VERIFY_COMMON); \
+		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=5000 \
+			$(MISE_EXEC) forge verify-contract $(NEW_SYSTEM_CONFIG_IMPL) src/L1/SystemConfig.sol:SystemConfig \
+			--num-of-optimizations 5000 $(VERIFY_COMMON); \
+		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=5000 \
+			$(MISE_EXEC) forge verify-contract $(NEW_DISPUTE_GAME_FACTORY_IMPL) src/L1/proofs/DisputeGameFactory.sol:DisputeGameFactory \
+			--num-of-optimizations 5000 $(VERIFY_COMMON); \
+		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=5000 \
+			$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_PROXY) src/universal/Proxy.sol:Proxy \
+			--constructor-args $(PROTOCOL_VERSIONS_PROXY_CTOR_ARGS) \
+			--num-of-optimizations 5000 $(VERIFY_COMMON)
 
 .PHONY: verify-proofs
 verify-proofs:
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
-	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=999999 FOUNDRY_EVM_VERSION=cancun \
-		$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_IMPL) src/L1/ProtocolVersions.sol:ProtocolVersions \
-		--num-of-optimizations 999999 $(VERIFY_COMMON)
-	cd $(PROJECT_DIR) && RUST_LOG=off FOUNDRY_BYTECODE_HASH=none FOUNDRY_OPTIMIZER_RUNS=999999 FOUNDRY_EVM_VERSION=cancun \
-		$(MISE_EXEC) forge verify-contract $(NEW_AGGREGATE_VERIFIER) src/L1/proofs/AggregateVerifier.sol:AggregateVerifier \
-		--constructor-args $(AGGREGATE_VERIFIER_CTOR_ARGS) \
-		--num-of-optimizations 999999 $(VERIFY_COMMON)
+	@set -e; $(LINK_VERIFY_DEPS); \
+		cd $(PROJECT_DIR); \
+		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=999999 \
+			$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_IMPL) src/L1/ProtocolVersions.sol:ProtocolVersions \
+			--num-of-optimizations 999999 $(VERIFY_COMMON); \
+		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=999999 \
+			$(MISE_EXEC) forge verify-contract $(NEW_AGGREGATE_VERIFIER) src/L1/proofs/AggregateVerifier.sol:AggregateVerifier \
+			--constructor-args $(AGGREGATE_VERIFIER_CTOR_ARGS) \
+			--num-of-optimizations 999999 $(VERIFY_COMMON)
 
 ##
 # Validation files
