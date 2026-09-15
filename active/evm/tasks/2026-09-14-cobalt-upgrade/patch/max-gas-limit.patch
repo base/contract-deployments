@@ -1,5 +1,5 @@
 diff --git a/src/L1/SystemConfig.sol b/src/L1/SystemConfig.sol
-index 51c975d..f9961ca 100644
+index 4f2d0bf..2e36de3 100644
 --- a/src/L1/SystemConfig.sol
 +++ b/src/L1/SystemConfig.sol
 @@ -97,7 +97,7 @@ contract SystemConfig is ProxyAdminOwnedBase, OwnableUpgradeable, Reinitializabl
@@ -15,11 +15,11 @@ index 51c975d..f9961ca 100644
      error SystemConfig_InvalidFeatureState();
  
      /// @notice Semantic version.
--    /// @custom:semver 3.13.2
-+    /// @custom:semver 3.13.2+max-gas-limit-2000M
+-    /// @custom:semver 3.14.0
++    /// @custom:semver 3.14.0+max-gas-limit-2000M
      function version() public pure virtual returns (string memory) {
--        return "3.13.2";
-+        return "3.13.2+max-gas-limit-2000M";
+-        return "3.14.0";
++        return "3.14.0+max-gas-limit-2000M";
      }
  
      /// @notice Constructs the SystemConfig contract.

@@ -23,10 +23,10 @@ dependencies that building those sources requires, and applies `patch/max-gas-li
 
 The patch matters. Zeronet runs a `SystemConfig` that raises `MAX_GAS_LIMIT` to 2,000,000,000, and
 Cobalt modifies `SystemConfig`. Deploying a stock build would quietly drop the chain back to
-500,000,000. The patch re-applies the raise and tags the semver `3.13.2+max-gas-limit-2000M`, and
+500,000,000. The patch re-applies the raise and tags the semver `3.14.0+max-gas-limit-2000M`, and
 the deploy script refuses to proceed if that version string is missing. On a network that does not
 run the patched build, drop `apply-patches` from the `deps` prerequisites and relax the version
-assertions in `DeployCobaltCoreImpls` and `ExecuteCobaltUpgrade` to the stock `3.13.2`.
+assertions in `DeployCobaltCoreImpls` and `ExecuteCobaltUpgrade` to the stock `3.14.0`.
 
 ## 2. Review the network config
 
@@ -120,10 +120,9 @@ there is nothing to reinitialize.
 ## Worth re-checking before signing
 
 - **Every changed contract bumps its version.** `OptimismPortal2` goes `5.2.0` -> `6.0.0`,
-  `DisputeGameFactory` `1.4.0` -> `1.5.0`, and `AggregateVerifier` `0.1.0` -> `0.2.0`, so `version()`
-  read through each proxy is a sound check that the upgrade landed. `SystemConfig` is the exception:
-  it has no source change, so it stays at `3.13.2+max-gas-limit-2000M` and only its implementation
-  address distinguishes the two.
+  `DisputeGameFactory` `1.4.0` -> `1.5.0`, `AggregateVerifier` `0.1.0` -> `0.2.0`, and `SystemConfig`
+  `3.13.2+max-gas-limit-2000M` -> `3.14.0+max-gas-limit-2000M`, so `version()` read through each
+  proxy is a sound check that the upgrade landed.
 - **The Cobalt activation is scheduled, so the transaction is time-sensitive.**
   `ProtocolVersions.initialize` enforces one hour of notice on future timestamps, so it reverts if
   the upgrade lands within the hour before the configured Cobalt activation. Execute well before

@@ -65,7 +65,7 @@ contract DeployCobaltCoreImpls is Script {
         // Zeronet runs a patched SystemConfig that raises MAX_GAS_LIMIT to 2e9. The patch carries a
         // build-suffixed semver so a stock build cannot be deployed here by mistake.
         require(
-            keccak256(bytes(systemConfigImpl.version())) == keccak256(bytes("3.13.2+max-gas-limit-2000M")),
+            keccak256(bytes(systemConfigImpl.version())) == keccak256(bytes("3.14.0+max-gas-limit-2000M")),
             "system config patch not applied"
         );
         require(

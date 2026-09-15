@@ -233,7 +233,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         );
         require(
             keccak256(bytes(IVersioned(newSystemConfigImpl).version()))
-                == keccak256(bytes("3.13.2+max-gas-limit-2000M")),
+                == keccak256(bytes("3.14.0+max-gas-limit-2000M")),
             "system config implementation is not the patched build"
         );
         require(
@@ -310,7 +310,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         require(ISystemConfig(systemConfig).paused() == pausedBefore, "pause state changed");
         require(ISystemConfig(systemConfig).gasLimit() == gasLimitBefore, "gas limit changed");
         require(
-            keccak256(bytes(ISystemConfig(systemConfig).version())) == keccak256(bytes("3.13.2+max-gas-limit-2000M")),
+            keccak256(bytes(ISystemConfig(systemConfig).version())) == keccak256(bytes("3.14.0+max-gas-limit-2000M")),
             "system config lost the max gas limit patch"
         );
     }
