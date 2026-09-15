@@ -128,12 +128,27 @@ contract UpdateVerifierHashes is MultisigScript {
         require(nextAggregate.CONFIG_HASH() == currentAggregate.CONFIG_HASH(), "next aggregate config hash mismatch");
         require(nextAggregate.L2_CHAIN_ID() == currentAggregate.L2_CHAIN_ID(), "next aggregate l2 chain id mismatch");
         require(
+            nextAggregate.L2_GENESIS_BLOCK_NUMBER() == currentAggregate.L2_GENESIS_BLOCK_NUMBER(),
+            "next aggregate genesis block mismatch"
+        );
+        require(
+            nextAggregate.L2_GENESIS_TIMESTAMP() == currentAggregate.L2_GENESIS_TIMESTAMP(),
+            "next aggregate genesis timestamp mismatch"
+        );
+        require(
+            nextAggregate.L2_BLOCK_TIME() == currentAggregate.L2_BLOCK_TIME(), "next aggregate l2 block time mismatch"
+        );
+        require(
             nextAggregate.BLOCK_INTERVAL() == currentAggregate.BLOCK_INTERVAL(),
             "next aggregate block interval mismatch"
         );
         require(
             nextAggregate.INTERMEDIATE_BLOCK_INTERVAL() == currentAggregate.INTERMEDIATE_BLOCK_INTERVAL(),
             "next aggregate intermediate interval mismatch"
+        );
+        require(
+            address(nextAggregate.PROTOCOL_VERSIONS()) == address(currentAggregate.PROTOCOL_VERSIONS()),
+            "next aggregate protocol versions mismatch"
         );
     }
 
