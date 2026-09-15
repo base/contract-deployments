@@ -133,7 +133,7 @@ contract DeployCobaltProofImpls is Script {
         require(protocolVersionsImpl.initVersion() == 1, "protocol versions init version mismatch");
 
         require(
-            keccak256(bytes(aggregateVerifier.version())) == keccak256(bytes("0.1.0")),
+            keccak256(bytes(aggregateVerifier.version())) == keccak256(bytes("0.2.0")),
             "aggregate verifier version mismatch"
         );
         require(address(aggregateVerifier) != liveAggregateVerifier, "aggregate verifier was not redeployed");

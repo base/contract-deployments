@@ -119,11 +119,11 @@ there is nothing to reinitialize.
 
 ## Worth re-checking before signing
 
-- **Version strings cannot tell old from new.** `OptimismPortal2` stays at `5.2.0`,
-  `DisputeGameFactory` at `1.4.0`, and `AggregateVerifier` at `0.1.0` across this change, so
-  `version()` is not a useful check for any of them. Confirm the implementation addresses instead.
-  For the verifier, the `PROTOCOL_VERSIONS()` getter is the real discriminator: the predecessor
-  predates the registry and reverts on that call.
+- **Every changed contract bumps its version.** `OptimismPortal2` goes `5.2.0` -> `6.0.0`,
+  `DisputeGameFactory` `1.4.0` -> `1.5.0`, and `AggregateVerifier` `0.1.0` -> `0.2.0`, so `version()`
+  read through each proxy is a sound check that the upgrade landed. `SystemConfig` is the exception:
+  it has no source change, so it stays at `3.13.2+max-gas-limit-2000M` and only its implementation
+  address distinguishes the two.
 - **The Cobalt activation is scheduled, so the transaction is time-sensitive.**
   `ProtocolVersions.initialize` enforces one hour of notice on future timestamps, so it reverts if
   the upgrade lands within the hour before the configured Cobalt activation. Execute well before

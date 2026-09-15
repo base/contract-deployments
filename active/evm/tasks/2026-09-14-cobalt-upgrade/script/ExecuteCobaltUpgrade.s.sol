@@ -228,7 +228,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             "protocol versions implementation version mismatch"
         );
         require(
-            keccak256(bytes(IVersioned(newOptimismPortalImpl).version())) == keccak256(bytes("5.2.0")),
+            keccak256(bytes(IVersioned(newOptimismPortalImpl).version())) == keccak256(bytes("6.0.0")),
             "portal implementation version mismatch"
         );
         require(
@@ -237,16 +237,13 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             "system config implementation is not the patched build"
         );
         require(
-            keccak256(bytes(IVersioned(newDisputeGameFactoryImpl).version())) == keccak256(bytes("1.4.0")),
+            keccak256(bytes(IVersioned(newDisputeGameFactoryImpl).version())) == keccak256(bytes("1.5.0")),
             "dispute game factory implementation version mismatch"
         );
         require(
-            keccak256(bytes(IAggregateVerifier(newAggregateVerifier).version())) == keccak256(bytes("0.1.0")),
+            keccak256(bytes(IAggregateVerifier(newAggregateVerifier).version())) == keccak256(bytes("0.2.0")),
             "aggregate verifier version mismatch"
         );
-        // AggregateVerifier is back at 0.1.0, the same version the live implementation reports, so
-        // the registry binding is what actually distinguishes the two. The predecessor predates
-        // ProtocolVersions and has no such getter.
         require(newAggregateVerifier != oldAggregateVerifier, "aggregate verifier was not redeployed");
         require(
             IAggregateVerifier(newAggregateVerifier).PROTOCOL_VERSIONS() == protocolVersionsProxy,
@@ -269,6 +266,17 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             "protocol versions implementation not updated"
         );
 
+        // Each changed contract bumps its semver, so reading version() back through the proxy
+        // confirms it is serving the new code rather than just pointing at it.
+        require(
+            keccak256(bytes(IVersioned(optimismPortal).version())) == keccak256(bytes("6.0.0")),
+            "portal not serving the new implementation"
+        );
+        require(
+            keccak256(bytes(IDisputeGameFactory(disputeGameFactory).version())) == keccak256(bytes("1.5.0")),
+            "dispute game factory not serving the new implementation"
+        );
+
         // Dynamic upgrades: the registry is live and committed to the imported schedule.
         IProtocolVersions registry = IProtocolVersions(protocolVersionsProxy);
         require(keccak256(bytes(registry.version())) == keccak256(bytes("1.0.0")), "registry version mismatch");
@@ -289,6 +297,10 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         require(
             IDisputeGameFactory(disputeGameFactory).gameImpls(AGGREGATE_VERIFIER_GAME_TYPE) == newAggregateVerifier,
             "aggregate verifier not registered"
+        );
+        require(
+            keccak256(bytes(IAggregateVerifier(newAggregateVerifier).version())) == keccak256(bytes("0.2.0")),
+            "registered aggregate verifier is not the new build"
         );
         require(IDisputeGameFactory(disputeGameFactory).gameCount() == gameCountBefore, "game count changed");
 

@@ -61,7 +61,7 @@ contract DeployCobaltCoreImpls is Script {
         require(
             optimismPortalImpl.proofMaturityDelaySeconds() == proofMaturityDelaySeconds, "portal proof delay mismatch"
         );
-        require(keccak256(bytes(optimismPortalImpl.version())) == keccak256(bytes("5.2.0")), "portal version mismatch");
+        require(keccak256(bytes(optimismPortalImpl.version())) == keccak256(bytes("6.0.0")), "portal version mismatch");
         // Zeronet runs a patched SystemConfig that raises MAX_GAS_LIMIT to 2e9. The patch carries a
         // build-suffixed semver so a stock build cannot be deployed here by mistake.
         require(
@@ -69,7 +69,7 @@ contract DeployCobaltCoreImpls is Script {
             "system config patch not applied"
         );
         require(
-            keccak256(bytes(disputeGameFactoryImpl.version())) == keccak256(bytes("1.4.0")),
+            keccak256(bytes(disputeGameFactoryImpl.version())) == keccak256(bytes("1.5.0")),
             "dispute game factory version mismatch"
         );
     }
