@@ -99,18 +99,22 @@ apply-patches:
 deploy: deploy-core deploy-proofs
 
 # base/contracts pins OptimismPortal2, SystemConfig, DisputeGameFactory and Proxy to
-# 5000 optimizer runs, and ProtocolVersions and AggregateVerifier to 999999. The two
-# deploy steps exist to reproduce those settings exactly.
+# 5000 optimizer runs, and ProtocolVersions and AggregateVerifier to 999999, and builds
+# both at cancun with no bytecode hash. Reproducing those settings is what makes the
+# deployed bytecode verifiable, hence the two steps and the compiler overrides, which
+# match the ones the verify targets below already use.
+COBALT_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun
+
 .PHONY: deploy-core
 deploy-core:
 	@test -f "$(ADDRESSES_JSON)" || echo '{}' > "$(ADDRESSES_JSON)"
-	cd $(PROJECT_DIR) && $(DEPLOY_ENV) FOUNDRY_PROFILE=cobalt-core-deploy \
+	cd $(PROJECT_DIR) && $(DEPLOY_ENV) $(COBALT_BUILD) FOUNDRY_OPTIMIZER_RUNS=5000 \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_CORE_SCRIPT) \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 .PHONY: deploy-proofs
 deploy-proofs:
-	cd $(PROJECT_DIR) && $(DEPLOY_ENV) FOUNDRY_PROFILE=cobalt-proofs-deploy \
+	cd $(PROJECT_DIR) && $(DEPLOY_ENV) $(COBALT_BUILD) FOUNDRY_OPTIMIZER_RUNS=999999 \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_PROOFS_SCRIPT) \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 

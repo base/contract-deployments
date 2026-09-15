@@ -8,7 +8,7 @@ Upgrades Zeronet's L1 contracts for the Cobalt hardfork. One transaction from th
 makes five calls:
 
 1. Upgrade and initialize a new `ProtocolVersions` registry, importing Zeronet's hardfork activation
-   schedule and scheduling Cobalt for 2026-09-16 18:00:00 UTC. This is the registry that dynamic
+   schedule and scheduling Cobalt for 2026-09-16 16:00:00 UTC. This is the registry that dynamic
    upgrades read from.
 2. Upgrade `OptimismPortal2` to the implementation with `EthLockbox` removed.
 3. Upgrade `SystemConfig` to the matching implementation, keeping Zeronet's patched

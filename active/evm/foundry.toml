@@ -29,21 +29,5 @@ optimizer_runs = 999999
 bytecode_hash = "none"
 evm_version = "cancun"
 
-# Cobalt deploy profiles. These exist only because base/contracts pins per-contract
-# optimizer runs via `compilation_restrictions` in its own foundry.toml, and matching
-# its canonical build is what makes the deployed bytecode verifiable. Everything else,
-# including remappings, is inherited from the default profile above.
-[profile.cobalt-core-deploy]
-optimizer = true
-optimizer_runs = 5000
-bytecode_hash = "none"
-evm_version = "cancun"
-
-[profile.cobalt-proofs-deploy]
-optimizer = true
-optimizer_runs = 999999
-bytecode_hash = "none"
-evm_version = "cancun"
-
 [lint]
 lint_on_build = false
