@@ -48,7 +48,7 @@
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
           "before": "0x0000000000000000000000000000000000000001000000030000000200000000",
           "after": "0x0000000000000000000000000000000000000001000000040000000000000000",
-          "description": "Raises minimumProtocolVersion from v1.3.2 to v1.4.0. The OP format packs the low 16 bytes as major || minor || patch || pre-release, four bytes each, so v1.4.0 is 0x00000001000000040000000000000000 (79228162588051313888382156800).",
+          "description": "Raises minimumProtocolVersion from v1.3.2 to v1.4.0. The format packs the low 16 bytes as major || minor || patch || pre-release, four bytes each, so v1.4.0 is 0x00000001000000040000000000000000 (79228162588051313888382156800).",
           "allowDifference": false
         },
         {
