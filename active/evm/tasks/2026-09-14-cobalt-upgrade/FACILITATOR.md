@@ -48,11 +48,15 @@ Open `config/<network>/.env` and confirm every value, in particular:
   live proxies before building any calls, so a stale value stops the task rather than upgrading
   from an unexpected base.
 - `AGGREGATE_VERIFIER_TEE_IMAGE_HASH`, `AGGREGATE_VERIFIER_ZK_RANGE_HASH` and
-  `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` — the proof program hashes, derived from the Base node
-  release these games prove against. They ship blank and the deploy script refuses to run until
-  they are filled in. Every other `AggregateVerifier` constructor argument, including the config
-  hash and the block intervals, is read back from the live implementation at deploy time, so the
-  redeploy cannot change them.
+  `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` — the proof program hashes, built from the Base node
+  release these games prove against, which for Zeronet is
+  [`releases/v1.4.0`](https://github.com/base/base/tree/releases/v1.4.0). The TEE value is PCR0 of
+  the Nitro enclave image; the two ZK values are the SP1 range and aggregation verification keys
+  from `just succinct vkeys --build`. The `.env` comment records how each is produced, so they can
+  be regenerated from that ref rather than taken on trust. They ship blank and the deploy script
+  refuses to run until they are filled in. Every other `AggregateVerifier` constructor argument,
+  including the config hash and the block intervals, is read back from the live implementation at
+  deploy time, so the redeploy cannot change them.
 
 ## 3. Deploy
 
