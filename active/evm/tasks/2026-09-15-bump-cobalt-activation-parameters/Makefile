@@ -1,0 +1,47 @@
+include ../../../../Makefile
+include $(REPO_ROOT)/Multisig.mk
+
+ifndef TASK_NETWORK
+$(error TASK_NETWORK is required, e.g. make TASK_NETWORK=zeronet $(MAKECMDGOALS))
+endif
+
+PROJECT_DIR := $(abspath ../..)
+
+include $(REPO_ROOT)/config/$(TASK_NETWORK).env
+include config/$(TASK_NETWORK)/.env
+
+SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
+VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
+RPC_URL := $(L1_RPC_URL)
+
+SCRIPT_NAME := tasks/2026-09-15-bump-cobalt-activation-parameters/script/BumpCobaltActivationParameters.s.sol:BumpCobaltActivationParameters
+
+CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
+SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
+
+UPDATE_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
+	PROTOCOL_VERSIONS_PROXY=$(PROTOCOL_VERSIONS_PROXY) \
+	CURRENT_COBALT_ACTIVATION_TIMESTAMP=$(CURRENT_COBALT_ACTIVATION_TIMESTAMP) \
+	NEW_COBALT_ACTIVATION_TIMESTAMP=$(NEW_COBALT_ACTIVATION_TIMESTAMP) \
+	CURRENT_MINIMUM_PROTOCOL_VERSION=$(CURRENT_MINIMUM_PROTOCOL_VERSION) \
+	NEW_MINIMUM_PROTOCOL_VERSION=$(NEW_MINIMUM_PROTOCOL_VERSION)
+
+.PHONY: gen-validation-cb
+gen-validation-cb: deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(CB_MULTISIG),$(CB_SENDER),base-signer.json,$(UPDATE_ENV))
+
+.PHONY: gen-validation-sc
+gen-validation-sc: deps-signer-tool
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer.json,$(UPDATE_ENV))
+
+.PHONY: approve-cb
+approve-cb:
+	export $(UPDATE_ENV); $(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
+
+.PHONY: approve-sc
+approve-sc:
+	export $(UPDATE_ENV); $(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
+
+.PHONY: execute
+execute:
+	export $(UPDATE_ENV); $(call MULTISIG_EXECUTE,0x)
