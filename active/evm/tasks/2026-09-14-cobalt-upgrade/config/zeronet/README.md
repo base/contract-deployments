@@ -1,6 +1,6 @@
 # Cobalt Upgrade
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xabfb3ed6b24334891957b4f0c22273b06392132288862ca8235b13af0a47d667)
 
 ## Description
 
@@ -23,19 +23,19 @@ asserts each of these before and after.
 
 ## Custody
 
-| Role | Address |
-| -- | -- |
+| Role                      | Address                                      |
+| ------------------------- | -------------------------------------------- |
 | ProxyAdmin owner (2-of-2) | `0x3d59999977e0896ee1f8783bB8251DF16fb483E9` |
-| Coinbase multisig | `0x856611eD7E07D83243b15E93f6321f2df6865852` |
-| Security Council | `0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA` |
+| Coinbase multisig         | `0x856611eD7E07D83243b15E93f6321f2df6865852` |
+| Security Council          | `0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA` |
 
 ## Targets
 
-| Contract | Address |
-| -- | -- |
-| L1 `ProxyAdmin` | `0xF2d2c097bE80Fb87844b7E259ef67EFb98b26F87` |
-| `OptimismPortal2` proxy | `0x7E3b97C95c823f385Ff6770411F6E12F8E09AC9b` |
-| `SystemConfig` proxy | `0x0a111C7980152BDe41D71f48e2E1d8184f5F6187` |
+| Contract                   | Address                                      |
+| -------------------------- | -------------------------------------------- |
+| L1 `ProxyAdmin`            | `0xF2d2c097bE80Fb87844b7E259ef67EFb98b26F87` |
+| `OptimismPortal2` proxy    | `0x7E3b97C95c823f385Ff6770411F6E12F8E09AC9b` |
+| `SystemConfig` proxy       | `0x0a111C7980152BDe41D71f48e2E1d8184f5F6187` |
 | `DisputeGameFactory` proxy | `0xd930E0CebD52d7C77b8f900De242e818506C5474` |
 
 New implementation addresses are recorded in [`addresses.json`](addresses.json) once deployed.
