@@ -1,0 +1,292 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 L1_PROXY_ADMIN=0xf2d2c097be80fb87844b7e259ef67efb98b26f87 OPTIMISM_PORTAL=0x7e3b97c95c823f385ff6770411f6e12f8e09ac9b SYSTEM_CONFIG=0x0a111c7980152bde41d71f48e2e1d8184f5f6187 DISPUTE_GAME_FACTORY_PROXY=0xd930e0cebd52d7c77b8f900de242e818506c5474 OLD_OPTIMISM_PORTAL_IMPL=0xc1ad6d4e8da1403b9eb6a99491899577050f4863 OLD_SYSTEM_CONFIG_IMPL=0xb54d7ff110995029b89a0045128cae42c931aa83 OLD_DISPUTE_GAME_FACTORY_IMPL=0x3a0a9e5b91709bba0bcb4bb4b66730dcfef6e926 OLD_AGGREGATE_VERIFIER=0x7dd0f51C71DA5243174FA829c8cf3385B06833b0 NEW_OPTIMISM_PORTAL_IMPL=0xb4aC39aadC3130fEf3F348ECe8D033540dF12089 NEW_SYSTEM_CONFIG_IMPL=0x210303565CBf0b8c0d2837523816f815F02ad5eB NEW_DISPUTE_GAME_FACTORY_IMPL=0xBeE0c6DD082D7A483Da4bD6e56C7e5292BDa7Ce8 NEW_AGGREGATE_VERIFIER=0x2504B1c3B78B2711e24eadF7eA077b0cA1b91859 PROTOCOL_VERSIONS_PROXY=0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da PROTOCOL_VERSIONS_IMPL=0x30ADFDAB722D36B26f12f562d7cAdF4Cd8831c58 PROTOCOL_VERSIONS_INCIDENT_RESPONDER=0x856611ed7e07d83243b15e93f6321f2df6865852 PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=79228162569604569823262539776 PROTOCOL_VERSIONS_INITIAL_SCHEDULE=1782348588,1782348588,1782348588,1782348588,1782348588,1782348588,1782348588,0,1782348588,1782348588,1782348888,1782349188,1789574400 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-09-14-cobalt-upgrade/script/ExecuteCobaltUpgrade.s.sol:ExecuteCobaltUpgrade --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x265bdb16032513574e02db5ad450c5345e7304d0fa36d2a009c86e6d4221846e"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x22d07ae145e29a1354330c3907e8569a367528393f8a5a0438bc67b7b9c15f52",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "SystemConfig - Zeronet",
+      "address": "0x0a111C7980152bDe41D71f48e2E1d8184f5f6187",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000b54d7ff110995029b89a0045128cae42c931aa83",
+          "after": "0x000000000000000000000000210303565cbf0b8c0d2837523816f815f02ad5eb",
+          "description": "Upgrades SystemConfig to the Cobalt implementation, which is the build that keeps Zeronet's patched MAX_GAS_LIMIT of 2,000,000,000 (version 3.14.0+max-gas-limit-2000M). The gas limit and pause state are asserted unchanged.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "ProtocolVersions - Zeronet",
+      "address": "0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets Initializable._initialized to 1, recording that the new ProtocolVersions proxy has run its reinitializer(1) initialize call.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Sets the _timestamps array length to 13, one entry per registered upgrade (ids 0-12, genesis through cobalt).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Sets the _upgradeScheduleId array length to 14: the bytes32(0) seed at index 0 plus one hash-chain link for each of the 13 registered upgrades.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000001000000030000000200000000",
+          "description": "Sets minimumProtocolVersion to v1.3.2. The OP format packs the low 16 bytes as major || minor || patch || pre-release, four bytes each, so v1.3.2 is 0x00000001000000030000000200000000 (79228162569604569823262539776).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000856611ed7e07d83243b15e93f6321f2df6865852",
+          "description": "Sets incidentResponder to the Coinbase multisig. This is a restricted role that can only push an already-scheduled, not-yet-activated upgrade further into the future.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x00000000000000000000000030adfdab722d36b26f12f562d7cadf4cd8831c58",
+          "description": "Upgrades the ProtocolVersions proxy from the zero address to the registry implementation (version 1.0.0). The proxy was deployed uninitialized, so this is the upgradeAndCall that also seeds the schedule.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5acf",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0166d3f8da856c31a45b46260bff4abea91e079f65bb1d19caf72f05113ff7c7",
+          "description": "_upgradeScheduleId[1]: hash-chain link committing to upgrade id 0 (genesis) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad0",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x7dd0a3d5cf72f45456110f9b003c1def43a4e5594271cd1f00f9f9f031411212",
+          "description": "_upgradeScheduleId[2]: hash-chain link committing to upgrade id 1 (canyon) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad1",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x7fd31e37e400843a4ab62b3a757975732b70bf5f37dc034a6b0401ce2d9b56f6",
+          "description": "_upgradeScheduleId[3]: hash-chain link committing to upgrade id 2 (delta) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad2",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xd8876ffe4b1bfdfaaf050a75289034bb88a6f0c773b07055b163de2c36ffb284",
+          "description": "_upgradeScheduleId[4]: hash-chain link committing to upgrade id 3 (ecotone) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0bf104b9a877be6444d1fb0e6bba7df327e35975910a5a3b985ab7c3d02350c1",
+          "description": "_upgradeScheduleId[5]: hash-chain link committing to upgrade id 4 (fjord) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad4",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x59d5d17a92c9e1be92a97f47e70409e37ae90ad3105c5714b3867ae2c98f0bf2",
+          "description": "_upgradeScheduleId[6]: hash-chain link committing to upgrade id 5 (granite) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0335ac8de8507343a45ee1cdb53ba505eaea168ed5cc79a0e9a5e7a51c1b799e",
+          "description": "_upgradeScheduleId[7]: hash-chain link committing to upgrade id 6 (holocene) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xc3ed410e08f5d2805b96e95e5b153f8ab9b0506de56b9a799f1cd483850c4e0f",
+          "description": "_upgradeScheduleId[8]: hash-chain link committing to upgrade id 7 (pectraBlobSchedule), which stays unscheduled at 0.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad7",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xb9cbaba7c1dbba36145e42340250daf38d32e6384e90d76cd8eeff2b42685623",
+          "description": "_upgradeScheduleId[9]: hash-chain link committing to upgrade id 8 (isthmus) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x06ac8fad7216097e71e1d41a3c1b7f342f9115b20cff01bf0df808bdd4bb54a3",
+          "description": "_upgradeScheduleId[10]: hash-chain link committing to upgrade id 9 (jovian) at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad9",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x7c085c72396f9d01629fa24f3a1b7c7a36a9e74019a6006ffe3fe1702b6e1628",
+          "description": "_upgradeScheduleId[11]: hash-chain link committing to upgrade id 10 (azul) at 1782348888.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ada",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x6731b82c511c2773e9f127f8c57ab260410dc30d9d69cbeeb10925b3c45fc6bc",
+          "description": "_upgradeScheduleId[12]: hash-chain link committing to upgrade id 11 (beryl) at 1782349188.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5adb",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xf79cbe9afb777dd098279ee69b442ffa04d8f8c9d6314ff21747452be3315773",
+          "description": "_upgradeScheduleId[13]: hash-chain link committing to upgrade id 12 (cobalt) at 1789574400. As the tail of the chain, this is the registry's scheduleId.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000006a3c7b2c000000006a3c7b2c000000006a3c7b2c000000006a3c7b2c",
+          "description": "_timestamps[0..3] packed: genesis, canyon, delta and ecotone, all active from Zeronet genesis at 1782348588.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf7",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000006a3c7b2c000000006a3c7b2c000000006a3c7b2c",
+          "description": "_timestamps[4..7] packed: fjord, granite and holocene at 1782348588; pectraBlobSchedule (id 7) is registered but left unscheduled at 0.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000006a3c7d84000000006a3c7c58000000006a3c7b2c000000006a3c7b2c",
+          "description": "_timestamps[8..11] packed: isthmus and jovian at 1782348588, azul at 1782348888 (genesis + 300s) and beryl at 1782349188 (genesis + 600s).",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf9",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000000000006aaabd00",
+          "description": "_timestamps[12]: schedules cobalt for 1789574400, which is 2026-09-16 16:00:00 UTC.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000017",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x103aa8769d892f9cfb369a9b9971534dac7c7fa98e32d0eaeb85f0e265f251fa",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the Cobalt upgrade transaction hash from the Coinbase signer Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal2 - Zeronet",
+      "address": "0x7E3B97c95c823F385Ff6770411F6E12F8E09ac9b",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000c1ad6d4e8da1403b9eb6a99491899577050f4863",
+          "after": "0x000000000000000000000000b4ac39aadc3130fef3f348ece8d033540df12089",
+          "description": "Upgrades OptimismPortal2 to the Cobalt implementation (version 6.0.0), which removes the EthLockbox code paths. Zeronet has no lockbox, so no ETH moves and the former ethLockbox slot 63 becomes a spacer that keeps its current value.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactory - Zeronet",
+      "address": "0xD930e0cebD52D7C77b8F900dE242E818506C5474",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000007dd0f51c71da5243174fa829c8cf3385b06833b0",
+          "after": "0x0000000000000000000000002504b1c3b78b2711e24eadf7ea077b0ca1b91859",
+          "description": "Sets gameImpls[621] to the redeployed AggregateVerifier (version 0.2.0), replacing the previous verifier. The new verifier is bound to the new ProtocolVersions registry.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000003a0a9e5b91709bba0bcb4bb4b66730dcfef6e926",
+          "after": "0x000000000000000000000000bee0c6dd082d7a483da4bd6e56c7e5292bda7ce8",
+          "description": "Upgrades DisputeGameFactory to the Cobalt implementation (version 1.5.0), which deploys new dispute game proxies with CREATE2. Existing games and the game count are unchanged.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
