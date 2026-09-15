@@ -3,11 +3,11 @@
 Replace `<network>` with the rollout network, for example `zeronet`. Run every command from
 `active/evm/tasks/2026-09-15-bump-cobalt-activation-parameters/`.
 
-## 1. Execute the Cobalt upgrade
+## 1. Confirm the Cobalt upgrade prerequisite
 
-Execute `2026-09-14-cobalt-upgrade` first. It deployed the Zeronet `ProtocolVersions` proxy at
-`0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da`, but that proxy is not initialized until the Cobalt
-upgrade transaction executes.
+`2026-09-14-cobalt-upgrade` must execute first. For Zeronet, it has
+[executed](https://hoodi.etherscan.io/tx/0xabfb3ed6b24334891957b4f0c22273b06392132288862ca8235b13af0a47d667)
+and initialized the `ProtocolVersions` proxy at `0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da`.
 
 For Zeronet, this task must execute strictly before **September 16, 2026 at 15:00 UTC**. At that
 time the existing 16:00 UTC activation enters the registry's one-hour freeze window and can no
@@ -24,7 +24,10 @@ Confirm `config/<network>/.env` contains:
 The script refuses to build calls unless the live owner, current activation, current minimum
 version, schedule length, and schedule commitment all match these inputs.
 
-## 3. Generate validation files
+## 3. Review the validation files
+
+The Zeronet validation files are committed under `config/zeronet/validations/`. Regenerate them
+after any config, script, or relevant onchain state change:
 
 ```bash
 make TASK_NETWORK=<network> deps

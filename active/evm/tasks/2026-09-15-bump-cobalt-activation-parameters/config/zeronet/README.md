@@ -9,6 +9,9 @@ Updates Zeronet's `ProtocolVersions` registry to:
 - delay Cobalt activation from September 16, 2026 at 16:00 UTC to 18:00 UTC; and
 - raise the minimum protocol version from v1.3.2 to v1.4.0.
 
+The prerequisite [Cobalt upgrade](https://hoodi.etherscan.io/tx/0xabfb3ed6b24334891957b4f0c22273b06392132288862ca8235b13af0a47d667)
+has executed and initialized the registry.
+
 The transaction must execute before September 16, 2026 at 15:00 UTC, when the existing activation
 enters its one-hour freeze window.
 
