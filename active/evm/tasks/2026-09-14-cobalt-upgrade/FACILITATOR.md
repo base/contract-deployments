@@ -34,9 +34,13 @@ Open `config/<network>/.env` and confirm every value, in particular:
 
 - `PROTOCOL_VERSIONS_INITIAL_SCHEDULE` — the activation timestamp imported for each upgrade id.
   Ids should stay aligned with the Base mainnet registry so that a given index means the same fork
-  on every chain. Entries may be `0` for an unscheduled fork. Zeronet was re-genesised with every
-  fork through Beryl already active, so ids 0–11 carry the genesis timestamp and Cobalt (id 12)
-  is `0`.
+  on every chain. Entries may be `0` for an unscheduled fork. Every entry except Cobalt's is a fork
+  that has already happened, so each one must match the network's chain config in
+  [base/base](https://github.com/base/base/blob/main/crates/common/chains/src/config.rs), which is
+  what the nodes actually fork on. Do not assume a re-genesised network has everything active at the
+  genesis timestamp: on Zeronet, Azul and Beryl activated a few minutes after genesis, and id 7
+  (PectraBlobSchedule) is unscheduled at `0`. Cobalt (id 12) is the activation this task schedules,
+  and the node config carries no Cobalt timestamp until its own rollout lands.
 - `PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION` — must be non-zero and fit in 128 bits. The comment
   above it gives the `cast` command to re-derive the packed value from the human-readable version.
 - `PROTOCOL_VERSIONS_INCIDENT_RESPONDER` — the address allowed to use the incident path.
