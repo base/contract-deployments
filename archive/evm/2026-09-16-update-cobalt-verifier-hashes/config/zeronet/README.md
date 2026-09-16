@@ -1,6 +1,6 @@
 # Update Cobalt Verifier Hashes
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x4558683a4689db8d1924af4a8be6562c8aaa1ef485e1f645298bfb506e83900e)
 
 ## Description
 
