@@ -1,0 +1,67 @@
+{
+  "cmd": "INCIDENT_MULTISIG=0x856611ed7e07d83243b15e93f6321f2df6865852 PROTOCOL_VERSIONS_PROXY=0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da CURRENT_COBALT_ACTIVATION_TIMESTAMP=1789581600 NEW_COBALT_ACTIVATION_TIMESTAMP=1789588800 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-09-16-delay-cobalt-activation-to-2000/script/DelayCobaltActivation.s.sol:DelayCobaltActivation --sig sign(address[]) [] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x4242e9a27b8884c3faed452c949a764cd21917eb13574b90bbd9865ce187a601"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9d06cba9cbe84804158307dacefefaeea9497deb76c09a31cca764cef7de49fc",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "<<ContractName>>",
+      "address": "0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da",
+      "changes": [
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5adb",
+          "before": "0xb439293c10b6d5f92c84b1b73cb9b85c1df891a3c56cd10f9db6cae332ce9d83",
+          "after": "0xfb40f128f22bd7c690ff7c482f26ea7164fdc9a40817720cbe83bdc5f8a1e093",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf9",
+          "before": "0x000000000000000000000000000000000000000000000000000000006aaad920",
+          "after": "0x000000000000000000000000000000000000000000000000000000006aaaf540",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001f",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
