@@ -1,0 +1,106 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 PROTOCOL_VERSIONS_PROXY=0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da CURRENT_COBALT_ACTIVATION_TIMESTAMP=1789574400 NEW_COBALT_ACTIVATION_TIMESTAMP=1789581600 CURRENT_MINIMUM_PROTOCOL_VERSION=79228162569604569823262539776 NEW_MINIMUM_PROTOCOL_VERSION=79228162588051313888382156800 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-09-15-bump-cobalt-activation-parameters/script/BumpCobaltActivationParameters.s.sol:BumpCobaltActivationParameters --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x045fec7bae7e24708d2a03bf98b77d4e4ef94495ff0c24ed9f9c7a41170400af"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xef9a39a5b233f5e274924ca4d81b035a4713f559fc2b2000a0512611f9288b01",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "ProtocolVersions - Zeronet",
+      "address": "0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x0000000000000000000000000000000000000001000000030000000200000000",
+          "after": "0x0000000000000000000000000000000000000001000000040000000000000000",
+          "description": "Raises minimumProtocolVersion from v1.3.2 to v1.4.0. The format packs the low 16 bytes as major || minor || patch || pre-release, four bytes each, so v1.4.0 is 0x00000001000000040000000000000000 (79228162588051313888382156800).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5adb",
+          "before": "0xf79cbe9afb777dd098279ee69b442ffa04d8f8c9d6314ff21747452be3315773",
+          "after": "0xb439293c10b6d5f92c84b1b73cb9b85c1df891a3c56cd10f9db6cae332ce9d83",
+          "description": "Updates _upgradeScheduleId[13], the hash-chain tail committing to upgrade id 12 (cobalt), after its activation timestamp moves from 1789574400 to 1789581600.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf9",
+          "before": "0x000000000000000000000000000000000000000000000000000000006aaabd00",
+          "after": "0x000000000000000000000000000000000000000000000000000000006aaad920",
+          "description": "_timestamps[12]: delays cobalt activation from 1789574400 (2026-09-16 16:00:00 UTC) to 1789581600 (2026-09-16 18:00:00 UTC).",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000017",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000018",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x873ff0b7171ad8a9b4a5ebcb4219691bae8e196d8c064c254cb69d245aed9d9c",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the Cobalt activation parameter update transaction hash from the Coinbase signer Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001e",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
