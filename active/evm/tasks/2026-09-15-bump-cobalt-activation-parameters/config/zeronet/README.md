@@ -1,6 +1,6 @@
 # Bump Cobalt Activation Parameters
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x8a66d2beda49f48113d1bcc324eb24f0ca186320b515551a12e3777f0b5d8591)
 
 ## Description
 
