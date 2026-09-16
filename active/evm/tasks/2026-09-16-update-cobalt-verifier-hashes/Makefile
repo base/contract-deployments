@@ -13,11 +13,12 @@ include config/$(TASK_NETWORK)/.env
 SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
 VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
 RPC_URL := $(L1_RPC_URL)
-ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
 
 TASK_DIR := tasks/2026-09-16-update-cobalt-verifier-hashes
-DEPLOY_SCRIPT := $(TASK_DIR)/script/DeployCobaltAggregateVerifier.s.sol:DeployCobaltAggregateVerifier
-UPDATE_SCRIPT := $(TASK_DIR)/script/UpdateCobaltVerifierHashes.s.sol:UpdateCobaltVerifierHashes
+ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
+FORGE_ADDRESSES_JSON := $(TASK_DIR)/config/$(TASK_NETWORK)/addresses.json
+DEPLOY_SCRIPT := script/common/verifier-update/DeployAggregateVerifier.s.sol:DeployAggregateVerifier
+UPDATE_SCRIPT := script/common/verifier-update/UpdateVerifierHashes.s.sol:UpdateVerifierHashes
 SCRIPT_NAME := $(UPDATE_SCRIPT)
 
 CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
@@ -27,11 +28,11 @@ NEW_AGGREGATE_VERIFIER = $(shell jq -er '.aggregateVerifier' $(ADDRESSES_JSON) 2
 AGGREGATE_VERIFIER_CTOR_ARGS = $(shell jq -er '.aggregateVerifierConstructorArgs' $(ADDRESSES_JSON) 2>/dev/null)
 
 HASH_ENV = DISPUTE_GAME_FACTORY_PROXY=$(DISPUTE_GAME_FACTORY_PROXY) \
-	OLD_AGGREGATE_VERIFIER=$(OLD_AGGREGATE_VERIFIER) \
-	AGGREGATE_VERIFIER_TEE_IMAGE_HASH=$(AGGREGATE_VERIFIER_TEE_IMAGE_HASH) \
-	AGGREGATE_VERIFIER_ZK_RANGE_HASH=$(AGGREGATE_VERIFIER_ZK_RANGE_HASH) \
-	AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=$(AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH) \
-	ADDRESSES_JSON=$(ADDRESSES_JSON)
+	GAME_TYPE=$(GAME_TYPE) \
+	TEE_IMAGE_HASH=$(TEE_IMAGE_HASH) \
+	ZK_RANGE_HASH=$(ZK_RANGE_HASH) \
+	ZK_AGGREGATE_HASH=$(ZK_AGGREGATE_HASH) \
+	ADDRESSES_JSON=$(FORGE_ADDRESSES_JSON)
 
 UPDATE_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) $(HASH_ENV)
 

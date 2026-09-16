@@ -22,10 +22,10 @@ verifier deployed by the original Cobalt task.
 
 Open `config/<network>/.env` and confirm:
 
-- `OLD_AGGREGATE_VERIFIER` is still registered for game type 621.
-- `AGGREGATE_VERIFIER_TEE_IMAGE_HASH` is the PCR0 of the intended Nitro enclave image.
-- `AGGREGATE_VERIFIER_ZK_RANGE_HASH` is the intended SP1 range verification key.
-- `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` is the intended SP1 aggregation verification key.
+- `GAME_TYPE` is 621 and resolves to the expected current `AggregateVerifier`.
+- `TEE_IMAGE_HASH` is the PCR0 of the intended Nitro enclave image.
+- `ZK_RANGE_HASH` is the intended SP1 range verification key.
+- `ZK_AGGREGATE_HASH` is the intended SP1 aggregation verification key.
 
 The configured Zeronet changes are:
 
@@ -46,7 +46,7 @@ make TASK_NETWORK=<network> deploy
 VERIFIER_API_KEY=<key> make TASK_NETWORK=<network> verify
 ```
 
-The deploy script reads every unchanged constructor value from the currently registered verifier:
+The shared deploy script reads every unchanged constructor value from the currently registered verifier:
 
 - game type, anchor state registry, delayed WETH, TEE verifier, and ZK verifier;
 - config hash, L2 chain ID, block intervals;

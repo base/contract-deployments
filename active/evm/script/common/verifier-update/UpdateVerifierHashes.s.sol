@@ -9,9 +9,11 @@ import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier
 import {GameType} from "@base-contracts/src/libraries/bridge/Types.sol";
 
 interface IDisputeGameFactoryAdmin {
+    function gameArgs(GameType gameType) external view returns (bytes memory);
+    function gameCount() external view returns (uint256);
     function owner() external view returns (address);
     function gameImpls(GameType gameType) external view returns (address);
-    function setImplementation(GameType gameType, address impl, bytes calldata args) external;
+    function setImplementation(GameType gameType, address impl) external;
 }
 
 /// @notice Updates the live multiproof implementation in the DisputeGameFactory to
@@ -32,6 +34,7 @@ contract UpdateVerifierHashes is MultisigScript {
     // Deployment output produced by the EOA script and read from addresses.json.
     address internal immutable nextAggregateVerifier;
     GameType internal immutable nextGameType;
+    uint256 internal immutable gameCountBefore;
 
     constructor() {
         ownerSafeEnv = vm.envAddress("PROXY_ADMIN_OWNER");
@@ -48,6 +51,7 @@ contract UpdateVerifierHashes is MultisigScript {
         nextAggregateVerifier = vm.parseJsonAddress({json: json, key: ".aggregateVerifier"});
 
         nextGameType = AggregateVerifier(nextAggregateVerifier).gameType();
+        gameCountBefore = IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).gameCount();
     }
 
     function setUp() public view {
@@ -58,6 +62,14 @@ contract UpdateVerifierHashes is MultisigScript {
         require(teeImageHashEnv != bytes32(0), "tee image hash not set");
         require(zkRangeHashEnv != bytes32(0), "zk range hash not set");
         require(zkAggregateHashEnv != bytes32(0), "zk aggregate hash not set");
+        require(
+            keccak256(bytes(AggregateVerifier(nextAggregateVerifier).version())) == keccak256(bytes("0.2.0")),
+            "next aggregate verifier version mismatch"
+        );
+        require(
+            IDisputeGameFactoryAdmin(disputeGameFactoryProxyEnv).gameArgs(gameTypeEnv).length == 0,
+            "aggregate game args not empty"
+        );
 
         AggregateVerifier currentAggregate = AggregateVerifier(currentAggregateVerifier);
         AggregateVerifier nextAggregate = AggregateVerifier(nextAggregateVerifier);
@@ -68,6 +80,11 @@ contract UpdateVerifierHashes is MultisigScript {
         require(GameType.unwrap(nextGameType) == GameType.unwrap(gameTypeEnv), "next game type mismatch");
 
         _assertUpdatedHashes(nextAggregate);
+        require(
+            teeImageHashEnv != currentAggregate.TEE_IMAGE_HASH() || zkRangeHashEnv != currentAggregate.ZK_RANGE_HASH()
+                || zkAggregateHashEnv != currentAggregate.ZK_AGGREGATE_HASH(),
+            "all hashes are identical to the current aggregate verifier"
+        );
         _assertImmutableContinuity(currentAggregate, nextAggregate);
     }
 
@@ -77,7 +94,7 @@ contract UpdateVerifierHashes is MultisigScript {
         calls[0] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactoryProxyEnv,
-            data: abi.encodeCall(IDisputeGameFactoryAdmin.setImplementation, (nextGameType, nextAggregateVerifier, "")),
+            data: abi.encodeCall(IDisputeGameFactoryAdmin.setImplementation, (nextGameType, nextAggregateVerifier)),
             value: 0
         });
 
@@ -90,6 +107,8 @@ contract UpdateVerifierHashes is MultisigScript {
         AggregateVerifier nextAggregate = AggregateVerifier(nextAggregateVerifier);
 
         require(dgf.gameImpls(nextGameType) == nextAggregateVerifier, "dgf aggregate verifier mismatch");
+        require(dgf.gameCount() == gameCountBefore, "game count changed");
+        require(dgf.gameArgs(nextGameType).length == 0, "aggregate game args changed");
 
         _assertUpdatedHashes(nextAggregate);
         _assertImmutableContinuity(currentAggregate, nextAggregate);
@@ -134,6 +153,21 @@ contract UpdateVerifierHashes is MultisigScript {
         require(
             nextAggregate.INTERMEDIATE_BLOCK_INTERVAL() == currentAggregate.INTERMEDIATE_BLOCK_INTERVAL(),
             "next aggregate intermediate interval mismatch"
+        );
+        require(
+            address(nextAggregate.PROTOCOL_VERSIONS()) == address(currentAggregate.PROTOCOL_VERSIONS()),
+            "next aggregate registry mismatch"
+        );
+        require(
+            nextAggregate.L2_GENESIS_BLOCK_NUMBER() == currentAggregate.L2_GENESIS_BLOCK_NUMBER(),
+            "next aggregate genesis block mismatch"
+        );
+        require(
+            nextAggregate.L2_GENESIS_TIMESTAMP() == currentAggregate.L2_GENESIS_TIMESTAMP(),
+            "next aggregate genesis timestamp mismatch"
+        );
+        require(
+            nextAggregate.L2_BLOCK_TIME() == currentAggregate.L2_BLOCK_TIME(), "next aggregate l2 block time mismatch"
         );
     }
 
