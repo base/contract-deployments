@@ -4,8 +4,8 @@ Status: READY TO SIGN
 
 ## Description
 
-Delays Zeronet's Cobalt activation from September 16, 2026 at 18:00 UTC to 20:00 UTC. The minimum
-protocol version remains v1.4.0.
+Delays Zeronet's Cobalt activation from September 16, 2026 at 18:00 UTC to 20:00 UTC using the
+`ProtocolVersions` incident responder.
 
 The prerequisite [18:00 UTC delay](https://hoodi.etherscan.io/tx/0x8a66d2beda49f48113d1bcc324eb24f0ca186320b515551a12e3777f0b5d8591)
 has executed.

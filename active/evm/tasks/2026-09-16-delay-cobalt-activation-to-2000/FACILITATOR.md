@@ -16,30 +16,27 @@ Confirm `config/<network>/.env` contains:
 
 - the deployed `ProtocolVersions` proxy;
 - Cobalt upgrade id 12 moving from `1789581600` (18:00 UTC) to `1789588800` (20:00 UTC); and
-- the packed minimum protocol version remaining v1.4.0.
+- the incident multisig matching the registry's `incidentResponder`.
 
-The script refuses to build calls unless the live owner, current activation, minimum version,
-schedule length, and schedule commitment all match these inputs.
+The script refuses to build calls unless the live incident responder, current activation, schedule
+length, and schedule commitment all match these inputs.
 
 ## 2. Generate validation files
 
 ```bash
 make TASK_NETWORK=<network> deps
 make TASK_NETWORK=<network> gen-validation-cb
-make TASK_NETWORK=<network> gen-validation-sc
 ```
 
-These create `config/<network>/validations/base-signer.json` and
-`security-council-signer.json`. For Zeronet, remove the generated `taskOriginConfig` and add
-`"skipTaskOriginValidation": true` at the JSON root before committing the files.
+This creates `config/<network>/validations/base-signer.json`. For Zeronet, remove the generated
+`taskOriginConfig` and add `"skipTaskOriginValidation": true` at the JSON root before committing
+the file.
 
 ## 3. Approve and execute
 
 ```bash
-SIGNATURES=<concatenated base signatures>             make TASK_NETWORK=<network> approve-cb
-SIGNATURES=<concatenated security council signatures> make TASK_NETWORK=<network> approve-sc
-make TASK_NETWORK=<network> execute
+SIGNATURES=<concatenated base signatures> make TASK_NETWORK=<network> execute
 ```
 
-After execution, confirm `getSchedule()[12]` is `1789588800` and `minimumProtocolVersion()` remains
-`79228162588051313888382156800`, then link the transaction from `config/<network>/README.md`.
+After execution, confirm `getSchedule()[12]` is `1789588800`, then link the transaction from
+`config/<network>/README.md`.

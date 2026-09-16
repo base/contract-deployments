@@ -9,12 +9,11 @@ import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
 interface IProtocolVersions {
     function FREEZE_WINDOW() external view returns (uint64);
     function MIN_NOTICE() external view returns (uint64);
+    function delayTimestamp(uint256 id, uint64 newTimestamp) external;
     function getSchedule() external view returns (uint64[] memory);
-    function minimumProtocolVersion() external view returns (uint256);
-    function proxyAdminOwner() external view returns (address);
+    function incidentResponder() external view returns (address);
     function scheduleId() external view returns (bytes32);
     function scheduleId(uint256 id) external view returns (bytes32);
-    function setTimestamp(uint256 id, uint64 timestamp) external;
 }
 
 /// @notice Delays Cobalt activation from 18:00 UTC to 20:00 UTC on Zeronet.
@@ -26,11 +25,10 @@ contract DelayCobaltActivation is MultisigScript {
     IProtocolVersions internal immutable protocolVersions;
     uint64 internal immutable currentCobaltActivationTimestamp;
     uint64 internal immutable newCobaltActivationTimestamp;
-    uint256 internal immutable expectedMinimumProtocolVersion;
     bytes32 internal immutable schedulePrefix;
 
     constructor() {
-        ownerSafe = vm.envAddress("PROXY_ADMIN_OWNER");
+        ownerSafe = vm.envAddress("INCIDENT_MULTISIG");
         protocolVersions = IProtocolVersions(vm.envAddress("PROTOCOL_VERSIONS_PROXY"));
 
         uint256 currentTimestamp = vm.envUint("CURRENT_COBALT_ACTIVATION_TIMESTAMP");
@@ -38,8 +36,6 @@ contract DelayCobaltActivation is MultisigScript {
         require(currentTimestamp <= type(uint64).max && newTimestamp <= type(uint64).max, "timestamp overflow");
         currentCobaltActivationTimestamp = uint64(currentTimestamp);
         newCobaltActivationTimestamp = uint64(newTimestamp);
-
-        expectedMinimumProtocolVersion = vm.envUint("EXPECTED_MINIMUM_PROTOCOL_VERSION");
 
         require(address(protocolVersions).code.length != 0, "protocol versions not deployed");
         schedulePrefix = protocolVersions.scheduleId(COBALT_UPGRADE_ID - 1);
@@ -52,7 +48,7 @@ contract DelayCobaltActivation is MultisigScript {
         calls[0] = Call({
             operation: Enum.Operation.Call,
             target: address(protocolVersions),
-            data: abi.encodeCall(IProtocolVersions.setTimestamp, (COBALT_UPGRADE_ID, newCobaltActivationTimestamp)),
+            data: abi.encodeCall(IProtocolVersions.delayTimestamp, (COBALT_UPGRADE_ID, newCobaltActivationTimestamp)),
             value: 0
         });
 
@@ -60,15 +56,11 @@ contract DelayCobaltActivation is MultisigScript {
     }
 
     function _preCheck() internal view {
-        require(protocolVersions.proxyAdminOwner() == ownerSafe, "proxy admin owner mismatch");
+        require(protocolVersions.incidentResponder() == ownerSafe, "incident responder mismatch");
 
         uint64[] memory schedule = protocolVersions.getSchedule();
         require(schedule.length == EXPECTED_SCHEDULE_LENGTH, "unexpected schedule length");
         require(schedule[COBALT_UPGRADE_ID] == currentCobaltActivationTimestamp, "cobalt activation mismatch");
-        require(
-            protocolVersions.minimumProtocolVersion() == expectedMinimumProtocolVersion,
-            "minimum protocol version mismatch"
-        );
         require(
             protocolVersions.scheduleId()
                 == keccak256(abi.encode(schedulePrefix, COBALT_UPGRADE_ID, currentCobaltActivationTimestamp)),
@@ -87,15 +79,11 @@ contract DelayCobaltActivation is MultisigScript {
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
-        require(protocolVersions.proxyAdminOwner() == ownerSafe, "proxy admin owner changed");
+        require(protocolVersions.incidentResponder() == ownerSafe, "incident responder changed");
 
         uint64[] memory schedule = protocolVersions.getSchedule();
         require(schedule.length == EXPECTED_SCHEDULE_LENGTH, "schedule length changed");
         require(schedule[COBALT_UPGRADE_ID] == newCobaltActivationTimestamp, "cobalt activation not updated");
-        require(
-            protocolVersions.minimumProtocolVersion() == expectedMinimumProtocolVersion,
-            "minimum protocol version changed"
-        );
         require(
             protocolVersions.scheduleId()
                 == keccak256(abi.encode(schedulePrefix, COBALT_UPGRADE_ID, newCobaltActivationTimestamp)),

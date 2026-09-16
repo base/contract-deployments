@@ -16,31 +16,17 @@ RPC_URL := $(L1_RPC_URL)
 
 SCRIPT_NAME := tasks/2026-09-16-delay-cobalt-activation-to-2000/script/DelayCobaltActivation.s.sol:DelayCobaltActivation
 
-CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
-SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
+CB_SENDER = $(shell $(MISE_EXEC) cast call $(INCIDENT_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 
-UPDATE_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
+UPDATE_ENV = INCIDENT_MULTISIG=$(INCIDENT_MULTISIG) \
 	PROTOCOL_VERSIONS_PROXY=$(PROTOCOL_VERSIONS_PROXY) \
 	CURRENT_COBALT_ACTIVATION_TIMESTAMP=$(CURRENT_COBALT_ACTIVATION_TIMESTAMP) \
-	NEW_COBALT_ACTIVATION_TIMESTAMP=$(NEW_COBALT_ACTIVATION_TIMESTAMP) \
-	EXPECTED_MINIMUM_PROTOCOL_VERSION=$(EXPECTED_MINIMUM_PROTOCOL_VERSION)
+	NEW_COBALT_ACTIVATION_TIMESTAMP=$(NEW_COBALT_ACTIVATION_TIMESTAMP)
 
 .PHONY: gen-validation-cb
 gen-validation-cb: deps-signer-tool
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(CB_MULTISIG),$(CB_SENDER),base-signer.json,$(UPDATE_ENV))
-
-.PHONY: gen-validation-sc
-gen-validation-sc: deps-signer-tool
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer.json,$(UPDATE_ENV))
-
-.PHONY: approve-cb
-approve-cb:
-	export $(UPDATE_ENV); $(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
-
-.PHONY: approve-sc
-approve-sc:
-	export $(UPDATE_ENV); $(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
+	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(CB_SENDER),base-signer.json,$(UPDATE_ENV))
 
 .PHONY: execute
 execute:
-	export $(UPDATE_ENV); $(call MULTISIG_EXECUTE,0x)
+	export $(UPDATE_ENV); $(call MULTISIG_EXECUTE,$(SIGNATURES))
