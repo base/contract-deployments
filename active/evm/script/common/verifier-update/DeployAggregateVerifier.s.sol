@@ -6,6 +6,7 @@ import {Script, console} from "forge-std/Script.sol";
 import {IAnchorStateRegistry} from "interfaces/L1/proofs/IAnchorStateRegistry.sol";
 import {IDelayedWETH} from "interfaces/L1/proofs/IDelayedWETH.sol";
 import {IDisputeGameFactory} from "interfaces/L1/proofs/IDisputeGameFactory.sol";
+import {IProtocolVersions} from "interfaces/L1/IProtocolVersions.sol";
 import {IVerifier} from "interfaces/L1/proofs/IVerifier.sol";
 
 import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier.sol";
@@ -35,6 +36,10 @@ contract DeployAggregateVerifier is Script {
     uint256 internal immutable currentL2ChainId;
     uint256 internal immutable currentBlockInterval;
     uint256 internal immutable currentIntermediateBlockInterval;
+    IProtocolVersions internal immutable currentProtocolVersions;
+    uint256 internal immutable currentL2GenesisBlockNumber;
+    uint64 internal immutable currentL2GenesisTimestamp;
+    uint64 internal immutable currentL2BlockTime;
 
     // Deployment output written to addresses.json.
     address public aggregateVerifier;
@@ -58,6 +63,10 @@ contract DeployAggregateVerifier is Script {
         currentL2ChainId = currentAggregate.L2_CHAIN_ID();
         currentBlockInterval = currentAggregate.BLOCK_INTERVAL();
         currentIntermediateBlockInterval = currentAggregate.INTERMEDIATE_BLOCK_INTERVAL();
+        currentProtocolVersions = currentAggregate.PROTOCOL_VERSIONS();
+        currentL2GenesisBlockNumber = currentAggregate.L2_GENESIS_BLOCK_NUMBER();
+        currentL2GenesisTimestamp = currentAggregate.L2_GENESIS_TIMESTAMP();
+        currentL2BlockTime = currentAggregate.L2_BLOCK_TIME();
     }
 
     function setUp() public view {
@@ -92,7 +101,13 @@ contract DeployAggregateVerifier is Script {
                 configHash: currentConfigHash,
                 l2ChainId: currentL2ChainId,
                 blockInterval: currentBlockInterval,
-                intermediateBlockInterval: currentIntermediateBlockInterval
+                intermediateBlockInterval: currentIntermediateBlockInterval,
+                scheduleConfig: AggregateVerifier.ScheduleConfig({
+                    protocolVersions: currentProtocolVersions,
+                    genesisBlockNumber: currentL2GenesisBlockNumber,
+                    genesisTimestamp: currentL2GenesisTimestamp,
+                    blockTime: currentL2BlockTime
+                })
             })
         );
 
@@ -126,6 +141,10 @@ contract DeployAggregateVerifier is Script {
             av.INTERMEDIATE_BLOCK_INTERVAL() == currentIntermediateBlockInterval,
             "aggregate intermediate interval mismatch"
         );
+        require(address(av.PROTOCOL_VERSIONS()) == address(currentProtocolVersions), "aggregate registry mismatch");
+        require(av.L2_GENESIS_BLOCK_NUMBER() == currentL2GenesisBlockNumber, "aggregate genesis block mismatch");
+        require(av.L2_GENESIS_TIMESTAMP() == currentL2GenesisTimestamp, "aggregate genesis timestamp mismatch");
+        require(av.L2_BLOCK_TIME() == currentL2BlockTime, "aggregate l2 block time mismatch");
     }
 
     function _writeAddresses() internal {
@@ -136,5 +155,30 @@ contract DeployAggregateVerifier is Script {
             vm.serializeAddress({objectKey: root, valueKey: "aggregateVerifier", value: aggregateVerifier});
         string memory path = vm.envString("ADDRESSES_JSON");
         vm.writeJson({json: json, path: path});
+        vm.writeJson(
+            vm.toString(
+                abi.encode(
+                    currentGameType,
+                    currentAnchorStateRegistry,
+                    currentDelayedWeth,
+                    IVerifier(currentTeeVerifier),
+                    IVerifier(currentZkVerifier),
+                    teeImageHashEnv,
+                    AggregateVerifier.ZkHashes({rangeHash: zkRangeHashEnv, aggregateHash: zkAggregateHashEnv}),
+                    currentConfigHash,
+                    currentL2ChainId,
+                    currentBlockInterval,
+                    currentIntermediateBlockInterval,
+                    AggregateVerifier.ScheduleConfig({
+                        protocolVersions: currentProtocolVersions,
+                        genesisBlockNumber: currentL2GenesisBlockNumber,
+                        genesisTimestamp: currentL2GenesisTimestamp,
+                        blockTime: currentL2BlockTime
+                    })
+                )
+            ),
+            path,
+            ".aggregateVerifierConstructorArgs"
+        );
     }
 }
