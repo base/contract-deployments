@@ -90,6 +90,14 @@ contract DeployCobaltProofImpls is Script {
         require(teeImageHash != bytes32(0), "AGGREGATE_VERIFIER_TEE_IMAGE_HASH not set");
         require(zkRangeHash != bytes32(0), "AGGREGATE_VERIFIER_ZK_RANGE_HASH not set");
         require(zkAggregateHash != bytes32(0), "AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH not set");
+
+        // All three hashes rotate. A live value here is a paste error.
+        AggregateVerifier live = AggregateVerifier(liveAggregateVerifier);
+        require(teeImageHash != live.TEE_IMAGE_HASH(), "AGGREGATE_VERIFIER_TEE_IMAGE_HASH still the live value");
+        require(zkRangeHash != live.ZK_RANGE_HASH(), "AGGREGATE_VERIFIER_ZK_RANGE_HASH still the live value");
+        require(
+            zkAggregateHash != live.ZK_AGGREGATE_HASH(), "AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH still the live value"
+        );
     }
 
     function run() external {

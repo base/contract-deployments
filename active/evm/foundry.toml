@@ -14,6 +14,7 @@ remappings = [
     '@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/',
     'forge-std/=lib/forge-std/src/',
     'interfaces/=lib/contracts/interfaces/',
+    'nitro-validator/=lib/nitro-validator/',
     'src/=lib/contracts/src/',
 ]
 

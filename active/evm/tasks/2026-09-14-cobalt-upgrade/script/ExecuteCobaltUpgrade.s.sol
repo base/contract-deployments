@@ -32,6 +32,7 @@ interface IDisputeGameFactory {
 
 interface IAggregateVerifier {
     function PROTOCOL_VERSIONS() external view returns (address);
+    function TEE_IMAGE_HASH() external view returns (bytes32);
     function version() external view returns (string memory);
 }
 
@@ -45,11 +46,52 @@ interface IVersioned {
     function version() external view returns (string memory);
 }
 
+interface ILegacyTEEProverRegistry {
+    function NITRO_VERIFIER() external view returns (address);
+    function DISPUTE_GAME_FACTORY() external view returns (address);
+    function version() external view returns (string memory);
+}
+
+interface ITEEProverRegistry {
+    function NITRO_VALIDATOR() external view returns (address);
+    function DISPUTE_GAME_FACTORY() external view returns (address);
+    function version() external view returns (string memory);
+}
+
+interface ITEEProverRegistryState {
+    function owner() external view returns (address);
+    function manager() external view returns (address);
+    function gameType() external view returns (uint32);
+    function isRegisteredSigner(address signer) external view returns (bool);
+    function signerImageHash(address signer) external view returns (bytes32);
+    function isValidProposer(address proposer) external view returns (bool);
+    function getRegisteredSigners() external view returns (address[] memory);
+    function getExpectedImageHash() external view returns (bytes32);
+}
+
+interface ITEEVerifier {
+    function TEE_PROVER_REGISTRY() external view returns (address);
+}
+
+interface INitroValidatorView {
+    function certManager() external view returns (address);
+    function p384Verifier() external view returns (address);
+}
+
+interface ICertManagerView {
+    function p384Verifier() external view returns (address);
+    function owner() external view returns (address);
+    function revoker() external view returns (address);
+    function ROOT_CA_CERT_HASH() external view returns (bytes32);
+    function verified(bytes32 hash) external view returns (bytes memory);
+}
+
 /// @notice Executes the Cobalt L1 upgrade on a Base chain.
 /// @dev Bundles the three Cobalt contract changes into a single ProxyAdmin-owner transaction:
 ///      dynamic upgrades (a new ProtocolVersions registry plus the AggregateVerifier that binds it),
 ///      the EthLockbox removal (OptimismPortal2 and SystemConfig), and CREATE2 dispute game proxies
-///      (DisputeGameFactory).
+///      (DisputeGameFactory). Networks that still need the hinted Nitro TEE cutover also pass
+///      `NEW_TEE_PROVER_REGISTRY_IMPL`, which adds a sixth ProxyAdmin.upgrade on the registry.
 contract ExecuteCobaltUpgrade is MultisigScript {
     /// @notice EIP-1967 implementation slot.
     bytes32 internal constant IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
@@ -94,6 +136,22 @@ contract ExecuteCobaltUpgrade is MultisigScript {
     uint256 internal immutable gameCountBefore;
     bool internal immutable pausedBefore;
 
+    /// @dev Hinted Nitro TEE cutover. All zero when the network already ran the
+    ///      August 2026 registry upgrade (Zeronet) and this transaction stays at 5 calls.
+    address internal immutable teeProverRegistryProxy;
+    address internal immutable teeVerifier;
+    address internal immutable proposer;
+    address internal immutable challenger;
+    address internal immutable certManagerOwner;
+    address internal immutable certManagerRevoker;
+    address internal immutable oldTeeProverRegistryImpl;
+    address internal immutable newTeeProverRegistryImpl;
+    address internal immutable oldNitroVerifier;
+    address internal immutable newP384Verifier;
+    address internal immutable newCertManager;
+    address internal immutable newNitroValidator;
+    bytes32 internal immutable registryStateDigest;
+
     constructor() {
         ownerSafe = vm.envAddress("PROXY_ADMIN_OWNER");
         proxyAdmin = vm.envAddress("L1_PROXY_ADMIN");
@@ -127,6 +185,20 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         gasLimitBefore = ISystemConfig(systemConfig).gasLimit();
         gameCountBefore = IDisputeGameFactory(disputeGameFactory).gameCount();
         pausedBefore = ISystemConfig(systemConfig).paused();
+
+        newTeeProverRegistryImpl = vm.envOr("NEW_TEE_PROVER_REGISTRY_IMPL", address(0));
+        teeProverRegistryProxy = vm.envOr("TEE_PROVER_REGISTRY_PROXY", address(0));
+        teeVerifier = vm.envOr("TEE_VERIFIER", address(0));
+        proposer = vm.envOr("PROPOSER", address(0));
+        challenger = vm.envOr("CHALLENGER", address(0));
+        certManagerOwner = vm.envOr("CERT_MANAGER_OWNER", address(0));
+        certManagerRevoker = vm.envOr("CERT_MANAGER_REVOKER", address(0));
+        oldTeeProverRegistryImpl = vm.envOr("OLD_TEE_PROVER_REGISTRY_IMPL", address(0));
+        oldNitroVerifier = vm.envOr("OLD_NITRO_VERIFIER", address(0));
+        newP384Verifier = vm.envOr("NEW_P384_VERIFIER", address(0));
+        newCertManager = vm.envOr("NEW_CERT_MANAGER", address(0));
+        newNitroValidator = vm.envOr("NEW_NITRO_VALIDATOR", address(0));
+        registryStateDigest = _teeCutover() ? _registryStateDigest() : bytes32(0);
     }
 
     function setUp() public view {
@@ -134,7 +206,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
     }
 
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[](5);
+        Call[] memory calls = new Call[](_teeCutover() ? 6 : 5);
 
         // Dynamic upgrades: point the new proxy at the registry implementation and seed the
         // activation schedule atomically. `initialize` is `reinitializer(1)` and the proxy has
@@ -194,6 +266,15 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             value: 0
         });
 
+        if (_teeCutover()) {
+            calls[5] = Call({
+                operation: Enum.Operation.Call,
+                target: proxyAdmin,
+                data: abi.encodeCall(IProxyAdmin.upgrade, (payable(teeProverRegistryProxy), newTeeProverRegistryImpl)),
+                value: 0
+            });
+        }
+
         return calls;
     }
 
@@ -252,6 +333,10 @@ contract ExecuteCobaltUpgrade is MultisigScript {
 
         require(protocolVersionsMinimumProtocolVersion != 0, "minimum protocol version not set");
         require(protocolVersionsMinimumProtocolVersion <= type(uint128).max, "minimum protocol version too large");
+
+        if (_teeCutover()) {
+            _preCheckTee();
+        }
     }
 
     function _postCheck(Vm.AccountAccess[] memory, Simulation.Payload memory) internal view override {
@@ -313,6 +398,10 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             keccak256(bytes(ISystemConfig(systemConfig).version())) == keccak256(bytes("3.14.0+max-gas-limit-2000M")),
             "system config lost the max gas limit patch"
         );
+
+        if (_teeCutover()) {
+            _postCheckTee();
+        }
     }
 
     /// @dev Recomputes the registry hash chain so the commitment is derived from the schedule this
@@ -339,5 +428,112 @@ contract ExecuteCobaltUpgrade is MultisigScript {
 
     function _ownerSafe() internal view override returns (address) {
         return ownerSafe;
+    }
+
+    function _teeCutover() internal view returns (bool) {
+        return newTeeProverRegistryImpl != address(0);
+    }
+
+    function _preCheckTee() internal view {
+        require(teeProverRegistryProxy != address(0), "tee registry proxy not set");
+        require(teeVerifier != address(0), "tee verifier not set");
+        require(oldTeeProverRegistryImpl != address(0), "old tee registry impl not set");
+        require(oldNitroVerifier != address(0), "old nitro verifier not set");
+        require(newP384Verifier != address(0), "p384 verifier not set");
+        require(newCertManager != address(0), "cert manager not set");
+        require(newNitroValidator != address(0), "nitro validator not set");
+        require(certManagerOwner != address(0), "cert manager owner not set");
+        require(certManagerRevoker != address(0), "cert manager revoker not set");
+        require(proposer != address(0), "proposer not set");
+        require(challenger != address(0), "challenger not set");
+
+        require(
+            ITEEVerifier(teeVerifier).TEE_PROVER_REGISTRY() == teeProverRegistryProxy, "tee verifier registry mismatch"
+        );
+        require(
+            _implementation(teeProverRegistryProxy) == oldTeeProverRegistryImpl,
+            "unexpected live tee registry implementation"
+        );
+
+        ILegacyTEEProverRegistry oldRegistry = ILegacyTEEProverRegistry(oldTeeProverRegistryImpl);
+        ITEEProverRegistry newRegistry = ITEEProverRegistry(newTeeProverRegistryImpl);
+        require(oldRegistry.DISPUTE_GAME_FACTORY() == disputeGameFactory, "old registry factory mismatch");
+        require(newRegistry.DISPUTE_GAME_FACTORY() == disputeGameFactory, "new registry factory mismatch");
+        require(oldRegistry.NITRO_VERIFIER() == oldNitroVerifier, "old registry nitro mismatch");
+        require(newRegistry.NITRO_VALIDATOR() == newNitroValidator, "new registry nitro mismatch");
+        require(
+            keccak256(bytes(oldRegistry.version())) == keccak256(bytes("0.5.0")), "old tee registry version mismatch"
+        );
+        require(
+            keccak256(bytes(newRegistry.version())) == keccak256(bytes("0.6.1")), "new tee registry version mismatch"
+        );
+
+        // Call 5 replaces the verifier this registry reads TEE_IMAGE_HASH from.
+        require(
+            ITEEProverRegistryState(teeProverRegistryProxy).gameType() == AGGREGATE_VERIFIER_GAME_TYPE,
+            "tee registry watches a different game type"
+        );
+
+        _assertNitroStack();
+    }
+
+    function _postCheckTee() internal view {
+        require(
+            _implementation(teeProverRegistryProxy) == newTeeProverRegistryImpl,
+            "tee registry implementation not updated"
+        );
+        require(_registryStateDigest() == registryStateDigest, "tee registry state changed");
+        require(
+            ITEEVerifier(teeVerifier).TEE_PROVER_REGISTRY() == teeProverRegistryProxy, "tee verifier registry changed"
+        );
+
+        ITEEProverRegistry registry = ITEEProverRegistry(teeProverRegistryProxy);
+        require(registry.NITRO_VALIDATOR() == newNitroValidator, "proxy nitro validator mismatch");
+        require(
+            keccak256(bytes(registry.version())) == keccak256(bytes("0.6.1")), "proxy tee registry version mismatch"
+        );
+
+        require(
+            ITEEProverRegistryState(teeProverRegistryProxy).getExpectedImageHash()
+                == IAggregateVerifier(newAggregateVerifier).TEE_IMAGE_HASH(),
+            "tee registry image hash not sourced from the new aggregate verifier"
+        );
+
+        _assertNitroStack();
+    }
+
+    function _assertNitroStack() internal view {
+        INitroValidatorView validator = INitroValidatorView(newNitroValidator);
+        ICertManagerView manager = ICertManagerView(validator.certManager());
+        require(address(manager) == newCertManager, "cert manager mismatch");
+        require(validator.p384Verifier() == newP384Verifier, "validator p384 mismatch");
+        require(manager.p384Verifier() == newP384Verifier, "cert manager p384 mismatch");
+        require(manager.owner() == certManagerOwner, "cert manager owner mismatch");
+        require(manager.revoker() == certManagerRevoker, "cert manager revoker mismatch");
+        require(manager.verified(manager.ROOT_CA_CERT_HASH()).length != 0, "root certificate not cached");
+    }
+
+    /// @dev Registry storage only. Omits `getExpectedImageHash` / `isValidSigner` because those
+    ///      read the AggregateVerifier that call 5 replaces.
+    function _registryStateDigest() internal view returns (bytes32) {
+        ITEEProverRegistryState registry = ITEEProverRegistryState(teeProverRegistryProxy);
+        address[] memory signers = registry.getRegisteredSigners();
+        bytes32[] memory imageHashes = new bytes32[](signers.length);
+        for (uint256 i = 0; i < signers.length; i++) {
+            require(registry.isRegisteredSigner(signers[i]), "enumerated signer not registered");
+            imageHashes[i] = registry.signerImageHash(signers[i]);
+        }
+
+        return keccak256(
+            abi.encode(
+                registry.owner(),
+                registry.manager(),
+                registry.gameType(),
+                registry.isValidProposer(proposer),
+                registry.isValidProposer(challenger),
+                signers,
+                imageHashes
+            )
+        );
     }
 }
