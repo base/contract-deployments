@@ -52,11 +52,11 @@ Open `config/<network>/.env` and confirm every value, in particular:
   from an unexpected base.
 - `AGGREGATE_VERIFIER_TEE_IMAGE_HASH`, `AGGREGATE_VERIFIER_ZK_RANGE_HASH` and
   `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` — all three rotate for Cobalt. The TEE value is PCR0 of
-  the network's Nitro enclave; the ZK values are the SP1 keys from `just succinct vkeys --build`.
-  Zeronet's are filled from [`releases/v1.4.0`](https://github.com/base/base/tree/releases/v1.4.0).
-  Sepolia's ship blank until its node release is confirmed. The deploy script refuses a zero hash
-  or a hash that still matches the live verifier. Every other `AggregateVerifier` constructor
-  argument is read back from the live implementation at deploy time.
+  the Nitro enclave; the ZK values are the SP1 keys from `just succinct vkeys --build`. Zeronet and
+  Sepolia use the same values from
+  [`releases/v1.4.0`](https://github.com/base/base/tree/releases/v1.4.0). The deploy script refuses a
+  zero hash or a hash that still matches the live verifier. Every other `AggregateVerifier`
+  constructor argument is read back from the live implementation at deploy time.
 - Sepolia TEE anchors — `OLD_TEE_PROVER_REGISTRY_IMPL`, `OLD_NITRO_VERIFIER`,
   `CERT_MANAGER_OWNER`, and `CERT_MANAGER_REVOKER`. Re-check the live registry implementation
   and `NITRO_VERIFIER()` before deploying. `ExecuteCobaltUpgrade` only emits the sixth call

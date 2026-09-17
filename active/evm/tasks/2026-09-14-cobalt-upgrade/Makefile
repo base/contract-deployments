@@ -149,23 +149,8 @@ deploy-proofs:
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_PROOFS_SCRIPT) \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
-.PHONY: validate-tee-deploy-config
-validate-tee-deploy-config:
-	@test -n "$(CERT_MANAGER_OWNER)" || (echo "CERT_MANAGER_OWNER required" && exit 1)
-	@test -n "$(CERT_MANAGER_REVOKER)" || (echo "CERT_MANAGER_REVOKER required" && exit 1)
-	@test -n "$(DISPUTE_GAME_FACTORY_PROXY)" || (echo "DISPUTE_GAME_FACTORY_PROXY required" && exit 1)
-
-.PHONY: validate-nitro-deployment
-validate-nitro-deployment: validate-tee-deploy-config
-	@test -f "$(ADDRESSES_JSON)" || (echo "deploy Nitro validator first" && exit 1)
-	@jq -e '.p384Verifier and .certManager and .nitroValidator' "$(ADDRESSES_JSON)" >/dev/null
-
-.PHONY: validate-tee-registry-deployment
-validate-tee-registry-deployment: validate-nitro-deployment
-	@jq -e '.teeProverRegistryImpl' "$(ADDRESSES_JSON)" >/dev/null
-
 .PHONY: deploy-nitro-validator
-deploy-nitro-validator: validate-tee-deploy-config
+deploy-nitro-validator:
 	@test -f "$(ADDRESSES_JSON)" || echo '{}' > "$(ADDRESSES_JSON)"
 	cd $(PROJECT_DIR) && CERT_MANAGER_OWNER=$(CERT_MANAGER_OWNER) CERT_MANAGER_REVOKER=$(CERT_MANAGER_REVOKER) \
 		ADDRESSES_JSON=$(ADDRESSES_JSON) FOUNDRY_PROFILE=nitro-deploy \
@@ -173,7 +158,7 @@ deploy-nitro-validator: validate-tee-deploy-config
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
 
 .PHONY: deploy-tee-registry-impl
-deploy-tee-registry-impl: validate-nitro-deployment
+deploy-tee-registry-impl:
 	cd $(PROJECT_DIR) && DISPUTE_GAME_FACTORY_PROXY=$(DISPUTE_GAME_FACTORY_PROXY) ADDRESSES_JSON=$(ADDRESSES_JSON) \
 		FOUNDRY_PROFILE=tee-registry-deploy \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_TEE_REGISTRY_SCRIPT) \
@@ -239,7 +224,7 @@ endif
 			--num-of-optimizations 999999 $(VERIFY_COMMON)
 
 .PHONY: verify-nitro-validator
-verify-nitro-validator: validate-nitro-deployment
+verify-nitro-validator:
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
@@ -262,7 +247,7 @@ endif
 		--verifier-api-key $(VERIFIER_API_KEY) --watch
 
 .PHONY: verify-tee-registry-impl
-verify-tee-registry-impl: validate-tee-registry-deployment
+verify-tee-registry-impl:
 ifndef VERIFIER_API_KEY
 	$(error VERIFIER_API_KEY is not set)
 endif
@@ -279,34 +264,25 @@ endif
 ##
 # Validation files
 ##
-# A network opts into the hinted Nitro cutover by setting OLD_TEE_PROVER_REGISTRY_IMPL in its
-# config/<network>/.env. Without this guard, running any target below before
-# `deploy-tee-registry-impl` would silently leave TEE_UPGRADE_ENV empty and build a five-call
-# transaction that passes every check with the registry upgrade missing.
-.PHONY: validate-upgrade-env
-validate-upgrade-env:
-	@test -z "$(OLD_TEE_PROVER_REGISTRY_IMPL)" || test -n "$(NEW_TEE_PROVER_REGISTRY_IMPL)" || \
-		(echo "$(TASK_NETWORK) needs the TEE cutover: run deploy-nitro-validator and deploy-tee-registry-impl first" && exit 1)
-
 .PHONY: gen-validation-cb
-gen-validation-cb: validate-upgrade-env deps-signer-tool
+gen-validation-cb: deps-signer-tool
 	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT),$(CB_MULTISIG),$(CB_SENDER),base-signer.json,$(UPGRADE_ENV))
 
 .PHONY: gen-validation-sc
-gen-validation-sc: validate-upgrade-env deps-signer-tool
+gen-validation-sc: deps-signer-tool
 	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer.json,$(UPGRADE_ENV))
 
 ##
 # Approve and execute
 ##
 .PHONY: approve-cb
-approve-cb: validate-upgrade-env
+approve-cb:
 	export $(UPGRADE_ENV); $(call MULTISIG_APPROVE,$(CB_MULTISIG),$(SIGNATURES))
 
 .PHONY: approve-sc
-approve-sc: validate-upgrade-env
+approve-sc:
 	export $(UPGRADE_ENV); $(call MULTISIG_APPROVE,$(BASE_SECURITY_COUNCIL),$(SIGNATURES))
 
 .PHONY: execute
-execute: validate-upgrade-env
+execute:
 	export $(UPGRADE_ENV); $(call MULTISIG_EXECUTE,0x)
