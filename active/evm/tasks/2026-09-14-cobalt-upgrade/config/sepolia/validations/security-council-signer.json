@@ -1,0 +1,299 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x0fe884546476dDd290eC46318785046ef68a0BA9 L1_PROXY_ADMIN=0x0389E59Aa0a41E4A413Ae70f0008e76CAA34b1F3 OPTIMISM_PORTAL=0x49f53e41452C74589E85cA1677426Ba426459e85 SYSTEM_CONFIG=0xf272670eb55e895584501d564AfEB048bEd26194 DISPUTE_GAME_FACTORY_PROXY=0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1 OLD_OPTIMISM_PORTAL_IMPL=0x45fA7cFfa725e238a46a35fdE9F339b63fDEDBdD OLD_SYSTEM_CONFIG_IMPL=0x4ABA707Dc42c49586158037EC7F2e1E48254c735 OLD_DISPUTE_GAME_FACTORY_IMPL=0xE7f2E3C6286375C102e482c0Aa2385D8bAAcac26 OLD_AGGREGATE_VERIFIER=0x48cB1A96036B76Ed420d4b8eD6977aC3a939764C NEW_OPTIMISM_PORTAL_IMPL=0xA53f56711A2f65c19C1542C98116b98Fc07A9BB1 NEW_SYSTEM_CONFIG_IMPL=0xAEB75E200b9Bcf9343ff1A2D2b1B3976e7339CA4 NEW_DISPUTE_GAME_FACTORY_IMPL=0x9CaCF701Ef24B8339cd1fDecADde7C080373Fb29 NEW_AGGREGATE_VERIFIER=0xC1a5aCb64e439A04017A526e3D8E5d3e79846448 PROTOCOL_VERSIONS_PROXY=0x15B721B12CF3b0C4400c8a2935A0Ae391c2eF65b PROTOCOL_VERSIONS_IMPL=0x1a4C38C954BF25e0aA6831BAa0dE1497280e09fd PROTOCOL_VERSIONS_INCIDENT_RESPONDER=0x646132A1667ca7aD00d36616AFBA1A28116C770A PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=79228162588051313888382156800 PROTOCOL_VERSIONS_INITIAL_SCHEDULE=1695768288,1699981200,1703203200,1708534800,1716998400,1723478400,1732633200,1742486400,1744905600,1763568001,1776708000,1781805600,1790186400 TEE_PROVER_REGISTRY_PROXY=0xf0d7E15673fBA052e83d7f2b26BB6071E86b972e TEE_VERIFIER=0x92F6dD3501E51B8b20C77b959becaaebeB210e17 PROPOSER=0xdb84125f2f4229c81c579f41bc129c71b174eb58 CHALLENGER=0xadc09b63a3ac57a2ce86d946617a18df9db029a1 CERT_MANAGER_OWNER=0x646132A1667ca7aD00d36616AFBA1A28116C770A CERT_MANAGER_REVOKER=0x8074b32bD7d06C8f27596F3D6fbf867A36eA22a3 OLD_TEE_PROVER_REGISTRY_IMPL=0xF9Ab55c35cE7Fb183A50E611B63558499130D849 NEW_TEE_PROVER_REGISTRY_IMPL=0xf07584cDAde9B2a739C682D88987881335c5F12f OLD_NITRO_VERIFIER=0x7D8EA07DB94128DBEe66bAfa3eBAa9668B413d72 NEW_P384_VERIFIER=0xa8320712fF181D74e719Ff7E6E1012bbe4687b26 NEW_CERT_MANAGER=0x50521128e3eB8708F05129D7B7283737D55a1936 NEW_NITRO_VALIDATOR=0x16970101Ea32243cC80a2e0C91427e8bDA70F689 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-sepolia-full.cbhq.net tasks/2026-09-14-cobalt-upgrade/script/ExecuteCobaltUpgrade.s.sol:ExecuteCobaltUpgrade --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-sepolia-full.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xbadf81181b174dd7e5e43d26230e03045947c940d8ff77afc7cf27a69ff82922"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0x3d481fe94991f8457cfdf3c3bb1f9e411d38dd4a552bcf7ee61b3c3c4ce08f13",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000028",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000029",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x566ac2a89a4b89598fb8e3245ad69c05e710a61a3e37818ac27cb1d77128f134",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the Cobalt and TEE upgrade transaction hash from the Security Council signer Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "ProtocolVersions - Sepolia",
+      "address": "0x15B721B12CF3b0C4400c8a2935A0Ae391c2eF65b",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Sets Initializable._initialized to 1, recording that the new ProtocolVersions proxy has run its reinitializer(1) initialize call.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "description": "Sets the _timestamps array length to 13, one entry per registered upgrade (ids 0-12, genesis through cobalt).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Sets the _upgradeScheduleId array length to 14: the bytes32(0) seed at index 0 plus one hash-chain link for each of the 13 registered upgrades.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000001000000040000000000000000",
+          "description": "Sets minimumProtocolVersion to v1.4.0. The OP format packs the low 16 bytes as major || minor || patch || pre-release, four bytes each, so v1.4.0 is 0x00000001000000040000000000000000 (79228162588051313888382156800).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000646132a1667ca7ad00d36616afba1a28116c770a",
+          "description": "Sets incidentResponder to the Coinbase multisig. This is a restricted role that can only push an already-scheduled, not-yet-activated upgrade further into the future.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000001a4c38c954bf25e0aa6831baa0de1497280e09fd",
+          "description": "Upgrades the ProtocolVersions proxy from the zero address to the registry implementation (version 1.0.0). The proxy was deployed uninitialized, so this is the upgradeAndCall that also seeds the schedule.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5acf",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xcf3d5281bfa652ef70703e785676cfe04317e8f124709bf8611ce31f684291b0",
+          "description": "_upgradeScheduleId[1]: hash-chain link committing to upgrade id 0 (genesis/regolith) at 1695768288.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad0",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xd0fae667b9d2d908335c2d81f83a5e564196b98f1b53743d97bfd34e139b31c2",
+          "description": "_upgradeScheduleId[2]: hash-chain link committing to upgrade id 1 (canyon) at 1699981200.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad1",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x2a7799774edf6e17f0a4da298960b1851bbb0da2fe1df9be858cd2b5edc12d58",
+          "description": "_upgradeScheduleId[3]: hash-chain link committing to upgrade id 2 (delta) at 1703203200.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad2",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x696795b03cc65142e5d9c10e06d9c420996a9a3ddb2d954055b45bc9727eda51",
+          "description": "_upgradeScheduleId[4]: hash-chain link committing to upgrade id 3 (ecotone) at 1708534800.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xdc8c5438fffa383992d78faa6665172fb6336a8bb1bf4335fa0cfbd1ae929e09",
+          "description": "_upgradeScheduleId[5]: hash-chain link committing to upgrade id 4 (fjord) at 1716998400.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad4",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x511786bd71a6db2220e981aa93ac20e4c900dcfce5502ebc4d31acbd0aa11628",
+          "description": "_upgradeScheduleId[6]: hash-chain link committing to upgrade id 5 (granite) at 1723478400.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad5",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x8d7396cd0fdc73cef6e895bbbd31988d2b7a55a0bc0cecb8aabfbf2b53cfbba5",
+          "description": "_upgradeScheduleId[7]: hash-chain link committing to upgrade id 6 (holocene) at 1732633200.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xc570fa1fd659aee81ea48e0375bd722aaccf8bff92e5fbe26eab0d5725b7fe24",
+          "description": "_upgradeScheduleId[8]: hash-chain link committing to upgrade id 7 (pectraBlobSchedule) at 1742486400.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad7",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x973ff06a1a574203123aa57bc124a98e93e03ff87b407b029a9c6563fc3bdd42",
+          "description": "_upgradeScheduleId[9]: hash-chain link committing to upgrade id 8 (isthmus) at 1744905600.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x034a09aee80079c3421a571cdb742d8daa883af0ac2d7cc63c0e8d63e510b600",
+          "description": "_upgradeScheduleId[10]: hash-chain link committing to upgrade id 9 (jovian) at 1763568001.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ad9",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xb22c9ad7ea25a5de6123b05a23ea01fb02e066a0175cba20b46da8131af463c7",
+          "description": "_upgradeScheduleId[11]: hash-chain link committing to upgrade id 10 (azul) at 1776708000.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ada",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xa4d3e7bcb8576e9911a3301166267c90bf1818380a0c216428492861d5d971bc",
+          "description": "_upgradeScheduleId[12]: hash-chain link committing to upgrade id 11 (beryl) at 1781805600.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5adb",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xe5aa8e509aca55728cbb1d0342ec7289830194b9bb54ac76130e27e26f1f92d4",
+          "description": "_upgradeScheduleId[13]: hash-chain link committing to upgrade id 12 (cobalt) at 1790186400. As the tail of the chain, this is the registry's scheduleId.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf6",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000065d62c10000000006584d180000000006553a7900000000065135ee0",
+          "description": "_timestamps[0..3] packed: genesis/regolith at 1695768288, canyon at 1699981200, delta at 1703203200 and ecotone at 1708534800.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf7",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000067dc3b80000000006745e2700000000066ba31800000000066575100",
+          "description": "_timestamps[4..7] packed: fjord at 1716998400, granite at 1723478400, holocene at 1732633200 and pectraBlobSchedule at 1742486400.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf8",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000006a3432200000000069e669a000000000691de9810000000068012580",
+          "description": "_timestamps[8..11] packed: isthmus at 1744905600, jovian at 1763568001, azul at 1776708000 and beryl at 1781805600.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf9",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x000000000000000000000000000000000000000000000000000000006ab413a0",
+          "description": "_timestamps[12]: schedules cobalt for 1790186400, which is 2026-09-23 18:00:00 UTC.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Sepolia",
+      "address": "0x49f53e41452C74589E85cA1677426Ba426459e85",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000045fa7cffa725e238a46a35fde9f339b63fdedbdd",
+          "after": "0x000000000000000000000000a53f56711a2f65c19c1542c98116b98fc07a9bb1",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000028",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000029",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactoryProxy - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x00000000000000000000000048cb1a96036b76ed420d4b8ed6977ac3a939764c",
+          "after": "0x000000000000000000000000c1a5acb64e439a04017a526e3d8e5d3e79846448",
+          "description": "Sets gameImpls[621] to the redeployed AggregateVerifier (version 0.2.0), replacing the previous verifier. The new verifier is bound to the new ProtocolVersions registry and carries the Cobalt proof hashes.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000e7f2e3c6286375c102e482c0aa2385d8baacac26",
+          "after": "0x0000000000000000000000009cacf701ef24b8339cd1fdecadde7c080373fb29",
+          "description": "Update address of DisputeGameFactory to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "TEEProverRegistry - Sepolia",
+      "address": "0xf0d7E15673fBA052e83d7f2b26BB6071E86b972e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000f9ab55c35ce7fb183a50e611b63558499130d849",
+          "after": "0x000000000000000000000000f07584cdade9b2a739c682d88987881335c5f12f",
+          "description": "Upgrades TEEProverRegistry from version 0.5.0 using the legacy Nitro verifier to version 0.6.1 using the hinted Nitro validator. Owner, manager, signers, per-signer image hashes, proposers and game type remain unchanged.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564AfEB048bEd26194",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000004aba707dc42c49586158037ec7f2e1e48254c735",
+          "after": "0x000000000000000000000000aeb75e200b9bcf9343ff1a2d2b1b3976e7339ca4",
+          "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
