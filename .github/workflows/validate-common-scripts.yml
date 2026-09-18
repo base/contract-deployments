@@ -33,6 +33,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
+      - name: Check pause task setup
+        run: |
+          root=$(mktemp -d)
+          trap 'rm -rf "$root"' EXIT
+          git archive HEAD Makefile Multisig.mk config/mainnet.env config/sepolia.env scripts/setup-pause-task.sh active/evm/make/pause-bridge.mk | tar -x -C "$root"
+          mkdir -p "$root/active/evm/tasks"
+          make -C "$root" setup-pause-task network=mainnet TASK_ID=2000-01-01-pause-bridge
+          make -C "$root" setup-pause-task network=sepolia
+          task=$root/active/evm/tasks/2000-01-01-pause-bridge
+          grep -q "BASE_CONTRACTS_COMMIT=$BASE_CONTRACTS_COMMIT" "$task/config/mainnet/.env"
+          test -f "$task/config/sepolia/.env"
+          make -C "$task" TASK_NETWORK=mainnet GOPATH=/tmp -n sign-pause
+
       # ── Toolchain (mise) ─────────────────────────────────────────────
       # Installs all tools pinned in mise.toml (foundry, node, bun, go) so
       # CI runs match local signer environments byte-for-byte.

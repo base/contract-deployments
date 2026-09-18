@@ -80,9 +80,9 @@ To execute a new task, run one of the following commands (depending on the type 
 - For funding tasks: `make setup-funding network=<network>`
 - For updating the partner threshold in Base Bridge: `make setup-bridge-partner-threshold network=<network>`
 - For pausing / un-pausing Base Bridge: `make setup-bridge-pause network=<network>`
-- For pausing SuperchainConfig: `make setup-superchain-config-pause network=<network>`
+- For creating bridge pause signatures: `make setup-pause-task network=<network>`
 
-Each `setup-*` command also creates a matching `<network>/signatures/<task-dir-basename>/` directory for [task origin signing](#task-origin-signing). The parent `signatures/` directory is created automatically via `mkdir -p` for networks that do not yet have one.
+`setup-pause-task` reuses the active pause task when one exists; otherwise it creates `active/evm/tasks/<date>-pause-bridge/`. Pass `TASK_ID=<task-id>` to select a task explicitly when needed.
 
 Next, `cd` into the directory that was created for you and follow the steps listed below for the relevant template.
 
@@ -210,7 +210,7 @@ gen-validation: validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(SENDER),base-signer.json,)
 ```
 
-Templates should use these macros rather than inline `forge script` / `eip712sign` / `bun run` invocations. The known exceptions are the incident-response pause templates, which pre-sign 20 future nonces in a loop using inline `eip712sign`; only their `execute-*` targets use `MULTISIG_EXECUTE`.
+Templates should use these macros rather than inline `forge script` / `eip712sign` / `bun run` invocations. The bridge pause template is an exception because it pre-signs 20 future nonces using inline `eip712sign` for the pauser service.
 
 ## Task origin signing
 
@@ -325,16 +325,14 @@ This template is used to pause or un-pause [Base Bridge](https://github.com/base
 1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
 1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
 
-## Using the pause SuperchainConfig template
+## Using the bridge pause template
 
-This template is used to pause or un-pause the L1 SuperchainConfig contract.
+This command creates a task for pre-signing 20 transactions that pause Base withdrawals.
+
+Bridge pause tasks do not use task-origin validation because the pauser service consumes the signatures directly.
 
 1. Ensure you have followed the instructions above in `setup`.
-1. Run `make setup-superchain-config-pause network=<network>` and go to the folder that was created by this command.
-1. Specify the commit of [Base contracts code](https://github.com/base/contracts) you intend to use in the `.env` file.
-1. Run `make deps`.
-1. Fill in any task-specific variables in the `.env` file that have per-network comments, using the value for your target network.
-1. Build the contracts with `forge build`.
-1. Sign the pause transaction with `make sign-pause` or generate the validation file for un-pausing with `make gen-validation-unpause`.
-1. Check in the task when it's ready to sign and request the facilitators to collect signatures from signers.
-1. Once executed, check in the records files and mark the task `EXECUTED` in the README.
+1. Run `make setup-pause-task network=<network>` and go to the folder that was created by this command.
+1. Run `make TASK_NETWORK=<network> deps`.
+1. Sign the pause transactions with `make TASK_NETWORK=<network> sign-pause`.
+1. Send `config/<network>/signatures-pause.txt` through the approved secure channel for pauser-service aggregation.
