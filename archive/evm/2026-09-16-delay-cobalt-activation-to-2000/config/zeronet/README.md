@@ -1,6 +1,6 @@
 # Delay Cobalt Activation to 20:00 UTC
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0xb833093f5d93b19477a624e1f0e684cd0aa64ffd91fb6a96570c6d8c27290ae4)
 
 ## Description
 
