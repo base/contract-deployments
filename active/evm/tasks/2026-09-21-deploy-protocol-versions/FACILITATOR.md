@@ -30,19 +30,7 @@ make TASK_NETWORK=<network> gen-validation-sc
 These create `config/<network>/validations/base-signer.json` and
 `security-council-signer.json`. Do not generate them until the deployed addresses are final.
 
-## 4. Generate mainnet task-origin signatures
-
-After all task files and validations are final:
-
-```bash
-make TASK_NETWORK=mainnet sign-as-task-creator
-make TASK_NETWORK=mainnet sign-as-base-facilitator
-make TASK_NETWORK=mainnet sign-as-sc-facilitator
-```
-
-Commit the generated files under `signatures/mainnet/`.
-
-## 5. Collect approvals and execute
+## 4. Collect approvals and execute
 
 ```bash
 SIGNATURES=<concatenated base signatures>             make TASK_NETWORK=<network> approve-cb

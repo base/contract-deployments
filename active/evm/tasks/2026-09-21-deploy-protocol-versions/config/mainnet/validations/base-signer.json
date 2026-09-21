@@ -242,9 +242,5 @@
     }
   ],
   "balanceChanges": [],
-  "taskOriginConfig": {
-    "taskCreator": {
-      "commonName": "thanh.trinh@coinbase.com"
-    }
-  }
+  "skipTaskOriginValidation": true
 }

@@ -14,8 +14,6 @@ SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
 VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
 RPC_URL := $(L1_RPC_URL)
 ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
-TASK_ORIGIN_DIR := $(CURDIR)/config/$(TASK_NETWORK)
-SIGNATURE_DIR := $(CURDIR)/signatures/$(TASK_NETWORK)
 
 TASK_DIR := tasks/2026-09-21-deploy-protocol-versions
 DEPLOY_PROXY_SCRIPT := $(TASK_DIR)/script/DeployProtocolVersionsProxy.s.sol:DeployProtocolVersionsProxy
