@@ -10,6 +10,7 @@ include $(REPO_ROOT)/config/$(TASK_NETWORK).env
 include config/$(TASK_NETWORK)/.env
 
 ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
+export FOUNDRY_BROADCAST := $(CURDIR)/records
 LEDGER_HD_PATH := "m/44'/60'/$(LEDGER_ACCOUNT)'/0/0"
 DEPLOYER = $(shell $(MISE_EXEC) cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
 
@@ -51,7 +52,7 @@ validate-impl:
 DEPLOY_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun
 
 .PHONY: deploy
-deploy: deploy-proxy
+deploy: deploy-impl deploy-proxy
 
 .PHONY: deploy-proxy
 deploy-proxy: validate-impl

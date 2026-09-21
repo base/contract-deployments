@@ -16,21 +16,19 @@ September 30, 2026 at 18:00 UTC (`1790791200`).
 make TASK_NETWORK=mainnet deps
 ```
 
-## 3. Deploy and initialize the proxy
-
-The implementation is already recorded in `config/mainnet/addresses.json`. Deploy only the proxy:
+## 3. Deploy and initialize
 
 ```bash
-make TASK_NETWORK=mainnet deploy-proxy
+make TASK_NETWORK=mainnet deploy
 ```
 
-The script temporarily assigns the Ledger deployer as proxy admin, atomically sets the recorded
-implementation and calls `initialize`, then transfers admin to `L1_PROXY_ADMIN`. Its post-checks
-verify the final admin, implementation, owner, schedule, minimum protocol version, incident
-responder, and schedule commitment.
+`deploy` first deploys the implementation with 999,999 optimizer runs. It then deploys the proxy
+with 5,000 optimizer runs, temporarily assigns the Ledger deployer as proxy admin, atomically sets
+the implementation and calls `initialize`, then transfers admin to `L1_PROXY_ADMIN`. The proxy
+post-checks verify the final admin, implementation, owner, schedule, minimum protocol version,
+incident responder, and schedule commitment.
 
-Do not reuse the earlier uninitialized proxy. This command writes the replacement proxy address and
-constructor arguments to `config/mainnet/addresses.json`.
+The scripts write all addresses and proxy constructor arguments to `config/mainnet/addresses.json`.
 
 ## 4. Verify and commit
 
@@ -38,5 +36,5 @@ constructor arguments to `config/mainnet/addresses.json`.
 VERIFIER_API_KEY=<key> make TASK_NETWORK=mainnet verify
 ```
 
-Commit the updated `addresses.json` and proxy broadcast record. No Safe validation files,
+Commit the updated `addresses.json` and both broadcast records. No Safe validation files,
 signatures, approvals, or separate initialization transaction are required.

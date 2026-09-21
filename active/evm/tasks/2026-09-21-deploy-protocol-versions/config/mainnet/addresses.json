@@ -1,3 +1,5 @@
 {
-  "protocolVersionsImpl": "0xE01aF68e2cb6c4335b17279393E0D60f6F0406f2"
+  "protocolVersionsImpl": "0xE01aF68e2cb6c4335b17279393E0D60f6F0406f2",
+  "protocolVersionsProxy": "0x7480Afc8D99a5c645c247dB5A1e4a4f440e6e095",
+  "protocolVersionsProxyConstructorArgs": "0x0000000000000000000000007ea56fbd8320f032014c8889c4f6cdc86796db04"
 }
