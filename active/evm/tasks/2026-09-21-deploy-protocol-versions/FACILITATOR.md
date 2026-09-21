@@ -7,7 +7,7 @@ commands below; every command requires `TASK_NETWORK` explicitly. Run them from 
 
 Confirm `config/<network>/.env` against the node chain config, especially the ordered activation
 schedule, minimum protocol version, and incident responder. Mainnet imports its history through
-Beryl and registers Cobalt at ID 12 with timestamp `0`, leaving activation unscheduled.
+Beryl and schedules Cobalt at ID 12 for September 30, 2026 at 18:00 UTC (`1790791200`).
 
 ## 2. Install dependencies and deploy
 
