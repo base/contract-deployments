@@ -1,44 +1,42 @@
 # Deploy ProtocolVersions — Facilitator Guide
 
-This task deploys and initializes the Base `ProtocolVersions` registry. Replace `<network>` in the
-commands below; every command requires `TASK_NETWORK` explicitly. Run them from this directory.
+This task deploys and initializes the Base mainnet `ProtocolVersions` proxy, then transfers its
+admin to the canonical L1 `ProxyAdmin`. Run all commands from this directory and pass
+`TASK_NETWORK=mainnet` explicitly.
 
-## 1. Review the network config
+## 1. Review the configuration
 
-Confirm `config/<network>/.env` against the node chain config, especially the ordered activation
-schedule, minimum protocol version, and incident responder. Mainnet imports its history through
-Beryl and schedules Cobalt at ID 12 for September 30, 2026 at 18:00 UTC (`1790791200`).
+Confirm `config/mainnet/.env`, especially the complete activation history, Cobalt timestamp,
+minimum protocol version, and incident responder. Cobalt is upgrade ID 12 and activates on
+September 30, 2026 at 18:00 UTC (`1790791200`).
 
-## 2. Install dependencies and deploy
-
-```bash
-make TASK_NETWORK=<network> deps
-make TASK_NETWORK=<network> deploy
-make TASK_NETWORK=<network> verify VERIFIER_API_KEY=<key>
-```
-
-The proxy uses 5,000 optimizer runs and the implementation uses 999,999, matching the pinned
-`base/contracts` build. Commit `config/<network>/addresses.json` and the `records/` artifacts.
-
-## 3. Generate validation files
+## 2. Install dependencies
 
 ```bash
-make TASK_NETWORK=<network> gen-validation-cb
-make TASK_NETWORK=<network> gen-validation-sc
+make TASK_NETWORK=mainnet deps
 ```
 
-These create `config/<network>/validations/base-signer.json` and
-`security-council-signer.json`. Do not generate them until the deployed addresses are final.
+## 3. Deploy and initialize the proxy
 
-## 4. Collect approvals and execute
+The implementation is already recorded in `config/mainnet/addresses.json`. Deploy only the proxy:
 
 ```bash
-SIGNATURES=<concatenated base signatures>             make TASK_NETWORK=<network> approve-cb
-SIGNATURES=<concatenated security council signatures> make TASK_NETWORK=<network> approve-sc
-make TASK_NETWORK=<network> execute
+make TASK_NETWORK=mainnet deploy-proxy
 ```
 
-The transaction calls `ProxyAdmin.upgradeAndCall` once, setting the implementation and initializing
-the schedule, minimum protocol version, and incident responder atomically. The script verifies the
-proxy admin, implementation version, complete schedule, and derived schedule commitment before and
-after execution.
+The script temporarily assigns the Ledger deployer as proxy admin, atomically sets the recorded
+implementation and calls `initialize`, then transfers admin to `L1_PROXY_ADMIN`. Its post-checks
+verify the final admin, implementation, owner, schedule, minimum protocol version, incident
+responder, and schedule commitment.
+
+Do not reuse the earlier uninitialized proxy. This command writes the replacement proxy address and
+constructor arguments to `config/mainnet/addresses.json`.
+
+## 4. Verify and commit
+
+```bash
+VERIFIER_API_KEY=<key> make TASK_NETWORK=mainnet verify
+```
+
+Commit the updated `addresses.json` and proxy broadcast record. No Safe validation files,
+signatures, approvals, or separate initialization transaction are required.
