@@ -6,8 +6,8 @@ commands below; every command requires `TASK_NETWORK` explicitly. Run them from 
 ## 1. Review the network config
 
 Confirm `config/<network>/.env` against the node chain config, especially the ordered activation
-schedule, minimum protocol version, and incident responder. Mainnet starts with its history through
-Beryl; Cobalt is not registered or scheduled by this task.
+schedule, minimum protocol version, and incident responder. Mainnet imports its history through
+Beryl and registers Cobalt at ID 12 with timestamp `0`, leaving activation unscheduled.
 
 ## 2. Install dependencies and deploy
 
