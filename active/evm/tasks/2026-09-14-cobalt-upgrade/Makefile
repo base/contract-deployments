@@ -21,8 +21,11 @@ ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
 TASK_DIR := tasks/2026-09-14-cobalt-upgrade
 DEPLOY_CORE_SCRIPT := $(TASK_DIR)/script/DeployCobaltCoreImpls.s.sol:DeployCobaltCoreImpls
 DEPLOY_PROOFS_SCRIPT := $(TASK_DIR)/script/DeployCobaltProofImpls.s.sol:DeployCobaltProofImpls
+DEPLOY_NITRO_SCRIPT := $(TASK_DIR)/script/DeployNitroValidatorStack.s.sol:DeployNitroValidatorStack
+DEPLOY_TEE_REGISTRY_SCRIPT := $(TASK_DIR)/script/DeployTEEProverRegistryImpl.s.sol:DeployTEEProverRegistryImpl
 UPGRADE_SCRIPT := $(TASK_DIR)/script/ExecuteCobaltUpgrade.s.sol:ExecuteCobaltUpgrade
 SCRIPT_NAME := $(UPGRADE_SCRIPT)
+DEPLOYER = $(shell $(MISE_EXEC) cast wallet address --ledger --mnemonic-derivation-path $(LEDGER_HD_PATH))
 
 CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
@@ -36,6 +39,12 @@ PROTOCOL_VERSIONS_IMPL = $(shell jq -er '.protocolVersionsImpl' $(ADDRESSES_JSON
 OPTIMISM_PORTAL_IMPL_CTOR_ARGS = $(shell jq -er '.optimismPortalImplConstructorArgs' $(ADDRESSES_JSON) 2>/dev/null)
 PROTOCOL_VERSIONS_PROXY_CTOR_ARGS = $(shell jq -er '.protocolVersionsProxyConstructorArgs' $(ADDRESSES_JSON) 2>/dev/null)
 AGGREGATE_VERIFIER_CTOR_ARGS = $(shell jq -er '.aggregateVerifierConstructorArgs' $(ADDRESSES_JSON) 2>/dev/null)
+# `// empty` matters here: a bare `jq -er .missing` prints the literal "null" on stdout, which
+# would make the cutover gate below read as populated before anything is deployed.
+NEW_TEE_PROVER_REGISTRY_IMPL = $(shell jq -r '.teeProverRegistryImpl // empty' $(ADDRESSES_JSON) 2>/dev/null)
+NEW_P384_VERIFIER = $(shell jq -r '.p384Verifier // empty' $(ADDRESSES_JSON) 2>/dev/null)
+NEW_CERT_MANAGER = $(shell jq -r '.certManager // empty' $(ADDRESSES_JSON) 2>/dev/null)
+NEW_NITRO_VALIDATOR = $(shell jq -r '.nitroValidator // empty' $(ADDRESSES_JSON) 2>/dev/null)
 
 DEPLOY_ENV = ADDRESSES_JSON=$(ADDRESSES_JSON) \
 	L1_PROXY_ADMIN=$(L1_PROXY_ADMIN) \
@@ -65,7 +74,27 @@ UPGRADE_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
 	PROTOCOL_VERSIONS_IMPL=$(PROTOCOL_VERSIONS_IMPL) \
 	PROTOCOL_VERSIONS_INCIDENT_RESPONDER=$(PROTOCOL_VERSIONS_INCIDENT_RESPONDER) \
 	PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=$(PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION) \
-	PROTOCOL_VERSIONS_INITIAL_SCHEDULE=$(PROTOCOL_VERSIONS_INITIAL_SCHEDULE)
+	PROTOCOL_VERSIONS_INITIAL_SCHEDULE=$(PROTOCOL_VERSIONS_INITIAL_SCHEDULE) \
+	$(TEE_UPGRADE_ENV)
+
+# Sepolia (and later networks that still need the hinted Nitro cutover) pass these
+# so ExecuteCobaltUpgrade emits a sixth ProxyAdmin.upgrade. Zeronet leaves them
+# unset and stays on the original five-call transaction.
+ifneq ($(NEW_TEE_PROVER_REGISTRY_IMPL),)
+TEE_UPGRADE_ENV = \
+	TEE_PROVER_REGISTRY_PROXY=$(TEE_PROVER_REGISTRY_PROXY) \
+	TEE_VERIFIER=$(TEE_VERIFIER) \
+	PROPOSER=$(PROPOSER) \
+	CHALLENGER=$(CHALLENGER) \
+	CERT_MANAGER_OWNER=$(CERT_MANAGER_OWNER) \
+	CERT_MANAGER_REVOKER=$(CERT_MANAGER_REVOKER) \
+	OLD_TEE_PROVER_REGISTRY_IMPL=$(OLD_TEE_PROVER_REGISTRY_IMPL) \
+	NEW_TEE_PROVER_REGISTRY_IMPL=$(NEW_TEE_PROVER_REGISTRY_IMPL) \
+	OLD_NITRO_VERIFIER=$(OLD_NITRO_VERIFIER) \
+	NEW_P384_VERIFIER=$(NEW_P384_VERIFIER) \
+	NEW_CERT_MANAGER=$(NEW_CERT_MANAGER) \
+	NEW_NITRO_VALIDATOR=$(NEW_NITRO_VALIDATOR)
+endif
 
 ##
 # Dependencies
@@ -83,7 +112,8 @@ task-extra-deps:
 	cd $(PROJECT_DIR) && $(MISE_EXEC) forge install --no-git \
 		github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d \
 		github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@0a2cb9a445c365870ed7a8ab461b12acf3e27d63 \
-		github.com/transmissions11/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc
+		github.com/transmissions11/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc \
+		github.com/base/nitro-validator@0ea0d12366b4fa44f9e07e4755f2ad36561cb674
 
 # Zeronet runs a SystemConfig patched to raise MAX_GAS_LIMIT to 2e9. Cobalt changes
 # SystemConfig, so the patch is re-applied on top of the pinned commit rather than
@@ -118,6 +148,21 @@ deploy-proofs:
 	cd $(PROJECT_DIR) && $(DEPLOY_ENV) $(COBALT_BUILD) FOUNDRY_OPTIMIZER_RUNS=999999 \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_PROOFS_SCRIPT) \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+
+.PHONY: deploy-nitro-validator
+deploy-nitro-validator:
+	@test -f "$(ADDRESSES_JSON)" || echo '{}' > "$(ADDRESSES_JSON)"
+	cd $(PROJECT_DIR) && CERT_MANAGER_OWNER=$(CERT_MANAGER_OWNER) CERT_MANAGER_REVOKER=$(CERT_MANAGER_REVOKER) \
+		ADDRESSES_JSON=$(ADDRESSES_JSON) FOUNDRY_PROFILE=nitro-deploy \
+		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_NITRO_SCRIPT) \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
+
+.PHONY: deploy-tee-registry-impl
+deploy-tee-registry-impl:
+	cd $(PROJECT_DIR) && DISPUTE_GAME_FACTORY_PROXY=$(DISPUTE_GAME_FACTORY_PROXY) ADDRESSES_JSON=$(ADDRESSES_JSON) \
+		FOUNDRY_PROFILE=tee-registry-deploy \
+		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_TEE_REGISTRY_SCRIPT) \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv --sender $(DEPLOYER)
 
 ##
 # Source verification
@@ -177,6 +222,44 @@ endif
 			$(MISE_EXEC) forge verify-contract $(NEW_AGGREGATE_VERIFIER) src/L1/proofs/AggregateVerifier.sol:AggregateVerifier \
 			--constructor-args $(AGGREGATE_VERIFIER_CTOR_ARGS) \
 			--num-of-optimizations 999999 $(VERIFY_COMMON)
+
+.PHONY: verify-nitro-validator
+verify-nitro-validator:
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
+	cd $(PROJECT_DIR)/lib/nitro-validator && FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun \
+		$(MISE_EXEC) forge verify-contract $(NEW_P384_VERIFIER) src/P384Verifier.sol:P384Verifier \
+		--chain $(L1_CHAIN_ID) --compiler-version v0.8.26+commit.8a97fa7a --num-of-optimizations 10000 \
+		--verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) --watch
+	cd $(PROJECT_DIR)/lib/nitro-validator && FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun \
+		$(MISE_EXEC) forge verify-contract $(NEW_CERT_MANAGER) src/CertManager.sol:CertManager \
+		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address,address,address)" $(NEW_P384_VERIFIER) $(CERT_MANAGER_OWNER) $(CERT_MANAGER_REVOKER)) \
+		--chain $(L1_CHAIN_ID) --compiler-version v0.8.26+commit.8a97fa7a --num-of-optimizations 10000 \
+		--verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) --watch
+	cd $(PROJECT_DIR)/lib/nitro-validator && FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun \
+		$(MISE_EXEC) forge verify-contract $(NEW_NITRO_VALIDATOR) src/NitroValidator.sol:NitroValidator \
+		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address,address)" $(NEW_CERT_MANAGER) $(NEW_P384_VERIFIER)) \
+		--chain $(L1_CHAIN_ID) --compiler-version v0.8.26+commit.8a97fa7a --num-of-optimizations 10000 \
+		--verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=$(L1_CHAIN_ID)" \
+		--verifier-api-key $(VERIFIER_API_KEY) --watch
+
+.PHONY: verify-tee-registry-impl
+verify-tee-registry-impl:
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
+	@set -e; \
+		mkdir -p $(CONTRACTS_LIB); \
+		trap 'rm -f $(foreach d,$(VERIFY_DEPS) nitro-validator,$(CONTRACTS_LIB)/$(d)); rmdir $(CONTRACTS_LIB) 2>/dev/null || true' EXIT; \
+		for d in $(VERIFY_DEPS) nitro-validator; do ln -sfn ../../$$d $(CONTRACTS_LIB)/$$d; done; \
+		cd $(PROJECT_DIR); \
+		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=999999 \
+		$(MISE_EXEC) forge verify-contract $(NEW_TEE_PROVER_REGISTRY_IMPL) src/L1/proofs/tee/TEEProverRegistry.sol:TEEProverRegistry \
+		--constructor-args $(shell $(MISE_EXEC) cast abi-encode "constructor(address,address)" $(NEW_NITRO_VALIDATOR) $(DISPUTE_GAME_FACTORY_PROXY)) \
+		--num-of-optimizations 999999 $(VERIFY_COMMON)
 
 ##
 # Validation files
