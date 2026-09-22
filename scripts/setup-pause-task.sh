@@ -96,9 +96,9 @@ fi
 mkdir -p "$config_dir"
 
 cat >"$config_dir/.env" <<'EOF'
-# active/evm common scripts are written against base-contracts v8.2.1.
+# active/evm common scripts are written against base-contracts v8.3.0.
 # Coordinate an internal pauser update before changing this pin.
-BASE_CONTRACTS_COMMIT=f3a33c8577c8ca1e037b45e822bfcb75f099270b
+BASE_CONTRACTS_COMMIT=385f21a41f277d287db92fffe88dca41299162ea
 EOF
 
 cat >"$config_dir/README.md" <<EOF
