@@ -1,6 +1,6 @@
 # Cobalt Upgrade
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xceaed96667d877b868646bebedb1e4423e8213d0757d982acf4f0e864e62c9cf)
 
 ## Description
 
