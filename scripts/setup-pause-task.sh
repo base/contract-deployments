@@ -75,6 +75,20 @@ include $(REPO_ROOT)/active/evm/make/pause-bridge.mk
 EOF
 fi
 
+if [ ! -e "$task_dir/FACILITATOR.md" ]; then
+	cat >"$task_dir/FACILITATOR.md" <<'EOF'
+# Facilitator Guide
+
+This task collects pre-signed withdrawal pause transactions for the pauser service.
+
+1. Ask each signer to follow `config/<network>/README.md`.
+2. Collect each `config/<network>/signatures-pause.txt` through the approved secure channel.
+3. Hand the signature files to the pauser-service operator for aggregation and configuration.
+
+This task does not generate validation files, collect onchain approvals, or execute transactions manually.
+EOF
+fi
+
 [ ! -e "$config_dir" ] || {
 	echo "setup-pause-task: network config already exists: $config_dir" >&2
 	exit 1

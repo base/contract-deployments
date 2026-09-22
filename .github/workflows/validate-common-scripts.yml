@@ -43,6 +43,7 @@ jobs:
           make -C "$root" setup-pause-task network=sepolia
           task=$root/active/evm/tasks/2000-01-01-pause-bridge
           grep -q "BASE_CONTRACTS_COMMIT=$BASE_CONTRACTS_COMMIT" "$task/config/mainnet/.env"
+          test -f "$task/FACILITATOR.md"
           test -f "$task/config/sepolia/.env"
           make -C "$task" TASK_NETWORK=mainnet GOPATH=/tmp -n sign-pause
 
