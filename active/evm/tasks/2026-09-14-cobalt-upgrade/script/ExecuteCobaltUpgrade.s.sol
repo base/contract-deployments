@@ -88,10 +88,10 @@ interface ICertManagerView {
 
 /// @notice Executes the Cobalt L1 upgrade on a Base chain.
 /// @dev Bundles the three Cobalt contract changes into a single ProxyAdmin-owner transaction:
-///      dynamic upgrades (a new ProtocolVersions registry plus the AggregateVerifier that binds it),
+///      dynamic upgrades (ProtocolVersions plus the AggregateVerifier that binds it),
 ///      the EthLockbox removal (OptimismPortal2 and SystemConfig), and CREATE2 dispute game proxies
 ///      (DisputeGameFactory). Networks that still need the hinted Nitro TEE cutover also pass
-///      `NEW_TEE_PROVER_REGISTRY_IMPL`, which adds a sixth ProxyAdmin.upgrade on the registry.
+///      `NEW_TEE_PROVER_REGISTRY_IMPL`, which appends a ProxyAdmin upgrade for the registry.
 contract ExecuteCobaltUpgrade is MultisigScript {
     /// @notice EIP-1967 implementation slot.
     bytes32 internal constant IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
@@ -124,6 +124,8 @@ contract ExecuteCobaltUpgrade is MultisigScript {
 
     address internal immutable protocolVersionsIncidentResponder;
     uint256 internal immutable protocolVersionsMinimumProtocolVersion;
+    bool internal immutable protocolVersionsPredeployed;
+    bytes32 internal immutable expectedSystemConfigVersionHash;
 
     /// @dev Solidity has no immutable arrays, so the imported activation schedule is read from the
     ///      environment into storage during construction.
@@ -173,6 +175,8 @@ contract ExecuteCobaltUpgrade is MultisigScript {
 
         protocolVersionsIncidentResponder = vm.envAddress("PROTOCOL_VERSIONS_INCIDENT_RESPONDER");
         protocolVersionsMinimumProtocolVersion = vm.envUint("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION");
+        protocolVersionsPredeployed = vm.envOr("PROTOCOL_VERSIONS_PREDEPLOYED", false);
+        expectedSystemConfigVersionHash = keccak256(bytes(vm.envString("EXPECTED_SYSTEM_CONFIG_VERSION")));
 
         uint256[] memory schedule = vm.envUint("PROTOCOL_VERSIONS_INITIAL_SCHEDULE", ",");
         for (uint256 i = 0; i < schedule.length; i++) {
@@ -206,41 +210,41 @@ contract ExecuteCobaltUpgrade is MultisigScript {
     }
 
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[](_teeCutover() ? 6 : 5);
+        Call[] memory calls = new Call[]((protocolVersionsPredeployed ? 4 : 5) + (_teeCutover() ? 1 : 0));
+        uint256 i;
 
-        // Dynamic upgrades: point the new proxy at the registry implementation and seed the
-        // activation schedule atomically. `initialize` is `reinitializer(1)` and the proxy has
-        // never been initialized, so this must be `upgradeAndCall` rather than a bare upgrade.
-        calls[0] = Call({
-            operation: Enum.Operation.Call,
-            target: proxyAdmin,
-            data: abi.encodeCall(
-                IProxyAdmin.upgradeAndCall,
-                (
-                    payable(protocolVersionsProxy),
-                    protocolVersionsImpl,
-                    abi.encodeCall(
-                        IProtocolVersions.initialize,
-                        (
-                            protocolVersionsIncidentResponder,
-                            protocolVersionsInitialSchedule,
-                            protocolVersionsMinimumProtocolVersion
+        if (!protocolVersionsPredeployed) {
+            calls[i++] = Call({
+                operation: Enum.Operation.Call,
+                target: proxyAdmin,
+                data: abi.encodeCall(
+                    IProxyAdmin.upgradeAndCall,
+                    (
+                        payable(protocolVersionsProxy),
+                        protocolVersionsImpl,
+                        abi.encodeCall(
+                            IProtocolVersions.initialize,
+                            (
+                                protocolVersionsIncidentResponder,
+                                protocolVersionsInitialSchedule,
+                                protocolVersionsMinimumProtocolVersion
+                            )
                         )
                     )
-                )
-            ),
-            value: 0
-        });
+                ),
+                value: 0
+            });
+        }
 
         // EthLockbox removal. Both implementations are already at their current init version and
         // the upgrade adds no state, so they are upgrade-only.
-        calls[1] = Call({
+        calls[i++] = Call({
             operation: Enum.Operation.Call,
             target: proxyAdmin,
             data: abi.encodeCall(IProxyAdmin.upgrade, (payable(optimismPortal), newOptimismPortalImpl)),
             value: 0
         });
-        calls[2] = Call({
+        calls[i++] = Call({
             operation: Enum.Operation.Call,
             target: proxyAdmin,
             data: abi.encodeCall(IProxyAdmin.upgrade, (payable(systemConfig), newSystemConfigImpl)),
@@ -248,7 +252,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         });
 
         // CREATE2 dispute game proxies.
-        calls[3] = Call({
+        calls[i++] = Call({
             operation: Enum.Operation.Call,
             target: proxyAdmin,
             data: abi.encodeCall(IProxyAdmin.upgrade, (payable(disputeGameFactory), newDisputeGameFactoryImpl)),
@@ -257,7 +261,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
 
         // Register the AggregateVerifier that binds the new registry. This is `onlyOwner` on the
         // factory itself, not a ProxyAdmin call, and the factory owner is the same Safe.
-        calls[4] = Call({
+        calls[i++] = Call({
             operation: Enum.Operation.Call,
             target: disputeGameFactory,
             data: abi.encodeCall(
@@ -267,7 +271,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         });
 
         if (_teeCutover()) {
-            calls[5] = Call({
+            calls[i] = Call({
                 operation: Enum.Operation.Call,
                 target: proxyAdmin,
                 data: abi.encodeCall(IProxyAdmin.upgrade, (payable(teeProverRegistryProxy), newTeeProverRegistryImpl)),
@@ -299,9 +303,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         (bool ok, bytes memory raw) = optimismPortal.staticcall(abi.encodeWithSignature("ethLockbox()"));
         require(!ok || abi.decode(raw, (address)) == address(0), "portal still uses an ETHLockbox");
 
-        // The new registry must be an uninitialized proxy under the same ProxyAdmin.
         require(protocolVersionsProxy.code.length != 0, "protocol versions proxy not deployed");
-        require(_implementation(protocolVersionsProxy) == address(0), "protocol versions proxy already upgraded");
         require(_admin(protocolVersionsProxy) == proxyAdmin, "protocol versions proxy admin mismatch");
 
         require(
@@ -313,9 +315,8 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             "portal implementation version mismatch"
         );
         require(
-            keccak256(bytes(IVersioned(newSystemConfigImpl).version()))
-                == keccak256(bytes("3.14.0+max-gas-limit-2000M")),
-            "system config implementation is not the patched build"
+            keccak256(bytes(IVersioned(newSystemConfigImpl).version())) == expectedSystemConfigVersionHash,
+            "system config implementation version mismatch"
         );
         require(
             keccak256(bytes(IVersioned(newDisputeGameFactoryImpl).version())) == keccak256(bytes("1.5.0")),
@@ -333,6 +334,31 @@ contract ExecuteCobaltUpgrade is MultisigScript {
 
         require(protocolVersionsMinimumProtocolVersion != 0, "minimum protocol version not set");
         require(protocolVersionsMinimumProtocolVersion <= type(uint128).max, "minimum protocol version too large");
+
+        if (protocolVersionsPredeployed) {
+            require(
+                _implementation(protocolVersionsProxy) == protocolVersionsImpl,
+                "protocol versions implementation mismatch"
+            );
+            require(protocolVersionsInitialSchedule.length != 0, "protocol versions schedule empty");
+
+            IProtocolVersions registry = IProtocolVersions(protocolVersionsProxy);
+            require(registry.incidentResponder() == protocolVersionsIncidentResponder, "registry responder mismatch");
+            require(
+                registry.minimumProtocolVersion() == protocolVersionsMinimumProtocolVersion,
+                "registry minimum protocol version mismatch"
+            );
+            uint64[] memory currentSchedule = registry.getSchedule();
+            require(
+                currentSchedule.length == protocolVersionsInitialSchedule.length, "registry schedule length mismatch"
+            );
+            for (uint256 i = 0; i < currentSchedule.length; i++) {
+                require(currentSchedule[i] == protocolVersionsInitialSchedule[i], "registry schedule mismatch");
+            }
+            require(registry.scheduleId() == _expectedScheduleId(), "registry schedule commitment mismatch");
+        } else {
+            require(_implementation(protocolVersionsProxy) == address(0), "protocol versions proxy already upgraded");
+        }
 
         if (_teeCutover()) {
             _preCheckTee();
@@ -395,8 +421,8 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         require(ISystemConfig(systemConfig).paused() == pausedBefore, "pause state changed");
         require(ISystemConfig(systemConfig).gasLimit() == gasLimitBefore, "gas limit changed");
         require(
-            keccak256(bytes(ISystemConfig(systemConfig).version())) == keccak256(bytes("3.14.0+max-gas-limit-2000M")),
-            "system config lost the max gas limit patch"
+            keccak256(bytes(ISystemConfig(systemConfig).version())) == expectedSystemConfigVersionHash,
+            "system config version mismatch"
         );
 
         if (_teeCutover()) {

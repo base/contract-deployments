@@ -13,10 +13,26 @@ PROJECT_DIR := $(abspath ../..)
 include $(REPO_ROOT)/config/$(TASK_NETWORK).env
 include config/$(TASK_NETWORK)/.env
 
+EXPECTED_SYSTEM_CONFIG_VERSION ?= 3.14.0+max-gas-limit-2000M
+PROTOCOL_VERSIONS_PREDEPLOYED ?= false
+DEPLOY_TEE_WITH_COBALT ?= false
+
 SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
 VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
 RPC_URL := $(L1_RPC_URL)
 ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
+TASK_ORIGIN_DIR := $(CURDIR)/config/$(TASK_NETWORK)
+SIGNATURE_DIR := $(CURDIR)/signatures/$(TASK_NETWORK)
+
+ifneq ($(strip $(PROTOCOL_VERSIONS_DEPLOYMENT_JSON)),)
+PROTOCOL_VERSIONS_DEPLOYMENT_JSON := $(abspath $(PROTOCOL_VERSIONS_DEPLOYMENT_JSON))
+EXISTING_PROTOCOL_VERSIONS_PROXY = $(shell jq -r '.protocolVersionsProxy // empty' $(PROTOCOL_VERSIONS_DEPLOYMENT_JSON) 2>/dev/null)
+EXISTING_PROTOCOL_VERSIONS_IMPL = $(shell jq -r '.protocolVersionsImpl // empty' $(PROTOCOL_VERSIONS_DEPLOYMENT_JSON) 2>/dev/null)
+PROTOCOL_VERSIONS_DEPLOY_ENV = \
+	EXISTING_PROTOCOL_VERSIONS_PROXY=$(EXISTING_PROTOCOL_VERSIONS_PROXY) \
+	EXISTING_PROTOCOL_VERSIONS_IMPL=$(EXISTING_PROTOCOL_VERSIONS_IMPL)
+PROTOCOL_VERSIONS_DEPLOY_PREREQUISITE = validate-protocol-versions-deployment
+endif
 
 TASK_DIR := tasks/2026-09-14-cobalt-upgrade
 DEPLOY_CORE_SCRIPT := $(TASK_DIR)/script/DeployCobaltCoreImpls.s.sol:DeployCobaltCoreImpls
@@ -55,7 +71,9 @@ DEPLOY_ENV = ADDRESSES_JSON=$(ADDRESSES_JSON) \
 	L2_BLOCK_TIME=$(L2_BLOCK_TIME) \
 	AGGREGATE_VERIFIER_TEE_IMAGE_HASH=$(AGGREGATE_VERIFIER_TEE_IMAGE_HASH) \
 	AGGREGATE_VERIFIER_ZK_RANGE_HASH=$(AGGREGATE_VERIFIER_ZK_RANGE_HASH) \
-	AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=$(AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH)
+	AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=$(AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH) \
+	EXPECTED_SYSTEM_CONFIG_VERSION=$(EXPECTED_SYSTEM_CONFIG_VERSION) \
+	$(PROTOCOL_VERSIONS_DEPLOY_ENV)
 
 UPGRADE_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
 	L1_PROXY_ADMIN=$(L1_PROXY_ADMIN) \
@@ -74,12 +92,13 @@ UPGRADE_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
 	PROTOCOL_VERSIONS_IMPL=$(PROTOCOL_VERSIONS_IMPL) \
 	PROTOCOL_VERSIONS_INCIDENT_RESPONDER=$(PROTOCOL_VERSIONS_INCIDENT_RESPONDER) \
 	PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=$(PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION) \
+	PROTOCOL_VERSIONS_PREDEPLOYED=$(PROTOCOL_VERSIONS_PREDEPLOYED) \
 	PROTOCOL_VERSIONS_INITIAL_SCHEDULE=$(PROTOCOL_VERSIONS_INITIAL_SCHEDULE) \
+	EXPECTED_SYSTEM_CONFIG_VERSION=$(EXPECTED_SYSTEM_CONFIG_VERSION) \
 	$(TEE_UPGRADE_ENV)
 
-# Sepolia (and later networks that still need the hinted Nitro cutover) pass these
-# so ExecuteCobaltUpgrade emits a sixth ProxyAdmin.upgrade. Zeronet leaves them
-# unset and stays on the original five-call transaction.
+# Networks that still need the hinted Nitro cutover pass these so ExecuteCobaltUpgrade
+# appends a ProxyAdmin.upgrade for the registry.
 ifneq ($(NEW_TEE_PROVER_REGISTRY_IMPL),)
 TEE_UPGRADE_ENV = \
 	TEE_PROVER_REGISTRY_PROXY=$(TEE_PROVER_REGISTRY_PROXY) \
@@ -102,7 +121,11 @@ endif
 # Prerequisites merge with the root `deps` rule, so these run after `forge-deps`
 # has installed base/contracts at BASE_CONTRACTS_COMMIT.
 .PHONY: deps
-deps: task-extra-deps apply-patches
+deps: task-extra-deps
+
+ifneq ($(APPLY_MAX_GAS_LIMIT_PATCH),false)
+deps: apply-patches
+endif
 
 # The shared project installs only forge-std, solady and lib-keccak. Building the
 # Cobalt implementations from source additionally needs base/contracts' own pinned
@@ -122,11 +145,22 @@ task-extra-deps:
 apply-patches:
 	cd $(PROJECT_DIR)/lib/contracts && patch -p1 --forward < $(CURDIR)/patch/max-gas-limit.patch
 
+.PHONY: validate-protocol-versions-deployment
+validate-protocol-versions-deployment:
+	@jq -e '.protocolVersionsProxy and .protocolVersionsImpl' "$(PROTOCOL_VERSIONS_DEPLOYMENT_JSON)" >/dev/null || \
+		(echo "complete the standalone ProtocolVersions deployment first" && exit 1)
+
 ##
 # Deployment
 ##
 .PHONY: deploy
-deploy: deploy-core deploy-proofs
+deploy:
+	$(MAKE) TASK_NETWORK=$(TASK_NETWORK) deploy-core
+	$(MAKE) TASK_NETWORK=$(TASK_NETWORK) deploy-proofs
+ifeq ($(DEPLOY_TEE_WITH_COBALT),true)
+	$(MAKE) TASK_NETWORK=$(TASK_NETWORK) deploy-nitro-validator
+	$(MAKE) TASK_NETWORK=$(TASK_NETWORK) deploy-tee-registry-impl
+endif
 
 # base/contracts pins OptimismPortal2, SystemConfig, DisputeGameFactory and Proxy to
 # 5000 optimizer runs, and ProtocolVersions and AggregateVerifier to 999999, and builds
@@ -137,14 +171,14 @@ deploy: deploy-core deploy-proofs
 COBALT_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun
 
 .PHONY: deploy-core
-deploy-core:
+deploy-core: $(PROTOCOL_VERSIONS_DEPLOY_PREREQUISITE)
 	@test -f "$(ADDRESSES_JSON)" || echo '{}' > "$(ADDRESSES_JSON)"
 	cd $(PROJECT_DIR) && $(DEPLOY_ENV) $(COBALT_BUILD) FOUNDRY_OPTIMIZER_RUNS=5000 \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_CORE_SCRIPT) \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 .PHONY: deploy-proofs
-deploy-proofs:
+deploy-proofs: $(PROTOCOL_VERSIONS_DEPLOY_PREREQUISITE)
 	cd $(PROJECT_DIR) && $(DEPLOY_ENV) $(COBALT_BUILD) FOUNDRY_OPTIMIZER_RUNS=999999 \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_PROOFS_SCRIPT) \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
@@ -203,10 +237,12 @@ endif
 		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=5000 \
 			$(MISE_EXEC) forge verify-contract $(NEW_DISPUTE_GAME_FACTORY_IMPL) src/L1/proofs/DisputeGameFactory.sol:DisputeGameFactory \
 			--num-of-optimizations 5000 $(VERIFY_COMMON); \
-		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=5000 \
-			$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_PROXY) src/universal/Proxy.sol:Proxy \
-			--constructor-args $(PROTOCOL_VERSIONS_PROXY_CTOR_ARGS) \
-			--num-of-optimizations 5000 $(VERIFY_COMMON)
+		if [ "$(PROTOCOL_VERSIONS_PREDEPLOYED)" != "true" ]; then \
+			$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=5000 \
+				$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_PROXY) src/universal/Proxy.sol:Proxy \
+				--constructor-args $(PROTOCOL_VERSIONS_PROXY_CTOR_ARGS) \
+				--num-of-optimizations 5000 $(VERIFY_COMMON); \
+		fi
 
 .PHONY: verify-proofs
 verify-proofs:
@@ -215,9 +251,11 @@ ifndef VERIFIER_API_KEY
 endif
 	@set -e; $(LINK_VERIFY_DEPS); \
 		cd $(PROJECT_DIR); \
-		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=999999 \
-			$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_IMPL) src/L1/ProtocolVersions.sol:ProtocolVersions \
-			--num-of-optimizations 999999 $(VERIFY_COMMON); \
+		if [ "$(PROTOCOL_VERSIONS_PREDEPLOYED)" != "true" ]; then \
+			$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=999999 \
+				$(MISE_EXEC) forge verify-contract $(PROTOCOL_VERSIONS_IMPL) src/L1/ProtocolVersions.sol:ProtocolVersions \
+				--num-of-optimizations 999999 $(VERIFY_COMMON); \
+		fi; \
 		$(VERIFY_ENV) FOUNDRY_OPTIMIZER_RUNS=999999 \
 			$(MISE_EXEC) forge verify-contract $(NEW_AGGREGATE_VERIFIER) src/L1/proofs/AggregateVerifier.sol:AggregateVerifier \
 			--constructor-args $(AGGREGATE_VERIFIER_CTOR_ARGS) \
