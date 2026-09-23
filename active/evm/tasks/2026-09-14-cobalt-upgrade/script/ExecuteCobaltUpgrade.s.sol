@@ -125,6 +125,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
     address internal immutable protocolVersionsIncidentResponder;
     uint256 internal immutable protocolVersionsMinimumProtocolVersion;
     bool internal immutable protocolVersionsPredeployed;
+    bytes32 internal immutable protocolVersionsScheduleIdBefore;
     bytes32 internal immutable expectedSystemConfigVersionHash;
 
     /// @dev Solidity has no immutable arrays, so the imported activation schedule is read from the
@@ -173,15 +174,23 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         protocolVersionsProxy = vm.envAddress("PROTOCOL_VERSIONS_PROXY");
         protocolVersionsImpl = vm.envAddress("PROTOCOL_VERSIONS_IMPL");
 
-        protocolVersionsIncidentResponder = vm.envAddress("PROTOCOL_VERSIONS_INCIDENT_RESPONDER");
-        protocolVersionsMinimumProtocolVersion = vm.envUint("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION");
         protocolVersionsPredeployed = vm.envOr("PROTOCOL_VERSIONS_PREDEPLOYED", false);
         expectedSystemConfigVersionHash = keccak256(bytes(vm.envString("EXPECTED_SYSTEM_CONFIG_VERSION")));
 
-        uint256[] memory schedule = vm.envUint("PROTOCOL_VERSIONS_INITIAL_SCHEDULE", ",");
-        for (uint256 i = 0; i < schedule.length; i++) {
-            require(schedule[i] <= type(uint64).max, "schedule timestamp exceeds uint64");
-            protocolVersionsInitialSchedule.push(uint64(schedule[i]));
+        if (protocolVersionsPredeployed) {
+            protocolVersionsIncidentResponder = address(0);
+            protocolVersionsMinimumProtocolVersion = 0;
+            protocolVersionsScheduleIdBefore = IProtocolVersions(protocolVersionsProxy).scheduleId();
+        } else {
+            protocolVersionsIncidentResponder = vm.envAddress("PROTOCOL_VERSIONS_INCIDENT_RESPONDER");
+            protocolVersionsMinimumProtocolVersion = vm.envUint("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION");
+            protocolVersionsScheduleIdBefore = bytes32(0);
+
+            uint256[] memory schedule = vm.envUint("PROTOCOL_VERSIONS_INITIAL_SCHEDULE", ",");
+            for (uint256 i = 0; i < schedule.length; i++) {
+                require(schedule[i] <= type(uint64).max, "schedule timestamp exceeds uint64");
+                protocolVersionsInitialSchedule.push(uint64(schedule[i]));
+            }
         }
 
         portalBalanceBefore = optimismPortal.balance;
@@ -332,32 +341,19 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             "aggregate verifier is not bound to the new registry"
         );
 
-        require(protocolVersionsMinimumProtocolVersion != 0, "minimum protocol version not set");
-        require(protocolVersionsMinimumProtocolVersion <= type(uint128).max, "minimum protocol version too large");
-
         if (protocolVersionsPredeployed) {
             require(
                 _implementation(protocolVersionsProxy) == protocolVersionsImpl,
                 "protocol versions implementation mismatch"
             );
-            require(protocolVersionsInitialSchedule.length != 0, "protocol versions schedule empty");
-
-            IProtocolVersions registry = IProtocolVersions(protocolVersionsProxy);
-            require(registry.incidentResponder() == protocolVersionsIncidentResponder, "registry responder mismatch");
             require(
-                registry.minimumProtocolVersion() == protocolVersionsMinimumProtocolVersion,
-                "registry minimum protocol version mismatch"
+                IProtocolVersions(protocolVersionsProxy).scheduleId() == protocolVersionsScheduleIdBefore,
+                "protocol versions schedule changed"
             );
-            uint64[] memory currentSchedule = registry.getSchedule();
-            require(
-                currentSchedule.length == protocolVersionsInitialSchedule.length, "registry schedule length mismatch"
-            );
-            for (uint256 i = 0; i < currentSchedule.length; i++) {
-                require(currentSchedule[i] == protocolVersionsInitialSchedule[i], "registry schedule mismatch");
-            }
-            require(registry.scheduleId() == _expectedScheduleId(), "registry schedule commitment mismatch");
         } else {
             require(_implementation(protocolVersionsProxy) == address(0), "protocol versions proxy already upgraded");
+            require(protocolVersionsMinimumProtocolVersion != 0, "minimum protocol version not set");
+            require(protocolVersionsMinimumProtocolVersion <= type(uint128).max, "minimum protocol version too large");
         }
 
         if (_teeCutover()) {
@@ -388,21 +384,26 @@ contract ExecuteCobaltUpgrade is MultisigScript {
             "dispute game factory not serving the new implementation"
         );
 
-        // Dynamic upgrades: the registry is live and committed to the imported schedule.
+        // Dynamic upgrades: a predeployed registry must remain untouched; newly initialized
+        // registries must match the configured state exactly.
         IProtocolVersions registry = IProtocolVersions(protocolVersionsProxy);
         require(keccak256(bytes(registry.version())) == keccak256(bytes("1.0.0")), "registry version mismatch");
-        require(registry.incidentResponder() == protocolVersionsIncidentResponder, "registry responder mismatch");
-        require(
-            registry.minimumProtocolVersion() == protocolVersionsMinimumProtocolVersion,
-            "registry minimum protocol version mismatch"
-        );
+        if (protocolVersionsPredeployed) {
+            require(registry.scheduleId() == protocolVersionsScheduleIdBefore, "protocol versions schedule changed");
+        } else {
+            require(registry.incidentResponder() == protocolVersionsIncidentResponder, "registry responder mismatch");
+            require(
+                registry.minimumProtocolVersion() == protocolVersionsMinimumProtocolVersion,
+                "registry minimum protocol version mismatch"
+            );
 
-        uint64[] memory schedule = registry.getSchedule();
-        require(schedule.length == protocolVersionsInitialSchedule.length, "registry schedule length mismatch");
-        for (uint256 i = 0; i < schedule.length; i++) {
-            require(schedule[i] == protocolVersionsInitialSchedule[i], "registry schedule entry mismatch");
+            uint64[] memory schedule = registry.getSchedule();
+            require(schedule.length == protocolVersionsInitialSchedule.length, "registry schedule length mismatch");
+            for (uint256 i = 0; i < schedule.length; i++) {
+                require(schedule[i] == protocolVersionsInitialSchedule[i], "registry schedule entry mismatch");
+            }
+            require(registry.scheduleId() == _expectedScheduleId(), "registry schedule commitment mismatch");
         }
-        require(registry.scheduleId() == _expectedScheduleId(), "registry schedule commitment mismatch");
 
         // CREATE2 dispute games: the factory keeps its full history and serves the new verifier.
         require(

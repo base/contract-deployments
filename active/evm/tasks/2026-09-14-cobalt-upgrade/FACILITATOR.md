@@ -36,7 +36,8 @@ run the patched build, set `APPLY_MAX_GAS_LIMIT_PATCH=false` and
 
 Open `config/<network>/.env` and confirm every value, in particular:
 
-- `PROTOCOL_VERSIONS_INITIAL_SCHEDULE` — the activation timestamp imported for each upgrade id.
+- For networks initializing `ProtocolVersions` in this task, `PROTOCOL_VERSIONS_INITIAL_SCHEDULE`
+  is the activation timestamp imported for each upgrade id.
   Ids should stay aligned with the Base mainnet registry so that a given index means the same fork
   on every chain. Entries may be `0` for an unscheduled fork. Every entry except Cobalt's is a fork
   that has already happened, so each one must match the network's chain config in
@@ -45,12 +46,11 @@ Open `config/<network>/.env` and confirm every value, in particular:
   genesis timestamp: on Zeronet, Azul and Beryl activated a few minutes after genesis, and id 7
   (PectraBlobSchedule) is unscheduled at `0`. Cobalt (id 12) is the activation this task schedules,
   and the node config carries no Cobalt timestamp until its own rollout lands.
-- `PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION` — must be non-zero and fit in 128 bits. The comment
-  above it gives the `cast` command to re-derive the packed value from the human-readable version.
-- `PROTOCOL_VERSIONS_INCIDENT_RESPONDER` — the address allowed to use the incident path.
+- For those same networks, `PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION` must be non-zero and fit in
+  128 bits, and `PROTOCOL_VERSIONS_INCIDENT_RESPONDER` is the incident path address.
 - `PROTOCOL_VERSIONS_DEPLOYMENT_JSON` — when set, the task reuses the proxy and implementation from
   the standalone deployment instead of deploying or initializing another registry. Mainnet uses
-  this path and verifies the already initialized Cobalt schedule without modifying it.
+  this path and verifies that the registry's schedule commitment remains unchanged.
 - `OLD_*` — the currently deployed implementations. `ExecuteCobaltUpgrade` asserts these match the
   live proxies before building any calls, so a stale value stops the task rather than upgrading
   from an unexpected base.
@@ -58,9 +58,10 @@ Open `config/<network>/.env` and confirm every value, in particular:
   `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` — all three rotate for Cobalt. The TEE value is PCR0 of
   the Nitro enclave; the ZK values are the SP1 keys from `just succinct vkeys --build`. Zeronet and
   Sepolia use the same values from
-  [`releases/v1.4.0`](https://github.com/base/base/tree/releases/v1.4.0). The deploy script refuses a
-  zero hash or a hash that still matches the live verifier. Every other `AggregateVerifier`
-  constructor argument is read back from the live implementation at deploy time.
+  the network's finalized node release. Mainnet's values come from `releases/v1.4.1` and remain
+  blank until that release is final. The deploy script refuses a zero hash or a hash that still
+  matches the live verifier. Every other `AggregateVerifier` constructor argument is read back from
+  the live implementation at deploy time.
 - TEE anchors — `OLD_TEE_PROVER_REGISTRY_IMPL`, `OLD_NITRO_VERIFIER`,
   `CERT_MANAGER_OWNER`, and `CERT_MANAGER_REVOKER`. Re-check the live registry implementation
   and `NITRO_VERIFIER()` before deploying. `ExecuteCobaltUpgrade` only emits the TEE upgrade call
