@@ -128,6 +128,8 @@ make TASK_NETWORK=<network> gen-validation-sc
 ```
 
 These write `config/<network>/validations/base-signer.json` and `security-council-signer.json`.
+Replace any generated `<<ContractName>>` or `<<Summary>>` placeholders with reviewed contract names
+and state-change descriptions before committing or generating task-origin signatures.
 For any non-mainnet rollout, remove each generated `taskOriginConfig` and add this root field:
 
 ```json

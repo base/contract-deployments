@@ -41,14 +41,14 @@
   ],
   "stateChanges": [
     {
-      "name": "<<ContractName>>",
+      "name": "TEEProverRegistry - Mainnet",
       "address": "0x1af2A7E537DE2eE795DE5B8BfbB1Ad0DD513A5aA",
       "changes": [
         {
           "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
           "before": "0x000000000000000000000000eab9b34bdd26ad451b381b0934a30faa6ed5e316",
           "after": "0x0000000000000000000000001d8728cabc8bc022005dd08d02a749b8a32af440",
-          "description": "<<Summary>>",
+          "description": "Upgrades TEEProverRegistry from version 0.5.0 using the legacy Nitro verifier to version 0.6.1 using the hinted Nitro validator. Owner, manager, signers, per-signer image hashes, proposers and game type remain unchanged.",
           "allowDifference": false
         }
       ]
@@ -61,7 +61,7 @@
           "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
           "before": "0x000000000000000000000000ee303ba054c5f1e14a8ef87f1c7e285af45a1ba2",
           "after": "0x000000000000000000000000ef9ecea15265321753047ebf7d54c858d53cb94f",
-          "description": "Updates the `X` implementation address.",
+          "description": "Sets gameImpls[621] to the redeployed AggregateVerifier (version 0.2.0), replacing the previous verifier. The new verifier is bound to the existing ProtocolVersions registry and carries the v1.4.2 Cobalt proof hashes.",
           "allowDifference": false
         },
         {
@@ -100,14 +100,14 @@
       ]
     },
     {
-      "name": "<<ContractName>>",
+      "name": "ProtocolVersions - Mainnet",
       "address": "0x7480Afc8D99a5c645c247dB5A1e4a4f440e6e095",
       "changes": [
         {
           "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
           "before": "0x0000000000000000000000000000000000000001000000040000000100000000",
           "after": "0x0000000000000000000000000000000000000001000000040000000200000000",
-          "description": "<<Summary>>",
+          "description": "Raises minimumProtocolVersion from v1.4.1 to v1.4.2. The format packs the low 16 bytes as major || minor || patch || pre-release, four bytes each, so v1.4.2 is 0x00000001000000040000000200000000 (79228162588051313896972091392).",
           "allowDifference": false
         }
       ]
@@ -127,7 +127,7 @@
           "key": "0x9f9bc993792815184f8d8acd368f7b5f75268e4d554cb184fd851a7e56448c4d",
           "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
-          "description": "<<Summary>>",
+          "description": "Records the nested Safe approval of the Cobalt and TEE upgrade transaction hash from the Coinbase signer Safe.",
           "allowDifference": false
         }
       ]
