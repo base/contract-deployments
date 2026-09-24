@@ -60,10 +60,10 @@ Open `config/<network>/.env` and confirm every value, in particular:
   `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` — all three rotate for Cobalt. The TEE value is PCR0 of
   the Nitro enclave; the ZK values are the SP1 keys from `just succinct vkeys --build`. Zeronet and
   Sepolia use the same values from
-  the network's finalized node release. Mainnet's values come from the finalized
-  `releases/v1.4.2` enclave and vkey builds and remain blank until those exact outputs are recorded.
-  The deploy script refuses a zero hash or a hash that still matches the live verifier. Every other
-  `AggregateVerifier` constructor argument is read back from the live implementation at deploy time.
+  the network's finalized node release. Mainnet's values are recorded from the finalized
+  `releases/v1.4.2` enclave and vkey builds. The deploy script refuses a zero hash or a hash that
+  still matches the live verifier. Every other `AggregateVerifier` constructor argument is read
+  back from the live implementation at deploy time.
 - TEE anchors — `OLD_TEE_PROVER_REGISTRY_IMPL`, `OLD_NITRO_VERIFIER`,
   `CERT_MANAGER_OWNER`, and `CERT_MANAGER_REVOKER`. Re-check the live registry implementation
   and `NITRO_VERIFIER()` before deploying. `ExecuteCobaltUpgrade` only emits the TEE upgrade call
