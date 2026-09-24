@@ -18,6 +18,7 @@ interface IProtocolVersions {
     function getSchedule() external view returns (uint64[] memory);
     function incidentResponder() external view returns (address);
     function minimumProtocolVersion() external view returns (uint256);
+    function setMinimumProtocolVersion(uint256 minimumProtocolVersion) external;
     function scheduleId() external view returns (bytes32);
     function version() external view returns (string memory);
 }
@@ -123,6 +124,7 @@ contract ExecuteCobaltUpgrade is MultisigScript {
     address internal immutable protocolVersionsImpl;
 
     address internal immutable protocolVersionsIncidentResponder;
+    uint256 internal immutable protocolVersionsCurrentMinimumProtocolVersion;
     uint256 internal immutable protocolVersionsMinimumProtocolVersion;
     bool internal immutable protocolVersionsPredeployed;
     bytes32 internal immutable protocolVersionsScheduleIdBefore;
@@ -179,10 +181,13 @@ contract ExecuteCobaltUpgrade is MultisigScript {
 
         if (protocolVersionsPredeployed) {
             protocolVersionsIncidentResponder = address(0);
-            protocolVersionsMinimumProtocolVersion = 0;
+            protocolVersionsCurrentMinimumProtocolVersion =
+                vm.envOr("PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION", uint256(0));
+            protocolVersionsMinimumProtocolVersion = vm.envOr("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION", uint256(0));
             protocolVersionsScheduleIdBefore = IProtocolVersions(protocolVersionsProxy).scheduleId();
         } else {
             protocolVersionsIncidentResponder = vm.envAddress("PROTOCOL_VERSIONS_INCIDENT_RESPONDER");
+            protocolVersionsCurrentMinimumProtocolVersion = 0;
             protocolVersionsMinimumProtocolVersion = vm.envUint("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION");
             protocolVersionsScheduleIdBefore = bytes32(0);
 
@@ -219,10 +224,21 @@ contract ExecuteCobaltUpgrade is MultisigScript {
     }
 
     function _buildCalls() internal view override returns (Call[] memory) {
-        Call[] memory calls = new Call[]((protocolVersionsPredeployed ? 4 : 5) + (_teeCutover() ? 1 : 0));
+        bool updateProtocolVersion = protocolVersionsPredeployed && protocolVersionsMinimumProtocolVersion != 0;
+        Call[] memory calls =
+            new Call[]((protocolVersionsPredeployed && !updateProtocolVersion ? 4 : 5) + (_teeCutover() ? 1 : 0));
         uint256 i;
 
-        if (!protocolVersionsPredeployed) {
+        if (updateProtocolVersion) {
+            calls[i++] = Call({
+                operation: Enum.Operation.Call,
+                target: protocolVersionsProxy,
+                data: abi.encodeCall(
+                    IProtocolVersions.setMinimumProtocolVersion, (protocolVersionsMinimumProtocolVersion)
+                ),
+                value: 0
+            });
+        } else if (!protocolVersionsPredeployed) {
             calls[i++] = Call({
                 operation: Enum.Operation.Call,
                 target: proxyAdmin,
@@ -350,6 +366,17 @@ contract ExecuteCobaltUpgrade is MultisigScript {
                 IProtocolVersions(protocolVersionsProxy).scheduleId() == protocolVersionsScheduleIdBefore,
                 "protocol versions schedule changed"
             );
+            if (protocolVersionsMinimumProtocolVersion != 0) {
+                require(
+                    IProtocolVersions(protocolVersionsProxy).minimumProtocolVersion()
+                        == protocolVersionsCurrentMinimumProtocolVersion,
+                    "current minimum protocol version mismatch"
+                );
+                require(
+                    protocolVersionsMinimumProtocolVersion > protocolVersionsCurrentMinimumProtocolVersion,
+                    "minimum protocol version not increased"
+                );
+            }
         } else {
             require(_implementation(protocolVersionsProxy) == address(0), "protocol versions proxy already upgraded");
             require(protocolVersionsMinimumProtocolVersion != 0, "minimum protocol version not set");
@@ -390,6 +417,12 @@ contract ExecuteCobaltUpgrade is MultisigScript {
         require(keccak256(bytes(registry.version())) == keccak256(bytes("1.0.0")), "registry version mismatch");
         if (protocolVersionsPredeployed) {
             require(registry.scheduleId() == protocolVersionsScheduleIdBefore, "protocol versions schedule changed");
+            if (protocolVersionsMinimumProtocolVersion != 0) {
+                require(
+                    registry.minimumProtocolVersion() == protocolVersionsMinimumProtocolVersion,
+                    "minimum protocol version not updated"
+                );
+            }
         } else {
             require(registry.incidentResponder() == protocolVersionsIncidentResponder, "registry responder mismatch");
             require(

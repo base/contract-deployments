@@ -50,7 +50,9 @@ Open `config/<network>/.env` and confirm every value, in particular:
   128 bits, and `PROTOCOL_VERSIONS_INCIDENT_RESPONDER` is the incident path address.
 - `PROTOCOL_VERSIONS_DEPLOYMENT_JSON` — when set, the task reuses the proxy and implementation from
   the standalone deployment instead of deploying or initializing another registry. Mainnet uses
-  this path and verifies that the registry's schedule commitment remains unchanged.
+  this path, verifies that the registry's schedule commitment remains unchanged, and raises its
+  minimum protocol version from `PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION` to
+  `PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION`.
 - `OLD_*` — the currently deployed implementations. `ExecuteCobaltUpgrade` asserts these match the
   live proxies before building any calls, so a stale value stops the task rather than upgrading
   from an unexpected base.
@@ -58,10 +60,10 @@ Open `config/<network>/.env` and confirm every value, in particular:
   `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` — all three rotate for Cobalt. The TEE value is PCR0 of
   the Nitro enclave; the ZK values are the SP1 keys from `just succinct vkeys --build`. Zeronet and
   Sepolia use the same values from
-  the network's finalized node release. Mainnet's values come from `releases/v1.4.1` and remain
-  blank until that release is final. The deploy script refuses a zero hash or a hash that still
-  matches the live verifier. Every other `AggregateVerifier` constructor argument is read back from
-  the live implementation at deploy time.
+  the network's finalized node release. Mainnet's values come from the finalized
+  `releases/v1.4.2` enclave and vkey builds and remain blank until those exact outputs are recorded.
+  The deploy script refuses a zero hash or a hash that still matches the live verifier. Every other
+  `AggregateVerifier` constructor argument is read back from the live implementation at deploy time.
 - TEE anchors — `OLD_TEE_PROVER_REGISTRY_IMPL`, `OLD_NITRO_VERIFIER`,
   `CERT_MANAGER_OWNER`, and `CERT_MANAGER_REVOKER`. Re-check the live registry implementation
   and `NITRO_VERIFIER()` before deploying. `ExecuteCobaltUpgrade` only emits the TEE upgrade call
@@ -159,11 +161,11 @@ than land a partial upgrade.
 
 ## What the upgrade transaction does
 
-Five calls on Zeronet and mainnet, six on Sepolia, all from the ProxyAdmin owner Safe:
+Five calls on Zeronet, six on Sepolia and mainnet, all from the ProxyAdmin owner Safe:
 
 1. Networks without a predeployed registry use
    `ProxyAdmin.upgradeAndCall(protocolVersionsProxy, protocolVersionsImpl, initialize(...))`.
-   Mainnet skips this call because the standalone task already initialized the complete schedule.
+   Mainnet instead calls `ProtocolVersions.setMinimumProtocolVersion` to move from v1.4.1 to v1.4.2.
 2. `ProxyAdmin.upgrade(optimismPortal, newImpl)`
 3. `ProxyAdmin.upgrade(systemConfig, newImpl)`
 4. `ProxyAdmin.upgrade(disputeGameFactory, newImpl)`
