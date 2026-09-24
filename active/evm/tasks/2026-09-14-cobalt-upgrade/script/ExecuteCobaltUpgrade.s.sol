@@ -178,19 +178,19 @@ contract ExecuteCobaltUpgrade is MultisigScript {
 
         protocolVersionsPredeployed = vm.envOr("PROTOCOL_VERSIONS_PREDEPLOYED", false);
         expectedSystemConfigVersionHash = keccak256(bytes(vm.envString("EXPECTED_SYSTEM_CONFIG_VERSION")));
+        // 0.8.15 rejects immutable writes inside if/else. Each ternary is one assignment.
+        protocolVersionsIncidentResponder =
+            protocolVersionsPredeployed ? address(0) : vm.envAddress("PROTOCOL_VERSIONS_INCIDENT_RESPONDER");
+        protocolVersionsCurrentMinimumProtocolVersion = protocolVersionsPredeployed
+            ? vm.envOr("PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION", uint256(0))
+            : 0;
+        protocolVersionsMinimumProtocolVersion = protocolVersionsPredeployed
+            ? vm.envOr("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION", uint256(0))
+            : vm.envUint("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION");
+        protocolVersionsScheduleIdBefore =
+            protocolVersionsPredeployed ? IProtocolVersions(protocolVersionsProxy).scheduleId() : bytes32(0);
 
-        if (protocolVersionsPredeployed) {
-            protocolVersionsIncidentResponder = address(0);
-            protocolVersionsCurrentMinimumProtocolVersion =
-                vm.envOr("PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION", uint256(0));
-            protocolVersionsMinimumProtocolVersion = vm.envOr("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION", uint256(0));
-            protocolVersionsScheduleIdBefore = IProtocolVersions(protocolVersionsProxy).scheduleId();
-        } else {
-            protocolVersionsIncidentResponder = vm.envAddress("PROTOCOL_VERSIONS_INCIDENT_RESPONDER");
-            protocolVersionsCurrentMinimumProtocolVersion = 0;
-            protocolVersionsMinimumProtocolVersion = vm.envUint("PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION");
-            protocolVersionsScheduleIdBefore = bytes32(0);
-
+        if (!protocolVersionsPredeployed) {
             uint256[] memory schedule = vm.envUint("PROTOCOL_VERSIONS_INITIAL_SCHEDULE", ",");
             for (uint256 i = 0; i < schedule.length; i++) {
                 require(schedule[i] <= type(uint64).max, "schedule timestamp exceeds uint64");
