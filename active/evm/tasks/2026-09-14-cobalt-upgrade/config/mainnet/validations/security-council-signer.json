@@ -1,0 +1,155 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c L1_PROXY_ADMIN=0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E OPTIMISM_PORTAL=0x49048044D57e1C92A77f79988d21Fa8fAF74E97e SYSTEM_CONFIG=0x73a79Fab69143498Ed3712e519A88a918e1f4072 DISPUTE_GAME_FACTORY_PROXY=0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e OLD_OPTIMISM_PORTAL_IMPL=0x66d94Ee8f529B683eD6013729784e8Bb44697a64 OLD_SYSTEM_CONFIG_IMPL=0x0507aAa21C678976fCdC7e804836ACD6Ebc17A44 OLD_DISPUTE_GAME_FACTORY_IMPL=0x468c2345D1D409D5B0F2F8be4Ae2082150Cc1A0c OLD_AGGREGATE_VERIFIER=0xeE303bA054c5F1E14A8EF87f1C7E285af45A1ba2 NEW_OPTIMISM_PORTAL_IMPL=0xcA5ca23502eFf4254bc11Ac0bEC4Dbb7495Bd06C NEW_SYSTEM_CONFIG_IMPL=0x56ca4f4F5Ba9B42d360B48429e8C4a60C5A0795D NEW_DISPUTE_GAME_FACTORY_IMPL=0x94eab8f73fd83407D26C006D159923760D483029 NEW_AGGREGATE_VERIFIER=0xeF9eCeA15265321753047EBF7D54C858D53cB94f PROTOCOL_VERSIONS_PROXY=0x7480Afc8D99a5c645c247dB5A1e4a4f440e6e095 PROTOCOL_VERSIONS_IMPL=0xE01aF68e2cb6c4335b17279393E0D60f6F0406f2 PROTOCOL_VERSIONS_PREDEPLOYED=true EXPECTED_SYSTEM_CONFIG_VERSION=3.14.0 PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION=79228162588051313892677124096 PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=79228162588051313896972091392 TEE_PROVER_REGISTRY_PROXY=0x1af2A7E537DE2eE795DE5B8BfbB1Ad0DD513A5aA TEE_VERIFIER=0x1FbA0C57b07Af804A9717e51dec9CC27FBC12228 PROPOSER=0xc1366Fabe614d42D367A1ecE61821238A1d31cF5 CHALLENGER=0x819501cdA743a606A93dbEF254FE0D263Ce7d102 CERT_MANAGER_OWNER=0x9855054731540A48b28990B63DcF4f33d8AE46A1 CERT_MANAGER_REVOKER=0xd87488Dbb5b6F47cc6c15Dd95Bb60c83D3031b04 OLD_TEE_PROVER_REGISTRY_IMPL=0xEab9B34bDd26aD451b381b0934a30fAA6Ed5e316 NEW_TEE_PROVER_REGISTRY_IMPL=0x1d8728CabC8BC022005dd08D02a749B8a32Af440 OLD_NITRO_VERIFIER=0x7F3a16E1fe6Fda64c5AC4296E13ECB9F7B44F6fb NEW_P384_VERIFIER=0xe0aa6868e14300355001130C6DC29f2f4467D86c NEW_CERT_MANAGER=0x7227d8C477CD0A9EC1446A19b1FCf940Ba3Fba17 NEW_NITRO_VALIDATOR=0x47C1ab20fac92c789d9e5708D06641c79b03C460 mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io tasks/2026-09-14-cobalt-upgrade/script/ExecuteCobaltUpgrade.s.sol:ExecuteCobaltUpgrade --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0xbDE1845c879942fC326F247Ad708677733Dd5594",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x23e2dd86bacb146361279288fc59b0d1b48697862d57555b9eb44f293013a5f1"
+  },
+  "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x20786a574c2083d053d6a8a57ea9f8c8be9bb7a4194530da5dcc3df58019cc8c",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "<<ContractName>>",
+      "address": "0x1af2A7E537DE2eE795DE5B8BfbB1Ad0DD513A5aA",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000eab9b34bdd26ad451b381b0934a30faa6ed5e316",
+          "after": "0x0000000000000000000000001d8728cabc8bc022005dd08d02a749b8a32af440",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000ee303ba054c5f1e14a8ef87f1c7e285af45a1ba2",
+          "after": "0x000000000000000000000000ef9ecea15265321753047ebf7d54c858d53cb94f",
+          "description": "Updates the `X` implementation address.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000468c2345d1d409d5b0f2f8be4ae2082150cc1a0c",
+          "after": "0x00000000000000000000000094eab8f73fd83407d26c006d159923760d483029",
+          "description": "Update address of DisputeGameFactory to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x00000000000000000000000066d94ee8f529b683ed6013729784e8bb44697a64",
+          "after": "0x000000000000000000000000ca5ca23502eff4254bc11ac0bec4dbb7495bd06c",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Mainnet",
+      "address": "0x73a79Fab69143498Ed3712e519A88a918e1f4072",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x0000000000000000000000000507aaa21c678976fcdc7e804836acd6ebc17a44",
+          "after": "0x00000000000000000000000056ca4f4f5ba9b42d360b48429e8c4a60c5a0795d",
+          "description": "Update address of SystemConfig to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "<<ContractName>>",
+      "address": "0x7480Afc8D99a5c645c247dB5A1e4a4f440e6e095",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x0000000000000000000000000000000000000001000000040000000100000000",
+          "after": "0x0000000000000000000000000000000000000001000000040000000200000000",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000014",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x66ea9fcc65893c116823db4ec39258fb168ef44cd8b5fa06701510e15911738b",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "<<Summary>>",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "thanh.trinh@coinbase.com"
+    }
+  }
+}
