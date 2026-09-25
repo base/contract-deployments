@@ -23,6 +23,8 @@ validator stack and hinted `TEEProverRegistry` implementation.
 From the repository root:
 
 ```bash
+git fetch origin
+git pull
 make sign-task
 ```
 
