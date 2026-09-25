@@ -8,15 +8,13 @@ import {OptimismPortal2} from "@base-contracts/src/L1/OptimismPortal2.sol";
 import {Proxy} from "@base-contracts/src/universal/Proxy.sol";
 import {SystemConfig} from "@base-contracts/src/L1/SystemConfig.sol";
 
-/// @notice Deploys the Cobalt implementations that base/contracts compiles at 5000 optimizer runs,
-///         plus the proxy that will front the new ProtocolVersions registry.
-/// @dev The ProtocolVersions proxy is deployed here, ahead of the implementations in
-///      DeployCobaltProofImpls, because AggregateVerifier takes its address as a constructor
-///      immutable. The proxy is left pointing at no implementation; the upgrade transaction
-///      atomically sets the implementation and initializes it via ProxyAdmin.upgradeAndCall.
+/// @notice Deploys the Cobalt implementations that base/contracts compiles at 5000 optimizer runs.
+/// @dev Also deploys the ProtocolVersions proxy unless a previous task supplied one.
 contract DeployCobaltCoreImpls is Script {
     address internal immutable l1ProxyAdmin;
     address internal immutable optimismPortal;
+    address internal immutable existingProtocolVersionsProxy;
+    bytes32 internal immutable expectedSystemConfigVersionHash;
     /// @dev Copied from the live portal so the redeploy cannot change the delay.
     uint256 internal immutable proofMaturityDelaySeconds;
     string internal addressesJson;
@@ -29,6 +27,8 @@ contract DeployCobaltCoreImpls is Script {
     constructor() {
         l1ProxyAdmin = vm.envAddress("L1_PROXY_ADMIN");
         optimismPortal = vm.envAddress("OPTIMISM_PORTAL");
+        existingProtocolVersionsProxy = vm.envOr("EXISTING_PROTOCOL_VERSIONS_PROXY", address(0));
+        expectedSystemConfigVersionHash = keccak256(bytes(vm.envString("EXPECTED_SYSTEM_CONFIG_VERSION")));
         proofMaturityDelaySeconds = OptimismPortal2(payable(optimismPortal)).proofMaturityDelaySeconds();
         addressesJson = vm.envString("ADDRESSES_JSON");
     }
@@ -44,7 +44,9 @@ contract DeployCobaltCoreImpls is Script {
         optimismPortalImpl = new OptimismPortal2(proofMaturityDelaySeconds);
         systemConfigImpl = new SystemConfig();
         disputeGameFactoryImpl = new DisputeGameFactory();
-        protocolVersionsProxy = new Proxy(l1ProxyAdmin);
+        protocolVersionsProxy = existingProtocolVersionsProxy == address(0)
+            ? new Proxy(l1ProxyAdmin)
+            : Proxy(payable(existingProtocolVersionsProxy));
 
         vm.stopBroadcast();
 
@@ -62,11 +64,9 @@ contract DeployCobaltCoreImpls is Script {
             optimismPortalImpl.proofMaturityDelaySeconds() == proofMaturityDelaySeconds, "portal proof delay mismatch"
         );
         require(keccak256(bytes(optimismPortalImpl.version())) == keccak256(bytes("6.0.0")), "portal version mismatch");
-        // Zeronet runs a patched SystemConfig that raises MAX_GAS_LIMIT to 2e9. The patch carries a
-        // build-suffixed semver so a stock build cannot be deployed here by mistake.
         require(
-            keccak256(bytes(systemConfigImpl.version())) == keccak256(bytes("3.14.0+max-gas-limit-2000M")),
-            "system config patch not applied"
+            keccak256(bytes(systemConfigImpl.version())) == expectedSystemConfigVersionHash,
+            "system config version mismatch"
         );
         require(
             keccak256(bytes(disputeGameFactoryImpl.version())) == keccak256(bytes("1.5.0")),
@@ -90,6 +90,8 @@ contract DeployCobaltCoreImpls is Script {
         vm.writeJson(
             vm.toString(abi.encode(proofMaturityDelaySeconds)), addressesJson, ".optimismPortalImplConstructorArgs"
         );
-        vm.writeJson(vm.toString(abi.encode(l1ProxyAdmin)), addressesJson, ".protocolVersionsProxyConstructorArgs");
+        if (existingProtocolVersionsProxy == address(0)) {
+            vm.writeJson(vm.toString(abi.encode(l1ProxyAdmin)), addressesJson, ".protocolVersionsProxyConstructorArgs");
+        }
     }
 }

@@ -33,6 +33,7 @@ contract DeployCobaltProofImpls is Script {
     uint64 internal immutable l2GenesisTimestamp;
     uint64 internal immutable l2BlockTime;
     address internal immutable protocolVersionsProxy;
+    address internal immutable existingProtocolVersionsImpl;
 
     // Copied from the live implementation registered for game type 621.
     address internal immutable liveAggregateVerifier;
@@ -62,6 +63,7 @@ contract DeployCobaltProofImpls is Script {
 
         addressesJson = vm.envString("ADDRESSES_JSON");
         protocolVersionsProxy = vm.parseJsonAddress(vm.readFile(addressesJson), ".protocolVersionsProxy");
+        existingProtocolVersionsImpl = vm.envOr("EXISTING_PROTOCOL_VERSIONS_IMPL", address(0));
 
         address factory = vm.envAddress("DISPUTE_GAME_FACTORY_PROXY");
         liveAggregateVerifier = address(IDisputeGameFactory(factory).gameImpls(AGGREGATE_VERIFIER_GAME_TYPE));
@@ -103,7 +105,9 @@ contract DeployCobaltProofImpls is Script {
     function run() external {
         vm.startBroadcast();
 
-        protocolVersionsImpl = new ProtocolVersions();
+        protocolVersionsImpl = existingProtocolVersionsImpl == address(0)
+            ? new ProtocolVersions()
+            : ProtocolVersions(existingProtocolVersionsImpl);
         aggregateVerifier = new AggregateVerifier({
             gameType_: AGGREGATE_VERIFIER_GAME_TYPE,
             anchorStateRegistry_: anchorStateRegistry,
