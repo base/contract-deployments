@@ -1,0 +1,86 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x0fe884546476dDd290eC46318785046ef68a0BA9 DISPUTE_GAME_FACTORY_PROXY=0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1 GAME_TYPE=621 TEE_IMAGE_HASH=0xb3d3746cf4b830046e9196dc196244d69fd96d3d436bd45ab84e35a9236f351f ZK_RANGE_HASH=0x776848834e7efcb029c48cf7215175b77098e8db28f27d2b074a64106f1c2b16 ZK_AGGREGATE_HASH=0x002663a1072dc1e1938e13d3b269fff88e843eb4ef76d6c6953dde4f5152973b ADDRESSES_JSON=tasks/2026-09-21-update-cobalt-verifier-hashes/config/sepolia/addresses.json mise exec -- forge script --rpc-url https://c3-chainproxy-eth-sepolia-full.cbhq.net script/common/verifier-update/UpdateVerifierHashes.s.sol:UpdateVerifierHashes --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-sepolia-full.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xda9f3b17b1ed24c3f7cbac528f669cc124665be3cd3d9de357bf178dca161e2c"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0x1e41bde63a55d283eb4d0224a639bc1125561681704e99af54b75915b48b376e",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000029",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000002a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xcb1cd15b9f8bdd0a743c67dd7b918b039c863fe573fab759c091e13590c62948",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the AggregateVerifier hash update transaction from the Security Council Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000029",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000002a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactoryProxy - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000c1a5acb64e439a04017a526e3d8e5d3e79846448",
+          "after": "0x000000000000000000000000d702aae6221f36dfe7e8ebc4315d64344a9db4cb",
+          "description": "Updates gameImpls[621] from 0xC1a5aCb64e439A04017A526e3D8E5d3e79846448 to 0xd702aaE6221f36Dfe7e8EBC4315D64344A9dB4CB so new game type 621 games use the AggregateVerifier with the updated proof program hashes.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
