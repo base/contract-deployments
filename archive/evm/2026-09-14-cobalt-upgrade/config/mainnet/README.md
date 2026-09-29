@@ -1,6 +1,6 @@
 # Cobalt Upgrade
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://github.com/base/contract-deployments/pull/798)
 
 ## Description
 
