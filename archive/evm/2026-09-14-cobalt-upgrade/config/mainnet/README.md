@@ -1,6 +1,6 @@
 # Cobalt Upgrade
 
-Status: [EXECUTED](https://github.com/base/contract-deployments/pull/798)
+Status: [EXECUTED](https://etherscan.io/tx/0x356e1dd97cb22e3d6129ec91557b1bec8971f0c2e0b4d6c1fb54e8b014dd659b)
 
 ## Description
 
