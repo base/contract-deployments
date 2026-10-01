@@ -5,8 +5,8 @@
 # the repo root so that everyone executes tasks with byte-identical tooling.
 #
 # When bumping any version here, also update the matching pin in
-# `.github/workflows/validate-templates.yml` (or anywhere else CI installs the
-# same tool) so that local and CI runs stay aligned.
+# `.github/workflows/validate-common-scripts.yml` (or anywhere else CI
+# installs the same tool) so that local and CI runs stay aligned.
 
 [tools]
 # Foundry (forge/cast/anvil/chisel) — pinned for deterministic build artifacts,
