@@ -27,3 +27,8 @@ yarn-error.log
 
 .DS_Store
 signer-tool/
+
+# Pre-signed pause transactions
+**/signatures-pause.txt
+**/.signatures-pause.txt.tmp
+**/.sign-output.tmp
