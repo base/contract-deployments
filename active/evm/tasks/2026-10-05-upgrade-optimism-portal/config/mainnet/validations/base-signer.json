@@ -1,0 +1,96 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c L1_PROXY_ADMIN=0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E OPTIMISM_PORTAL=0x49048044D57e1C92A77f79988d21Fa8fAF74E97e OLD_OPTIMISM_PORTAL_IMPL=0xcA5ca23502eFf4254bc11Ac0bEC4Dbb7495Bd06C NEW_OPTIMISM_PORTAL_IMPL=0x03863Ab7F64B733cFF85C8fF44a86601C568Ca70 mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io tasks/2026-10-05-upgrade-optimism-portal/script/UpgradeOptimismPortal.s.sol:UpgradeOptimismPortal --sig sign(address[]) [0x9855054731540A48b28990B63DcF4f33d8AE46A1] --sender 0xf9e320f3dA12E68af219d9E2A490Dd649f6B177c",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x88aac3dc27cc1618ec43a87b3df21482acd24d172027ba3fbb5a5e625d895a0b",
+    "messageHash": "0xc775dd4b459bd5cd56818512d99e591301e83773fc6421958f32c49e855aa216"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9511e0944fe959c99f509aaaab7a1bfc5a04811e0b29ee8b87f9a84871105271",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000ca5ca23502eff4254bc11ac0bec4dbb7495bd06c",
+          "after": "0x00000000000000000000000003863ab7f64b733cff85c8ff44a86601c568ca70",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x7d933ce28bc64feafefe0dca1d54acda25f54503eb69a1e739458909162f9176",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the OptimismPortal2 6.0.1 upgrade transaction hash from the Coinbase signer Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Coordinator Safe - Mainnet",
+      "address": "0x9855054731540A48b28990B63DcF4f33d8AE46A1",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000023",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000024",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "thanh.trinh@coinbase.com"
+    }
+  }
+}

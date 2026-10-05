@@ -29,5 +29,13 @@ optimizer_runs = 999999
 bytecode_hash = "none"
 evm_version = "cancun"
 
+# OptimismPortal2 settings from base/contracts (5000 runs, no bytecode hash), used to deploy
+# reproducible, verifiable portal implementations.
+[profile.portal-deploy]
+optimizer = true
+optimizer_runs = 5000
+bytecode_hash = "none"
+evm_version = "cancun"
+
 [lint]
 lint_on_build = false
