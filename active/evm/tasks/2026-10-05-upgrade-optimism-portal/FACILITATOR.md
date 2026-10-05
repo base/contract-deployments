@@ -1,7 +1,6 @@
 # Upgrade OptimismPortal2 — Facilitator Guide
 
-This task upgrades Base mainnet's `OptimismPortal2` from `6.0.0` to `7.0.1`, built from the
-`base/contracts` commit pinned in `config/<network>/.env`.
+This task upgrades Base mainnet's `OptimismPortal2` from `6.0.0` to `6.0.1`.
 
 Replace `<network>` with the rollout network, `mainnet`. Every command requires `TASK_NETWORK`
 explicitly. Run everything from this directory
@@ -9,16 +8,12 @@ explicitly. Run everything from this directory
 
 ## Source and version
 
-`7.0.1` is built from base/contracts `main`, not from the `6.0.0` release that is live. Compared with
-`6.0.0`, the new implementation drops the `superchainConfig()` passthrough getter, from the
-SuperchainConfig merge into SystemConfig. No onchain contract calls it. Check offchain consumers
-before execution.
+`6.0.1` is the live `6.0.0` source (base/contracts `releases/v8.3.0`, `385f21a`) plus
+`patch/optimism-portal-6.0.1.patch`. The patch back-ports the `OptimismPortal2`, `EOA` and
+`IOptimismPortal2` changes from base/contracts `main` (`dc2728d`) and bumps the version to `6.0.1`.
+Nothing else from `main` (the `7.0.0` line) is included.
 
-It calls only `paused()`, `guardian()`, `isFeatureEnabled()` and `resourceConfig()` on
-`SystemConfig`, all of which the live `3.14.0` `SystemConfig` provides. Storage layout and init
-version are unchanged, so the upgrade is a bare `ProxyAdmin.upgrade`.
-
-`BASE_CONTRACTS_COMMIT` is a commit on base/contracts `main`.
+Storage layout and init version are unchanged, so the upgrade is a bare `ProxyAdmin.upgrade`.
 
 ## 1. Install dependencies
 
@@ -26,14 +21,16 @@ version are unchanged, so the upgrade is a bare `ProxyAdmin.upgrade`.
 make TASK_NETWORK=<network> deps
 ```
 
-This pins `base/contracts` at `BASE_CONTRACTS_COMMIT` and installs the OpenZeppelin and solmate
-versions that building `OptimismPortal2` from source requires.
+This pins `base/contracts` at `BASE_CONTRACTS_COMMIT`, installs the OpenZeppelin and solmate
+versions that building `OptimismPortal2` from source requires, and applies
+`patch/optimism-portal-6.0.1.patch`. Review the patch: it is the only code change from the live
+implementation.
 
 ## 2. Review the network config
 
 Open `config/<network>/.env` and confirm:
 
-- `BASE_CONTRACTS_COMMIT` is the reviewed base/contracts commit.
+- `BASE_CONTRACTS_COMMIT` is `385f21a`, the source of the live `6.0.0` implementation.
 - `OLD_OPTIMISM_PORTAL_IMPL` is the live portal implementation. The upgrade script asserts it, and
   that the live version is `6.0.0`, before building the call.
 
@@ -87,6 +84,6 @@ make TASK_NETWORK=<network> execute
 ```
 
 After execution the script checks that the proxy points at the new implementation, reports
-`7.0.1`, and kept its ETH balance, `proofMaturityDelaySeconds`, `systemConfig`,
+`6.0.1`, and kept its ETH balance, `proofMaturityDelaySeconds`, `systemConfig`,
 `anchorStateRegistry`, `l2Sender`, guardian and pause state. Set the README status to the execution
 transaction link.

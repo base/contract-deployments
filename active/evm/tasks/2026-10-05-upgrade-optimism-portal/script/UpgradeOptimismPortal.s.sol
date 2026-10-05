@@ -21,7 +21,7 @@ interface IOptimismPortal {
     function version() external view returns (string memory);
 }
 
-/// @notice Upgrades OptimismPortal2 from 6.0.0 to 7.0.1.
+/// @notice Upgrades OptimismPortal2 from 6.0.0 to 6.0.1.
 /// @dev One `ProxyAdmin.upgrade` call from the ProxyAdmin owner Safe. Storage layout and init
 ///      version are unchanged, so there is nothing to reinitialize.
 contract UpgradeOptimismPortal is MultisigScript {
@@ -29,7 +29,7 @@ contract UpgradeOptimismPortal is MultisigScript {
     bytes32 internal constant IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
 
     string internal constant OLD_VERSION = "6.0.0";
-    string internal constant NEW_VERSION = "7.0.1";
+    string internal constant NEW_VERSION = "6.0.1";
 
     address internal immutable ownerSafe;
     address internal immutable proxyAdmin;

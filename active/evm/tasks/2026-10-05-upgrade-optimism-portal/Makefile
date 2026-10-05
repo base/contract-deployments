@@ -37,17 +37,23 @@ UPGRADE_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
 ##
 # Dependencies
 ##
-# Prerequisites merge with the root `deps` rule, so this runs after `forge-deps` has installed
+# Prerequisites merge with the root `deps` rule, so these run after `forge-deps` has installed
 # base/contracts at BASE_CONTRACTS_COMMIT. Building OptimismPortal2 from source additionally needs
 # the libraries it imports through literal `lib/<dep>/...` paths, matching base/contracts' justfile.
 .PHONY: deps
-deps: task-extra-deps
+deps: task-extra-deps apply-patches
 
 .PHONY: task-extra-deps
 task-extra-deps:
 	cd $(PROJECT_DIR) && $(MISE_EXEC) forge install --no-git \
 		github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d \
 		github.com/transmissions11/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc
+
+# Applies the 6.0.1 change on top of the live 6.0.0 source rather than deploying newer, unaudited
+# base/contracts code. `make deps` wipes lib/ first, so the patch always lands on a clean tree.
+.PHONY: apply-patches
+apply-patches:
+	cd $(PROJECT_DIR)/lib/contracts && patch -p1 --forward < $(CURDIR)/patch/optimism-portal-6.0.1.patch
 
 ##
 # Deployment

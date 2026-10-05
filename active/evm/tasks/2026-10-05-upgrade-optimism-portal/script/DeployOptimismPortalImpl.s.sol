@@ -5,11 +5,11 @@ import {Script, console} from "forge-std/Script.sol";
 
 import {OptimismPortal2} from "@base-contracts/src/L1/OptimismPortal2.sol";
 
-/// @notice Deploys the OptimismPortal2 7.0.1 implementation.
-/// @dev Built from base/contracts at BASE_CONTRACTS_COMMIT. Run it with
-///      `make TASK_NETWORK=<network> deploy`.
+/// @notice Deploys the OptimismPortal2 6.0.1 implementation.
+/// @dev Built from base/contracts at BASE_CONTRACTS_COMMIT with patch/optimism-portal-6.0.1.patch
+///      applied by `make deps`. Run it with `make TASK_NETWORK=<network> deploy`.
 contract DeployOptimismPortalImpl is Script {
-    string internal constant EXPECTED_VERSION = "7.0.1";
+    string internal constant EXPECTED_VERSION = "6.0.1";
 
     address internal immutable optimismPortal;
     /// @dev Copied from the live portal so the redeploy cannot change the delay.

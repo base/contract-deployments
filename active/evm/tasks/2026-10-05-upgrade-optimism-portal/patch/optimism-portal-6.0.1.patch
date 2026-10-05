@@ -1,0 +1,89 @@
+diff --git a/interfaces/L1/IOptimismPortal2.sol b/interfaces/L1/IOptimismPortal2.sol
+index 6bebf02..a2c2ce9 100644
+--- a/interfaces/L1/IOptimismPortal2.sol
++++ b/interfaces/L1/IOptimismPortal2.sol
+@@ -21,6 +21,7 @@ interface IOptimismPortal2 is IProxyAdminOwnedBase {
+     error OptimismPortal_CallPaused();
+     error OptimismPortal_CalldataTooLarge();
+     error OptimismPortal_NotAllowedOnCGTMode();
++    error OptimismPortal_DelegatedTargetCallFailed();
+     error OptimismPortal_GasEstimation();
+     error OptimismPortal_GasLimitTooLow();
+     error OptimismPortal_ImproperDisputeGame();
+diff --git a/src/L1/OptimismPortal2.sol b/src/L1/OptimismPortal2.sol
+index 30b3975..c8932be 100644
+--- a/src/L1/OptimismPortal2.sol
++++ b/src/L1/OptimismPortal2.sol
+@@ -169,6 +169,9 @@ contract OptimismPortal2 is Initializable, ResourceMetering, ReinitializableBase
+     /// @notice Thrown when a CGT withdrawal is not allowed.
+     error OptimismPortal_NotAllowedOnCGTMode();
+ 
++    /// @notice Thrown when the call to the target of a withdrawal fails and the target is a 7702 delegated EOA.
++    error OptimismPortal_DelegatedTargetCallFailed();
++
+     /// @notice Thrown when a gas estimation transaction is being executed.
+     error OptimismPortal_GasEstimation();
+ 
+@@ -203,9 +206,9 @@ contract OptimismPortal2 is Initializable, ResourceMetering, ReinitializableBase
+     error OptimismPortal_Unproven();
+ 
+     /// @notice Semantic version.
+-    /// @custom:semver 6.0.0
++    /// @custom:semver 6.0.1
+     function version() public pure virtual returns (string memory) {
+-        return "6.0.0";
++        return "6.0.1";
+     }
+ 
+     /// @param _proofMaturityDelaySeconds The proof maturity delay in seconds.
+@@ -479,7 +482,13 @@ contract OptimismPortal2 is Initializable, ResourceMetering, ReinitializableBase
+         // Reset the l2Sender back to the default value.
+         l2Sender = Constants.DEFAULT_L2_SENDER;
+ 
+-        // All withdrawals are immediately finalized. Replayability can
++        // Revert if the call failed and the target is a 7702 delegated EOA. The withdrawal is not
++        // finalized, so it can be finalized once the target accepts the call.
++        if (!success && EOA.isDelegated(_tx.target)) {
++            revert OptimismPortal_DelegatedTargetCallFailed();
++        }
++
++        // All other withdrawals are immediately finalized. Replayability can
+         // be achieved through contracts built on top of this contract
+         emit WithdrawalFinalized(withdrawalHash, success);
+ 
+diff --git a/src/libraries/EOA.sol b/src/libraries/EOA.sol
+index 254cf6e..3b71dd1 100644
+--- a/src/libraries/EOA.sol
++++ b/src/libraries/EOA.sol
+@@ -7,19 +7,22 @@ library EOA {
+     /// @notice Returns true if sender address is an EOA.
+     /// @return isEOA_ True if the sender address is an EOA.
+     function isSenderEOA() internal view returns (bool isEOA_) {
+-        if (msg.sender == tx.origin) {
+-            isEOA_ = true;
+-        } else if (address(msg.sender).code.length == 23) {
+-            // If the sender is not the origin, check for 7702 delegated EOAs.
++        // If the sender is not the origin, check for 7702 delegated EOAs.
++        isEOA_ = msg.sender == tx.origin || isDelegated(msg.sender);
++    }
++
++    /// @notice Returns true if the account is a 7702 delegated EOA.
++    /// @param _account Address of the account to check.
++    /// @return isDelegated_ True if the account is a 7702 delegated EOA.
++    function isDelegated(address _account) internal view returns (bool isDelegated_) {
++        // A 7702 delegated EOA has exactly 23 bytes of code, starting with 0xEF0100.
++        if (_account.code.length == 23) {
+             assembly {
+                 let ptr := mload(0x40)
+                 mstore(0x40, add(ptr, 0x20))
+-                extcodecopy(caller(), ptr, 0, 0x20)
+-                isEOA_ := eq(shr(232, mload(ptr)), 0xEF0100)
++                extcodecopy(_account, ptr, 0, 0x20)
++                isDelegated_ := eq(shr(232, mload(ptr)), 0xEF0100)
+             }
+-        } else {
+-            // If more or less than 23 bytes of code, not a 7702 delegated EOA.
+-            isEOA_ = false;
+         }
+     }
+ }
