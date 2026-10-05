@@ -18,7 +18,7 @@ It calls only `paused()`, `guardian()`, `isFeatureEnabled()` and `resourceConfig
 `SystemConfig`, all of which the live `3.14.0` `SystemConfig` provides. Storage layout and init
 version are unchanged, so the upgrade is a bare `ProxyAdmin.upgrade`.
 
-`BASE_CONTRACTS_COMMIT` is base/contracts `main` at the merge of base/contracts#447.
+`BASE_CONTRACTS_COMMIT` is a commit on base/contracts `main`.
 
 ## 1. Install dependencies
 
