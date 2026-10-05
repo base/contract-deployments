@@ -1,0 +1,96 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c L1_PROXY_ADMIN=0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E OPTIMISM_PORTAL=0x49048044D57e1C92A77f79988d21Fa8fAF74E97e OLD_OPTIMISM_PORTAL_IMPL=0xcA5ca23502eFf4254bc11Ac0bEC4Dbb7495Bd06C NEW_OPTIMISM_PORTAL_IMPL=0x03863Ab7F64B733cFF85C8fF44a86601C568Ca70 mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io tasks/2026-10-05-upgrade-optimism-portal/script/UpgradeOptimismPortal.s.sol:UpgradeOptimismPortal --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0xbDE1845c879942fC326F247Ad708677733Dd5594",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x8a12478f18c2fa19e04fd94360fc4f76951dc8050d3fc1c5df67f975b7daaa77"
+  },
+  "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x8617aa80524e61d8655a7c9b3d96bf82f8b6f2e04c22033ffc745afcf7e93bde",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000010",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+      "changes": [
+        {
+          "key": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+          "before": "0x000000000000000000000000ca5ca23502eff4254bc11ac0bec4dbb7495bd06c",
+          "after": "0x00000000000000000000000003863ab7f64b733cff85c8ff44a86601c568ca70",
+          "description": "Update address of OptimismPortal to new implementation.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000015",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x7a53a0e801ba3daa39dd75380d06c12f8c7d1445253d0a61da58e59df65a92c3",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the OptimismPortal2 6.0.1 upgrade transaction hash from the Security Council Safe.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "thanh.trinh@coinbase.com"
+    }
+  }
+}
