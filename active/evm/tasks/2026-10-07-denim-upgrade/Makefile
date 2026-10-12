@@ -2,9 +2,9 @@ include ../../../../Makefile
 include $(REPO_ROOT)/Multisig.mk
 
 # Denim rolls out across several networks from this one task directory, so the network is never
-# defaulted. Select it on every command line:
+# defaulted or read from the environment. Select it on every command line:
 #   make TASK_NETWORK=zeronet deploy
-ifndef TASK_NETWORK
+ifneq ($(origin TASK_NETWORK),command line)
 $(error TASK_NETWORK is required, e.g. make TASK_NETWORK=zeronet $(MAKECMDGOALS))
 endif
 
@@ -49,21 +49,6 @@ UPGRADE_ENV = $(VERIFIER_ENV) \
 	PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=$(PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION)
 
 ##
-# Dependencies
-##
-# Prerequisites merge with the root `deps` rule, so these run after `forge-deps` has installed
-# base/contracts at BASE_CONTRACTS_COMMIT. Pins match base/contracts' justfile.
-.PHONY: deps
-deps: task-extra-deps
-
-.PHONY: task-extra-deps
-task-extra-deps:
-	cd $(PROJECT_DIR) && $(MISE_EXEC) forge install --no-git \
-		github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d \
-		github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@0a2cb9a445c365870ed7a8ab461b12acf3e27d63 \
-		github.com/transmissions11/solmate@8f9b23f8838670afda0fd8983f2c41e8037ae6bc
-
-##
 # Deployment
 ##
 # base/contracts builds AggregateVerifier with 999999 optimizer runs and no bytecode hash.
@@ -82,7 +67,7 @@ deploy:
 ##
 # Verification runs with lib/contracts as the project root. Its sources import their own
 # dependencies through literal `lib/<dep>/...` paths, so link them in for the duration of the command.
-VERIFY_DEPS = openzeppelin-contracts openzeppelin-contracts-upgradeable solady solmate
+VERIFY_DEPS = solady
 CONTRACTS_LIB = $(PROJECT_DIR)/lib/contracts/lib
 LINK_VERIFY_DEPS = mkdir -p $(CONTRACTS_LIB); \
 	trap 'rm -f $(foreach d,$(VERIFY_DEPS),$(CONTRACTS_LIB)/$(d)); rmdir $(CONTRACTS_LIB) 2>/dev/null || true' EXIT; \
