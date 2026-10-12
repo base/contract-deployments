@@ -1,0 +1,127 @@
+{
+  "cmd": "DISPUTE_GAME_FACTORY_PROXY=0xd930e0cebd52d7c77b8f900de242e818506c5474 GAME_TYPE=621 OLD_AGGREGATE_VERIFIER=0x90ab3A3a747a60EF56919574dA1766F20ACEe21C FAST_BLOCK_INTERVAL=6000 FAST_INTERMEDIATE_BLOCK_INTERVAL=300 AGGREGATE_VERIFIER_TEE_IMAGE_HASH=0x5bc8c8805622c1ba2e835083f53ba82a181e78afd7ba8882fc4cde265380fc98 AGGREGATE_VERIFIER_ZK_RANGE_HASH=0x384a748252305244324ab53f049a775127babdd77d70de513c2d08c865e3da96 AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=0x00ab89c9dc2c1d164a9ae9a4c182983778eed8443a470d9d1d24a6d7a36e7453 PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 L1_PROXY_ADMIN=0xf2d2c097be80fb87844b7e259ef67efb98b26f87 NEW_AGGREGATE_VERIFIER=0x7ce3766537e065dAaF0370799e2761B52569aFe6 PROTOCOL_VERSIONS_DENIM_ACTIVATION_TIMESTAMP=1792000800 PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION=79228162588051313888382156800 PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=79228162606498057962091708416 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-10-07-denim-upgrade/script/ExecuteDenimUpgrade.s.sol:ExecuteDenimUpgrade --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0xe74ea5d5bcce4ebf42aabfd11dce50b9c491f54fbda3432dd0082a9891f87a3b"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xd4e8022595e5dbbdb9a78d79fea0fab9b917d1986902b90c4b68428fa01d6808",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "ProtocolVersions - Zeronet",
+      "address": "0x30e172aaC675c9fe5A64792F92C9fD4d3E7cA9Da",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Sets the _timestamps array length from 13 to 14, registering Denim as upgrade id 13.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Sets the _upgradeScheduleId array length from 14 to 15: one more hash-chain link for the new upgrade.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x0000000000000000000000000000000000000001000000040000000000000000",
+          "after": "0x0000000000000000000000000000000000000001000000050000000000000000",
+          "description": "Raises minimumProtocolVersion from v1.4.0 to v1.5.0 (0x00000001_00000005_00000000_00000000).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5adc",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x2562c03b6e56d3e901edd5612df31a82b99a4462e3737aa0ea2d00882c75f948",
+          "description": "_upgradeScheduleId[14]: hash-chain link committing to upgrade id 13 (denim) at 1792000800. As the tail of the chain, this is the registry's new scheduleId.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf9",
+          "before": "0x000000000000000000000000000000000000000000000000000000006aaaf540",
+          "after": "0x00000000000000000000000000000000000000006acfc320000000006aaaf540",
+          "description": "_timestamps[12..15] packed: cobalt stays at 1789588800 and denim (id 13) is scheduled for 1792000800, which is 2026-10-14 18:00:00 UTC.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000019",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x8316d62e4862ef2c7604cb1830e254499f54de1c8864d5bf4b75dc9d4049161b",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the Denim upgrade transaction hash from the Security Council Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactory - Zeronet",
+      "address": "0xD930e0cebD52D7C77b8F900dE242E818506C5474",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x00000000000000000000000090ab3a3a747a60ef56919574da1766f20acee21c",
+          "after": "0x0000000000000000000000007ce3766537e065daaf0370799e2761b52569afe6",
+          "description": "Updates gameImpls[621] from 0x90ab3A3a747a60EF56919574dA1766F20ACEe21C (version 0.2.0) to 0x7ce3766537e065dAaF0370799e2761B52569aFe6 (version 0.3.0), which switches the proposal intervals from 600/30 to 6000/300 blocks at Denim and carries the rc.6 proof program hashes. Existing games are unchanged.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
