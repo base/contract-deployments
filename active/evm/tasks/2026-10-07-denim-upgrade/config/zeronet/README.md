@@ -1,6 +1,6 @@
 # Denim Upgrade
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x9468085edf0a0d5e3dbeea7ab84f13400a496aafc6c21ca8420e4f136c106034)
 
 ## Description
 
