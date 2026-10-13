@@ -54,6 +54,8 @@ Forge broadcasts belong to task-scoped `records/<script>/<chain-id>/`. Do not mo
 
 Archive only after every network configuration under this operation is executed or canceled. Shared task-scoped records cannot safely be split by network. A pending sibling invocation blocks archival without deleting any files.
 
+Keep the operational PR unmerged until all intended invocations are executed or canceled and the dated archive, final artifacts, and standby invocation removals are committed. On `main`, canonical standby must remain unchanged and contain no invocation-specific data before and after merge.
+
 Fetch main before running the archive command. `TASK_DATE` is the incident's UTC date in `YYYY-MM-DD` form:
 
 ```sh

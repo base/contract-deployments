@@ -155,6 +155,8 @@ Pre-review does not replace incident-specific simulation. Re-review the canonica
 
 After execution or cancellation, finalize every present network's README and commit all final artifacts. Fetch main, then run `make TASK_NETWORK=<network> archive-task TASK_DATE=<YYYY-MM-DD>`. Pending sibling invocations block archival because task-scoped records cannot safely be split by network. The command refuses invalid identifiers, overwrites, and canonical differences from `origin/main`. It preserves all finalized networks and artifacts in `archive/evm/<YYYY-MM-DD>-<operation>/`, including the canonical task source, Foundry configuration, and global network snapshots. Only invocation directories are removed; canonical standby files remain byte-for-byte identical.
 
+Keep the operational PR unmerged until all intended invocations are executed or canceled and the dated archive, final artifacts, and standby invocation removals are committed. On `main`, canonical standby must remain unchanged and contain no invocation-specific data before and after merge.
+
 ```text
 standby/evm/tasks/<operation>/
 ├── Makefile

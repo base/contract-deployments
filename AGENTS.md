@@ -6,6 +6,7 @@ Standby EVM task lifecycle:
 - Run directly from standby. Do not copy the operation into active or modify its canonical Makefile, Solidity, or root `FACILITATOR.md` for an incident. Every standby Make command requires command-line `TASK_NETWORK=<network>`, even for one network; exported values and defaults are forbidden.
 - Re-review canonical code when the target ABI, ownership or responder role, base/contracts pin, or signing workflow changes. Pre-review does not replace incident-specific state and transaction validation.
 - Archive only when every present network invocation is executed or canceled and all final artifacts are committed. Use `make TASK_NETWORK=<network> archive-task TASK_DATE=<YYYY-MM-DD>` after fetching main. This snapshots all networks and task-scoped records into a dated, self-contained archive and removes only invocation files from standby.
+- Keep the operational PR unmerged until all intended invocations are executed or canceled and the dated archive, final artifacts, and standby invocation removals are committed. On `main`, canonical standby must remain unchanged and contain no invocation-specific data before and after merge.
 - Archival must refuse invalid identifiers, overwrite attempts, pending networks, and canonical differences from `origin/main`. Leave canonical standby files byte-for-byte identical. A later invocation starts from the same standby directory, never from an archive.
 
 Active EVM task lifecycle:
