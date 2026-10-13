@@ -186,7 +186,8 @@ The GitHub Actions workflow validates shared active scripts and canonical standb
 1. `forge fmt --check script/` and `forge build` check the shared active project.
 2. `forge fmt --root . --check standby/evm/tasks/ scripts/tests/*.sol` checks standby formatting from the repo root. Each canonical standby script also compiles against the shared active project's dependencies.
 3. Standby Solidity regressions run against local `ProtocolVersions` proxies, including ID 0, non-tail commitments, rejected delays, and postcheck invariants.
-4. Credential-free temporary fixtures exercise Make preparation, validation output/calldata, signer discovery and API paths, signing entry, and lossless archival.
+4. `python3 -B -m unittest scripts.tests.test_standby_lifecycle -v` checks lossless archival and Make guards in temporary Git repositories without RPC or credentials.
+5. `sh scripts/tests/run-signer-standby.sh` runs the pinned signer's TypeScript checks, discovery/API tests, and one local validation-generator smoke test covering preparation, calldata, and the signer entry path.
 
 **How it works:**
 

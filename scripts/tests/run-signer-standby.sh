@@ -36,4 +36,4 @@ cd "$signer"
     src/app/api/upgrade-config/__tests__/route.test.ts \
     src/app/api/install-deps/__tests__/route.test.ts
 cd "$root"
-STANDBY_SIGNER_HOME="$signer" STANDBY_SOLIDITY_INTEGRATION=1 python3 -m unittest discover -s scripts/tests -v
+STANDBY_SIGNER_HOME="$signer" python3 -B -m unittest scripts.tests.test_standby_validation -v

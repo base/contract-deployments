@@ -83,8 +83,8 @@ jobs:
       - name: Test standby delay invariants
         run: sh scripts/tests/run-standby-solidity.sh
 
-      - name: Smoke test config-only invocation and archival without credentials
-        run: STANDBY_SOLIDITY_INTEGRATION=1 python3 -m unittest discover -s scripts/tests -v
+      - name: Test standby archival and Make guards without credentials
+        run: python3 -B -m unittest scripts.tests.test_standby_lifecycle -v
 
-      - name: Test pinned signer standby discovery and API paths
+      - name: Test pinned validation generator and signer discovery/API paths
         run: sh scripts/tests/run-signer-standby.sh

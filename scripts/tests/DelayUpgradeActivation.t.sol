@@ -100,8 +100,6 @@ contract DelayUpgradeActivationTest is Test {
     function newScript() internal returns (DelayHarness) {
         vm.setEnv("PROTOCOL_VERSIONS_PROXY", vm.toString(address(protocol)));
         vm.setEnv("INCIDENT_MULTISIG", vm.toString(RESPONDER));
-        vm.setEnv("CURRENT_COBALT_ACTIVATION_TIMESTAMP", "20000");
-        vm.setEnv("NEW_COBALT_ACTIVATION_TIMESTAMP", "25000");
         vm.setEnv("UPGRADE_ID", vm.toString(configuredId));
         vm.setEnv("EXPECTED_CURRENT_TIMESTAMP", vm.toString(configuredCurrent));
         vm.setEnv("NEW_TIMESTAMP", vm.toString(configuredNext));
