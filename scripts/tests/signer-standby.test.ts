@@ -4,6 +4,7 @@ import os from 'os';
 import path from 'path';
 import { NextRequest } from 'next/server';
 import { getUpgradeOptions, resetContractDeploymentsRootCacheForTests } from '../src/lib/deployments';
+import { NetworkType } from '../src/lib/types';
 import { GET } from '../src/app/api/upgrade-config/route';
 import { POST } from '../src/app/api/install-deps/route';
 
@@ -55,12 +56,12 @@ describe('standby invocations in the pinned signer', () => {
     invocation('active', 'dateless-not-active');
     invocation('archive', '2026-10-02-historical');
     fs.mkdirSync(path.join(root, 'mainnet', '2026-10-03-legacy', 'validations'), { recursive: true });
-    expect(getUpgradeOptions('mainnet').map(task => task.id)).toEqual([activeId]);
+    expect(getUpgradeOptions(NetworkType.Mainnet).map(task => task.id)).toEqual([activeId]);
     fs.mkdirSync(path.join(task, 'config', 'mainnet', 'validations'));
-    expect(getUpgradeOptions('mainnet').map(task => task.id)).toEqual([activeId]);
+    expect(getUpgradeOptions(NetworkType.Mainnet).map(task => task.id)).toEqual([activeId]);
     fs.writeFileSync(path.join(task, 'config', 'mainnet', 'validations', 'base-signer.json'), '{}');
-    expect(getUpgradeOptions('mainnet').map(task => task.id).sort()).toEqual([activeId, standbyId].sort());
-    expect(getUpgradeOptions('sepolia')).toEqual([]);
+    expect(getUpgradeOptions(NetworkType.Mainnet).map(task => task.id).sort()).toEqual([activeId, standbyId].sort());
+    expect(getUpgradeOptions(NetworkType.Sepolia)).toEqual([]);
   });
 
   it('loads validation options from standby through the real config API', async () => {
@@ -76,7 +77,7 @@ describe('standby invocations in the pinned signer', () => {
   it('loads standby config for validation and starts simulation in the shared project', async () => {
     invocation('standby', standbyId);
     const { validateUpgrade } = await import('../src/lib/validation-service');
-    await expect(validateUpgrade({ upgradeId: standbyId, network: 'mainnet', taskConfigFileName: 'base-signer' })).rejects.toThrow('forge command failed with exit code 73');
+    await expect(validateUpgrade({ upgradeId: standbyId, network: NetworkType.Mainnet, taskConfigFileName: 'base-signer' })).rejects.toThrow('forge command failed with exit code 73');
     expect(fs.readFileSync(path.join(root, 'active/evm/from-validation-service'), 'utf8')).toBe('true');
   });
 

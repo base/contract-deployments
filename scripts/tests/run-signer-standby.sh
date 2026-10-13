@@ -30,6 +30,7 @@ mkdir -p "$signer/__tests__"
 cp "$root/scripts/tests/signer-standby.test.ts" "$signer/__tests__/standby.test.ts"
 cd "$signer"
 "$npm" ci --ignore-scripts --no-audit --no-fund
+"$node" node_modules/typescript/bin/tsc --noEmit
 "$npm" test -- --runTestsByPath __tests__/standby.test.ts \
     src/lib/__tests__/deployments.test.ts \
     src/app/api/upgrade-config/__tests__/route.test.ts \
