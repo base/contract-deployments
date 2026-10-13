@@ -1,4 +1,4 @@
-name: Validate Common Scripts
+name: Validate EVM Scripts
 
 on:
   pull_request:
@@ -21,7 +21,7 @@ env:
 
 jobs:
   validate-common:
-    name: active/evm script/common
+    name: active and standby EVM scripts
     runs-on: ubuntu-latest
 
     steps:
@@ -68,3 +68,23 @@ jobs:
             echo "::error::Compilation failed. Check imports, types, and dependency versions."
             exit 1
           fi
+
+      - name: Check standby Solidity formatting
+        run: forge fmt --root . --check standby/evm/tasks/ scripts/tests/*.sol
+
+      - name: Compile canonical standby Solidity
+        working-directory: active/evm
+        run: find ../../standby/evm/tasks -path '*/script/*.sol' -exec forge build {} +
+
+      - name: Install local ProtocolVersions fixture dependency
+        working-directory: active/evm
+        run: forge install --no-git github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d
+
+      - name: Test standby delay invariants
+        run: sh scripts/tests/run-standby-solidity.sh
+
+      - name: Smoke test config-only invocation and archival without credentials
+        run: STANDBY_SOLIDITY_INTEGRATION=1 python3 -m unittest discover -s scripts/tests -v
+
+      - name: Test pinned signer standby discovery and API paths
+        run: sh scripts/tests/run-signer-standby.sh

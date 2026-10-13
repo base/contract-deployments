@@ -1,0 +1,147 @@
+diff --git a/src/app/api/install-deps/route.ts b/src/app/api/install-deps/route.ts
+index 220031d..ffa653e 100644
+--- a/src/app/api/install-deps/route.ts
++++ b/src/app/api/install-deps/route.ts
+@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
+ import path from 'path';
+ import { promisify } from 'util';
+ import { findContractDeploymentsRoot } from '@/lib/deployments';
++import { getTaskPath } from '@/lib/task-path';
+ import { assertWithinDir } from '@/lib/path-validation';
+
+ const execAsync = promisify(exec);
+@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
+
+     const contractDeploymentsPath = findContractDeploymentsRoot();
+     const upgradePath = path.join(contractDeploymentsPath, 'active', 'evm');
+-    const taskPath = path.join(upgradePath, 'tasks', upgradeId);
++    const taskPath = getTaskPath(contractDeploymentsPath, upgradeId);
+
+     // Verify the resolved path is within the allowed directory
+     let resolvedUpgradePath: string;
+diff --git a/src/app/api/upgrade-config/route.ts b/src/app/api/upgrade-config/route.ts
+index bd833ed..a33940a 100644
+--- a/src/app/api/upgrade-config/route.ts
++++ b/src/app/api/upgrade-config/route.ts
+@@ -3,6 +3,7 @@ import path from 'path';
+ import { parseFromString } from '@/lib/parser';
+ import { NextRequest, NextResponse } from 'next/server';
+ import { findContractDeploymentsRoot } from '@/lib/deployments';
++import { getTaskPath } from '@/lib/task-path';
+ import { assertWithinDir } from '@/lib/path-validation';
+
+ const toDisplayName = (name: string) =>
+@@ -36,11 +37,7 @@ export async function GET(req: NextRequest) {
+
+   const contractDeploymentsRoot = findContractDeploymentsRoot();
+   const validationsJoinedPath = path.join(
+-    contractDeploymentsRoot,
+-    'active',
+-    'evm',
+-    'tasks',
+-    upgradeId,
++    getTaskPath(contractDeploymentsRoot, upgradeId),
+     'config',
+     network,
+     'validations'
+diff --git a/src/lib/deployments.ts b/src/lib/deployments.ts
+index 6e798f3..9d2daf0 100644
+--- a/src/lib/deployments.ts
++++ b/src/lib/deployments.ts
+@@ -1,6 +1,7 @@
+ import fs from 'fs';
+ import path from 'path';
+ import { NetworkType, TaskStatus } from './types';
++import { getTaskPath } from './task-path';
+
+ let cachedRoot: string | null = null;
+
+@@ -204,7 +205,7 @@ function getUpgradeOption(
+   network: NetworkType
+ ): DeploymentInfo | undefined {
+   const evmPath = path.join(contractDeploymentsPath, 'active', 'evm');
+-  const taskPath = path.join(evmPath, 'tasks', taskId);
++  const taskPath = getTaskPath(contractDeploymentsPath, taskId);
+   const networkConfigPath = path.join(taskPath, 'config', network);
+   const validationsPath = path.join(networkConfigPath, 'validations');
+
+@@ -212,6 +213,15 @@ function getUpgradeOption(
+     return undefined;
+   }
+
++  if (
++    !/^\d{4}-\d{2}-\d{2}-/.test(taskId) &&
++    !fs
++      .readdirSync(validationsPath, { withFileTypes: true })
++      .some(entry => entry.isFile() && entry.name.endsWith('.json'))
++  ) {
++    return undefined;
++  }
++
+   const baseInfo: DeploymentInfo = {
+     id: taskId,
+     name: formatUpgradeName(taskId),
+@@ -248,18 +258,19 @@ function getUpgradeOption(
+
+ export function getUpgradeOptions(network: NetworkType): DeploymentInfo[] {
+   const contractDeploymentsPath = findContractDeploymentsRoot();
+-  const tasksPath = path.join(contractDeploymentsPath, 'active', 'evm', 'tasks');
+-
+-  if (!isDirectory(tasksPath)) {
+-    return [];
+-  }
+-
+   try {
+-    return fs
+-      .readdirSync(tasksPath, { withFileTypes: true })
+-      .filter(dirent => dirent.isDirectory())
+-      .filter(dirent => /^\d{4}-\d{2}-\d{2}-/.test(dirent.name))
+-      .map(dirent => getUpgradeOption(contractDeploymentsPath, dirent.name, network))
++    const taskIds = ['active', 'standby'].flatMap(lifecycle => {
++      const tasksPath = path.join(contractDeploymentsPath, lifecycle, 'evm', 'tasks');
++      if (!isDirectory(tasksPath)) return [];
++      const pattern =
++        lifecycle === 'active' ? /^\d{4}-\d{2}-\d{2}-/ : /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
++      return fs
++        .readdirSync(tasksPath, { withFileTypes: true })
++        .filter(entry => entry.isDirectory() && pattern.test(entry.name))
++        .map(entry => entry.name);
++    });
++    return taskIds
++      .map(taskId => getUpgradeOption(contractDeploymentsPath, taskId, network))
+       .filter((option): option is DeploymentInfo => option !== undefined)
+       .sort((a, b) => b.id.localeCompare(a.id));
+   } catch (error) {
+diff --git a/src/lib/task-path.ts b/src/lib/task-path.ts
+new file mode 100644
+index 0000000..69e35e9
+--- /dev/null
++++ b/src/lib/task-path.ts
+@@ -0,0 +1,6 @@
++import path from 'path';
++
++export function getTaskPath(root: string, taskId: string): string {
++  const lifecycle = /^\d{4}-\d{2}-\d{2}-/.test(taskId) ? 'active' : 'standby';
++  return path.join(root, lifecycle, 'evm', 'tasks', taskId);
++}
+diff --git a/src/lib/validation-service.ts b/src/lib/validation-service.ts
+index 3c9f101..d9025b6 100644
+--- a/src/lib/validation-service.ts
++++ b/src/lib/validation-service.ts
+@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
+ import path from 'path';
+ import { TASK_ORIGIN_COMMON_NAMES, TASK_ORIGIN_SIGNATURE_FILE_NAMES } from './constants';
+ import { findContractDeploymentsRoot } from './deployments';
++import { getTaskPath } from './task-path';
+ import { getValidationSummary, parseFromString } from './parser';
+ import { assertWithinDir } from './path-validation';
+ import { StateDiffClient } from './state-diff';
+@@ -41,7 +42,7 @@ async function getConfigData(opts: ValidationServiceOpts): Promise<{
+     CONTRACT_DEPLOYMENTS_ROOT
+   );
+   const taskPath = assertWithinDir(
+-    path.join(scriptPath, 'tasks', opts.upgradeId),
++    getTaskPath(CONTRACT_DEPLOYMENTS_ROOT, opts.upgradeId),
+     CONTRACT_DEPLOYMENTS_ROOT
+   );
+   const networkConfigDir = assertWithinDir(
