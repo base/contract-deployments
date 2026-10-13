@@ -14,14 +14,13 @@ done
 [[ $LEDGER_ACCOUNT =~ ^[0-9]+$ ]] || fail "LEDGER_ACCOUNT must be a nonnegative integer"
 address_pattern='^0x[0-9a-fA-F]{40}$'
 hash_pattern='^0x[0-9a-fA-F]{64}$'
-signature_pattern='^0x[0-9a-fA-F]{130}$'
+signature_pattern='^[0-9a-fA-F]{130}$'
 [[ $INCIDENT_MULTISIG =~ $address_pattern && $SYSTEM_CONFIG =~ $address_pattern ]] || fail "Invalid Safe or SystemConfig address"
 config="config/$TASK_NETWORK"
 [[ -d $config ]] || fail "Missing $config"
 state="$config/.pause-signing"
 output="$config/signatures-pause.txt"
 lock="$config/.pause-signing.lock"
-[[ ! -e $output ]] || fail "$output already exists. Send its contents to the facilitator; do not overwrite a completed batch."
 mkdir "$lock" 2>/dev/null || fail "Signing is already locked for $TASK_NETWORK. If no signing process is running, remove $lock and rerun make TASK_NETWORK=$TASK_NETWORK sign-pause."
 cleanup() {
     rm -f "$state/sign-output" "$state/sign-errors" "$state/current-context" "$state/next-signature"
@@ -30,6 +29,7 @@ cleanup() {
 trap cleanup EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
+[[ ! -e $output ]] || fail "$output already exists. Send its contents to the facilitator; do not overwrite a completed batch."
 mkdir -p "$state"
 
 mise_exec() {

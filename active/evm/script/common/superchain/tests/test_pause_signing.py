@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+import select
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -43,18 +45,37 @@ case ${0##*/} in
             *) exit 1 ;;
         esac
         ;;
+    mkdir)
+        if [[ ${LOCK_GATE:-} && $1 == config/mainnet/.pause-signing.lock ]]; then
+            printf 1 > "$FIXTURE/lock-ready"
+            IFS= read -r _ < "$FIXTURE/lock-release"
+        fi
+        exec "$REAL_MKDIR" "$@"
+        ;;
     eip712sign)
         data=${!#}
         nonce=$((16#${data: -8}))
         previous=false
         if [[ -f $FIXTURE/attempts ]] && grep -qx "$nonce" "$FIXTURE/attempts"; then previous=true; fi
         echo "$nonce" >> "$FIXTURE/attempts"
-        printf -v signature '0x%0128x1b' "$nonce"
+        if [[ ${SIGNING_GATE:-} && $nonce == 7 ]]; then
+            printf 1 > "$FIXTURE/sign-ready"
+            IFS= read -r _ < "$FIXTURE/sign-release"
+        fi
+        printf -v signature '%0128x1b' "$nonce"
+        if [[ ${MALFORMED_NONCE:-} == "$nonce" ]]; then
+            case ${MALFORMED_OUTPUT:-duplicate} in
+                truncated) signature=${signature:1} ;;
+                nonhex) signature="g${signature:1}" ;;
+            esac
+        fi
         echo 'Signer: 0xabababababababababababababababababababab'
         echo "Signature: $signature"
         echo "Signature: $signature" >&2
         if [[ ${FAIL_NONCE:-} == "$nonce" && ( ${FAIL_ALWAYS:-} || $previous == false ) ]]; then exit 1; fi
-        if [[ ${MALFORMED_NONCE:-} == "$nonce" ]]; then echo 'Signature: malformed'; fi
+        if [[ ${MALFORMED_NONCE:-} == "$nonce" && ${MALFORMED_OUTPUT:-duplicate} == duplicate ]]; then
+            echo 'Signature: malformed'
+        fi
         ;;
     *) exit 1 ;;
 esac
@@ -71,7 +92,7 @@ class PauseSigningTest(unittest.TestCase):
         fake = tools / "fake-tool"
         fake.write_text(FAKE_TOOL)
         fake.chmod(0o755)
-        for tool in ("mise", "go", "cast"):
+        for tool in ("mise", "go", "cast", "mkdir"):
             (tools / tool).symlink_to(fake)
         for network in ("mainnet", "sepolia"):
             config = self.task / "config" / network
@@ -86,7 +107,8 @@ class PauseSigningTest(unittest.TestCase):
         )
         self.env = dict(os.environ, PATH=f"{tools}:{os.environ['PATH']}",
                         FIXTURE=str(self.task), GOPATH=str(self.task / "gopath"),
-                        GOBIN=str(self.task / "unrelated-bin"))
+                        GOBIN=str(self.task / "unrelated-bin"),
+                        REAL_MKDIR=shutil.which("mkdir"))
 
     def make(self, network="mainnet", **env):
         args = ["make", "--no-print-directory"]
@@ -108,7 +130,9 @@ class PauseSigningTest(unittest.TestCase):
         self.assertTrue(all(e.split(":")[0] == SIGNER for e in entries))
         self.assertEqual(len(set(entries)), 20)
         self.assertEqual(sorted(p.name for p in config.iterdir()), [".env", "signatures-pause.txt"])
-        return [e.split(":")[2] for e in entries]
+        signatures = [e.split(":")[2] for e in entries]
+        self.assertEqual(signatures, [f"{nonce:0128x}1b" for nonce in range(start, start + 20)])
+        return signatures
 
     def test_transient_failure_retries_same_nonce_and_keeps_exact_batch(self):
         result = self.make(FAIL_NONCE="10")
@@ -130,6 +154,8 @@ class PauseSigningTest(unittest.TestCase):
         self.assertIn("make TASK_NETWORK=mainnet sign-pause", failed.stdout)
         self.assertIn("Do not send partial signatures", failed.stdout)
         self.assertNotIn("Signature:", failed.stdout)
+        checkpoint = self.task / "config/mainnet/.pause-signing/0"
+        self.assertEqual(checkpoint.read_text(), f"{SIGNER}:7:{'0' * 127}71b\n")
         resumed = self.make()
         self.assertEqual(resumed.returncode, 0, resumed.stdout)
         self.assert_batch("mainnet")
@@ -147,6 +173,53 @@ class PauseSigningTest(unittest.TestCase):
         self.assertEqual((self.task / "config/mainnet/signatures-pause.txt").read_bytes(), original)
         self.assertEqual(len(self.attempts()), 40)
 
+    def test_concurrent_rerun_refuses_batch_completed_before_lock_acquisition(self):
+        gates = {}
+        for name in ("sign-ready", "sign-release", "lock-ready", "lock-release"):
+            path = self.task / name
+            os.mkfifo(path)
+            gates[name] = os.open(path, os.O_RDWR | os.O_NONBLOCK)
+            self.addCleanup(os.close, gates[name])
+
+        processes = []
+
+        def launch(**env):
+            process = subprocess.Popen(
+                ["make", "--no-print-directory", "TASK_NETWORK=mainnet", "sign-pause"],
+                cwd=self.task, env=dict(self.env, **env), text=True,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            )
+            processes.append(process)
+            return process
+
+        def await_gate(name):
+            ready, _, _ = select.select([gates[name]], [], [], 30)
+            self.assertTrue(ready, f"Timed out waiting for {name}")
+            self.assertEqual(os.read(gates[name], 1), b"1")
+
+        try:
+            first = launch(SIGNING_GATE="1")
+            await_gate("sign-ready")
+            second = launch(LOCK_GATE="1")
+            await_gate("lock-ready")
+            os.write(gates["sign-release"], b"go\n")
+            first_output, _ = first.communicate(timeout=60)
+            self.assertEqual(first.returncode, 0, first_output)
+            output = self.task / "config/mainnet/signatures-pause.txt"
+            original = output.read_bytes()
+            os.write(gates["lock-release"], b"go\n")
+            second_output, _ = second.communicate(timeout=60)
+            self.assertNotEqual(second.returncode, 0, second_output)
+            self.assertIn("already exists", second_output)
+            self.assertEqual(output.read_bytes(), original)
+            self.assertEqual(self.attempts(), list(range(7, 27)))
+            self.assert_batch("mainnet")
+        finally:
+            for name in ("sign-release", "lock-release"):
+                os.write(gates[name], b"go\n")
+            for process in processes:
+                process.communicate(timeout=60)
+
     def test_environment_only_network_is_rejected_before_signing(self):
         result = self.make(None, TASK_NETWORK="mainnet")
         self.assertNotEqual(result.returncode, 0)
@@ -163,13 +236,17 @@ class PauseSigningTest(unittest.TestCase):
         self.assertFalse((self.task / "config/mainnet/signatures-pause.txt").exists())
 
     def test_malformed_success_output_is_not_saved_as_a_signature(self):
-        failed = self.make(MALFORMED_NONCE="10")
-        self.assertNotEqual(failed.returncode, 0)
-        self.assertFalse((self.task / "config/mainnet/signatures-pause.txt").exists())
+        for malformed in ("duplicate", "truncated", "nonhex"):
+            with self.subTest(malformed=malformed):
+                failed = self.make(MALFORMED_NONCE="10", MALFORMED_OUTPUT=malformed)
+                self.assertNotEqual(failed.returncode, 0, failed.stdout)
+                self.assertNotIn("Signature:", failed.stdout)
+                self.assertFalse((self.task / "config/mainnet/signatures-pause.txt").exists())
+                self.assertFalse((self.task / "config/mainnet/.pause-signing/3").exists())
         resumed = self.make()
         self.assertEqual(resumed.returncode, 0, resumed.stdout)
         self.assert_batch("mainnet")
-        self.assertEqual(self.attempts(), [7, 8, 9, 10, 10, 10] + list(range(10, 27)))
+        self.assertEqual(self.attempts(), [7, 8, 9] + [10] * 9 + list(range(10, 27)))
 
 
 if __name__ == "__main__":

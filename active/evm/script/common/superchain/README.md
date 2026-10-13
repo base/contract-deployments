@@ -31,4 +31,21 @@ Successful signatures remain in `config/<network>/.pause-signing/`. The rerun re
 
 A completed `signatures-pause.txt` is never overwritten by a rerun. If a process was killed and left `.pause-signing.lock`, first confirm that no signing process is running for this task and network. Remove only that lock directory, then rerun the command above.
 
+### Restart after a context change
+
+Do not restart without the facilitator's explicit approval to abandon the old batch and use the new signing context.
+
+1. Confirm that no signing process is running for this task and network. Agree with the facilitator on the new context and an unused backup path, replacing `<batch-id>` below with a unique identifier.
+2. Preserve the entire checkpoint directory before restarting:
+
+   ```sh
+   mv config/<network>/.pause-signing config/<network>/.pause-signing-preserved-<batch-id>
+   ```
+
+   Check that the preserved directory contains the old `context` and saved signatures. Keep it until the facilitator approves its disposal. Do not send these partial signatures or copy them into the new batch.
+3. If `config/<network>/.pause-signing.lock` remains, remove only that stale lock with `rmdir config/<network>/.pause-signing.lock`. Do not remove a lock while signing is running.
+4. Use the facilitator-approved task revision, `config/<network>/.env`, and Ledger account, then run `make TASK_NETWORK=<network> sign-pause` again. Append `LEDGER_ACCOUNT=<account>` if required. The recipe creates a new `config/<network>/.pause-signing` and starts a fresh batch.
+
+This is a manual recovery procedure, not an automatic reset. A completed `config/<network>/signatures-pause.txt` still blocks signing; do not remove it as part of this partial-batch recovery.
+
 Task authors can find the include example and facilitator procedure in [FACILITATOR.md](FACILITATOR.md). This directory is shared code, not a live task.
