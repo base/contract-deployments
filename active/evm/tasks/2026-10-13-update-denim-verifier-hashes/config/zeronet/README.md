@@ -1,6 +1,6 @@
 # Update Denim Verifier Hashes
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x30ab9a1f9a985aea70c46193fd3b2f27f81f2d3b06c6fd87c04951d2a94c8c66)
 
 ## Description
 
