@@ -1,9 +1,13 @@
+from contextlib import contextmanager
 import os
 from pathlib import Path
+import pty
 import select
 import shutil
+import signal
 import subprocess
 import tempfile
+import time
 import unittest
 
 
@@ -72,6 +76,7 @@ case ${0##*/} in
         echo 'Signer: 0xabababababababababababababababababababab'
         echo "Signature: $signature"
         echo "Signature: $signature" >&2
+        if [[ ${LOCKED_NONCE:-} == "$nonce" && -f $FIXTURE/ledger-locked ]]; then exit 1; fi
         if [[ ${FAIL_NONCE:-} == "$nonce" && ( ${FAIL_ALWAYS:-} || $previous == false ) ]]; then exit 1; fi
         if [[ ${MALFORMED_NONCE:-} == "$nonce" && ${MALFORMED_OUTPUT:-duplicate} == duplicate ]]; then
             echo 'Signature: malformed'
@@ -116,8 +121,41 @@ class PauseSigningTest(unittest.TestCase):
             args.append(f"TASK_NETWORK={network}")
         return subprocess.run(args + ["sign-pause"], cwd=self.task,
                               env=dict(self.env, **env), text=True,
+                              stdin=subprocess.DEVNULL,
                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                               timeout=60)
+
+    @contextmanager
+    def interactive_make(self, **env):
+        master, slave = pty.openpty()
+        try:
+            process = subprocess.Popen(
+                ["make", "--no-print-directory", "TASK_NETWORK=mainnet", "sign-pause"],
+                cwd=self.task, env=dict(self.env, **env), stdin=slave,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                start_new_session=True, bufsize=0,
+            )
+        finally:
+            os.close(slave)
+        try:
+            yield process, master
+        finally:
+            if process.poll() is None:
+                os.killpg(process.pid, signal.SIGKILL)
+            process.communicate(timeout=60)
+            os.close(master)
+
+    def await_retry_prompt(self, process, attempt):
+        prompt = f"Press Enter to retry nonce 10 (attempt {attempt}/3)".encode()
+        output = b""
+        deadline = time.monotonic() + 30
+        while prompt not in output:
+            ready, _, _ = select.select([process.stdout], [], [], max(0, deadline - time.monotonic()))
+            self.assertTrue(ready, f"Timed out waiting for retry prompt: {output.decode()}")
+            chunk = os.read(process.stdout.fileno(), 4096)
+            self.assertTrue(chunk, f"Signing exited without retry prompt: {output.decode()}")
+            output += chunk
+        return output
 
     def attempts(self):
         return [int(n) for n in (self.task / "attempts").read_text().splitlines()]
@@ -145,6 +183,57 @@ class PauseSigningTest(unittest.TestCase):
         self.assertFalse((self.task / "sign_output.tmp").exists())
         self.assertFalse((self.task / "unrelated-bin").exists())
         self.assertFalse((self.task / "gopath").exists())
+
+    def test_interactive_retries_wait_for_enter_and_recover_same_nonce(self):
+        locked = self.task / "ledger-locked"
+        locked.touch()
+        with self.interactive_make(LOCKED_NONCE="10") as (process, terminal):
+            output = self.await_retry_prompt(process, 2)
+            self.assertEqual(self.attempts(), [7, 8, 9, 10])
+            os.write(terminal, b"\n")
+            output += self.await_retry_prompt(process, 3)
+            self.assertEqual(self.attempts(), [7, 8, 9, 10, 10])
+            locked.unlink()
+            os.write(terminal, b"\n")
+            rest, _ = process.communicate(timeout=60)
+            output += rest
+            self.assertEqual(process.returncode, 0, output.decode())
+        signatures = self.assert_batch("mainnet")
+        self.assertEqual(self.attempts(), [7, 8, 9, 10, 10] + list(range(10, 27)))
+        self.assertTrue(all(sig.encode() not in output for sig in signatures))
+        self.assertNotIn(b"Signature:", output)
+
+    def assert_interactive_retry_abort(self, action):
+        with self.interactive_make(FAIL_NONCE="10", FAIL_ALWAYS="1") as (process, terminal):
+            output = self.await_retry_prompt(process, 2)
+            if action == "eof":
+                os.write(terminal, b"\x04")
+            else:
+                os.killpg(process.pid, signal.SIGINT)
+            rest, _ = process.communicate(timeout=60)
+            output += rest
+            self.assertNotEqual(process.returncode, 0, output.decode())
+        self.assertEqual(self.attempts(), [7, 8, 9, 10])
+        config = self.task / "config/mainnet"
+        self.assertFalse((config / "signatures-pause.txt").exists())
+        self.assertFalse((config / ".pause-signing.lock").exists())
+        state = config / ".pause-signing"
+        self.assertEqual(sorted(p.name for p in state.iterdir()), ["0", "1", "2", "context"])
+        for i in range(3):
+            self.assertEqual((state / str(i)).read_text(), f"{SIGNER}:{7 + i}:{7 + i:0128x}1b\n")
+        self.assertIn(b"Do not send partial signatures", output)
+        self.assertIn(b"make TASK_NETWORK=mainnet sign-pause", output)
+        self.assertNotIn(b"Signature:", output)
+        resumed = self.make()
+        self.assertEqual(resumed.returncode, 0, resumed.stdout)
+        self.assert_batch("mainnet")
+        self.assertEqual(self.attempts(), [7, 8, 9, 10] + list(range(10, 27)))
+
+    def test_interactive_retry_eof_stops_and_preserves_checkpoints(self):
+        self.assert_interactive_retry_abort("eof")
+
+    def test_interactive_retry_interrupt_stops_and_preserves_checkpoints(self):
+        self.assert_interactive_retry_abort("interrupt")
 
     def test_bounded_failure_preserves_progress_and_rerun_resumes(self):
         failed = self.make(FAIL_NONCE="10", FAIL_ALWAYS="1")

@@ -22,13 +22,17 @@ state="$config/.pause-signing"
 output="$config/signatures-pause.txt"
 lock="$config/.pause-signing.lock"
 mkdir "$lock" 2>/dev/null || fail "Signing is already locked for $TASK_NETWORK. If no signing process is running, remove $lock and rerun make TASK_NETWORK=$TASK_NETWORK sign-pause."
+recovery() {
+    printf 'Do not send partial signatures. Successful signatures are saved in %s.\n' "$state" >&2
+    printf 'Unlock the Ledger, open the Ethereum app, then rerun make TASK_NETWORK=%s sign-pause with the same Ledger account.\n' "$TASK_NETWORK" >&2
+}
 cleanup() {
     rm -f "$state/sign-output" "$state/sign-errors" "$state/current-context" "$state/next-signature"
     rmdir "$lock"
 }
 trap cleanup EXIT
-trap 'exit 130' INT
-trap 'exit 143' TERM
+trap 'recovery; exit 130' INT
+trap 'recovery; exit 143' TERM
 [[ ! -e $output ]] || fail "$output already exists. Send its contents to the facilitator; do not overwrite a completed batch."
 mkdir -p "$state"
 
@@ -37,10 +41,6 @@ mise_exec() {
 }
 cast() {
     mise_exec cast "$@"
-}
-recovery() {
-    printf 'Do not send partial signatures. Successful signatures are saved in %s.\n' "$state" >&2
-    printf 'Unlock the Ledger, open the Ethereum app, then rerun make TASK_NETWORK=%s sign-pause with the same Ledger account.\n' "$TASK_NETWORK" >&2
 }
 trap 'recovery' ERR
 
@@ -85,6 +85,13 @@ for ((i = 0; i < 20; i++)); do
         signing_data="0x1901${domain_separator#0x}${message_hash#0x}"
         signed=false
         for ((attempt = 1; attempt <= 3; attempt++)); do
+            if (( attempt > 1 )) && [[ -t 0 ]]; then
+                printf 'Press Enter to retry nonce %s (attempt %s/3) after unlocking the Ledger and opening the Ethereum app, or Ctrl-C to stop.\n' "$nonce" "$attempt" >&2
+                if ! IFS= read -r _; then
+                    recovery
+                    fail "Stopped at nonce $nonce before attempt $attempt: retry input ended."
+                fi
+            fi
             printf 'Approve nonce %s on the Ledger, attempt %s/3.\n' "$nonce" "$attempt"
             if mise_exec "$goroot/bin/eip712sign" --ledger --hd-paths "m/44'/60'/$LEDGER_ACCOUNT'/0/0" \
                 -data "$signing_data" > "$state/sign-output" 2> "$state/sign-errors"; then

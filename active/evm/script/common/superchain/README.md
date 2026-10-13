@@ -19,7 +19,9 @@ On success, send the **contents of `config/<network>/signatures-pause.txt`** to 
 
 ## Retry a failed batch
 
-The recipe retries the same nonce up to three times before stopping. It only saves a signature after a successful, valid signing response. A failed attempt cannot skip a nonce or add a duplicate signature.
+The recipe allows up to three signing attempts for the same nonce before stopping. It only saves a signature after a successful, valid signing response. A failed attempt cannot skip a nonce or add a duplicate signature.
+
+With terminal stdin, unlock the Ledger and open the Ethereum app, then press Enter when prompted before the second or third attempt. Ctrl-C or EOF stops signing, preserves successful signatures, and removes the signing lock. Without terminal stdin, retries are automatic and still limited to three attempts; they can recover transient failures but do not wait for Ledger repairs.
 
 If it stops, unlock the Ledger, open the Ethereum app, and run the same command with the same Ledger account:
 
