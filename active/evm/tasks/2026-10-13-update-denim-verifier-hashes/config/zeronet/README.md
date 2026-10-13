@@ -18,7 +18,9 @@ No ETH moves and existing dispute games are unchanged.
 | -- | -- |
 | `DisputeGameFactory` proxy | `0xd930E0CebD52d7C77b8f900De242e818506C5474` |
 | Current `AggregateVerifier` (`0.3.0`) | `0x7ce3766537e065dAaF0370799e2761B52569aFe6` |
-| New `AggregateVerifier` (`0.3.0`) | TBD |
+| New `AggregateVerifier` (`0.3.0`) | `0x4780D45fcf885a4D1F4c3aFDfAc9Eb9740820635` |
+
+The new verifier was [deployed](https://hoodi.etherscan.io/tx/0xa8573c7ade7cd08db3d795fc8ffd3d4d082d1409b62bb7ae2779ac39789c5cb8).
 
 ## Sign
 

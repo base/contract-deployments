@@ -1,0 +1,92 @@
+{
+  "cmd": "DISPUTE_GAME_FACTORY_PROXY=0xd930e0cebd52d7c77b8f900de242e818506c5474 GAME_TYPE=621 CURRENT_AGGREGATE_VERIFIER=0x7ce3766537e065dAaF0370799e2761B52569aFe6 AGGREGATE_VERIFIER_TEE_IMAGE_HASH=0x44cca4430eaac037ec451534ff7c9361095fa36e0f53fac9fa03f8305c879ef7 AGGREGATE_VERIFIER_ZK_RANGE_HASH=0x6b1c20d0762f77b5278bd8aa5a0bb0ef3d6f3d9411bdad6d4f929a0701876e35 AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=0x0046d94f58f278df6197b4f433b63085aa95999893811f6ba6dff7e001425ca7 PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 NEW_AGGREGATE_VERIFIER=0x4780D45fcf885a4D1F4c3aFDfAc9Eb9740820635 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-10-13-update-denim-verifier-hashes/script/UpdateVerifierHashes.s.sol:UpdateVerifierHashes --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0xc5e43a99b5b1f661027af58573d641a09178e05999bc9334ed9541750b3e8054"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xcd371300d54f87d8bf3db9f89fc2748a4b641b58c36da65dad78497703974b30",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x7a329c25df38097eb8f67bff83423479f35c8a2c022f3a3fb22a126e0b50d52a",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the verifier hash update transaction hash from the Coinbase signer Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000021",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000022",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactory - Zeronet",
+      "address": "0xD930e0cebD52D7C77b8F900dE242E818506C5474",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000007ce3766537e065daaf0370799e2761b52569afe6",
+          "after": "0x0000000000000000000000004780d45fcf885a4d1f4c3afdfac9eb9740820635",
+          "description": "Updates gameImpls[621] from 0x7ce3766537e065dAaF0370799e2761B52569aFe6 to 0x4780D45fcf885a4D1F4c3aFDfAc9Eb9740820635, the same AggregateVerifier 0.3.0 with the proof program hashes of the per-game intermediate interval fix. Existing games are unchanged.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
