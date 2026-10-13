@@ -35,14 +35,31 @@ case ${0##*/} in
         case $1 in
             call)
                 case $3 in
-                    nonce*) echo "${START_NONCE:-7}" ;;
+                    'nonce()') printf '0x%064x\n' "${START_NONCE:-7}" ;;
+                    'nonce()(uint256)')
+                        python3 - "${START_NONCE:-7}" <<'PY'
+import sys
+nonce = sys.argv[1]
+annotation = ""
+if int(nonce) >= 10000:
+    mantissa = f"{nonce[0]}.{nonce[1:4]}".rstrip("0").rstrip(".")
+    annotation = f" [{mantissa}e{len(nonce) - 1}]"
+print(nonce + annotation)
+PY
+                        ;;
                     superchainConfig*) printf '0x%040x\n' 205 ;;
                     domainSeparator*) printf '0x%064x\n' 222 ;;
                     *) exit 1 ;;
                 esac
                 ;;
             chain-id) if [[ $3 == mainnet ]]; then echo 1; else echo 11155111; fi ;;
-            to-dec) echo "$2" ;;
+            to-dec)
+                python3 - "$2" <<'PY'
+import sys
+value = sys.argv[1]
+print(int(value, 16 if value.startswith("0x") else 10))
+PY
+                ;;
             calldata) echo 0x1234 ;;
             abi-encode) printf '0x%064x\n' "${!#}" ;;
             keccak) if [[ ${#2} == 66 ]]; then echo "$2"; else printf '0x%064x\n' 239; fi ;;
@@ -235,20 +252,21 @@ class PauseSigningTest(unittest.TestCase):
     def test_interactive_retry_interrupt_stops_and_preserves_checkpoints(self):
         self.assert_interactive_retry_abort("interrupt")
 
-    def test_bounded_failure_preserves_progress_and_rerun_resumes(self):
-        failed = self.make(FAIL_NONCE="10", FAIL_ALWAYS="1")
+    def test_nonce_10000_bounded_failure_preserves_progress_and_rerun_resumes(self):
+        failed = self.make(START_NONCE="10000", FAIL_NONCE="10003", FAIL_ALWAYS="1")
         self.assertNotEqual(failed.returncode, 0)
-        self.assertEqual(self.attempts(), [7, 8, 9, 10, 10, 10])
+        self.assertIn("Stopped at nonce 10003 after 3 attempts", failed.stdout)
+        self.assertEqual(self.attempts(), [10000, 10001, 10002] + [10003] * 3)
         self.assertFalse((self.task / "config/mainnet/signatures-pause.txt").exists())
         self.assertIn("make TASK_NETWORK=mainnet sign-pause", failed.stdout)
         self.assertIn("Do not send partial signatures", failed.stdout)
         self.assertNotIn("Signature:", failed.stdout)
         checkpoint = self.task / "config/mainnet/.pause-signing/0"
-        self.assertEqual(checkpoint.read_text(), f"{SIGNER}:7:{'0' * 127}71b\n")
-        resumed = self.make()
+        self.assertEqual(checkpoint.read_text(), f"{SIGNER}:10000:{10000:0128x}1b\n")
+        resumed = self.make(START_NONCE="10000")
         self.assertEqual(resumed.returncode, 0, resumed.stdout)
-        self.assert_batch("mainnet")
-        self.assertEqual(self.attempts(), [7, 8, 9, 10, 10, 10] + list(range(10, 27)))
+        self.assert_batch("mainnet", start=10000)
+        self.assertEqual(self.attempts(), [10000, 10001, 10002] + [10003] * 3 + list(range(10003, 10020)))
 
     def test_network_output_isolation_and_completed_batch_is_not_overwritten(self):
         self.assertEqual(self.make().returncode, 0)

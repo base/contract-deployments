@@ -46,7 +46,7 @@ trap 'recovery' ERR
 
 goroot=$(mise_exec go env GOROOT)
 [[ -n $goroot && -x $goroot/bin/eip712sign ]] || fail "Missing GOROOT/bin/eip712sign. Run make TASK_NETWORK=$TASK_NETWORK deps-pause."
-start_nonce_hex=$(cast call "$INCIDENT_MULTISIG" 'nonce()(uint256)' --rpc-url "$L1_RPC_URL")
+start_nonce_hex=$(cast call "$INCIDENT_MULTISIG" 'nonce()' --rpc-url "$L1_RPC_URL")
 start_nonce=$(cast to-dec "$start_nonce_hex")
 [[ $start_nonce =~ ^(0|[1-9][0-9]{0,17})$ ]] || fail "Safe nonce is not a supported nonnegative integer"
 chain_id=$(cast chain-id --rpc-url "$L1_RPC_URL")
