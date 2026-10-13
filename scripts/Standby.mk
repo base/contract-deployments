@@ -39,8 +39,8 @@ PROJECT_DIR := $(CURDIR)
 endif
 
 NETWORK_ENV := $(REPO_ROOT)/config/$(TASK_NETWORK).env
-ifneq ($(wildcard config/$(TASK_NETWORK)/network.env),)
-NETWORK_ENV := config/$(TASK_NETWORK)/network.env
+ifneq ($(wildcard config/*/network.env),)
+$(error network.env is reserved for the archive snapshot)
 endif
 include $(NETWORK_ENV)
 include config/$(TASK_NETWORK)/.env

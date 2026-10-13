@@ -54,6 +54,8 @@ def check_delay(repo, task, network):
     identifier(task.name, "task identifier")
     identifier(network, "network identifier")
     config = task / "config" / network
+    if os.path.lexists(config / "network.env"):
+        raise ValueError("network.env is reserved for the archive snapshot")
     values = inputs(config / ".env")
     if "RECORD_STATE_DIFF" in values:
         raise ValueError("RECORD_STATE_DIFF is injected by the signer tool, not a task input")
@@ -70,9 +72,7 @@ def check_delay(repo, task, network):
         raise ValueError("invalid BASE_CONTRACTS_COMMIT")
     if not (config / "README.md").is_file():
         raise ValueError("missing signer README")
-    network_env = config / "network.env"
-    if not network_env.exists():
-        network_env = repo / "config" / f"{network}.env"
+    network_env = repo / "config" / f"{network}.env"
     if not network_env.is_file():
         raise ValueError("missing global network configuration")
     print(f"Prepared {task.name}/config/{network}; canonical files are unchanged")

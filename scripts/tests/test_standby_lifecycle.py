@@ -169,6 +169,27 @@ class StandbyLifecycle(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0, "exported TASK_NETWORK must not select an invocation")
                 self.assertIn("command line", result.stderr)
 
+    def test_reserved_network_snapshot_is_rejected_without_changes(self):
+        for network in ("local", "other"):
+            config = self.task / "config" / network
+            config.mkdir(exist_ok=True)
+            reserved = config / "network.env"
+            reserved.write_bytes((self.repo / "config/local.env").read_bytes())
+            before = self.snapshot()
+            for target in ("prepare", "build", "validate", "gen-validation-cb", "execute", "verify", "deps"):
+                with self.subTest(network=network, target=target):
+                    result = self.make(target, "local", *([] if target == "prepare" else ["-n"]))
+                    self.assertEqual(self.snapshot(), before)
+                    self.assertNotEqual(result.returncode, 0, f"{target} accepted reserved {reserved}: {result.stdout}{result.stderr}")
+                    self.assertIn("network.env is reserved for the archive snapshot", result.stderr)
+            if network == "local":
+                with self.subTest(command="check-delay"):
+                    result = run("python3", str(self.repo / "scripts/standby-task.py"), "check-delay", "--repo", str(self.repo), "--task", str(self.task), "--network", network, cwd=self.repo)
+                    self.assertEqual(self.snapshot(), before)
+                    self.assertNotEqual(result.returncode, 0, "check-delay accepted reserved network.env")
+                    self.assertIn("network.env is reserved for the archive snapshot", result.stderr)
+            reserved.unlink()
+
     def test_archive_is_lossless_and_canonical_unchanged(self):
         self.finalize()
         self.finalize("other", "CANCELED")
@@ -181,7 +202,14 @@ class StandbyLifecycle(unittest.TestCase):
         canonical = {name: data for name, data in before.items() if not name.startswith(("config/", "records/", "signatures/"))}
         self.assertEqual(self.snapshot(), canonical)
         self.assertTrue((archived / "foundry.toml").is_file())
-        self.assertTrue((archived / "config/local/network.env").is_file())
+        for network in ("local", "other"):
+            self.assertEqual((archived / "config" / network / "network.env").read_bytes(), (self.repo / "config" / f"{network}.env").read_bytes())
+        self.task = archived
+        before = self.snapshot()
+        result = self.make("execute", "local", "-n")
+        self.assertEqual(self.snapshot(), before)
+        self.assertNotEqual(result.returncode, 0, "archive snapshots must not become executable tasks")
+        self.assertIn("network.env is reserved for the archive snapshot", result.stderr)
 
     def test_archive_refuses_pending_other_network_without_data_loss(self):
         self.finalize()
