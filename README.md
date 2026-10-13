@@ -130,6 +130,11 @@ active/evm/
             └── <script>/<chain-id>/ # Forge broadcast records
 ```
 
+### Task guides
+
+- Task `README.md` files are for signers and should contain only the concise information needed to sign. For active EVM tasks, they live in `config/<network>/README.md`.
+- `FACILITATOR.md` files are for facilitators and cover generating validation files, executing approvals, and executing the task. Some legacy tasks use the name `FACILITATORS.md` for this guide.
+
 Run task commands from `active/evm/tasks/<task-id>/`. A task with multiple network configurations must require `TASK_NETWORK` on each Make command line, for example `make TASK_NETWORK=sepolia gen-validation-cb`; it must not rely on a mutable default or exported environment value. Keep the root `FACILITATOR.md` authoritative and network-agnostic, and make the need to replace `TASK_NETWORK=<network>` explicit. Per-network facilitator files are discouraged; if one is unavoidable for a materially different procedure, put only that procedural delta in `config/<network>/FACILITATOR.md` and link to it from the root guide.
 
 One task directory represents one logical operation across its intended network rollouts. Add sibling `config/<network>/` directories and keep the task active until all intended networks are executed or canceled and their final artifacts are committed. Do not run `make archive-task` between network rollouts.
