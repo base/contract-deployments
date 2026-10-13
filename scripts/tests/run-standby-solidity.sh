@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 root=$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)
+forge=$(mise -C "$root" which forge)
 if [ -n "${STANDBY_PROJECT_DIR:-}" ]; then
     fixture=$STANDBY_PROJECT_DIR
 else
@@ -27,16 +28,16 @@ if [ ! -f "$fixture/foundry.toml" ]; then
 fi
 cd "$fixture"
 if [ "${STANDBY_PREPARE_ONLY:-0}" = 1 ]; then
-    mise exec -- forge build
+    "$forge" build
     exit
 fi
 # Foundry env writes are process-global, so concurrent fixture tests can overwrite each other's inputs.
 if [ -n "${STANDBY_VALIDATION_OUT:-}" ]; then
-    EXPORT_VALIDATION_FIXTURE=true mise exec -- forge test --threads 1 --match-test test_exportValidationFixture -vv
+    EXPORT_VALIDATION_FIXTURE=true "$forge" test --threads 1 --match-test test_exportValidationFixture -vv
     cp validation-fixture.json "$STANDBY_VALIDATION_OUT"
     if [ -n "${STANDBY_STATE_DIFF_OUT:-}" ]; then
         cp stateDiff.json "$STANDBY_STATE_DIFF_OUT"
     fi
 else
-    mise exec -- forge test --threads 1 -vv
+    "$forge" test --threads 1 -vv
 fi

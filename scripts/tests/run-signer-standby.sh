@@ -1,6 +1,9 @@
 #!/bin/sh
 set -eu
 root=$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)
+node=$(mise -C "$root" which node)
+npm=$(mise -C "$root" which npm)
+export PATH="$(dirname "$node"):$PATH"
 fixture=$(mktemp -d)
 trap 'rm -rf "$fixture"' EXIT HUP INT TERM
 pin=$(sed -n 's/^SIGNER_TOOL_COMMIT=//p' "$root/Makefile")
@@ -26,8 +29,8 @@ grep -q 'upstream pin mismatch' "$fixture/pin.log"
 mkdir -p "$signer/__tests__"
 cp "$root/scripts/tests/signer-standby.test.ts" "$signer/__tests__/standby.test.ts"
 cd "$signer"
-mise exec -- npm ci --ignore-scripts --no-audit --no-fund
-mise exec -- npm test -- --runTestsByPath __tests__/standby.test.ts \
+"$npm" ci --ignore-scripts --no-audit --no-fund
+"$npm" test -- --runTestsByPath __tests__/standby.test.ts \
     src/lib/__tests__/deployments.test.ts \
     src/app/api/upgrade-config/__tests__/route.test.ts \
     src/app/api/install-deps/__tests__/route.test.ts

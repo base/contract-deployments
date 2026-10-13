@@ -3,7 +3,6 @@ import json
 import os
 from pathlib import Path
 import shlex
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -59,7 +58,10 @@ def main():
         signer = os.environ.get("STANDBY_SIGNER_HOME")
         if signer:
             env = dict(os.environ, HOME=str(Path(os.environ["FIXTURE_HOME"])), CALL_FIXTURE_OUT=str(out.parent / ".call-fixture.json"))
-            node = shutil.which("node", path=os.environ["ORIGINAL_PATH"])
+            node = subprocess.check_output(
+                ["mise", "-C", os.environ["SOURCE_ROOT"], "which", "node"],
+                env=dict(env, PATH=os.environ["ORIGINAL_PATH"], HOME=os.environ["ORIGINAL_HOME"]), text=True,
+            ).strip()
             workdir = Path(args[args.index("--workdir") + 1])
             source = next(token for token in shlex.split(command) if token.endswith(":DelayUpgradeActivation"))
             source = (workdir / source.rsplit(":", 1)[0]).resolve()
