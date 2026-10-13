@@ -21,8 +21,8 @@ explicitly. Run everything from this directory (`active/evm/tasks/2026-10-07-den
 make TASK_NETWORK=<network> deps
 ```
 
-This pins `base/contracts` at `BASE_CONTRACTS_COMMIT`. `AggregateVerifier` is the only contract
-that differs from the live `releases/v8.3.0` source.
+This pins `base/contracts` at `BASE_CONTRACTS_COMMIT`. The task deploys only `AggregateVerifier`
+from it.
 
 ## 2. Review the network config
 
