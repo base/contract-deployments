@@ -19,7 +19,8 @@ case "$operation" in
         if [ -n "${STANDBY_DEPS_SOURCE:-}" ]; then
             dependencies="$STANDBY_DEPS_SOURCE"
         else
-            make -C "$root" forge-deps PROJECT_DIR="$fixture" BASE_CONTRACTS_COMMIT=8c21f6d08a36b4059ae2bb8938f1e7e758a0e962
+            make -C "$root" forge-deps PROJECT_DIR="$fixture" \
+                MISE_EXEC="env PATH=\"$(dirname "$forge"):$PATH\"" BASE_CONTRACTS_COMMIT=8c21f6d08a36b4059ae2bb8938f1e7e758a0e962
             (cd "$fixture" && "$forge" install --no-git github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@0a2cb9a445c365870ed7a8ab461b12acf3e27d63)
             dependencies="$fixture/lib"
         fi
