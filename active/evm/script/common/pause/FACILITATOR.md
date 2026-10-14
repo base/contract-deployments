@@ -7,7 +7,7 @@ For an active task at `active/evm/tasks/<task-id>/`, use this Makefile structure
 ```make
 include ../../../../Makefile
 include $(REPO_ROOT)/Multisig.mk
-include $(REPO_ROOT)/active/evm/script/common/superchain/PauseSigning.mk
+include $(REPO_ROOT)/active/evm/script/common/pause/PauseSigning.mk
 
 PROJECT_DIR := $(abspath ../..)
 include $(REPO_ROOT)/config/$(TASK_NETWORK).env
@@ -45,7 +45,7 @@ These pause signatures come directly from `eip712sign`, so this signing path has
 From the repository root:
 
 ```sh
-python3 -B -m unittest discover -s active/evm/script/common/superchain/tests -p 'test_pause_signing.py' -v
+python3 -B -m unittest discover -s active/evm/script/common/pause/tests -p 'test_pause_signing.py' -v
 ```
 
 The tests run the public Makefile target in temporary task fixtures with fake mise, Go, cast, and eip712sign. They do not use a Ledger, live RPC, or transaction execution.

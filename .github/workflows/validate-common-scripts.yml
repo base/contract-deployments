@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Test pause signing
-        run: python3 -B -m unittest discover -s active/evm/script/common/superchain/tests -v
+        run: python3 -B -m unittest discover -s active/evm/script/common/pause/tests -v
 
       # ── Toolchain (mise) ─────────────────────────────────────────────
       # Installs all tools pinned in mise.toml (foundry, node, bun, go) so

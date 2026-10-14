@@ -50,15 +50,15 @@ start_nonce_hex=$(cast call "$INCIDENT_MULTISIG" 'nonce()' --rpc-url "$L1_RPC_UR
 start_nonce=$(cast to-dec "$start_nonce_hex")
 [[ $start_nonce =~ ^(0|[1-9][0-9]{0,17})$ ]] || fail "Safe nonce is not a supported nonnegative integer"
 chain_id=$(cast chain-id --rpc-url "$L1_RPC_URL")
-superchain_config=$(cast call "$SYSTEM_CONFIG" 'superchainConfig()(address)' --rpc-url "$L1_RPC_URL")
+pause_contract=$(cast call "$SYSTEM_CONFIG" 'superchainConfig()(address)' --rpc-url "$L1_RPC_URL")
 domain_separator=$(cast call "$INCIDENT_MULTISIG" 'domainSeparator()(bytes32)' --rpc-url "$L1_RPC_URL")
-[[ $superchain_config =~ $address_pattern && $domain_separator =~ $hash_pattern ]] || fail "Invalid signing context from RPC"
+[[ $pause_contract =~ $address_pattern && $domain_separator =~ $hash_pattern ]] || fail "Invalid signing context from RPC"
 zero_address=0x0000000000000000000000000000000000000000
 call_data=$(cast calldata 'pause(address)' "$zero_address")
 call_data_hash=$(cast keccak "$call_data")
 [[ $call_data_hash =~ $hash_pattern ]] || fail "Invalid pause calldata hash"
 printf '%s\n' "$TASK_NETWORK" "$L1_RPC_URL" "$chain_id" "$INCIDENT_MULTISIG" "$SYSTEM_CONFIG" \
-    "$superchain_config" "$domain_separator" "$call_data_hash" "$LEDGER_ACCOUNT" "$start_nonce" > "$state/current-context"
+    "$pause_contract" "$domain_separator" "$call_data_hash" "$LEDGER_ACCOUNT" "$start_nonce" > "$state/current-context"
 if [[ -f $state/context ]]; then
     cmp -s "$state/context" "$state/current-context" || fail "Signing context changed. Keep $state and contact the facilitator before restarting; do not send partial signatures."
 else
@@ -78,7 +78,7 @@ for ((i = 0; i < 20; i++)); do
         [[ $signer =~ $address_pattern && $sig =~ $signature_pattern && $saved_nonce == "$nonce" && -z $extra ]] || fail "Invalid saved signature. Keep $state and contact the facilitator."
     else
         saw_missing=true
-        safe_tx=$(cast abi-encode "$safe_tx_abi" "$safe_tx_typehash" "$superchain_config" 0 "$call_data_hash" \
+        safe_tx=$(cast abi-encode "$safe_tx_abi" "$safe_tx_typehash" "$pause_contract" 0 "$call_data_hash" \
             0 0 0 0 "$zero_address" "$zero_address" "$nonce")
         message_hash=$(cast keccak "$safe_tx")
         [[ $message_hash =~ $hash_pattern ]] || fail "Invalid Safe transaction hash"
