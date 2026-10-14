@@ -11,6 +11,7 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 #
 #   make archive-task
 #
+ifeq ($(STANDBY_TASK_DIR),)
 .PHONY: archive-task
 archive-task:
 	@set -eu; \
@@ -31,6 +32,11 @@ archive-task:
 	mkdir -p "$(REPO_ROOT)/archive/evm"; \
 	git mv -- "$$source" "$$destination"; \
 	echo "Archived active/evm/tasks/$$task_id -> archive/evm/$$task_id"
+else
+.PHONY: archive-task
+archive-task:
+	@python3 $(REPO_ROOT)/scripts/standby-task.py archive --repo "$(REPO_ROOT)" --task "$(STANDBY_TASK_DIR)" --network "$(TASK_NETWORK)" --date "$(TASK_DATE)"
+endif
 
 ##
 # Toolchain bootstrap (mise)
@@ -122,6 +128,7 @@ checkout-signer-tool:
 	git remote add origin https://github.com/base/task-signing-tool.git; \
 	git fetch --depth=1 origin $(SIGNER_TOOL_COMMIT); \
 	git reset --hard FETCH_HEAD
+	sh $(REPO_ROOT)/scripts/apply-signer-standby.sh $(SIGNER_TOOL_PATH)
 
 # Checkout and install signer-tool dependencies (used as a prerequisite by gen-validation targets)
 .PHONY: deps-signer-tool

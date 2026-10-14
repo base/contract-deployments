@@ -4,7 +4,7 @@
 
 This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base/contracts](https://github.com/base/contracts).
 
-This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network.
+EVM operations have three lifecycles: pending one-off tasks in `active/evm/tasks/`, pre-reviewed dateless operations in `standby/evm/tasks/`, and historical dated tasks in `archive/evm/`.
 
 <!-- Badge row 1 - status -->
 
@@ -31,9 +31,9 @@ This repo is structured with each network having a high-level directory which co
 
 ### Toolchain (mise)
 
-All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise.toml) so that every contributor — and especially every signer — runs identical versions. This eliminates a class of bugs where domain separators, build artifacts, or generated signatures differ between machines.
+Foundry, Node.js, Bun, and Go are pinned in [`mise.toml`](mise.toml) so contributors and signers run identical versions. This prevents mismatches in domain separators, build artifacts, and generated signatures. Standby lifecycle commands also require Python 3.9 or newer on PATH and use only its standard library.
 
-**Signers and facilitators don't need to install anything.** `make sign-task` (and `make deps`, `make execute`, etc.) automatically:
+`make sign-task`, `make deps`, and execution targets bootstrap the mise-managed toolchain automatically:
 
 1. Installs [`mise`](https://mise.jdx.dev) to `~/.local/bin/mise` if it's not already present, using the vendored installer at [`scripts/install-mise.sh`](scripts/install-mise.sh).
 2. Trusts the repo's `mise.toml` and runs `mise install` to fetch the pinned `foundry`, `node`, `bun`, and `go` versions.
@@ -90,7 +90,7 @@ Please note, for some older tasks (that have not yet been adapted to use the sig
 
 ## Network configuration
 
-Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`, `zeronet/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
+Global `config/<network>.env` files define stable addresses and network metadata. EVM tasks include the selected global file and their own `config/<network>/.env`. Stable `PROTOCOL_VERSIONS_PROXY` values belong in global config; incident-specific inputs belong in the invocation.
 
 The network `.env` files contain:
 
@@ -101,7 +101,7 @@ The network `.env` files contain:
 
 All address variables are prefixed with `export` so they are available to child shell processes (Forge scripts, shell commands, etc.). Foundry scripts can access them via `vm.envAddress("VARIABLE_NAME")`.
 
-> **Note:** If you need to add or update a contract address, edit the corresponding `{network}/.env` file directly. Do not create per-task address definitions unless they are truly task-specific.
+> Update stable addresses in `config/<network>.env`. Override an address in an invocation only when that operation targets a different deployment.
 
 ## Directory structure
 
@@ -145,6 +145,29 @@ Reusable scripts are documented in [`active/evm/script/common/README.md`](active
 make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
 ```
 
+### Standby operations
+
+Canonical standby tasks are dateless, pre-reviewed operations with no real network configuration or artifacts. Invoke directly from `standby/evm/tasks/<operation>/` by adding `config/<network>/.env` and a concise signer README with `Status: READY TO SIGN`. Do not copy the task into active or edit its canonical Makefile, Solidity, or root `FACILITATOR.md` for an incident. Every Make command requires explicit command-line `TASK_NETWORK=<network>`, not an exported value or default.
+
+Use the [upgrade-delay facilitator guide](standby/evm/tasks/delay-upgrade-activation/FACILITATOR.md) for exact prepare, validation, signing, execution, verification, and archival commands. Standby scripts use the shared `active/evm` Foundry project and dependencies. Signer discovery includes a standby invocation only after JSON validations exist under `config/<network>/validations/`. The pinned signer checkout receives the deterministic repo-owned patch in `scripts/patches/signer-standby.patch`; changing its upstream pin or content without reviewing the patch fails closed.
+
+Pre-review does not replace incident-specific simulation. Re-review the canonical operation if the target ABI, ownership or responder role, base/contracts pin, or signing workflow changes. Keep addresses and other network-specific artifacts under `config/<network>/`; Forge records stay at task scope under `records/<script>/<chain-id>/`.
+
+After execution or cancellation, finalize every present network's README and commit all final artifacts. Fetch main, then run `make TASK_NETWORK=<network> archive-task TASK_DATE=<YYYY-MM-DD>`. Pending sibling invocations block archival because task-scoped records cannot safely be split by network. The command refuses invalid identifiers, overwrites, and canonical differences from `origin/main`. It preserves all finalized networks and artifacts in `archive/evm/<YYYY-MM-DD>-<operation>/`, including the canonical task source, Foundry configuration, and global network snapshots. Only invocation directories are removed; canonical standby files remain byte-for-byte identical.
+
+Keep the operational PR unmerged until all intended invocations are executed or canceled and the dated archive, final artifacts, and standby invocation removals are committed. On `main`, canonical standby must remain unchanged and contain no invocation-specific data before and after merge.
+
+```text
+standby/evm/tasks/<operation>/
+├── Makefile
+├── FACILITATOR.md
+├── README.md
+└── script/
+    └── <operation>.s.sol
+```
+
+Invocation-only `config/`, `signatures/`, and `records/` directories are added during an incident and removed by archival. Later incidents reuse the canonical standby directory. Historical archives must not be edited or executed.
+
 ### Legacy tasks
 
 Each legacy task (under a network directory, or `archive/legacy/`) has a directory structure similar to the following:
@@ -154,26 +177,29 @@ Each legacy task (under a network directory, or `archive/legacy/`) has a directo
 - **src/** place to store any one-off smart contracts (long-lived contracts should go in [base/contracts](https://github.com/base/contracts))
 - **.env** place to store task-specific environment variables (contract addresses are inherited from the network-level `.env`)
 
-## CI — Common Script Validation
+## CI script validation
 
-A GitHub Actions workflow automatically validates the shared `active/evm` scripts on every pull request and on pushes to `main`.
+The GitHub Actions workflow validates shared active scripts and canonical standby Solidity on every pull request and push to `main`.
 
 **What CI checks:**
 
-1. **Solidity formatting** — `forge fmt --check script/` ensures formatting consistency.
-2. **Compilation** — `forge build` verifies that imports resolve, types are correct, and all dependencies are present.
+1. `forge fmt --check script/` and `forge build` check the shared active project.
+2. `forge fmt --root . --check standby/evm/tasks/ scripts/tests/*.sol` checks standby formatting from the repo root. Each canonical standby script also compiles against the shared active project's dependencies.
+3. Standby Solidity regressions run against local `ProtocolVersions` proxies, including ID 0, non-tail commitments, rejected delays, and postcheck invariants.
+4. `python3 -B -m unittest scripts.tests.test_standby_lifecycle -v` checks lossless archival and Make guards in temporary Git repositories without RPC or credentials.
+5. `sh scripts/tests/run-signer-standby.sh` runs the pinned signer's TypeScript checks, discovery/API tests, and one local validation-generator smoke test covering preparation, calldata, and the signer entry path.
 
 **How it works:**
 
 - All tooling (Foundry, Node, Bun, Go) is installed by the [`jdx/mise-action`](https://github.com/jdx/mise-action) GitHub Action using the versions pinned in [`mise.toml`](mise.toml), so CI matches local signer environments.
 - `make deps PROJECT_DIR="$PWD/active/evm"` installs dependencies into the shared `active/evm` Foundry project. `BASE_CONTRACTS_COMMIT` is supplied via the workflow's `env` block, since the shared project has no task `.env` of its own.
-- `forge fmt --check` and `forge build` then run in `active/evm` against the shared `foundry.toml` and `script/common/`.
+- Standby test runners create isolated temporary projects and invocation folders. They never generate canonical validations or access live networks.
 
 **What CI does NOT do:**
 
 - Does not run `forge script` (requires RPC URLs, env vars, and hardware wallets).
-- Does not run `forge test` (no test files exist for these scripts).
-- Does not run signing or execution targets (they depend on network state and hardware wallets).
+- Does not run tests against live networks. Standby tests use isolated local fixtures and credential stubs.
+- Does not sign or execute live transactions. The signing entry smoke test replaces the UI process with a credential-free stub.
 
 > See [`.github/workflows/validate-common-scripts.yml`](.github/workflows/validate-common-scripts.yml) for the full workflow definition.
 
