@@ -34,7 +34,7 @@ CHECK_ENV = $(UPDATE_ENV) PRESTATE_JSON=$(PRESTATE_JSON)
 
 # Forge 1.5.1 ignores FOUNDRY_FS_PERMISSIONS, so artifact access needs a temporary config.
 define WITH_ARTIFACT_PERMISSIONS
-set -eu; config=$$(mktemp "$(PROJECT_DIR)/.verifier-foundry-XXXXXX.toml"); \
+set -eu; config=$$(mktemp "$(PROJECT_DIR)/.verifier-foundry-XXXXXX"); \
 	trap 'rm -f "$$config"' EXIT; \
 	sed 's|^fs_permissions = .*|fs_permissions = [{ access = "read-write", path = "./" }, { access = "read-write", path = "$(CURDIR)/config/$(TASK_NETWORK)/" }]|' \
 		"$(PROJECT_DIR)/foundry.toml" > "$$config"; \
