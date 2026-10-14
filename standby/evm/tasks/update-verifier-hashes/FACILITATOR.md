@@ -4,7 +4,7 @@ Run directly from `standby/evm/tasks/update-verifier-hashes/`, replacing `<netwo
 
 ## Supported contracts and freshness
 
-This operation supports `AggregateVerifier` **0.3.0** at base/contracts `8c21f6d08a36b4059ae2bb8938f1e7e758a0e962` (v8.4.0.rc2). Both the live and replacement verifiers must report that version. The constructor has slow/fast block and intermediate intervals and a `ScheduleConfig`. Every non-hash constructor input is copied from the live verifier, including its anchor registry, factory, DelayedWETH, TEE/ZK verifier addresses, config hash, L2 chain ID, protocol versions, genesis block/timestamp, and block time. One or two hashes may change; all three must be nonzero and at least one must change.
+This operation supports `AggregateVerifier` **0.3.0** at base/contracts `8c21f6d08a36b4059ae2bb8938f1e7e758a0e962` (v8.4.0.rc2). Both the live and replacement verifiers must report that version. The constructor has slow/fast block and intermediate intervals and a `ScheduleConfig`. Every non-hash constructor input is copied from the live verifier, including its anchor registry, factory, DelayedWETH, TEE/ZK verifier addresses, config hash, L2 chain ID, protocol versions, genesis block/timestamp, and block time. Any one, two, or all three hashes may change; all three must be nonzero and at least one must differ from the live verifier.
 
 Re-review or retire this task before invocation if any of these change:
 

@@ -48,6 +48,7 @@ validate-config:
 	@python3 $(REPO_ROOT)/scripts/standby-task.py check-verifier --repo "$(REPO_ROOT)" --task "$(CURDIR)" --network "$(TASK_NETWORK)"
 
 deps: validate-config
+clean-lib forge-deps: validate-config
 
 build: validate-config bootstrap-mise
 	cd $(PROJECT_DIR) && $(MISE_EXEC) forge build $(SCRIPT_DIR)/DeployAggregateVerifier.s.sol $(SCRIPT_DIR)/UpdateVerifierHashes.s.sol

@@ -302,6 +302,41 @@ class VerifierConfig(StandbyFixture):
         result = self.check()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_verifier_deps_rejects_invalid_pin_without_touching_lib(self):
+        self.task = self.repo / "standby/evm/tasks/update-verifier-hashes"
+        copy_canonical_task(ROOT / "standby/evm/tasks/update-verifier-hashes", self.task)
+        self.config = self.task / "config/local"
+        self.config.mkdir(parents=True)
+        (self.config / "README.md").write_text("Status: READY TO SIGN\n")
+        self.values["BASE_CONTRACTS_COMMIT"] = "38" * 20
+        (self.config / ".env").write_text("".join(f"{key}={value}\n" for key, value in self.values.items()))
+        overrides = self.repo / "offline.mk"
+        overrides.write_text("bootstrap-mise install-eip712sign: ; @true\n")
+        stub = self.repo / "offline-install.sh"
+        stub.write_text("#!/bin/sh\nmkdir -p lib\nprintf 'fixture dependency\\n' > lib/installed\n")
+        for jobs in ("-j1", "-j4"):
+            with self.subTest(jobs=jobs):
+                project = self.repo / f"project{jobs}"
+                lib = project / "lib"
+                lib.mkdir(parents=True)
+                sentinel = lib / "existing"
+                sentinel.write_bytes(b"shared dependency\n")
+                before = {path: path.stat() for path in (lib, sentinel)}
+                result = self.make(
+                    "deps", "local", jobs, "-f", "Makefile", "-f", str(overrides),
+                    f"PROJECT_DIR={project}", f"MISE_EXEC=sh {stub}", f"GOPATH={self.repo / 'gopath'}",
+                )
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("unsupported BASE_CONTRACTS_COMMIT", result.stderr)
+                self.assertEqual(list(lib.iterdir()), [sentinel])
+                self.assertEqual(sentinel.read_bytes(), b"shared dependency\n")
+                for path, original in before.items():
+                    current = path.stat()
+                    self.assertEqual(
+                        (current.st_ino, current.st_mtime_ns, current.st_ctime_ns),
+                        (original.st_ino, original.st_mtime_ns, original.st_ctime_ns),
+                    )
+
     def test_rejects_unsupported_pin_formats_and_zero_values(self):
         for key, value in (
             ("BASE_CONTRACTS_COMMIT", "38" * 20), ("GAME_TYPE", str(2**32)),
