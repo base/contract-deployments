@@ -4,6 +4,7 @@ bin/
 cache/
 out/
 lib/
+__pycache__/
 
 # Localhost and run-latest deploy scripts
 **/records/**/**/run-latest.json
