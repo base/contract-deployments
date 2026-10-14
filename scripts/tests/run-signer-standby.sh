@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 root=$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)
+export SOURCE_ROOT="$root"
 node=$(mise -C "$root" which node)
 npm=$(mise -C "$root" which npm)
 export PATH="$(dirname "$node"):$PATH"

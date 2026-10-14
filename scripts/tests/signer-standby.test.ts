@@ -50,6 +50,23 @@ afterEach(() => {
 });
 
 describe('standby invocations in the pinned signer', () => {
+  it('does not discover the canonical verifier operation without an invocation', () => {
+    const source = path.join(process.env.SOURCE_ROOT!, 'standby/evm/tasks/update-verifier-hashes');
+    expect(fs.existsSync(source)).toBe(true);
+    fs.cpSync(source, path.join(root, 'standby/evm/tasks/update-verifier-hashes'), { recursive: true });
+    expect(getUpgradeOptions(NetworkType.Mainnet)).toEqual([]);
+    expect(getUpgradeOptions(NetworkType.Sepolia)).toEqual([]);
+  });
+
+  it('discovers both verifier signer validations for an invocation', async () => {
+    const id = 'update-verifier-hashes';
+    const task = invocation('standby', id);
+    fs.copyFileSync(path.join(task, 'config/mainnet/validations/base-signer.json'), path.join(task, 'config/mainnet/validations/security-council-signer.json'));
+    expect(getUpgradeOptions(NetworkType.Mainnet).map(task => task.id)).toEqual([id]);
+    const response = await GET(new NextRequest(`http://localhost/api/upgrade-config?network=mainnet&upgradeId=${id}`));
+    expect((await response.json()).configOptions.map((option: { fileName: string }) => option.fileName).sort()).toEqual(['base-signer', 'security-council-signer']);
+  });
+
   it('discovers standby only once JSON validations exist and keeps active and legacy behavior', () => {
     invocation('active', activeId);
     const task = invocation('standby', standbyId, false);
