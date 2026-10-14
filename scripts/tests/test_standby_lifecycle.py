@@ -332,5 +332,61 @@ class VerifierConfig(StandbyFixture):
         self.assertIn("missing signer README", result.stderr)
 
 
+class VerifierArtifacts(StandbyFixture):
+    def test_make_artifacts_use_only_selected_invocation_permissions(self):
+        self.task = self.repo / "standby/evm/tasks/update-verifier-hashes"
+        copy_canonical_task(ROOT / "standby/evm/tasks/update-verifier-hashes", self.task)
+        self.config = self.task / "config/local"
+        self.config.mkdir(parents=True)
+        (self.config / "README.md").write_text("Status: READY TO SIGN\n")
+        (self.config / ".env").write_text(
+            "BASE_CONTRACTS_COMMIT=8c21f6d08a36b4059ae2bb8938f1e7e758a0e962\nGAME_TYPE=42\n"
+            "CURRENT_AGGREGATE_VERIFIER=0x0000000000000000000000000000000000001111\n"
+            + "".join(f"AGGREGATE_VERIFIER_{key}_HASH=0x{value:064x}\n" for key, value in (("TEE_IMAGE", 4), ("ZK_RANGE", 5), ("ZK_AGGREGATE", 6)))
+        )
+        project = self.repo / "active/evm"
+        (project / "script").mkdir()
+        shutil.copy2(ROOT / "scripts/tests/StandbyArtifacts.s.sol", project / "script/UpdateVerifierHashes.s.sol")
+        forge = run("mise", "-C", str(ROOT), "which", "forge", cwd=ROOT)
+        self.assertEqual(forge.returncode, 0, forge.stderr)
+        self.env["PINNED_FORGE"] = forge.stdout.strip()
+        wrapper = self.repo / "offline-forge.py"
+        wrapper.write_text(
+            "import os, subprocess, sys\n"
+            "args = iter(sys.argv[1:])\n"
+            "assert next(args) == 'forge'\n"
+            "assert next(args) == 'script'\n"
+            "command = [os.environ['PINNED_FORGE'], 'script']\n"
+            "for arg in args:\n"
+            "    if arg in ('--rpc-url', '--hd-paths'):\n"
+            "        next(args)\n"
+            "    elif arg not in ('--ledger', '--broadcast'):\n"
+            "        command.append(arg)\n"
+            "sys.exit(subprocess.run(command).returncode)\n"
+        )
+        overrides = self.repo / "offline.mk"
+        overrides.write_text("bootstrap-mise: ; @true\n")
+        options = (
+            "-f", "Makefile", "-f", str(overrides), f"MISE_EXEC=python3 {wrapper}",
+            "SCRIPT_DIR=script", "DEPLOY_SCRIPT=script/UpdateVerifierHashes.s.sol:DeployAggregateVerifier",
+        )
+        for target in ("deploy", "validate", "post-check"):
+            with self.subTest(target=target):
+                result = self.make(target, "local", *options, "WITH_ARTIFACT_PERMISSIONS=cd $(PROJECT_DIR) && $(1)")
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("not allowed to be accessed", result.stdout + result.stderr)
+                result = self.make(target, "local", *options)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertFalse(list(project.glob(".verifier-foundry-*")))
+        for directory in (self.task, self.task / "config/other"):
+            directory.mkdir(exist_ok=True)
+            with self.subTest(denied=directory):
+                result = self.make("validate", "local", *options, f"PRESTATE_JSON={directory}/prestate.json")
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("not allowed to be accessed", result.stdout + result.stderr)
+                self.assertFalse((directory / "prestate.json").exists())
+                self.assertFalse(list(project.glob(".verifier-foundry-*")))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -29,7 +29,17 @@ VERIFIER_ENV = $(BUILD_ENV) BASE_CONTRACTS_COMMIT=$(BASE_CONTRACTS_COMMIT) \
 NEW_AGGREGATE_VERIFIER = $(shell jq -er '.aggregateVerifier' $(ADDRESSES_JSON) 2>/dev/null)
 AGGREGATE_VERIFIER_CTOR_ARGS = $(shell jq -er '.aggregateVerifierConstructorArgs' $(ADDRESSES_JSON) 2>/dev/null)
 UPDATE_ENV = $(VERIFIER_ENV) PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) \
-	NEW_AGGREGATE_VERIFIER=$(NEW_AGGREGATE_VERIFIER) PRESTATE_JSON=$(PRESTATE_JSON)
+	NEW_AGGREGATE_VERIFIER=$(NEW_AGGREGATE_VERIFIER)
+CHECK_ENV = $(UPDATE_ENV) PRESTATE_JSON=$(PRESTATE_JSON)
+
+# Forge 1.5.1 ignores FOUNDRY_FS_PERMISSIONS, so artifact access needs a temporary config.
+define WITH_ARTIFACT_PERMISSIONS
+set -eu; config=$$(mktemp "$(PROJECT_DIR)/.verifier-foundry-XXXXXX.toml"); \
+	trap 'rm -f "$$config"' EXIT; \
+	sed 's|^fs_permissions = .*|fs_permissions = [{ access = "read-write", path = "./" }, { access = "read-write", path = "$(CURDIR)/config/$(TASK_NETWORK)/" }]|' \
+		"$(PROJECT_DIR)/foundry.toml" > "$$config"; \
+	cd $(PROJECT_DIR); FOUNDRY_CONFIG="$$config" $(1)
+endef
 CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(RPC_URL) | tr -d '[]' | cut -d',' -f1)
 SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) "getOwners()(address[])" --rpc-url $(RPC_URL) | tr -d '[]' | cut -d',' -f1)
 
@@ -44,8 +54,8 @@ build: validate-config bootstrap-mise
 
 deploy: validate-config bootstrap-mise
 	@test ! -e "$(ADDRESSES_JSON)" || { echo "addresses.json already exists; review the existing deployment before retrying"; exit 1; }
-	cd $(PROJECT_DIR) && $(VERIFIER_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) $(MISE_EXEC) forge script \
-		--rpc-url $(RPC_URL) $(DEPLOY_SCRIPT) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+	$(call WITH_ARTIFACT_PERMISSIONS,$(VERIFIER_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) $(MISE_EXEC) forge script \
+		--rpc-url $(RPC_URL) $(DEPLOY_SCRIPT) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv)
 
 CONTRACTS_LIB := $(PROJECT_DIR)/lib/contracts/lib
 verify: validate-config bootstrap-mise
@@ -64,7 +74,7 @@ endif
 			--verifier-api-key $(VERIFIER_API_KEY) --watch
 
 validate: validate-config bootstrap-mise
-	cd $(PROJECT_DIR) && $(UPDATE_ENV) $(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(UPDATE_SCRIPT) --sig "check()"
+	$(call WITH_ARTIFACT_PERMISSIONS,$(CHECK_ENV) $(MISE_EXEC) forge script --rpc-url $(RPC_URL) $(UPDATE_SCRIPT) --sig "check()")
 
 gen-validation-cb: validate-config deps-signer-tool
 	$(call GEN_VALIDATION,$(UPDATE_SCRIPT),$(CB_MULTISIG),$(CB_SENDER),base-signer.json,$(UPDATE_ENV))
@@ -88,5 +98,5 @@ execute: validate-config bootstrap-mise
 	export $(UPDATE_ENV); $(call MULTISIG_EXECUTE,0x)
 
 post-check: validate-config bootstrap-mise
-	cd $(PROJECT_DIR) && $(UPDATE_ENV) $(MISE_EXEC) forge script --rpc-url $(RPC_URL) \
-		$(SCRIPT_DIR)/UpdateVerifierHashes.s.sol:VerifyVerifierHashes --sig "checkAfterExecution()"
+	$(call WITH_ARTIFACT_PERMISSIONS,$(CHECK_ENV) $(MISE_EXEC) forge script --rpc-url $(RPC_URL) \
+		$(SCRIPT_DIR)/UpdateVerifierHashes.s.sol:VerifyVerifierHashes --sig "checkAfterExecution()")
