@@ -1,6 +1,6 @@
 # Denim SystemConfig Gas Parameters
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x2bf7928e72e17a4657a3fd24e33907574881b63878ac04d0cfeaa5e7af880a5b)
 
 ## Description
 
