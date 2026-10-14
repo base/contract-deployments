@@ -8,9 +8,10 @@ denominator by 10 (`DENIM_GAS_PARAMETER_SCALING_FACTOR` in base/base
 `crates/consensus/derive/src/attributes/stateful.rs`). This task records the same values on L1 so
 that a later `SystemConfig` update does not restore the 2s-block ones.
 
-**Execute only after Denim activates** (October 14, 2026 at 18:00 UTC for Zeronet). In the L1 block
-the first Denim block derives from, the node would scale the new values a second time, so the script
-requires an L1 block timestamp strictly after `DENIM_ACTIVATION_TIMESTAMP`.
+The validation file can be generated and signed before Denim activates. **Execute only after Denim
+activates** (October 14, 2026 at 18:00 UTC for Zeronet), in an L1 block with a timestamp strictly
+after the activation: a transaction included in or before the L1 block the first Denim block derives
+from would have its new values scaled a second time by the node.
 
 Replace `<network>` with the rollout network (`zeronet`). Every command requires `TASK_NETWORK`
 explicitly. Run everything from this directory (`active/evm/tasks/2026-10-08-denim-system-config/`).
@@ -29,14 +30,11 @@ Open `config/<network>/.env` and confirm:
   them before building the calls.
 - `NEW_GAS_LIMIT` is `OLD_GAS_LIMIT / 10` and `NEW_EIP1559_DENOMINATOR` is
   `OLD_EIP1559_DENOMINATOR * 10`. The script asserts both ratios.
-- `DENIM_ACTIVATION_TIMESTAMP` matches the activation registered in `ProtocolVersions`.
 
 The EIP-1559 elasticity and the DA footprint gas scalar are read from the live config and must stay
 unchanged.
 
 ## 3. Generate the validation file
-
-After Denim activates:
 
 ```bash
 make TASK_NETWORK=<network> gen-validation-cb
@@ -56,7 +54,8 @@ Commit it and share `config/<network>/README.md` with signers.
 ## 4. Collect signatures and execute
 
 `SystemConfig` is owned by the Base multisig directly, so the collected signatures execute the
-transaction without a separate approval step.
+transaction without a separate approval step. Run it only once the latest L1 block timestamp is past
+the Denim activation.
 
 ```bash
 SIGNATURES=<concatenated base signatures> make TASK_NETWORK=<network> execute

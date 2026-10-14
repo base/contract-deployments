@@ -21,12 +21,11 @@ interface ISystemConfig {
 /// @notice Writes the post-Denim gas limit and EIP-1559 denominator to SystemConfig.
 /// @dev At the first Denim block the node scales both values itself (gas limit / 10, denominator x 10).
 ///      This records the same values on L1 so a later SystemConfig update does not restore the 2s-block
-///      ones. It must land in an L1 block strictly after the Denim activation timestamp: an L1 block at
-///      that timestamp can be the origin of the first Denim block, which would scale the values again.
+///      ones. Execute it after Denim activates: before that, the node would scale the new values again
+///      at the first Denim block.
 contract UpdateDenimGasParams is MultisigScript {
     address internal immutable ownerSafe;
     address internal immutable systemConfig;
-    uint256 internal immutable denimActivationTimestamp;
 
     uint64 internal immutable oldGasLimit;
     uint64 internal immutable newGasLimit;
@@ -40,7 +39,6 @@ contract UpdateDenimGasParams is MultisigScript {
     constructor() {
         ownerSafe = vm.envAddress("CB_MULTISIG");
         systemConfig = vm.envAddress("SYSTEM_CONFIG");
-        denimActivationTimestamp = vm.envUint("DENIM_ACTIVATION_TIMESTAMP");
 
         oldGasLimit = uint64(vm.envUint("OLD_GAS_LIMIT"));
         newGasLimit = uint64(vm.envUint("NEW_GAS_LIMIT"));
@@ -63,8 +61,6 @@ contract UpdateDenimGasParams is MultisigScript {
         require(newDenominator == oldDenominator * 10, "new denominator is not old x 10");
         require(newGasLimit >= config.minimumGasLimit(), "new gas limit below minimum");
         require(newGasLimit <= config.maximumGasLimit(), "new gas limit above maximum");
-
-        require(block.timestamp > denimActivationTimestamp, "Denim not active yet");
     }
 
     function _buildCalls() internal view override returns (Call[] memory) {
