@@ -43,6 +43,18 @@ gen-validation-cb: deps-signer-tool
 ##
 # Execute
 ##
+# Signing does not depend on the activation, but execution must land after it: in or before the L1
+# block the first Denim block derives from, the node would scale the new values a second time. The
+# transaction lands in a block after the latest one, so the latest L1 timestamp must be past it.
+.PHONY: check-denim-active
+check-denim-active:
+	$(call require_vars,check-denim-active,DENIM_ACTIVATION_TIMESTAMP L1_RPC_URL)
+	@latest=$$($(MISE_EXEC) cast block latest --field timestamp --rpc-url $(L1_RPC_URL)); \
+	if [ "$$latest" -le "$(DENIM_ACTIVATION_TIMESTAMP)" ]; then \
+		echo "Denim is not active: latest L1 block timestamp $$latest <= DENIM_ACTIVATION_TIMESTAMP $(DENIM_ACTIVATION_TIMESTAMP)" >&2; \
+		exit 1; \
+	fi
+
 .PHONY: execute
-execute:
+execute: check-denim-active
 	export $(GAS_ENV); $(call MULTISIG_EXECUTE,$(SIGNATURES))

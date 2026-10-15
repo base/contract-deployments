@@ -9,12 +9,12 @@ denominator by 10 (`DENIM_GAS_PARAMETER_SCALING_FACTOR` in base/base
 that a later `SystemConfig` update does not restore the 2s-block ones.
 
 The validation file can be generated and signed before Denim activates. **Execute only after Denim
-activates** (October 14, 2026 at 18:00 UTC for Zeronet), in an L1 block with a timestamp strictly
-after the activation: a transaction included in or before the L1 block the first Denim block derives
-from would have its new values scaled a second time by the node.
+activates**, in an L1 block with a timestamp strictly after `DENIM_ACTIVATION_TIMESTAMP` from
+`config/<network>/.env`: a transaction included in or before the L1 block the first Denim block
+derives from would have its new values scaled a second time by the node. `make execute` refuses to
+run until the latest L1 block timestamp is past the activation.
 
-Replace `<network>` with the rollout network (`zeronet`). Every command requires `TASK_NETWORK`
-explicitly. Run everything from this directory (`active/evm/tasks/2026-10-08-denim-system-config/`).
+Replace `<network>` with the rollout network. Every command requires `TASK_NETWORK` explicitly. Run everything from this directory (`active/evm/tasks/2026-10-08-denim-system-config/`).
 
 ## 1. Install dependencies
 
@@ -30,6 +30,7 @@ Open `config/<network>/.env` and confirm:
   them before building the calls.
 - `NEW_GAS_LIMIT` is `OLD_GAS_LIMIT / 10` and `NEW_EIP1559_DENOMINATOR` is
   `OLD_EIP1559_DENOMINATOR * 10`. The script asserts both ratios.
+- `DENIM_ACTIVATION_TIMESTAMP` matches the Denim activation registered in `ProtocolVersions`.
 
 The EIP-1559 elasticity and the DA footprint gas scalar are read from the live config and must stay
 unchanged.
@@ -54,8 +55,8 @@ Commit it and share `config/<network>/README.md` with signers.
 ## 4. Collect signatures and execute
 
 `SystemConfig` is owned by the Base multisig directly, so the collected signatures execute the
-transaction without a separate approval step. Run it only once the latest L1 block timestamp is past
-the Denim activation.
+transaction without a separate approval step. `execute` first checks that the latest L1 block
+timestamp is past `DENIM_ACTIVATION_TIMESTAMP` and stops otherwise.
 
 ```bash
 SIGNATURES=<concatenated base signatures> make TASK_NETWORK=<network> execute
