@@ -112,7 +112,7 @@ active/evm/
 ├── foundry.toml                 # shared Foundry configuration
 ├── script/
 │   └── common/                  # reusable scripts, shared across tasks
-│       └── <category>/          # bridge, funding, gas, ownership, safe, superchain, verifier-update
+│       └── <category>/          # bridge, funding, gas, ownership, safe, superchain
 └── tasks/
     └── <YYYY-MM-DD-task-name>/
         ├── Makefile             # task dependencies, validation, approvals, and execution
@@ -149,7 +149,7 @@ make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
 
 Canonical standby tasks are dateless, pre-reviewed operations with no real network configuration or artifacts. Invoke directly from `standby/evm/tasks/<operation>/` by adding `config/<network>/.env` and a concise signer README with `Status: READY TO SIGN`. Do not copy the task into active or edit its canonical Makefile, Solidity, or root `FACILITATOR.md` for an incident. Every Make command requires explicit command-line `TASK_NETWORK=<network>`, not an exported value or default.
 
-Use the [upgrade-delay facilitator guide](standby/evm/tasks/delay-upgrade-activation/FACILITATOR.md) for exact prepare, validation, signing, execution, verification, and archival commands. Standby scripts use the shared `active/evm` Foundry project and dependencies. Signer discovery includes a standby invocation only after JSON validations exist under `config/<network>/validations/`. The pinned signer checkout receives the deterministic repo-owned patch in `scripts/patches/signer-standby.patch`; changing its upstream pin or content without reviewing the patch fails closed.
+Use the [upgrade-delay guide](standby/evm/tasks/delay-upgrade-activation/FACILITATOR.md) or [verifier hash rotation guide](standby/evm/tasks/update-verifier-hashes/FACILITATOR.md) for exact commands. The verifier operation supports AggregateVerifier 0.3.0 at its reviewed contracts pin and replaces the former common verifier scripts. Standby tasks use the shared `active/evm` Foundry project, but each operation's dependency pin and build settings must be respected. Signer discovery includes an invocation only after JSON validations exist under `config/<network>/validations/`. The pinned signer checkout receives the deterministic repo-owned patch in `scripts/patches/signer-standby.patch`; changing its upstream pin or content without reviewing the patch fails closed.
 
 Pre-review does not replace incident-specific simulation. Re-review the canonical operation if the target ABI, ownership or responder role, base/contracts pin, or signing workflow changes. Keep addresses and other network-specific artifacts under `config/<network>/`; Forge records stay at task scope under `records/<script>/<chain-id>/`.
 
@@ -184,10 +184,10 @@ The GitHub Actions workflow validates shared active scripts and canonical standb
 **What CI checks:**
 
 1. `forge fmt --check script/` and `forge build` check the shared active project.
-2. `forge fmt --root . --check standby/evm/tasks/ scripts/tests/*.sol` checks standby formatting from the repo root. Each canonical standby script also compiles against the shared active project's dependencies.
-3. Standby Solidity regressions run against local `ProtocolVersions` proxies, including ID 0, non-tail commitments, rejected delays, and postcheck invariants.
+2. `forge fmt --root . --check standby/evm/tasks/ scripts/tests/*.sol` checks standby formatting. The delay script compiles against the shared active project's dependencies; verifier rotation builds and tests in an isolated fixture against its supported v8.4.0.rc2 pin.
+3. `sh scripts/tests/run-standby-solidity.sh` tests delay invariants against local ProtocolVersions proxies. `STANDBY_OPERATION=update-verifier-hashes sh scripts/tests/run-standby-solidity.sh` installs the supported pin, format-checks and builds canonical scripts, and tests verifier deployment, prechecks, factory write scope, and postchecks without RPC or credentials.
 4. `python3 -B -m unittest scripts.tests.test_standby_lifecycle -v` checks lossless archival and Make guards in temporary Git repositories without RPC or credentials.
-5. `sh scripts/tests/run-signer-standby.sh` runs the pinned signer's TypeScript checks, discovery/API tests, and one local validation-generator smoke test covering preparation, calldata, and the signer entry path.
+5. `sh scripts/tests/run-signer-standby.sh` runs the pinned signer's TypeScript checks, discovery/API tests, and local validation-generator tests for the direct delay and nested verifier approval paths.
 
 **How it works:**
 

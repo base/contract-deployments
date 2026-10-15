@@ -27,22 +27,31 @@ def main():
         else:
             raise ValueError(f"unexpected RPC bootstrap call: {args}")
     elif args[:2] == ["forge", "script"]:
-        if args[args.index("--sig") + 1:args.index("--sig") + 3] != ["sign(address[])", "[]"]:
-            raise ValueError("fixture only supports the direct responder signing simulation")
+        script = next(token for token in args if token.endswith((":DelayUpgradeActivation", ":UpdateVerifierHashes")))
+        verifier = script.endswith(":UpdateVerifierHashes")
+        inner = args[args.index("--sig") + 2]
+        if args[args.index("--sig") + 1] != "sign(address[])" or (not verifier and inner != "[]"):
+            raise ValueError("fixture expects a direct delay or nested verifier signing simulation")
         if os.environ.get("RECORD_STATE_DIFF") != "true":
             raise ValueError("the real signer generator must inject RECORD_STATE_DIFF=true")
         env = dict(os.environ, PATH=os.environ["ORIGINAL_PATH"], HOME=os.environ["ORIGINAL_HOME"])
-        for key in ("PROTOCOL_VERSIONS_PROXY", "UPGRADE_ID", "EXPECTED_CURRENT_TIMESTAMP", "NEW_TIMESTAMP"):
+        keys = ("DISPUTE_GAME_FACTORY_PROXY", "CURRENT_AGGREGATE_VERIFIER", "NEW_AGGREGATE_VERIFIER") if verifier else ("PROTOCOL_VERSIONS_PROXY", "UPGRADE_ID", "EXPECTED_CURRENT_TIMESTAMP", "NEW_TIMESTAMP")
+        for key in keys:
             env["FIXTURE_" + key] = os.environ[key]
         env["FIXTURE_SENDER"] = args[args.index("--sender") + 1]
         env["STANDBY_STATE_DIFF_OUT"] = str(Path.cwd() / "stateDiff.json")
-        script = next(token for token in args if token.endswith(":DelayUpgradeActivation"))
-        env["STANDBY_SCRIPT_SOURCE"] = str(Path(script.rsplit(":", 1)[0]).resolve())
+        source = Path(script.rsplit(":", 1)[0]).resolve()
+        env["STANDBY_SCRIPT_SOURCE"] = str(source.parent if verifier else source)
+        if verifier:
+            env["STANDBY_OPERATION"] = "update-verifier-hashes"
+            env["FIXTURE_INNER_SAFE"] = inner.strip("[]")
         subprocess.run(["sh", os.environ["SOURCE_ROOT"] + "/scripts/tests/run-standby-solidity.sh"], env=env, check=True)
     elif args[:2] == ["npx", "tsx"]:
         out = Path(args[args.index("--out") + 1])
         out.parent.mkdir(parents=True, exist_ok=True)
         env = dict(os.environ, STANDBY_VALIDATION_OUT=str(out.parent / ".call-fixture.json"))
+        if "UpdateVerifierHashes" in args[args.index("--forge-cmd") + 1]:
+            env["STANDBY_ADDRESSES_OUT"] = str(out.parent.parent / "addresses.json")
         signer = Path(os.environ["STANDBY_SIGNER_HOME"])
         subprocess.run([os.environ["PINNED_NODE"], str(signer / "node_modules/tsx/dist/cli.mjs"), *args[2:]], cwd=signer, env=env, check=True)
     elif args[:3] == ["npm", "run", "dev"]:

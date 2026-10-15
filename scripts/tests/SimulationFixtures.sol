@@ -7,6 +7,12 @@ import {Call3, Result} from "@base-contracts/interfaces/universal/ICBMulticall.s
 contract SimulationSafe {
     uint256[5] private reserved;
     uint256 public nonce;
+    uint256[2] private reservedAfterNonce;
+    mapping(address => mapping(bytes32 => uint256)) public approvedHashes;
+
+    function approveHash(bytes32 hash) external {
+        approvedHashes[msg.sender][hash] = 1;
+    }
 
     function getThreshold() external pure returns (uint256) {
         return 1;
@@ -53,7 +59,7 @@ contract SimulationSafe {
 
 contract SimulationMulticall {
     function aggregate3(Call3[] calldata calls) external payable returns (Result[] memory results) {
-        require(calls.length == 1, "fixture requires one responder only");
+        require(calls.length > 0 && calls.length <= 2, "fixture expects direct or singly nested signing");
         results = new Result[](calls.length);
         for (uint256 i; i < calls.length; i++) {
             (results[i].success, results[i].returnData) = calls[i].target.call(calls[i].callData);

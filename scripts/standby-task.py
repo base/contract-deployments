@@ -78,6 +78,37 @@ def check_delay(repo, task, network):
     print(f"Prepared {task.name}/config/{network}; canonical files are unchanged")
 
 
+def check_verifier(repo, task, network):
+    identifier(task.name, "task identifier")
+    identifier(network, "network identifier")
+    config = task / "config" / network
+    if os.path.lexists(config / "network.env"):
+        raise ValueError("network.env is reserved for the archive snapshot")
+    values = inputs(config / ".env")
+    if "RECORD_STATE_DIFF" in values:
+        raise ValueError("RECORD_STATE_DIFF is injected by the signer tool, not a task input")
+    if values.get("BASE_CONTRACTS_COMMIT") != "8c21f6d08a36b4059ae2bb8938f1e7e758a0e962":
+        raise ValueError("unsupported BASE_CONTRACTS_COMMIT; requires AggregateVerifier 0.3.0 at the reviewed pin")
+    game_type = values.get("GAME_TYPE", "")
+    if not re.fullmatch(r"0|[1-9][0-9]*", game_type) or int(game_type) >= 1 << 32:
+        raise ValueError("invalid GAME_TYPE")
+    fields = {"CURRENT_AGGREGATE_VERIFIER": 40, **{
+        f"AGGREGATE_VERIFIER_{name}_HASH": 64 for name in ("TEE_IMAGE", "ZK_RANGE", "ZK_AGGREGATE")
+    }}
+    for key, length in fields.items():
+        value = values.get(key, "")
+        if not re.fullmatch(rf"0x[0-9a-fA-F]{{{length}}}", value) or int(value, 16) == 0:
+            raise ValueError(f"invalid {key}: expected a nonzero {length // 2}-byte hex value")
+    unknown = values.keys() - fields.keys() - {"BASE_CONTRACTS_COMMIT", "GAME_TYPE"}
+    if unknown:
+        raise ValueError(f"unexpected task inputs: {', '.join(sorted(unknown))}")
+    if not (config / "README.md").is_file():
+        raise ValueError("missing signer README")
+    if not (repo / "config" / f"{network}.env").is_file():
+        raise ValueError("missing global network configuration")
+    print(f"Prepared {task.name}/config/{network}; canonical files are unchanged")
+
+
 def archive(repo, task, network, date):
     identifier(task.name, "task identifier")
     identifier(network, "network identifier")
@@ -158,7 +189,7 @@ def archive(repo, task, network, date):
 def main():
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
-    for command in ("check-delay", "archive"):
+    for command in ("check-delay", "check-verifier", "archive"):
         target = sub.add_parser(command)
         target.add_argument("--repo", type=Path, required=True)
         target.add_argument("--task", type=Path, required=True)
@@ -174,6 +205,8 @@ def main():
             args.validation.write_text(json.dumps(content, indent=2) + "\n")
         elif args.command == "check-delay":
             check_delay(args.repo.resolve(), args.task.resolve(), args.network)
+        elif args.command == "check-verifier":
+            check_verifier(args.repo.resolve(), args.task.resolve(), args.network)
         else:
             archive(args.repo.resolve(), args.task.resolve(), args.network, args.date)
     except (ValueError, OSError) as error:

@@ -75,9 +75,9 @@ jobs:
       - name: Check standby Solidity formatting
         run: forge fmt --root . --check standby/evm/tasks/ scripts/tests/*.sol
 
-      - name: Compile canonical standby Solidity
+      - name: Compile standby Solidity using the shared contracts pin
         working-directory: active/evm
-        run: find ../../standby/evm/tasks -path '*/script/*.sol' -exec forge build {} +
+        run: find ../../standby/evm/tasks -path '*/script/*.sol' -not -path '*/update-verifier-hashes/*' -exec forge build {} +
 
       - name: Install local ProtocolVersions fixture dependency
         working-directory: active/evm
@@ -85,6 +85,9 @@ jobs:
 
       - name: Test standby delay invariants
         run: sh scripts/tests/run-standby-solidity.sh
+
+      - name: Build and test verifier standby against its supported contracts pin
+        run: STANDBY_OPERATION=update-verifier-hashes sh scripts/tests/run-standby-solidity.sh
 
       - name: Test standby archival and Make guards without credentials
         run: python3 -B -m unittest scripts.tests.test_standby_lifecycle -v
