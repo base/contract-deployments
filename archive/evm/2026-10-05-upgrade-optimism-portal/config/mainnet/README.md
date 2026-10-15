@@ -1,6 +1,6 @@
 # Upgrade OptimismPortal2
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x12b3bf5bb0a8f921321f9a91303240ce01fde9f99ba9f97234f89d114c077bf6)
 
 ## Description
 
