@@ -1,6 +1,6 @@
 # Upgrade L2 Predeploys
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x50c7bd1ee23ffa011dae50eebe1ea32ebf30a64e92e55214688afcbc6e2368a0)
 
 ## Description
 
