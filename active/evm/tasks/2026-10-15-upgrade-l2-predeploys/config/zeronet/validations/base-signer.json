@@ -1,0 +1,92 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 OPTIMISM_PORTAL=0x7e3b97c95c823f385ff6770411f6e12f8e09ac9b L2_RPC_URL=https://base-zeronet-reth-mempool-k8s-donotuse.cbhq.net:8545 L2_TO_L1_MESSAGE_PASSER_IMPL=0x5C8132ccD0EE71c8386AaA912e9620c1FA57BBEE L1_BLOCK_IMPL=0xA247ea25ddD1Cf7A617866840f20ce3E503Dcf9E SEQUENCER_FEE_VAULT_IMPL=0x95D620be8D70B0832f919d8d1E22F4867A95fD6d BASE_FEE_VAULT_IMPL=0x84744778D85F67269282B7C9Fc229B4bC4C76ae2 L1_FEE_VAULT_IMPL=0x6b9489722fc6D3107EA8B0DfdA587C9142cfDD78 FEE_VAULT_RECIPIENT=0x3d59999977e0896ee1f8783bB8251DF16fb483E9 FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=10000000000000000000 FEE_VAULT_WITHDRAWAL_NETWORK=0 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-10-15-upgrade-l2-predeploys/script/UpgradeL2Predeploys.s.sol:UpgradeL2Predeploys --sig sign(address[]) [0x856611ed7e07d83243b15e93f6321f2df6865852] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0xf230aebedc1c79885e7905d116dd299dee2161798001ea67191ca7c92c4a1019"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x618bcacf78e69fc9d67f3cb8a4fc40378a4ceab855a8a5bb885bc59df061b782",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb646a6722e7645faba5e33347c881f4c5bd413bf0095c79075af89fefb4e0d9f",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the L2 predeploys upgrade transaction hash from the Coinbase signer Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Zeronet",
+      "address": "0x7E3B97c95c823F385Ff6770411F6E12F8E09ac9b",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000000326e5400000000000186a00000000000000000000000003b9aca00",
+          "after": "0x00000000003a507d00000000000f42400000000000000000000000003b9aca00",
+          "description": "Updates the ResourceMetering parameters (prevBlockNum, prevBoughtGas, prevBaseFee) for the five upgrade deposits.",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000023",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000024",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
