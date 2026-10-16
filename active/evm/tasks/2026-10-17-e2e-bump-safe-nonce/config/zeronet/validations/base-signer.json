@@ -1,0 +1,47 @@
+{
+  "cmd": "CB_MULTISIG=0x856611ed7e07d83243b15e93f6321f2df6865852 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-10-17-e2e-bump-safe-nonce/script/BumpSafeNonce.s.sol:BumpSafeNonce --sig sign(address[]) [] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x7ecae69781308ddd391828c7d0da57f5405d6ce648331877fb56a1776e8dc457"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xaec92792c62afc38674dacc32a118ff1a63fafa39a05e56678bf9a3211c8b7a5",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000024",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000025",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
