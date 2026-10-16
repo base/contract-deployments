@@ -1,0 +1,67 @@
+{
+  "cmd": "CB_MULTISIG=0x856611ed7e07d83243b15e93f6321f2df6865852 SYSTEM_CONFIG=0x0a111c7980152bde41d71f48e2e1d8184f5f6187 OLD_GAS_LIMIT=1200000000 NEW_GAS_LIMIT=120000000 OLD_EIP1559_DENOMINATOR=100 NEW_EIP1559_DENOMINATOR=1000 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-10-08-denim-system-config/script/UpdateDenimGasParams.s.sol:UpdateDenimGasParams --sig sign(address[]) [] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+    "domainHash": "0xc88eae2baaa4c8513a3d87913666de9463f106158aaf8be5cd31588215ccd5c4",
+    "messageHash": "0x5433f20de7f056f5c7420d66e94a06be3de603f9648f34f6eea7ef4038561b16"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x2b25a1a0b52252deb68a67f882255eacc6adbfa7143cee991048bf6da0e7c174",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "System Config - Zeronet",
+      "address": "0x0a111C7980152bDe41D71f48e2E1d8184f5f6187",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x00000000000000000000000000000000000c3c9d000005580000000047868c00",
+          "after": "0x00000000000000000000000000000000000c3c9d000005580000000007270e00",
+          "description": "Sets gasLimit from 1,200,000,000 to 120,000,000. basefeeScalar and blobbasefeeScalar are unchanged.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000000770000000000000000000000000000000f00000064",
+          "after": "0x0000000000000000000000770000000000000000000000000000000f000003e8",
+          "description": "Sets eip1559Denominator from 100 to 1000. eip1559Elasticity (15) and daFootprintGasScalar (119) are unchanged.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "CB Signer Safe - Zeronet",
+      "address": "0x856611eD7E07D83243b15E93f6321f2df6865852",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000022",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000023",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
