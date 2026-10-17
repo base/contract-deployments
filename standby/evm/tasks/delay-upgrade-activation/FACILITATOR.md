@@ -10,7 +10,7 @@ This flow calls the responder directly. It does not go through the ProxyAdmin ow
 
 ## Configure and prepare
 
-Create only `config/<network>/.env` and `config/<network>/README.md`. The global `config/<network>.env` supplies RPC, Ledger account, and `PROTOCOL_VERSIONS_PROXY`. Use an invocation-specific proxy override only for a different deployment. Do not put `RECORD_STATE_DIFF` in the task `.env`; the signer tool injects it.
+From the repository root, run `make new-task STANDBY_OP=delay-upgrade-activation TASK_NETWORK=<network>` to create `config/<network>/.env`, `config/<network>/README.md`, and task-root `status.json`. The global `config/<network>.env` supplies RPC, Ledger account, and `PROTOCOL_VERSIONS_PROXY`. Use an invocation-specific proxy override only for a different deployment. Do not put `RECORD_STATE_DIFF` in the task `.env`; the signer tool injects it.
 
 The invocation `.env` must contain these values, with decimal upgrade ID and Unix timestamps:
 
@@ -22,6 +22,8 @@ NEW_TIMESTAMP=<later-activation-timestamp>
 ```
 
 The signer README must start with a title and `Status: READY TO SIGN`. Briefly state the network, upgrade ID, old and new UTC times, why the delay is needed, and the intended responder Safe. Do not change canonical files. Keep any network-specific addresses and artifacts in `config/<network>/`.
+
+Keep task-root `status.json` current as the invocation progresses, including signature counts and `last_updated`. Never put it under `config/<network>/`, which task-origin signing covers.
 
 ```sh
 make TASK_NETWORK=<network> prepare
@@ -48,7 +50,7 @@ make TASK_NETWORK=<network> verify
 
 `execute` runs pre/postchecks and submits through the responder Safe. It rejects a frozen or activated target, a stale expected timestamp, insufficient notice, or crossing the next scheduled activation. Re-simulate and regenerate validation if the schedule, Safe nonce, or role changes; recollect signatures when the transaction hash changes. `verify` checks the new timestamp, full live schedule commitment, and responder against global `INCIDENT_MULTISIG`. Confirm that global value matches the live role during freshness review. Compare the execution state diff with the signed validation to verify unchanged schedule length and other timestamps.
 
-Forge broadcasts belong to task-scoped `records/<script>/<chain-id>/`. Do not move them into a network config. Mark each invocation `Status: EXECUTED` with its transaction link, or `Status: CANCELED` with the reason on a separate line. Commit every final validation, signature, address artifact, and execution record.
+Forge broadcasts belong to task-scoped `records/<script>/<chain-id>/`. Do not move them into a network config. Mark each invocation `Status: EXECUTED` with its transaction link, or `Status: CANCELED` with the reason on a separate line. Update the matching step and execution transaction in task-root `status.json` in the same change, then run `make check-task-status` from the repository root. Commit every final validation, signature, address artifact, and execution record.
 
 ## Archive the invocation
 
@@ -62,4 +64,4 @@ Fetch main before running the archive command. `TASK_DATE` is the incident's UTC
 make TASK_NETWORK=<network> archive-task TASK_DATE=<YYYY-MM-DD>
 ```
 
-The command compares canonical task files byte-for-byte with `origin/main`, refuses an existing destination, and snapshots every finalized network and all artifacts into `archive/evm/<YYYY-MM-DD>-delay-upgrade-activation/`. The archive includes canonical scripts and guide, Foundry configuration, and each network's global configuration snapshot. Only `config/`, `signatures/`, and `records/` are removed from standby. Canonical files remain identical for the next invocation. Commit the archive and invocation removals together. Archived tasks are historical and must not be edited or executed.
+The command validates task-root `status.json`, compares canonical task files byte-for-byte with `origin/main`, refuses an existing destination, and snapshots every finalized network and all artifacts into `archive/evm/<YYYY-MM-DD>-delay-upgrade-activation/`. The archive includes canonical scripts and guide, Foundry configuration, task-root `status.json`, and each network's global configuration snapshot. Only `config/`, `signatures/`, `records/`, and task-root `status.json` are removed from standby. Canonical files remain identical for the next invocation. Commit the archive and invocation removals together. Archived tasks are historical and must not be edited or executed.

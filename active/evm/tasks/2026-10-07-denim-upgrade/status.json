@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task": "2026-10-07-denim-upgrade",
+  "kind": "active",
+  "last_updated": "2026-10-17T18:10:50Z",
+  "networks": {
+    "zeronet": {
+      "step": "executed",
+      "pr": "https://github.com/base/contract-deployments/pull/806",
+      "blocksec_ticket": null,
+      "signatures": {},
+      "executed_tx": "0x9468085edf0a0d5e3dbeea7ab84f13400a496aafc6c21ca8420e4f136c106034"
+    }
+  }
+}
