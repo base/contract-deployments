@@ -201,7 +201,7 @@ Every active task and every standby operation with a network invocation has one 
 | `executed` | Execution succeeded and its transaction hash is recorded. |
 | `canceled` | The invocation will not execute. |
 
-The facilitator or bot updates the network step, links, signature counts, and `last_updated` when progress changes. The initial machine step is `authoring` even though the signer README starts with `Status: READY TO SIGN`; do not ask signers to sign until validations are reviewed. Finalize the signer README as `EXECUTED` or `CANCELED` and update `status.json` in the same change. The checker requires both final states to match, accepting plain final statuses or Markdown links.
+The facilitator or bot updates the network step, links, signature counts, and `last_updated` when progress changes. The initial machine step is `authoring` even though the signer README starts with `Status: READY TO SIGN`; do not ask signers to sign until validations are reviewed. Finalize the signer README as `EXECUTED` or `CANCELED` and update `status.json` in the same change. The checker requires both final states to match and accepts only uppercase `EXECUTED` or `CANCELED`, optionally followed by an HTTP(S) URL, or `[EXECUTED](<url>)` or `[CANCELED](<url>)` with an HTTP(S) URL. Other final-looking formats are rejected.
 
 Run these commands from the repository root. Provide exactly one selector and a command-line `TASK_NETWORK` with a matching global `config/<network>.env`. The date defaults to today; identifiers use lowercase letters, digits, and single hyphens, with slugs, operations, and networks starting with a letter.
 

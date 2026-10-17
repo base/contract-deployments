@@ -145,6 +145,18 @@ class TaskStatus(TaskFixture):
         self.config(readme="EXECUTED\nStatus: CANCELED")
         self.assert_problem(self.check(), self.task / "config/local/README.md", "step")
 
+    def test_final_looking_readme_requires_supported_format(self):
+        self.write_status()
+        for value in ("EXECUTED (https://example.invalid/tx/123)",
+                      "CANCELED because the rollout was superseded",
+                      "executed", "canceled",
+                      "[EXECUTED](https://example.invalid/result) extra",
+                      "[canceled](https://example.invalid/result)"):
+            with self.subTest(value=value):
+                self.config(readme=value)
+                self.assert_problem(self.check(), self.task / "config/local/README.md",
+                                    "expected EXECUTED or CANCELED")
+
     def test_standby_status_exists_only_during_invocation(self):
         self.assert_ok(self.check())
         self.write_status(status(self.standby.name, "standby"), self.standby)

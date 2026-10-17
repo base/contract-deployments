@@ -9,6 +9,7 @@ import sys
 IDENTIFIER = re.compile(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*\Z")
 SCHEMA = Path(__file__).with_name("task-status.schema.json")
 FINAL_STATUS = re.compile(r"(EXECUTED|CANCELED)(?:\s+https?://\S+)?|\[(EXECUTED|CANCELED)\]\(https?://[^\s)]+\)")
+FINAL_STATUS_PREFIX = re.compile(r"EXECUTED|CANCELED|\[(?:EXECUTED|CANCELED)\]", re.IGNORECASE)
 
 
 def validate(value, schema, location="$"):
@@ -101,6 +102,10 @@ def check_task(task, kind):
             errors.append(f"{readme}: {error}")
             continue
         statuses = [line.removeprefix("Status:").strip() for line in lines if line.startswith("Status:")]
+        if any(FINAL_STATUS_PREFIX.match(value) and not FINAL_STATUS.fullmatch(value) for value in statuses):
+            errors.append(f"{readme}: expected EXECUTED or CANCELED, optionally followed by an HTTP(S) URL, "
+                          "or [EXECUTED](<url>) or [CANCELED](<url>) with an HTTP(S) URL")
+            continue
         finals = [match for value in statuses if (match := FINAL_STATUS.fullmatch(value))]
         final = (finals[0].group(1) or finals[0].group(2)).lower() if len(statuses) == len(finals) == 1 else None
         if (finals or step in ("executed", "canceled")) and final != step:
