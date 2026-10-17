@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import re
 import shlex
+import subprocess
 import sys
 
 
@@ -79,6 +80,29 @@ def remappings(project):
     return sorted(mappings.items(), key=lambda pair: len(pair[0]), reverse=True)
 
 
+def library_dirs(project):
+    config = project / "foundry.toml"
+    text = without_comments(config.read_text(encoding="utf-8")) if config.is_file() else ""
+    blocks = re.findall(r"\blibs\s*=\s*\[(.*?)\]", text, re.S)
+    names = [name for block in blocks for name in re.findall(r'["\']([^"\']+)["\']', block)] if blocks else ["lib"]
+    return [project / name for name in names]
+
+
+def input_files(repo, directories):
+    if (repo / ".git").exists():
+        result = subprocess.run(
+            ["git", "-C", str(repo), "ls-files", "--cached", "--others", "--exclude-standard", "-z",
+             "--", *(p.relative_to(repo).as_posix() for p in directories)],
+            capture_output=True, text=True,
+        )
+        if result.returncode:
+            raise ValueError(f"cannot list task inputs: {result.stderr.strip()}")
+        paths = (repo / name for name in result.stdout.split("\0") if name)
+    else:
+        paths = (p for directory in directories for p in directory.rglob("*"))
+    return (p for p in paths if p.is_file())
+
+
 def script_entrypoint(project, cmd):
     if not isinstance(cmd, str):
         raise ValueError("validation must have a Forge script cmd")
@@ -99,14 +123,14 @@ def fingerprint(repo, task, network, cmd):
     config = task / "config" / network
     paths = {task / "Makefile", config / ".env", repo / "config" / f"{network}.env"}
     # prestate.json is a post-execution check baseline, not a signed-call input.
-    paths.update(p for p in config.rglob("*")
-                 if p.is_file() and p not in {config / "README.md", config / "prestate.json"}
-                 and p.relative_to(config).parts[0] != "validations")
+    paths.update(p for p in input_files(repo, [config, task / "script"])
+                 if p not in {config / "README.md", config / "prestate.json"}
+                 and not p.is_relative_to(config / "validations"))
     paths.add(script_entrypoint(project, cmd))
-    paths.update(p for p in (task / "script").rglob("*") if p.is_file())
     pending = [p for p in paths if p.suffix == ".sol"]
     visited = set()
     mappings = remappings(project)
+    libraries = library_dirs(project)
     while pending:
         source = pending.pop().resolve()
         if source in visited:
@@ -126,6 +150,9 @@ def fingerprint(repo, task, network, cmd):
                     if name.startswith(prefix):
                         imported = project / target / name[len(prefix):]
                         break
+                else:
+                    if not imported.is_file() and any((lib / name.split("/")[0]).is_dir() for lib in libraries):
+                        continue
             imported = imported.resolve()
             try:
                 relative = imported.relative_to(repo)
@@ -174,7 +201,10 @@ def check(args):
             for config in sorted((task / "config").glob("*/")):
                 label = f"{task.relative_to(repo).as_posix()}/{config.name}"
                 readme = config / "README.md"
-                if readme.exists() and re.search(r"^\s*Status:\s*\[?(EXECUTED|CANCELED)\b", readme.read_text(encoding="utf-8"), re.I | re.M):
+                # Keep the finalized-status rule aligned with the standby archive guard.
+                statuses = [line.removeprefix("Status:").strip() for line in readme.read_text(encoding="utf-8").splitlines()[:20] if line.startswith("Status:")] if readme.is_file() else []
+                finalized = r"(?:EXECUTED|CANCELED)(?:\s+https?://\S+)?|\[(?:EXECUTED|CANCELED)\]\(https?://[^\s)]+\)"
+                if len(statuses) == 1 and re.fullmatch(finalized, statuses[0]) is not None:
                     print(f"Skipped {label}: EXECUTED or CANCELED")
                     continue
                 validations = config / "validations"

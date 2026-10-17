@@ -35,7 +35,7 @@ class DriftFixture(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         self.repo = Path(temp.name)
-        (self.repo / ".git").mkdir()
+        subprocess.run(["git", "init", "-q", str(self.repo)], check=True, capture_output=True)
         self.task = self.repo / "active/evm/tasks/example"
         self.config = self.task / "config/local"
         self.file = self.config / "validations/base-signer.json"
@@ -121,6 +121,34 @@ class InputChecks(DriftFixture):
         result = self.check()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_ignored_local_files_can_disappear_after_stamping(self):
+        self.put(".gitignore", ".DS_Store\n.env.local\n")
+        paths = [self.config / ".DS_Store", self.config / ".env.local", self.task / "script/.DS_Store"]
+        for path in paths:
+            path.write_text("local bytes\n")
+        self.stamp()
+        for path in paths:
+            path.unlink()
+        result = self.check()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_tracked_file_matching_ignore_rule_is_still_checked(self):
+        self.put(".gitignore", "addresses.json\n")
+        path = self.config / "addresses.json"
+        subprocess.run(["git", "-C", str(self.repo), "add", "-f", str(path)], check=True, capture_output=True)
+        self.stamp()
+        path.write_text('{"deployed":"0x2"}\n')
+        self.assert_error(self.check(), "changed: " + path.relative_to(self.repo).as_posix())
+
+    def test_plain_directory_fingerprints_include_inputs(self):
+        self.stamp()
+        shutil.rmtree(self.repo / ".git")
+        result = self.check()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        path = self.config / "addresses.json"
+        path.write_text('{"deployed":"0x2"}\n')
+        self.assert_error(self.check(), "changed: " + path.relative_to(self.repo).as_posix())
+
     def test_missing_pending_network_environment(self):
         self.stamp()
         (self.config / ".env").unlink()
@@ -138,6 +166,19 @@ class InputChecks(DriftFixture):
                 result = self.check()
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 self.assertIn("Skipped", result.stdout)
+
+    def test_ambiguous_or_nonfinal_status_does_not_skip_validation(self):
+        self.file.unlink()
+        for text in [
+            "Status: READY TO SIGN\nStatus: EXECUTED\n",
+            "Status: EXECUTED\nStatus: READY TO SIGN\n",
+            "\n" * 20 + "Status: EXECUTED\n",
+            "Status: EXECUTED previously\n",
+            "Status: canceled\n",
+        ]:
+            with self.subTest(readme=text):
+                (self.config / "README.md").write_text(text)
+                self.assert_error(self.check(), "missing validation base-signer.json")
 
     def test_stamp_skips_unsupported_layouts_without_changing_output(self):
         before = self.file.read_bytes()
@@ -230,7 +271,7 @@ class InputChecks(DriftFixture):
         (self.repo / "standby/evm/tasks/canonical").mkdir(parents=True)
         self.put("standby/evm/tasks/canonical/Makefile", "gen-validation-cb:\n\t$(call GEN_VALIDATION,X,,,base-signer.json,)\n")
         self.file.unlink()
-        for status in ["EXECUTED", "canceled", "[eXeCuTeD](https://example.invalid/tx)"]:
+        for status in ["EXECUTED", "CANCELED", "[EXECUTED](https://example.invalid/tx)"]:
             with self.subTest(status=status):
                 (self.config / "README.md").write_text(f"# Task\n\nStatus: {status}\n")
                 result = self.check()
@@ -247,9 +288,24 @@ class InputChecks(DriftFixture):
         self.assertIn("active/evm/script/common/Nested.sol", files)
         self.assertNotIn("active/evm/lib/forge-std/src/Script.sol", files)
 
+    def test_automapped_library_imports_are_dependencies(self):
+        for libs in [None, ["packages"]]:
+            with self.subTest(libs=libs):
+                library = "lib" if libs is None else libs[0]
+                self.put("active/evm/foundry.toml", "[profile.default]\n" + (f"libs = {libs!r}\n" if libs else ""))
+                (self.task / "script/X.s.sol").write_text('import "solady/utils/LibString.sol";\n')
+                dependency = self.put(f"active/evm/{library}/solady/src/utils/LibString.sol", "dependency bytes\n")
+                self.stamp()
+                dependency.write_text("changed dependency bytes\n")
+                result = self.check()
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                shutil.rmtree(self.repo / f"active/evm/{library}/solady")
+
     def test_unresolved_local_import_fails(self):
-        (self.task / "script/X.s.sol").write_text('import "./Missing.sol";\n')
-        self.assert_error(self.cli("stamp", "--task-dir", self.task, "--network", "local", self.file), "Missing.sol")
+        for name in ["./Missing.sol", "script/common/Missing.sol", "missing/Contract.sol"]:
+            with self.subTest(name=name):
+                (self.task / "script/X.s.sol").write_text(f'import "{name}";\n')
+                self.assert_error(self.cli("stamp", "--task-dir", self.task, "--network", "local", self.file), "unresolved import " + name)
 
 
 class SemanticComparison(DriftFixture):
