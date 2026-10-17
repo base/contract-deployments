@@ -32,9 +32,11 @@ Open `config/<network>/.env` and confirm:
 - `FAST_BLOCK_INTERVAL` / `FAST_INTERMEDIATE_BLOCK_INTERVAL` are 6000 / 300. With the live slow pair
   (600 / 30) both yield 20 intermediate roots and a 20 minute range.
 - `AGGREGATE_VERIFIER_TEE_IMAGE_HASH`, `AGGREGATE_VERIFIER_ZK_RANGE_HASH` and
-  `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` come from the base/base release that activates Denim. The
-  deploy script refuses to run while any of them is blank.
-- `PROTOCOL_VERSIONS_DENIM_ACTIVATION_TIMESTAMP` matches the Denim activation in that release.
+  `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` come from the proof program build the network's provers run
+  at Denim, as documented in `config/<network>/.env`. The deploy script refuses to run while any of
+  them is blank.
+- `PROTOCOL_VERSIONS_DENIM_ACTIVATION_TIMESTAMP` matches the Denim activation in the base/base release
+  that activates Denim on the network.
 - `PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION` is the live value and
   `PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION` is that release's version.
 
