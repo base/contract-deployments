@@ -128,6 +128,18 @@ only be delayed by the incident responder and freezes one hour before it lands.
 The deposits execute on L2 shortly after the L1 transaction, not at Denim activation. The predeploy
 upgrades have no ordering dependency on Denim. Check that all five deposits succeeded on L2.
 
+Immediately after execution, roll the network's proposer and provers to the prover build documented in `config/<network>/.env`.
+The new verifier accepts proofs only from that build, so proposals pause until the rollout lands; keep the gap short.
+New enclave signers register themselves in `TEEProverRegistry` on startup. The nitro host's health check requires a signer valid
+for the registry's current expected image hash, so the new build cannot be deployed before execution. Confirm the new signers
+with the commands below (`TEE_PROVER_REGISTRY_PROXY` and `L1_RPC_URL` come from the repository's `config/<network>.env`),
+checking each new signer's image hash equals `AGGREGATE_VERIFIER_TEE_IMAGE_HASH`.
+
+```bash
+cast call "$TEE_PROVER_REGISTRY_PROXY" 'getRegisteredSigners()(address[])' --rpc-url "$L1_RPC_URL"
+cast call "$TEE_PROVER_REGISTRY_PROXY" 'signerImageHash(address)(bytes32)' <signer> --rpc-url "$L1_RPC_URL"
+```
+
 After execution the script checks that the factory points at the new verifier, that Denim is upgrade
 id 13 with the expected timestamp, that earlier upgrades are unchanged, and that the new verifier
 returns the slow intervals for the block before Denim and the fast intervals from the first Denim
