@@ -12,7 +12,7 @@ fast pair for Denim's 200ms blocks. It reads the Denim activation from `Protocol
 selects the pair from each game's starting block, so the cadence switch needs no action during the
 fork. Until Denim activates it behaves like `0.2.0`.
 
-Replace `<network>` with the rollout network (`zeronet`). Every command requires `TASK_NETWORK`
+Replace `<network>` with the rollout network (`zeronet` or `sepolia`). Every command requires `TASK_NETWORK`
 explicitly. Run everything from this directory (`active/evm/tasks/2026-10-07-denim-upgrade/`).
 
 ## 1. Install dependencies
