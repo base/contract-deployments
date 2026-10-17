@@ -23,8 +23,7 @@ No ETH moves and existing dispute games are unchanged.
 | Current `AggregateVerifier` (`0.2.0`) | `0xd702aaE6221f36Dfe7e8EBC4315D64344A9dB4CB` |
 | New `AggregateVerifier` (`0.3.0`) | Not yet deployed; fill in after deployment |
 
-The facilitator must confirm the three proof program hashes in `.env`, deploy the new verifier,
-and generate validation files before signing.
+The facilitator must deploy the new verifier and generate validation files before signing.
 
 ## Sign
 
