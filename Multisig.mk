@@ -85,12 +85,14 @@ check-validations:
 	@set -eu; \
 		targets='$(validation_drift_targets)'; \
 		test -n "$$targets" || { echo 'check-validations: no gen-validation targets found'; exit 1; }; \
+		committed="$(CURDIR)/config/$(TASK_NETWORK)/validations"; \
+		test -d "$$committed" || { echo "check-validations: missing committed validations directory $$committed"; exit 1; }; \
 		tmp=$$(mktemp -d "$${TMPDIR:-/tmp}/validation-drift.XXXXXX"); \
 		trap 'rm -rf "$$tmp"' EXIT HUP INT TERM; \
 		for target in $$targets; do \
 			$(validation_drift_make) TASK_NETWORK="$(TASK_NETWORK)" VALIDATIONS_DIR="$$tmp" "$$target"; \
 		done; \
-		committed="$(CURDIR)/config/$(TASK_NETWORK)/validations"; status=0; \
+		status=0; \
 		for file in "$$committed/"*.json "$$committed/".*.json; do \
 			test -e "$$file" || continue; name=$${file##*/}; \
 			if test ! -f "$$tmp/$$name"; then \

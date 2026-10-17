@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import shlex
 import sys
 
 
@@ -78,15 +79,28 @@ def remappings(project):
     return sorted(mappings.items(), key=lambda pair: len(pair[0]), reverse=True)
 
 
-def fingerprint(repo, task, network):
+def script_entrypoint(project, cmd):
+    if not isinstance(cmd, str):
+        raise ValueError("validation must have a Forge script cmd")
+    tokens = shlex.split(cmd)
+    for index in range(len(tokens) - 1):
+        if tokens[index:index + 2] == ["forge", "script"]:
+            for token in tokens[index + 2:]:
+                if not token.startswith("-") and re.fullmatch(r"[^:]+\.sol(?::[^/:]+)?", token):
+                    return (project / token.split(":", 1)[0]).resolve()
+            break
+    raise ValueError("cmd must contain a Forge script .sol path")
+
+
+def fingerprint(repo, task, network, cmd):
     if not re.fullmatch(r"[a-z0-9-]+", network):
         raise ValueError("invalid network identifier")
-    project = repo / "active/evm"
+    project = task if (task / "foundry.toml").is_file() else repo / "active/evm"
     config = task / "config" / network
     paths = {task / "Makefile", config / ".env", repo / "config" / f"{network}.env"}
-    addresses = config / "addresses.json"
-    if addresses.exists():
-        paths.add(addresses)
+    paths.update(p for p in config.rglob("*")
+                 if p.is_file() and p != config / "README.md" and p.relative_to(config).parts[0] != "validations")
+    paths.add(script_entrypoint(project, cmd))
     paths.update(p for p in (task / "script").rglob("*") if p.is_file())
     pending = [p for p in paths if p.suffix == ".sol"]
     visited = set()
@@ -130,10 +144,13 @@ def fingerprint(repo, task, network):
 
 def stamp(args):
     task = args.task_dir.resolve()
-    inputs = fingerprint(repo_for_task(task), task, args.network)
+    if not (task / "Makefile").is_file() or not (task / "config" / args.network).is_dir():
+        print(f"Skipped stamping {task}: layout is not supported by the fingerprint check")
+        return 0
+    repo = repo_for_task(task)
     for path in args.files:
         data = read_json(path)
-        data["taskInputs"] = inputs
+        data["taskInputs"] = fingerprint(repo, task, args.network, data.get("cmd"))
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"Stamped {path}")
     return 0
@@ -144,34 +161,37 @@ def check(args):
     errors = []
     for tree in ("active", "standby"):
         for task in sorted((repo / tree / "evm/tasks").glob("*/")):
+            if not (task / "Makefile").is_file():
+                print(f"Skipped {task.relative_to(repo)}: layout is not supported by the fingerprint check")
+                continue
             try:
                 declared = declared_files(task)
             except (OSError, ValueError) as error:
                 errors.append(str(error))
                 continue
-            for env in sorted((task / "config").glob("*/.env")):
-                config = env.parent
+            for config in sorted((task / "config").glob("*/")):
                 label = f"{task.relative_to(repo).as_posix()}/{config.name}"
                 readme = config / "README.md"
                 if readme.exists() and re.search(r"^\s*Status:\s*\[?(EXECUTED|CANCELED)\b", readme.read_text(encoding="utf-8"), re.I | re.M):
                     print(f"Skipped {label}: EXECUTED or CANCELED")
                     continue
                 validations = config / "validations"
+                if not (config / ".env").is_file():
+                    if readme.exists() or validations.exists():
+                        errors.append(f"{label}: missing .env")
+                    continue
                 present = {path.name for path in validations.glob("*.json")}
                 errors.extend(f"{label}: missing validation {name}" for name in sorted(declared - present))
                 errors.extend(f"{label}: undeclared validation {name}" for name in sorted(present - declared))
-                try:
-                    inputs = fingerprint(repo, task, config.name)
-                except (OSError, ValueError) as error:
-                    errors.append(f"{label}: {error}")
-                    continue
                 for name in sorted(declared & present):
                     label_file = f"{label}/validations/{name}"
                     try:
-                        recorded = read_json(validations / name).get("taskInputs")
+                        data = read_json(validations / name)
+                        recorded = data.get("taskInputs")
                         if not isinstance(recorded, dict) or not isinstance(recorded.get("files"), dict):
                             errors.append(f"{label_file}: missing or invalid taskInputs")
                             continue
+                        inputs = fingerprint(repo, task, config.name, data.get("cmd"))
                         if recorded != inputs:
                             errors.append(f"{label_file}: taskInputs fingerprint mismatch")
                             old, new = recorded["files"], inputs["files"]

@@ -18,7 +18,8 @@ def run(*args, cwd=None, env=None):
 
 def validation():
     return {
-        "cmd": "mise exec -- forge script X", "rpcUrl": "http://localhost", "ledgerId": 1,
+        "cmd": "mise exec -- forge script --rpc-url http://localhost tasks/example/script/X.s.sol:X",
+        "rpcUrl": "http://localhost", "ledgerId": 1,
         "expectedDomainAndMessageHashes": {"address": "0x1", "messageHash": "0xaa"},
         "stateOverrides": [{"address": "0x1", "name": "Safe", "overrides": [
             {"key": "0x4", "value": "0x1", "description": "Threshold", "allowDifference": False}]}],
@@ -90,6 +91,86 @@ class InputChecks(DriftFixture):
                 self.stamp()
                 path.write_bytes(path.read_bytes() + b"\n")
                 self.assert_error(self.check(), path.relative_to(self.repo).as_posix())
+
+    def test_direct_common_script_and_its_imports(self):
+        shutil.rmtree(self.task / "script")
+        data = validation()
+        data["cmd"] = 'FOO=bar mise exec -- forge script --broadcast --rpc-url http://localhost "script/common/Common.sol:Common" --sig "sign(address[])" "[]"'
+        self.write_json(self.file, data)
+        for name in ["Common.sol", "Nested.sol"]:
+            with self.subTest(name=name):
+                self.stamp()
+                result = self.check()
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                path = self.repo / "active/evm/script/common" / name
+                path.write_text(path.read_text() + "\n")
+                self.assert_error(self.check(), "changed: " + path.relative_to(self.repo).as_posix())
+
+    def test_network_json_input_drift(self):
+        path = self.config / "funding.json"
+        self.write_json(path, {"recipient": "0x1", "amount": "1"})
+        self.stamp()
+        self.write_json(path, {"recipient": "0x1", "amount": "2"})
+        self.assert_error(self.check(), "changed: " + path.relative_to(self.repo).as_posix())
+
+    def test_missing_pending_network_environment(self):
+        self.stamp()
+        (self.config / ".env").unlink()
+        (self.config / "README.md").unlink()
+        self.assert_error(self.check(), "example/local: missing .env")
+        shutil.rmtree(self.file.parent)
+        (self.config / "README.md").write_text("Status: READY TO SIGN\n")
+        self.assert_error(self.check(), "example/local: missing .env")
+
+    def test_finalized_network_without_environment_is_skipped(self):
+        (self.config / ".env").unlink()
+        for status in ["EXECUTED", "CANCELED"]:
+            with self.subTest(status=status):
+                (self.config / "README.md").write_text(f"Status: {status}\n")
+                result = self.check()
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("Skipped", result.stdout)
+
+    def test_stamp_skips_unsupported_layouts_without_changing_output(self):
+        before = self.file.read_bytes()
+        for path in [self.task / "Makefile", self.config]:
+            with self.subTest(path=path):
+                moved = path.with_name(path.name + ".unused")
+                path.rename(moved)
+                try:
+                    result = self.cli("stamp", "--task-dir", self.task, "--network", "local", self.file)
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    self.assertIn("layout is not supported by the fingerprint check", result.stdout)
+                finally:
+                    moved.rename(path)
+                self.assertEqual(self.file.read_bytes(), before)
+
+    def test_check_skips_task_without_makefile(self):
+        (self.task / "Makefile").rename(self.task / "Task.mk")
+        (self.config / ".env").rename(self.config / "network.env")
+        result = self.check()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("example: layout is not supported by the fingerprint check", result.stdout)
+
+    def test_standby_own_forge_project(self):
+        task = self.repo / "standby/evm/tasks/example"
+        task.parent.mkdir(parents=True)
+        self.task.rename(task)
+        self.task = task
+        self.config = task / "config/local"
+        self.file = self.config / "validations/base-signer.json"
+        shutil.rmtree(task / "script")
+        self.put("standby/evm/tasks/example/foundry.toml", "[profile.default]\n")
+        self.put("standby/evm/tasks/example/shared/Common.sol", 'import "./Nested.sol";\n')
+        path = self.put("standby/evm/tasks/example/shared/Nested.sol", "pragma solidity 0.8.15;\n")
+        data = validation()
+        data["cmd"] = "mise exec -- forge script --rpc-url http://localhost shared/Common.sol:Common"
+        self.write_json(self.file, data)
+        self.stamp()
+        result = self.check()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        path.write_text(path.read_text() + "\n")
+        self.assert_error(self.check(), "changed: " + path.relative_to(self.repo).as_posix())
 
     def test_added_and_removed_inputs_are_named(self):
         for relative in ["script/New.sol", "config/local/addresses.json"]:
@@ -245,7 +326,7 @@ class MakeIntegration(DriftFixture):
             run("git", "init", "-q", cwd=self.repo)
             text = (self.task / "Makefile").read_text()
         else:
-            text = f"REPO_ROOT := {self.repo}\ninclude $(REPO_ROOT)/Multisig.mk\nPROJECT_DIR := $(REPO_ROOT)/active/evm\nSIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool\nRPC_URL := http://localhost\nLEDGER_ACCOUNT := 0\nVALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations\ngen-validation-cb: deps-signer-tool\n\t$(call GEN_VALIDATION,script/X.s.sol:Example,,0x1,base-signer.json,FOO=bar)\n"
+            text = f"REPO_ROOT := {self.repo}\ninclude $(REPO_ROOT)/Multisig.mk\nPROJECT_DIR := $(REPO_ROOT)/active/evm\nSIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool\nRPC_URL := http://localhost\nLEDGER_ACCOUNT := 0\nVALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations\ngen-validation-cb: deps-signer-tool\n\t$(call GEN_VALIDATION,tasks/example/script/X.s.sol:Example,,0x1,base-signer.json,FOO=bar)\n"
         (self.task / "Makefile").write_text(text + f"\nMISE_EXEC := python3 {fake}\ndeps-signer-tool bootstrap-mise checkout-signer-tool:\n\t@true\n")
         self.make_args = ["CB_SENDER=0x1", "SC_SENDER=0x2"]
         self.temp_root = self.repo / "tmp"
@@ -261,7 +342,7 @@ class MakeIntegration(DriftFixture):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         generated = json.loads(self.file.read_text())
         self.assertIn("taskInputs", generated, "GEN_VALIDATION must stamp its output")
-        self.assertEqual(generated["cmd"], 'FOO=bar mise exec -- forge script --rpc-url http://localhost script/X.s.sol:Example --sig "sign(address[])" "[]" --sender 0x1')
+        self.assertEqual(generated["cmd"], 'FOO=bar mise exec -- forge script --rpc-url http://localhost tasks/example/script/X.s.sol:Example --sig "sign(address[])" "[]" --sender 0x1')
 
     def test_active_and_standby_regeneration_is_isolated(self):
         for operation in [None, "delay-upgrade-activation", "update-verifier-hashes"]:
@@ -298,6 +379,19 @@ class MakeIntegration(DriftFixture):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.write_json(self.file.with_name(".extra.json"), {})
         self.assert_error(self.make("TASK_NETWORK=local", "check-validations"), ".extra.json")
+
+    def test_missing_committed_validations_directory(self):
+        self.prepare_make()
+        shutil.rmtree(self.file.parent)
+        self.assert_error(self.make("TASK_NETWORK=local", "check-validations"), "missing committed validations directory")
+        self.assertEqual(list(self.temp_root.iterdir()), [])
+
+    def test_no_generation_targets(self):
+        self.prepare_make()
+        path = self.task / "Makefile"
+        path.write_text(path.read_text().replace("gen-validation-cb:", "generate-cb:"))
+        self.assert_error(self.make("TASK_NETWORK=local", "check-validations"), "no gen-validation targets found")
+        self.assertEqual(list(self.temp_root.iterdir()), [])
 
     def test_network_must_be_on_make_command_line(self):
         self.prepare_make()
