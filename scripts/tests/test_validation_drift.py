@@ -113,6 +113,14 @@ class InputChecks(DriftFixture):
         self.write_json(path, {"recipient": "0x1", "amount": "2"})
         self.assert_error(self.check(), "changed: " + path.relative_to(self.repo).as_posix())
 
+    def test_refreshing_prestate_does_not_change_signed_inputs(self):
+        path = self.config / "prestate.json"
+        self.write_json(path, {"gameCount": 1})
+        self.stamp()
+        self.write_json(path, {"gameCount": 2})
+        result = self.check()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_missing_pending_network_environment(self):
         self.stamp()
         (self.config / ".env").unlink()
@@ -245,11 +253,11 @@ class InputChecks(DriftFixture):
 
 
 class SemanticComparison(DriftFixture):
-    def compare(self, committed, regenerated):
+    def compare(self, committed, regenerated, network="mainnet"):
         other = self.repo / "regenerated.json"
         self.write_json(self.file, committed)
         self.write_json(other, regenerated)
-        return self.cli("compare", self.file, other)
+        return self.cli("compare", "--network", network, self.file, other)
 
     def test_meaningful_differences(self):
         original = validation()
@@ -292,6 +300,29 @@ class SemanticComparison(DriftFixture):
         self.assertIn("No meaningful differences", result.stdout)
         regenerated["name"] = "top-level name is not an annotation"
         self.assert_error(self.compare(committed, regenerated), "$.name")
+
+    def test_non_mainnet_origin_opt_out_is_ignored(self):
+        committed = validation()
+        del committed["taskOriginConfig"]
+        for field in ("skipTaskOriginValidation", "hideTaskOriginSkippedPage"):
+            committed[field] = True
+        for network in ("local", "sepolia"):
+            with self.subTest(network=network):
+                result = self.compare(committed, validation(), network=network)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                result = self.compare(validation(), committed, network=network)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_mainnet_origin_opt_out_is_compared_strictly(self):
+        for field in ("skipTaskOriginValidation", "hideTaskOriginSkippedPage"):
+            committed = validation()
+            committed[field] = True
+            for value in (None, False):
+                with self.subTest(field=field, regenerated=value):
+                    regenerated = validation()
+                    if value is not None:
+                        regenerated[field] = value
+                    self.assert_error(self.compare(committed, regenerated), "$." + field)
 
     def test_entry_order_is_not_a_difference(self):
         committed = validation()
@@ -372,6 +403,16 @@ class MakeIntegration(DriftFixture):
                 self.write_json(self.file.with_name("extra.json"), {})
                 self.assert_error(self.make("TASK_NETWORK=local", "check-validations"), "extra.json")
                 self.assertEqual(list(self.temp_root.iterdir()), [])
+
+    def test_non_mainnet_origin_opt_out_survives_regeneration(self):
+        self.prepare_make()
+        result = self.make("TASK_NETWORK=local", "gen-validation-cb")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        data = json.loads(self.file.read_text())
+        data.update(skipTaskOriginValidation=True, hideTaskOriginSkippedPage=True)
+        self.write_json(self.file, data)
+        result = self.make("TASK_NETWORK=local", "check-validations")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_hidden_extra_validation(self):
         self.prepare_make()

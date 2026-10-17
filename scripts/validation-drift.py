@@ -98,8 +98,10 @@ def fingerprint(repo, task, network, cmd):
     project = task if (task / "foundry.toml").is_file() else repo / "active/evm"
     config = task / "config" / network
     paths = {task / "Makefile", config / ".env", repo / "config" / f"{network}.env"}
+    # prestate.json is a post-execution check baseline, not a signed-call input.
     paths.update(p for p in config.rglob("*")
-                 if p.is_file() and p != config / "README.md" and p.relative_to(config).parts[0] != "validations")
+                 if p.is_file() and p not in {config / "README.md", config / "prestate.json"}
+                 and p.relative_to(config).parts[0] != "validations")
     paths.add(script_entrypoint(project, cmd))
     paths.update(p for p in (task / "script").rglob("*") if p.is_file())
     pending = [p for p in paths if p.suffix == ".sol"]
@@ -259,7 +261,12 @@ def differences(committed, regenerated, path="$", annotated=False, collection=No
 
 
 def compare(args):
-    changes = list(differences(read_json(args.committed), read_json(args.regenerated)))
+    committed, regenerated = read_json(args.committed), read_json(args.regenerated)
+    if args.network != "mainnet":
+        for data in (committed, regenerated):
+            data.pop("skipTaskOriginValidation", None)
+            data.pop("hideTaskOriginSkippedPage", None)
+    changes = list(differences(committed, regenerated))
     if changes:
         print(f"{args.committed} vs {args.regenerated}:")
         print("\n".join(changes))
@@ -281,6 +288,7 @@ def main():
     checking.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     checking.set_defaults(func=check)
     comparison = commands.add_parser("compare")
+    comparison.add_argument("--network", required=True)
     comparison.add_argument("committed", type=Path)
     comparison.add_argument("regenerated", type=Path)
     comparison.set_defaults(func=compare)

@@ -98,7 +98,7 @@ check-validations:
 			if test ! -f "$$tmp/$$name"; then \
 				echo "check-validations: extra committed validation $$name"; status=1; \
 			else \
-				python3 "$(REPO_ROOT)/scripts/validation-drift.py" compare "$$file" "$$tmp/$$name" || status=1; \
+				python3 "$(REPO_ROOT)/scripts/validation-drift.py" compare --network "$(TASK_NETWORK)" "$$file" "$$tmp/$$name" || status=1; \
 			fi; \
 		done; \
 		for file in "$$tmp/"*.json "$$tmp/".*.json; do \
