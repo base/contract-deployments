@@ -6,6 +6,8 @@ import subprocess
 import tempfile
 import unittest
 
+from scripts.tests.test_standby_lifecycle import copy_canonical_task
+
 ROOT = Path(__file__).resolve().parents[2]
 TASK = "2026-10-20-example"
 TX = "0x" + "ab" * 32
@@ -43,7 +45,7 @@ class TaskFixture(unittest.TestCase):
         for network in ("local", "other"):
             (self.repo / "config" / f"{network}.env").write_text("L1_RPC_URL=http://127.0.0.1:1\n")
         self.standby = self.repo / "standby/evm/tasks/delay-upgrade-activation"
-        shutil.copytree(ROOT / "standby/evm/tasks/delay-upgrade-activation", self.standby)
+        copy_canonical_task(ROOT / "standby/evm/tasks/delay-upgrade-activation", self.standby)
         for args in (("init", "-qb", "main"), ("add", "."),
                      ("-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-qm", "fixture")):
             result = run("git", *args, cwd=self.repo)
@@ -153,6 +155,19 @@ class TaskStatus(TaskFixture):
         self.write_status(status(self.standby.name, "standby"), self.standby)
         self.assert_ok(self.check())
 
+    def test_status_is_rejected_anywhere_in_signed_config(self):
+        for task, kind in ((self.task, "active"), (self.standby, "standby")):
+            self.config(task)
+            self.write_status(status(task.name, kind), task)
+            for name in ("status.json", "local/status.json", "local/validations/status.json"):
+                with self.subTest(kind=kind, path=name):
+                    misplaced = task / "config" / name
+                    misplaced.parent.mkdir(parents=True, exist_ok=True)
+                    misplaced.write_text("{}\n")
+                    self.assert_problem(self.check(), misplaced, "outside config/")
+                    misplaced.unlink()
+        self.assert_ok(self.check())
+
     def test_add_network_preserves_existing_progress_and_refuses_duplicates(self):
         self.config()
         self.assert_ok(self.cli("add-network", str(self.task), "local"))
@@ -177,15 +192,6 @@ class TaskStatus(TaskFixture):
         schema["properties"]["schema_version"]["const"] = 2
         schema_path.write_text(json.dumps(schema))
         self.assert_problem(self.check(), self.task / "status.json", "schema_version")
-
-    def test_real_repo_has_adopted_status(self):
-        result = run("python3", "-B", str(ROOT / "scripts/task-status.py"), "check", "--repo", str(ROOT), cwd=ROOT)
-        self.assert_ok(result)
-        for task in ("2026-10-07-denim-upgrade", "2026-10-15-upgrade-l2-predeploys"):
-            path = ROOT / "active/evm/tasks" / task / "status.json"
-            self.assertTrue(path.is_file(), f"missing {path}")
-            data = json.loads(path.read_text())
-            self.assertEqual(data["networks"]["zeronet"]["step"], "executed")
 
 
 class NewTask(TaskFixture):

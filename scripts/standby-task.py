@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import datetime
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -13,6 +14,10 @@ import tempfile
 IDENTIFIER = re.compile(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*\Z")
 INVOCATION_DIRS = {"config", "records", "signatures"}
 INVOCATION_FILES = {"status.json"}
+
+spec = importlib.util.spec_from_file_location("task_status", Path(__file__).with_name("task-status.py"))
+status = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(status)
 
 
 def identifier(value, label):
@@ -143,12 +148,13 @@ def archive(repo, task, network, date):
         identifier(config.name, "network identifier")
         if not config.is_dir():
             raise ValueError(f"unexpected config artifact: {config}")
-        readme = config / "README.md"
-        statuses = [line.removeprefix("Status:").strip() for line in readme.read_text().splitlines()[:20] if line.startswith("Status:")] if readme.is_file() else []
-        finalized = r"(?:EXECUTED|CANCELED)(?:\s+https?://\S+)?|\[(?:EXECUTED|CANCELED)\]\(https?://[^\s)]+\)"
-        if len(statuses) != 1 or re.fullmatch(finalized, statuses[0]) is None:
-            raise ValueError(f"network {config.name} is not finalized; mark EXECUTED or CANCELED")
         networks.append(config.name)
+    data, errors = status.check_task(task, "standby")
+    if errors:
+        raise ValueError("invocation status is not finalized:\n" + "\n".join(errors))
+    for selected, entry in data["networks"].items():
+        if entry["step"] not in ("executed", "canceled"):
+            raise ValueError(f"network {selected} is not finalized; set status.json step to executed or canceled")
     signatures = task / "signatures"
     if signatures.exists() and any(path.name not in networks for path in signatures.iterdir()):
         raise ValueError("signatures must belong to a configured network")

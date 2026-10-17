@@ -74,40 +74,48 @@ def config_networks(task):
     return {path.name for path in config.iterdir() if path.is_dir()} if config.is_dir() else set()
 
 
+def check_task(task, kind):
+    errors = []
+    path = task / "status.json"
+    networks = config_networks(task)
+    for misplaced in sorted((task / "config").rglob("status.json")):
+        errors.append(f"{misplaced}: status.json must be at the task root, outside config/")
+    if kind == "standby" and not networks:
+        if path.exists():
+            errors.append(f"{path}: standby operation with no invocation must not have status.json")
+        return None, errors
+    data, invalid = read_status(path, task.name, kind)
+    errors.extend(invalid)
+    if invalid:
+        return data, errors
+    if set(data["networks"]) != networks:
+        errors.append(f"{path}: networks must match config directories {sorted(networks)!r}")
+    for network, entry in data["networks"].items():
+        step = entry["step"]
+        if (step == "executed") != (entry["executed_tx"] is not None):
+            errors.append(f"{path}: networks.{network}.executed_tx must be non-null if and only if step is executed")
+        readme = task / "config" / network / "README.md"
+        try:
+            lines = readme.read_text().splitlines()[:20] if readme.is_file() else []
+        except OSError as error:
+            errors.append(f"{readme}: {error}")
+            continue
+        statuses = [line.removeprefix("Status:").strip() for line in lines if line.startswith("Status:")]
+        finals = [match for value in statuses if (match := FINAL_STATUS.fullmatch(value))]
+        final = (finals[0].group(1) or finals[0].group(2)).lower() if len(statuses) == len(finals) == 1 else None
+        if (finals or step in ("executed", "canceled")) and final != step:
+            errors.append(f"{readme}: finalized Status must match status.json step {step!r}")
+    return data, errors
+
+
 def check(repo):
     errors = []
     for kind in ("active", "standby"):
         tasks = repo / kind / "evm/tasks"
         for task in sorted(tasks.iterdir()) if tasks.is_dir() else []:
-            if not task.is_dir():
-                continue
-            path = task / "status.json"
-            networks = config_networks(task)
-            if kind == "standby" and not networks:
-                if path.exists():
-                    errors.append(f"{path}: standby operation with no invocation must not have status.json")
-                continue
-            data, invalid = read_status(path, task.name, kind)
-            errors.extend(invalid)
-            if invalid:
-                continue
-            if set(data["networks"]) != networks:
-                errors.append(f"{path}: networks must match config directories {sorted(networks)!r}")
-            for network, entry in data["networks"].items():
-                step = entry["step"]
-                if (step == "executed") != (entry["executed_tx"] is not None):
-                    errors.append(f"{path}: networks.{network}.executed_tx must be non-null if and only if step is executed")
-                readme = task / "config" / network / "README.md"
-                try:
-                    lines = readme.read_text().splitlines()[:20] if readme.is_file() else []
-                except OSError as error:
-                    errors.append(f"{readme}: {error}")
-                    continue
-                statuses = [line.removeprefix("Status:").strip() for line in lines if line.startswith("Status:")]
-                finals = [match for value in statuses if (match := FINAL_STATUS.fullmatch(value))]
-                final = (finals[0].group(1) or finals[0].group(2)).lower() if len(statuses) == len(finals) == 1 else None
-                if (finals or step in ("executed", "canceled")) and final != step:
-                    errors.append(f"{readme}: finalized Status must match status.json step {step!r}")
+            if task.is_dir():
+                _, invalid = check_task(task, kind)
+                errors.extend(invalid)
     return errors
 
 

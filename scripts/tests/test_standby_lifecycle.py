@@ -24,7 +24,8 @@ class StandbyFixture(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         self.repo = Path(temp.name)
-        for name in ("Makefile", "Multisig.mk", "scripts/Standby.mk", "scripts/standby-task.py", "active/evm/foundry.toml"):
+        for name in ("Makefile", "Multisig.mk", "scripts/Standby.mk", "scripts/standby-task.py",
+                     "scripts/task-status.py", "scripts/task-status.schema.json", "active/evm/foundry.toml"):
             target = self.repo / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / name, target)
@@ -69,6 +70,17 @@ class StandbyFixture(unittest.TestCase):
         records = self.task / "records/DelayUpgradeActivation.s.sol/31337"
         records.mkdir(parents=True, exist_ok=True)
         (records / "run-final.json").write_text("final record\n")
+        path = self.task / "status.json"
+        data = json.loads(path.read_text()) if path.exists() else {
+            "schema_version": 1, "task": self.task.name, "kind": "standby",
+            "last_updated": "2026-10-20T00:00:00Z", "networks": {},
+        }
+        executed = "EXECUTED" in status
+        data["networks"][network] = {
+            "step": "executed" if executed else "canceled", "pr": None, "blocksec_ticket": None,
+            "signatures": {}, "executed_tx": "0x" + "ab" * 32 if executed else None,
+        }
+        path.write_text(json.dumps(data) + "\n")
 
 
 class StandbyLifecycle(StandbyFixture):
@@ -144,11 +156,6 @@ class StandbyLifecycle(StandbyFixture):
     def test_archive_is_lossless_and_canonical_unchanged(self):
         self.finalize(status="[EXECUTED](https://example.invalid/tx/fixture)")
         self.finalize("other", "CANCELED https://example.invalid/incident/fixture")
-        (self.task / "status.json").write_text(json.dumps({
-            "schema_version": 1, "task": OPERATION, "kind": "standby", "last_updated": "2026-10-20T00:00:00Z",
-            "networks": {network: {"step": step, "pr": None, "blocksec_ticket": None, "signatures": {}, "executed_tx": tx}
-                         for network, step, tx in (("local", "executed", "0x" + "ab" * 32), ("other", "canceled", None))},
-        }) + "\n")
         before = self.snapshot()
         result = self.make("archive-task", "local", "TASK_DATE=2026-10-13")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -204,6 +211,39 @@ class StandbyLifecycle(StandbyFixture):
         self.assertIn("not finalized", result.stdout + result.stderr)
         self.assertEqual(self.snapshot(), before)
         self.assertFalse((self.repo / "archive").exists())
+
+    def test_archive_rejects_invalid_or_pending_status_without_changes(self):
+        self.finalize()
+        path = self.task / "status.json"
+        finalized = path.read_text()
+        cases = [("invalid JSON", "{", "status.json"), ("missing", None, "missing status.json")]
+        for field, value in (("schema_version", 2), ("kind", "active"), ("task", "wrong"),
+                             ("networks", {"other": json.loads(finalized)["networks"]["local"]})):
+            data = json.loads(finalized)
+            data[field] = value
+            cases.append((field, json.dumps(data), field))
+        for step, tx, readme, message in (
+            ("authoring", None, "EXECUTED", "finalized Status"),
+            ("executed", None, "EXECUTED", "executed_tx"),
+            ("canceled", None, "EXECUTED", "finalized Status"),
+            ("authoring", None, "READY TO SIGN", "not finalized"),
+        ):
+            data = json.loads(finalized)
+            data["networks"]["local"].update(step=step, executed_tx=tx)
+            cases.append((readme, json.dumps(data), message))
+        for readme, content, message in cases:
+            with self.subTest(status=readme, content=content):
+                (self.config / "README.md").write_text(f"Status: {readme}\n")
+                if content is None:
+                    path.unlink()
+                else:
+                    path.write_text(content)
+                before = self.snapshot()
+                result = self.make("archive-task", "local", "TASK_DATE=2026-10-13")
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn(message, result.stderr)
+                self.assertEqual(self.snapshot(), before)
+                self.assertFalse((self.repo / "archive").exists())
 
     def test_archive_rejects_dated_operation_identifier_without_data_loss(self):
         self.finalize()

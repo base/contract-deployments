@@ -1,6 +1,6 @@
 # Rotate verifier hashes
 
-Run directly from `standby/evm/tasks/update-verifier-hashes/`, replacing `<network>` on every command. Add only `config/<network>/.env` and `config/<network>/README.md` to invoke. Do not copy this operation into active or edit its canonical files for an incident.
+From the repository root, run `make new-task STANDBY_OP=update-verifier-hashes TASK_NETWORK=<network>` to create `config/<network>/.env`, `config/<network>/README.md`, and task-root `status.json`. Then run directly from `standby/evm/tasks/update-verifier-hashes/`, replacing `<network>` on every command. Do not copy this operation into active or edit its canonical files for an incident.
 
 ## Supported contracts and freshness
 
@@ -37,6 +37,8 @@ AGGREGATE_VERIFIER_TEE_IMAGE_HASH=<nonzero-bytes32>
 AGGREGATE_VERIFIER_ZK_RANGE_HASH=<nonzero-bytes32>
 AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=<nonzero-bytes32>
 ```
+
+Keep task-root `status.json` current as the invocation progresses, including signature counts and `last_updated`. Never put it under `config/<network>/`, which task-origin signing covers.
 
 Do not add `RECORD_STATE_DIFF`; the signer injects it. No secrets belong in the config. Start the signer README with this concise template, replacing placeholders with reviewed values:
 
@@ -108,7 +110,7 @@ The outer Safe uses the nested approvals to execute one zero-value `setImplement
 
 ## Finalize and archive
 
-Mark every invocation `Status: EXECUTED` with its transaction link or `Status: CANCELED` with a reason. Commit all final artifacts, including task-scoped records and signatures. Do not archive while any intended network invocation is pending, and do not merge the operational PR until the archive and invocation removals are committed.
+Mark every invocation `Status: EXECUTED` with its transaction link or `Status: CANCELED` with a reason. Update the matching step and execution transaction in task-root `status.json` in the same change, then run `make check-task-status` from the repository root. Commit all final artifacts, including task-scoped records and signatures. Do not archive while any intended network invocation is pending, and do not merge the operational PR until the archive and invocation removals are committed.
 
 Fetch main, then:
 
@@ -116,4 +118,4 @@ Fetch main, then:
 make TASK_NETWORK=<network> archive-task TASK_DATE=<YYYY-MM-DD>
 ```
 
-Archival rejects pending sibling networks, overwrites, invalid identifiers, and canonical drift from `origin/main`. It snapshots all finalized networks, global network configuration, and task-scoped artifacts into `archive/evm/<YYYY-MM-DD>-update-verifier-hashes/`, removing only `config/`, `records/`, and `signatures/` from standby. Canonical files stay byte-for-byte identical and contain no invocation data on main. Commit the dated archive and removals together. Never edit or execute a historical archive; the next invocation starts from this same standby directory.
+Archival validates task-root `status.json` and rejects pending sibling networks, overwrites, invalid identifiers, and canonical drift from `origin/main`. It snapshots all finalized networks, global network configuration, task-root `status.json`, and task-scoped artifacts into `archive/evm/<YYYY-MM-DD>-update-verifier-hashes/`, removing only `config/`, `records/`, `signatures/`, and task-root `status.json` from standby. Canonical files stay byte-for-byte identical and contain no invocation data on main. Commit the dated archive and removals together. Never edit or execute a historical archive; the next invocation starts from this same standby directory.
