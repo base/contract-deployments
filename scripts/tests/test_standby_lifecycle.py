@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 import shutil
@@ -7,7 +8,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 OPERATION = "delay-upgrade-activation"
-INVOCATION_DIRS = {"config", "records", "signatures"}
+INVOCATION_DIRS = {"config", "records", "signatures", "status.json"}
 
 
 def run(*args, cwd, env=None):
@@ -143,6 +144,11 @@ class StandbyLifecycle(StandbyFixture):
     def test_archive_is_lossless_and_canonical_unchanged(self):
         self.finalize(status="[EXECUTED](https://example.invalid/tx/fixture)")
         self.finalize("other", "CANCELED https://example.invalid/incident/fixture")
+        (self.task / "status.json").write_text(json.dumps({
+            "schema_version": 1, "task": OPERATION, "kind": "standby", "last_updated": "2026-10-20T00:00:00Z",
+            "networks": {network: {"step": step, "pr": None, "blocksec_ticket": None, "signatures": {}, "executed_tx": tx}
+                         for network, step, tx in (("local", "executed", "0x" + "ab" * 32), ("other", "canceled", None))},
+        }) + "\n")
         before = self.snapshot()
         result = self.make("archive-task", "local", "TASK_DATE=2026-10-13")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

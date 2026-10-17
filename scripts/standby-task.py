@@ -12,6 +12,7 @@ import tempfile
 
 IDENTIFIER = re.compile(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*\Z")
 INVOCATION_DIRS = {"config", "records", "signatures"}
+INVOCATION_FILES = {"status.json"}
 
 
 def identifier(value, label):
@@ -120,14 +121,15 @@ def archive(repo, task, network, date):
     if task != repo / "standby/evm/tasks" / task.name:
         raise ValueError("task must be a canonical standby task")
     all_files = files(task)
-    canonical = {name: data for name, data in all_files.items() if name.split("/")[0] not in INVOCATION_DIRS}
+    invocation_paths = INVOCATION_DIRS | INVOCATION_FILES
+    canonical = {name: data for name, data in all_files.items() if name.split("/")[0] not in invocation_paths}
     relative_task = task.relative_to(repo).as_posix()
     try:
         names = git(repo, "ls-tree", "-r", "--name-only", "refs/remotes/origin/main", "--", relative_task).decode().splitlines()
         main = {
             name[len(relative_task) + 1:]: git(repo, "show", f"refs/remotes/origin/main:{name}")
             for name in names
-            if name[len(relative_task) + 1:].split("/")[0] not in INVOCATION_DIRS
+            if name[len(relative_task) + 1:].split("/")[0] not in invocation_paths
         }
     except subprocess.CalledProcessError:
         raise ValueError("cannot read origin/main; fetch main before archiving") from None
@@ -181,6 +183,10 @@ def archive(repo, task, network, date):
         source = task / name
         if source.exists():
             shutil.rmtree(source)
+    for name in INVOCATION_FILES:
+        source = task / name
+        if source.exists():
+            source.unlink()
     if files(task) != canonical:
         raise ValueError("canonical verification failed after archive")
     print(f"Archived all finalized networks to {destination.relative_to(repo)}; standby canonical files unchanged")

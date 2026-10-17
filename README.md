@@ -117,6 +117,7 @@ active/evm/
     └── <YYYY-MM-DD-task-name>/
         ├── Makefile             # task dependencies, validation, approvals, and execution
         ├── FACILITATOR.md       # network-agnostic facilitator procedure
+        ├── status.json          # task progress across network invocations
         ├── script/              # optional one-off task scripts
         ├── config/
         │   └── <network>/
@@ -147,7 +148,7 @@ make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
 
 ### Standby operations
 
-Canonical standby tasks are dateless, pre-reviewed operations with no real network configuration or artifacts. Invoke directly from `standby/evm/tasks/<operation>/` by adding `config/<network>/.env` and a concise signer README with `Status: READY TO SIGN`. Do not copy the task into active or edit its canonical Makefile, Solidity, or root `FACILITATOR.md` for an incident. Every Make command requires explicit command-line `TASK_NETWORK=<network>`, not an exported value or default.
+Canonical standby tasks are dateless, pre-reviewed operations with no real network configuration or artifacts. Invoke directly from `standby/evm/tasks/<operation>/` by adding `config/<network>/.env`, a concise signer README with `Status: READY TO SIGN`, and a task-root `status.json`. Do not copy the task into active or edit its canonical Makefile, Solidity, or root `FACILITATOR.md` for an incident. Every Make command requires explicit command-line `TASK_NETWORK=<network>`, not an exported value or default.
 
 Use the [upgrade-delay guide](standby/evm/tasks/delay-upgrade-activation/FACILITATOR.md) or [verifier hash rotation guide](standby/evm/tasks/update-verifier-hashes/FACILITATOR.md) for exact commands. The verifier operation supports AggregateVerifier 0.3.0 at its reviewed contracts pin and replaces the former common verifier scripts. Standby tasks use the shared `active/evm` Foundry project, but each operation's dependency pin and build settings must be respected. Signer discovery includes an invocation only after JSON validations exist under `config/<network>/validations/`. The pinned signer checkout receives the deterministic repo-owned patch in `scripts/patches/signer-standby.patch`; changing its upstream pin or content without reviewing the patch fails closed.
 
@@ -166,7 +167,7 @@ standby/evm/tasks/<operation>/
     └── <operation>.s.sol
 ```
 
-Invocation-only `config/`, `signatures/`, and `records/` directories are added during an incident and removed by archival. Later incidents reuse the canonical standby directory. Historical archives must not be edited or executed.
+Invocation-only `config/`, `signatures/`, and `records/` directories and the task-root `status.json` are added during an incident and removed by archival. Later incidents reuse the canonical standby directory. Historical archives must not be edited or executed.
 
 ### Legacy tasks
 
@@ -176,6 +177,44 @@ Each legacy task (under a network directory, or `archive/legacy/`) has a directo
 - **script/** place to store any one-off Foundry scripts
 - **src/** place to store any one-off smart contracts (long-lived contracts should go in [base/contracts](https://github.com/base/contracts))
 - **.env** place to store task-specific environment variables (contract addresses are inherited from the network-level `.env`)
+
+## Task status and scaffolding
+
+Every active task and every standby operation with a network invocation has one task-root `status.json`. Humans and the automation bot read and update the same file. Never put it under `config/<network>/`, because task-origin signing covers that directory and later status updates must not change the signed payload. A canonical standby operation without invocations must not have a status file; archival carries invocation status into the dated archive and removes it from standby.
+
+[`scripts/task-status.schema.json`](scripts/task-status.schema.json) defines version 1. All fields are required and unknown fields are rejected. `schema_version` is `1`, `task` matches the task directory name, `kind` is `active` or `standby`, and `last_updated` is a UTC timestamp in `YYYY-MM-DDTHH:MM:SSZ` form. `networks` contains exactly the directories under the task's `config/` and must not be empty. Each network has:
+
+- `step`, one of the lifecycle steps below.
+- `pr`, the task's pull request URL in this repository, or `null` before one exists.
+- `blocksec_ticket`, an HTTPS ticket URL, or `null` if none applies.
+- `signatures`, an object keyed by validation file stem, such as `base-signer`, with nonnegative integer `collected` and positive integer `required` counts. Use `{}` until the required signer roles are known.
+- `executed_tx`, a 32-byte hex transaction hash only when the step is `executed`; otherwise `null`.
+
+| Step | Meaning |
+| --- | --- |
+| `authoring` | The facilitator is writing scripts and configuration. |
+| `validation` | The facilitator is generating and checking simulation artifacts. |
+| `review` | Reviewers are checking the task and validation files. |
+| `ready_to_sign` | Reviewed validation files are ready for signers. |
+| `collecting` | Signers are submitting signatures. |
+| `ready_to_execute` | Required signatures and approvals are ready for execution. |
+| `executed` | Execution succeeded and its transaction hash is recorded. |
+| `canceled` | The invocation will not execute. |
+
+The facilitator or bot updates the network step, links, signature counts, and `last_updated` when progress changes. The initial machine step is `authoring` even though the signer README starts with `Status: READY TO SIGN`; do not ask signers to sign until validations are reviewed. Finalize the signer README as `EXECUTED` or `CANCELED` and update `status.json` in the same change. The checker requires both final states to match, accepting plain final statuses or Markdown links.
+
+Run these commands from the repository root. Provide exactly one selector and a command-line `TASK_NETWORK` with a matching global `config/<network>.env`. The date defaults to today; identifiers use lowercase letters, digits, and single hyphens, with slugs, operations, and networks starting with a letter.
+
+```sh
+make new-task TASK_SLUG=<slug> TASK_NETWORK=<network> TASK_DATE=YYYY-MM-DD
+make new-task TASK_ID=<existing-active-task-id> TASK_NETWORK=<network>
+make new-task STANDBY_OP=<operation> TASK_NETWORK=<network>
+make check-task-status
+```
+
+The first mode creates `active/evm/tasks/<date>-<slug>/` with a shared Makefile skeleton, facilitator guide, tracked `script/` directory, network `.env`, signer README, and initial `status.json`. Implement the operation and fill in the empty contracts pin before using it. The second mode adds only a network config and status entry to an existing active task. The third adds a standby invocation without changing canonical files; follow the operation's facilitator guide to fill in its reviewed pin and required inputs. All modes refuse overwrites and leave generated validations, addresses, signatures, and records to the facilitator.
+
+To adopt an existing task, run `python3 -B scripts/task-status.py add-network <task-dir> <network>` once for each existing network, then update its progress and final artifacts. The CLI refuses duplicate entries. `make check-task-status` validates all active tasks and invoked standby operations, including network directories, execution hashes, and finalized README consistency. The [task status workflow](.github/workflows/validate-task-status.yml) runs the checker and scaffolder tests on pull requests and pushes to main.
 
 ## CI script validation
 

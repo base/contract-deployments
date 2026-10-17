@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task": "2026-10-15-upgrade-l2-predeploys",
+  "kind": "active",
+  "last_updated": "2026-10-17T18:10:50Z",
+  "networks": {
+    "zeronet": {
+      "step": "executed",
+      "pr": "https://github.com/base/contract-deployments/pull/817",
+      "blocksec_ticket": null,
+      "signatures": {},
+      "executed_tx": "0x50c7bd1ee23ffa011dae50eebe1ea32ebf30a64e92e55214688afcbc6e2368a0"
+    }
+  }
+}
