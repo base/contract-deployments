@@ -67,7 +67,7 @@ For the combined path, deploy the five L2 implementations after deploying the ve
 make TASK_NETWORK=<network> deploy-l2
 ```
 
-Jack runs both deployment steps with a Ledger. `deploy-l2` uses the L2 RPC, 999999 optimizer runs,
+The facilitator runs both deployment steps with a Ledger. `deploy-l2` uses the L2 RPC, 999999 optimizer runs,
 no bytecode hash and Cancun, matching base/contracts. It appends `l2ToL1MessagePasser`, `l1Block`,
 `sequencerFeeVault`, `baseFeeVault` and `l1FeeVault` to `config/<network>/addresses.json`. There is no
 L2 source-verification step. Deploy the verifier first because its script replaces the address file;
