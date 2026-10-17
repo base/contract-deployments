@@ -130,9 +130,10 @@ hashes. Games created afterwards need proofs from the new build. Before executin
    cast call "$TEE_PROVER_REGISTRY_PROXY" 'signerImageHash(address)(bytes32)' <signer> --rpc-url "$L1_RPC_URL"
    ```
 
-Between rolling the provers and executing, proofs from the new build do not verify against the old
-verifier, and signers with the new image hash are not valid until execution, so keep that window
-short or keep the old build running until execution.
+Between rolling the new build and executing, new-build proofs do not verify against the current
+verifier, so keep that window short. After execution, keep the old build's provers and challenger
+available, and do not deregister the old enclave signers, until every game created before execution
+has resolved (up to the old verifier's `SLOW_FINALIZATION_DELAY`).
 
 ## 6. Collect signatures and execute
 
