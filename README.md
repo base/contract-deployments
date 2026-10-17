@@ -203,6 +203,14 @@ The GitHub Actions workflow validates shared active scripts and canonical standb
 
 > See [`.github/workflows/validate-common-scripts.yml`](.github/workflows/validate-common-scripts.yml) for the full workflow definition.
 
+## Validation file drift checks
+
+Public CI runs `python3 scripts/validation-drift.py check` without RPC access. It checks that every pending active or standby network invocation has exactly its declared signer JSON files and that each file's `taskInputs` fingerprint matches the task Makefile, scripts and their repo-owned Solidity imports, network `.env` files, and optional `addresses.json`. Executed or canceled invocations are skipped. Canonical standby tasks without invocations need no validation files.
+
+Before collecting signatures and after any change to scripts or `.env`, run `make TASK_NETWORK=<network> check-validations` from the active or standby task directory on a machine with internal RPC access. It regenerates all signer files into a temporary directory, compares them with the committed files, and removes the temporary files without changing the committed ones. The comparison ignores generating-machine identity and facilitator edits to `name`, `description`, and `allowDifference` inside state overrides, state changes, and balance changes. When the committed entry has `allowDifference: true`, it also ignores that entry's `before`, `after`, and `value` fields. Other differences, including transaction commands, hashes, addresses, storage keys, and input fingerprints, fail the check.
+
+To adopt a fingerprint or fix drift, regenerate with the task's `gen-validation-*` targets on an internal machine and review the diff before committing. `GEN_VALIDATION` stamps `taskInputs` automatically. Do not hand-edit `cmd` or simulated values to make a check pass.
+
 ## Multisig macro convention
 
 All task templates use global macros defined in [`Multisig.mk`](Multisig.mk) for multisig operations:

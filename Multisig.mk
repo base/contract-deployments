@@ -71,8 +71,40 @@ $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 			--workdir $(PROJECT_DIR) \
 			--forge-cmd '$(if $(5),$(5) )mise exec -- forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \
 			--ledger-id $(LEDGER_ACCOUNT) \
-			--out $(VALIDATIONS_DIR)/$(4)
+			--out $(VALIDATIONS_DIR)/$(4) $(if $(strip $(TASK_NETWORK)),&& python3 $(REPO_ROOT)/scripts/validation-drift.py stamp --task-dir "$(CURDIR)" --network "$(TASK_NETWORK)" "$(VALIDATIONS_DIR)/$(4)")
 endef
+
+# Regeneration needs internal RPC access; public CI only checks input fingerprints.
+# Indirection keeps make -n from executing comparisons without regenerated files.
+validation_drift_make = $(MAKE)
+validation_drift_targets = $(shell sed -n 's/^\(gen-validation[^ :]*\):.*/\1/p' Makefile | sort -u)
+
+.PHONY: check-validations
+check-validations:
+	@test "$(origin TASK_NETWORK)" = "command line" && test -n "$(TASK_NETWORK)" || { echo 'check-validations: TASK_NETWORK is required on the command line'; exit 1; }
+	@set -eu; \
+		targets='$(validation_drift_targets)'; \
+		test -n "$$targets" || { echo 'check-validations: no gen-validation targets found'; exit 1; }; \
+		tmp=$$(mktemp -d "$${TMPDIR:-/tmp}/validation-drift.XXXXXX"); \
+		trap 'rm -rf "$$tmp"' EXIT HUP INT TERM; \
+		for target in $$targets; do \
+			$(validation_drift_make) TASK_NETWORK="$(TASK_NETWORK)" VALIDATIONS_DIR="$$tmp" "$$target"; \
+		done; \
+		committed="$(CURDIR)/config/$(TASK_NETWORK)/validations"; status=0; \
+		for file in "$$committed/"*.json "$$committed/".*.json; do \
+			test -e "$$file" || continue; name=$${file##*/}; \
+			if test ! -f "$$tmp/$$name"; then \
+				echo "check-validations: extra committed validation $$name"; status=1; \
+			else \
+				python3 "$(REPO_ROOT)/scripts/validation-drift.py" compare "$$file" "$$tmp/$$name" || status=1; \
+			fi; \
+		done; \
+		for file in "$$tmp/"*.json "$$tmp/".*.json; do \
+			test -e "$$file" || continue; name=$${file##*/}; \
+			if test ! -f "$$committed/$$name"; then echo "check-validations: missing committed validation $$name"; status=1; fi; \
+		done; \
+		if test "$$status" -ne 0; then echo "Regenerate with the task's gen-validation targets on an internal machine, then review the diff."; fi; \
+		exit "$$status"
 
 # ---------- Helpers ----------
 
