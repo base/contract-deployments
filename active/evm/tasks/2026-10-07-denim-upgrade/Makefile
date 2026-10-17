@@ -22,7 +22,7 @@ SIGNATURE_DIR := $(CURDIR)/signatures/$(TASK_NETWORK)
 
 TASK_DIR := tasks/2026-10-07-denim-upgrade
 DEPLOY_SCRIPT := $(TASK_DIR)/script/DeployDenimProofImpls.s.sol:DeployDenimProofImpls
-UPGRADE_SCRIPT := $(TASK_DIR)/script/ExecuteDenimUpgrade.s.sol:ExecuteDenimUpgrade
+UPGRADE_SCRIPT := $(TASK_DIR)/script/$(if $(UPGRADE_SCRIPT_NAME),$(UPGRADE_SCRIPT_NAME),ExecuteDenimUpgrade).s.sol:$(if $(UPGRADE_SCRIPT_NAME),$(UPGRADE_SCRIPT_NAME),ExecuteDenimUpgrade)
 SCRIPT_NAME := $(UPGRADE_SCRIPT)
 
 CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) "getOwners()(address[])" --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
@@ -48,6 +48,27 @@ UPGRADE_ENV = $(VERIFIER_ENV) \
 	PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION=$(PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION) \
 	PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=$(PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION)
 
+ifeq ($(UPGRADE_SCRIPT_NAME),ExecuteDenimUpgradeWithL2Predeploys)
+impl = $(shell jq -er '.$(1)' $(ADDRESSES_JSON) 2>/dev/null)
+UPGRADE_ENV += OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) \
+	L2_RPC_URL=$(L2_RPC_URL) \
+	L2_TO_L1_MESSAGE_PASSER_IMPL=$(call impl,l2ToL1MessagePasser) \
+	L1_BLOCK_IMPL=$(call impl,l1Block) \
+	SEQUENCER_FEE_VAULT_IMPL=$(call impl,sequencerFeeVault) \
+	BASE_FEE_VAULT_IMPL=$(call impl,baseFeeVault) \
+	L1_FEE_VAULT_IMPL=$(call impl,l1FeeVault) \
+	FEE_VAULT_RECIPIENT=$(FEE_VAULT_RECIPIENT) \
+	FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=$(FEE_VAULT_MIN_WITHDRAWAL_AMOUNT) \
+	FEE_VAULT_WITHDRAWAL_NETWORK=$(FEE_VAULT_WITHDRAWAL_NETWORK)
+
+.PHONY: check-implementations
+check-implementations:
+	@jq -e '[.aggregateVerifier, .l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
+		{ echo 'Deploy AggregateVerifier and all five L2 implementations into $(ADDRESSES_JSON) before validation, approval or execution'; exit 1; }
+
+approve-cb approve-sc execute: check-implementations
+endif
+
 ##
 # Deployment
 ##
@@ -57,9 +78,29 @@ AGGREGATE_VERIFIER_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_OPTIMIZER_RUNS=999999 
 
 .PHONY: deploy
 deploy:
+ifeq ($(UPGRADE_SCRIPT_NAME),ExecuteDenimUpgradeWithL2Predeploys)
+	@test ! -f "$(ADDRESSES_JSON)" || jq -e '[.l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault] | all(.[]; . == null)' "$(ADDRESSES_JSON)" >/dev/null || \
+		{ echo 'deploy replaces addresses.json; deploy AggregateVerifier before deploy-l2'; exit 1; }
+endif
 	@test -f "$(ADDRESSES_JSON)" || echo '{}' > "$(ADDRESSES_JSON)"
 	cd $(PROJECT_DIR) && $(VERIFIER_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) $(AGGREGATE_VERIFIER_BUILD) \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_SCRIPT) \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+
+DEPLOY_PREDEPLOYS_SCRIPT := $(TASK_DIR)/script/DeployL2PredeployImpls.s.sol:DeployL2PredeployImpls
+DEPLOY_FEE_VAULTS_SCRIPT := $(TASK_DIR)/script/DeployFeeVaultImpls.s.sol:DeployFeeVaultImpls
+
+.PHONY: deploy-l2
+deploy-l2:
+	@test "$(UPGRADE_SCRIPT_NAME)" = ExecuteDenimUpgradeWithL2Predeploys || \
+		{ echo 'deploy-l2 requires the combined upgrade script in config/$(TASK_NETWORK)/.env'; exit 1; }
+	@jq -e '.aggregateVerifier | type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000"' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
+		{ echo 'Run deploy before deploy-l2; it initializes $(ADDRESSES_JSON)'; exit 1; }
+	cd $(PROJECT_DIR) && ADDRESSES_JSON=$(ADDRESSES_JSON) $(AGGREGATE_VERIFIER_BUILD) \
+		$(MISE_EXEC) forge script --rpc-url $(L2_RPC_URL) $(DEPLOY_PREDEPLOYS_SCRIPT) \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+	cd $(PROJECT_DIR) && ADDRESSES_JSON=$(ADDRESSES_JSON) $(AGGREGATE_VERIFIER_BUILD) \
+		$(MISE_EXEC) forge script --rpc-url $(L2_RPC_URL) $(DEPLOY_FEE_VAULTS_SCRIPT) \
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 ##
@@ -93,11 +134,11 @@ endif
 # Validation files
 ##
 .PHONY: gen-validation-cb
-gen-validation-cb: deps-signer-tool
+gen-validation-cb: $(if $(filter ExecuteDenimUpgradeWithL2Predeploys,$(UPGRADE_SCRIPT_NAME)),check-implementations) deps-signer-tool
 	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT),$(CB_MULTISIG),$(CB_SENDER),base-signer.json,$(UPGRADE_ENV))
 
 .PHONY: gen-validation-sc
-gen-validation-sc: deps-signer-tool
+gen-validation-sc: $(if $(filter ExecuteDenimUpgradeWithL2Predeploys,$(UPGRADE_SCRIPT_NAME)),check-implementations) deps-signer-tool
 	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer.json,$(UPGRADE_ENV))
 
 ##
