@@ -30,5 +30,8 @@ Task writing:
 - Include a `FACILITATOR.md` file directed to the task facilitator (explains generating validation file, executing approvals + executing the task)
 - Always name the validation file(s) something simple like `base-signer.json` or `security-council-signer.json`. This results in human readable names in the signer tool
   - Do not attempt generating the validation file yourself - the engineer finalizing the task can do this
+- Validation files carry a `taskInputs` fingerprint stamped by `GEN_VALIDATION`. Regenerate with the task's gen-validation targets after input changes, then run `make TASK_NETWORK=<network> check-validations` on an internal machine before collecting signatures.
+- Regenerate rather than hand-edit validation commands or simulated values. Facilitators may edit `name`, `description`, and `allowDifference` on state overrides, state changes, and balance changes; committed `allowDifference: true` entries exempt their values from the regeneration comparison.
+- The regeneration comparison ignores root `taskOriginConfig`. It ignores root `skipTaskOriginValidation` and `hideTaskOriginSkippedPage` only for networks other than `mainnet`; both fields must match on `mainnet`.
 - The starting README status should be `READY TO SIGN`
 - The README file is aimed at signers and should be as simple and concise as possible. Just enough information for signers to sign the task

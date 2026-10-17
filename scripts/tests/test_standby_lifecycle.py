@@ -23,7 +23,7 @@ class StandbyFixture(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         self.repo = Path(temp.name)
-        for name in ("Makefile", "Multisig.mk", "scripts/Standby.mk", "scripts/standby-task.py", "active/evm/foundry.toml"):
+        for name in ("Makefile", "Multisig.mk", "scripts/validation-drift.py", "scripts/Standby.mk", "scripts/standby-task.py", "active/evm/foundry.toml"):
             target = self.repo / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / name, target)
