@@ -29,8 +29,12 @@ def validate(value, schema, location="$"):
         errors.append(f"{location}: expected constant {schema['const']!r}")
     if "enum" in schema and value not in schema["enum"]:
         errors.append(f"{location}: expected one of {schema['enum']!r}")
-    if isinstance(value, str) and "pattern" in schema and not re.search(schema["pattern"], value):
-        errors.append(f"{location}: does not match pattern {schema['pattern']!r}")
+    if isinstance(value, str) and "pattern" in schema:
+        pattern = schema["pattern"]
+        if pattern.endswith("$"):
+            pattern = pattern[:-1] + r"\Z"
+        if not re.search(pattern, value):
+            errors.append(f"{location}: does not match pattern {schema['pattern']!r}")
     if type(value) is int and "minimum" in schema and value < schema["minimum"]:
         errors.append(f"{location}: must be >= {schema['minimum']}")
     if isinstance(value, dict):

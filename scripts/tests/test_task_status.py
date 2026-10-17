@@ -129,6 +129,13 @@ class TaskStatus(TaskFixture):
                 self.write_status(data)
                 self.assert_problem(self.check(), self.task / "status.json", "executed_tx")
 
+    def test_executed_transaction_rejects_trailing_newline(self):
+        self.config(readme="EXECUTED")
+        data = status()
+        data["networks"]["local"].update(step="executed", executed_tx=TX + "\n")
+        self.write_status(data)
+        self.assert_problem(self.check(), self.task / "status.json", "executed_tx")
+
     def test_final_readme_and_step_must_agree_in_both_directions(self):
         for final in ("EXECUTED", "CANCELED"):
             for form in (final, f"{final} https://example.invalid/result", f"[{final}](https://example.invalid/result)"):
