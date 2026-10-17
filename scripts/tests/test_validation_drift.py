@@ -289,20 +289,19 @@ class InputChecks(DriftFixture):
         self.assertNotIn("active/evm/lib/forge-std/src/Script.sol", files)
 
     def test_automapped_library_imports_are_dependencies(self):
-        for libs in [None, ["packages"]]:
-            with self.subTest(libs=libs):
-                library = "lib" if libs is None else libs[0]
-                self.put("active/evm/foundry.toml", "[profile.default]\n" + (f"libs = {libs!r}\n" if libs else ""))
-                (self.task / "script/X.s.sol").write_text('import "solady/utils/LibString.sol";\n')
-                dependency = self.put(f"active/evm/{library}/solady/src/utils/LibString.sol", "dependency bytes\n")
-                self.stamp()
-                dependency.write_text("changed dependency bytes\n")
-                result = self.check()
-                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-                shutil.rmtree(self.repo / f"active/evm/{library}/solady")
+        (self.task / "script/X.s.sol").write_text(
+            'import "solady/src/utils/LibString.sol";\n'
+            'import "@solady/src/utils/LibString.sol";\n'
+            'import "lib-keccak/LibKeccak.sol";\n'
+        )
+        self.assertFalse((self.repo / "active/evm/lib").exists())
+        self.stamp()
+        result = self.check()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_unresolved_local_import_fails(self):
-        for name in ["./Missing.sol", "script/common/Missing.sol", "missing/Contract.sol"]:
+        self.put("active/evm/remappings.txt", "common/=script/common/\n")
+        for name in ["./Missing.sol", "../Missing.sol", "common/Missing.sol"]:
             with self.subTest(name=name):
                 (self.task / "script/X.s.sol").write_text(f'import "{name}";\n')
                 self.assert_error(self.cli("stamp", "--task-dir", self.task, "--network", "local", self.file), "unresolved import " + name)

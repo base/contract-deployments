@@ -80,14 +80,6 @@ def remappings(project):
     return sorted(mappings.items(), key=lambda pair: len(pair[0]), reverse=True)
 
 
-def library_dirs(project):
-    config = project / "foundry.toml"
-    text = without_comments(config.read_text(encoding="utf-8")) if config.is_file() else ""
-    blocks = re.findall(r"\blibs\s*=\s*\[(.*?)\]", text, re.S)
-    names = [name for block in blocks for name in re.findall(r'["\']([^"\']+)["\']', block)] if blocks else ["lib"]
-    return [project / name for name in names]
-
-
 def input_files(repo, directories):
     if (repo / ".git").exists():
         result = subprocess.run(
@@ -130,7 +122,6 @@ def fingerprint(repo, task, network, cmd):
     pending = [p for p in paths if p.suffix == ".sol"]
     visited = set()
     mappings = remappings(project)
-    libraries = library_dirs(project)
     while pending:
         source = pending.pop().resolve()
         if source in visited:
@@ -142,7 +133,7 @@ def fingerprint(repo, task, network, cmd):
             if not match:
                 raise ValueError(f"{source}: cannot parse import {statement}")
             name = match[1]
-            if name.startswith("."):
+            if name.startswith(("./", "../")):
                 imported = source.parent / name
             else:
                 imported = project / name
@@ -151,7 +142,7 @@ def fingerprint(repo, task, network, cmd):
                         imported = project / target / name[len(prefix):]
                         break
                 else:
-                    if not imported.is_file() and any((lib / name.split("/")[0]).is_dir() for lib in libraries):
+                    if not imported.is_file():
                         continue
             imported = imported.resolve()
             try:
