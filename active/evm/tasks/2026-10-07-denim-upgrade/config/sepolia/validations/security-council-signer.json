@@ -1,0 +1,140 @@
+{
+  "cmd": "DISPUTE_GAME_FACTORY_PROXY=0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1 GAME_TYPE=621 OLD_AGGREGATE_VERIFIER=0xd702aaE6221f36Dfe7e8EBC4315D64344A9dB4CB FAST_BLOCK_INTERVAL=6000 FAST_INTERMEDIATE_BLOCK_INTERVAL=300 AGGREGATE_VERIFIER_TEE_IMAGE_HASH=0x44cca4430eaac037ec451534ff7c9361095fa36e0f53fac9fa03f8305c879ef7 AGGREGATE_VERIFIER_ZK_RANGE_HASH=0x6b1c20d0762f77b5278bd8aa5a0bb0ef3d6f3d9411bdad6d4f929a0701876e35 AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=0x0046d94f58f278df6197b4f433b63085aa95999893811f6ba6dff7e001425ca7 PROXY_ADMIN_OWNER=0x0fe884546476dDd290eC46318785046ef68a0BA9 L1_PROXY_ADMIN=0x0389E59Aa0a41E4A413Ae70f0008e76CAA34b1F3 NEW_AGGREGATE_VERIFIER=0xB5abCf8656E3F26990ECEEEc99D22023E7eb7E3b PROTOCOL_VERSIONS_DENIM_ACTIVATION_TIMESTAMP=1792605600 PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION=79228162588051313888382156800 PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=79228162606498057962091708416 OPTIMISM_PORTAL=0x49f53e41452C74589E85cA1677426Ba426459e85 L2_RPC_URL=https://sepolia.base.org L2_TO_L1_MESSAGE_PASSER_IMPL=0x48823AC5A979c1Ab154bF0A4e8Ee9D2A5c4D4F29 L1_BLOCK_IMPL=0xace2255FB2AbB3Dd64D5F7Ca9b7d8ed812640782 SEQUENCER_FEE_VAULT_IMPL=0x68f75EA462Ad397918b09267cb7eE53e21A2c31D BASE_FEE_VAULT_IMPL=0x8fc73aA5ba43eaD89356e1bbc9c249a4E9c32299 L1_FEE_VAULT_IMPL=0xD9b1b2e960317408DC42903CA59a4832Bd173B84 FEE_VAULT_RECIPIENT=0x76355A67fCBCDE6F9a69409A8EAd5EaA9D8d875d FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=2000000000000000000 FEE_VAULT_WITHDRAWAL_NETWORK=1 mise exec -- forge script --rpc-url https://ethereum-sepolia-rpc.publicnode.com tasks/2026-10-07-denim-upgrade/script/ExecuteDenimUpgradeWithL2Predeploys.s.sol:ExecuteDenimUpgradeWithL2Predeploys --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-sepolia-rpc.publicnode.com",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0xeb3b52f65c96d4226a300e2cd7867116566b3ce8b06d3ac94a35fa096a68cdb4"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0x030cb2813fd167f1d11f70b29ce66d460fcda74e93977971c7247fbf95519577",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000002a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000002b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x397695875e4e8a06fc71a4509346eef6f8553f49ff103610daa9ab33eaecb283",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the Denim upgrade transaction hash from the Security Council Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "ProtocolVersions - Sepolia",
+      "address": "0x15B721B12CF3b0C4400c8a2935A0Ae391c2eF65b",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Sets the _timestamps array length from 13 to 14, registering Denim as upgrade id 13.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Sets the _upgradeScheduleId array length from 14 to 15: one more hash-chain link for the new upgrade.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x0000000000000000000000000000000000000001000000040000000000000000",
+          "after": "0x0000000000000000000000000000000000000001000000050000000000000000",
+          "description": "Raises minimumProtocolVersion from v1.4.0 to v1.5.0 (0x00000001_00000005_00000000_00000000).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5adc",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xac564294fc446f00699985ea673eecc1093323c0842bb89970cdf32fbc1b0522",
+          "description": "_upgradeScheduleId[14]: hash-chain link committing to upgrade id 13 (denim) at 1792605600. As the tail of the chain, this is the registry's new scheduleId.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf9",
+          "before": "0x000000000000000000000000000000000000000000000000000000006ab413a0",
+          "after": "0x00000000000000000000000000000000000000006ad8fda0000000006ab413a0",
+          "description": "_timestamps[12..15] packed: the previous last entry stays at 1790186400 and denim (id 13) is scheduled for 1792605600, which is 2026-10-21 18:00:00 UTC.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Sepolia",
+      "address": "0x49f53e41452C74589E85cA1677426Ba426459e85",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000000b61d790000000000143e110000000000000000000000003b9aca00",
+          "after": "0x0000000000b61d7c00000000000f42400000000000000000000000003b9aca00",
+          "description": "Updates the ResourceMetering parameters (prevBlockNum, prevBoughtGas, prevBaseFee) after the five L2 ProxyAdmin upgrade deposits. The values depend on the L1 block at simulation time, so a signer's own run can differ.",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000002a",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000002b",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactoryProxy - Sepolia",
+      "address": "0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000d702aae6221f36dfe7e8ebc4315d64344a9db4cb",
+          "after": "0x000000000000000000000000b5abcf8656e3f26990eceeec99d22023e7eb7e3b",
+          "description": "Updates gameImpls[621] from 0xd702aaE6221f36Dfe7e8EBC4315D64344A9dB4CB (version 0.2.0) to 0xB5abCf8656E3F26990ECEEEc99D22023E7eb7E3b (version 0.3.0), which switches the proposal intervals from 600/30 to 6000/300 blocks at Denim and carries the f3a459f proof program hashes. Existing games are unchanged.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
