@@ -15,7 +15,7 @@ The unset `UPGRADE_SCRIPT_NAME` preserves that Denim-only path. For the combined
 `AggregateVerifier` `0.3.0` carries two proposal interval pairs: the slow pair for 2s blocks and the
 fast pair for Denim's 200ms blocks. It reads the Denim activation from `ProtocolVersions` index 13 and
 selects the pair from each game's starting block, so the cadence switch needs no action during the
-fork. Until Denim activates it uses the same proposal intervals as `0.2.0`.
+fork. Until Denim activates it behaves like `0.2.0`.
 
 Replace `<network>` with the rollout network (`zeronet`, `sepolia` or later `mainnet`). Every command requires `TASK_NETWORK`
 explicitly. Run everything from this directory (`active/evm/tasks/2026-10-07-denim-upgrade/`).
@@ -36,9 +36,9 @@ Open `config/<network>/.env` and confirm:
 - `FAST_BLOCK_INTERVAL` / `FAST_INTERMEDIATE_BLOCK_INTERVAL` are 6000 / 300. With the live slow pair
   (600 / 30) both yield 20 intermediate roots and a 20 minute range.
 - `AGGREGATE_VERIFIER_TEE_IMAGE_HASH`, `AGGREGATE_VERIFIER_ZK_RANGE_HASH` and
-  `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` come from the proof program build the network's proposer and
-  provers must run before execution, as documented in `config/<network>/.env`. These hashes take
-  effect when this task executes, not at Denim. The deploy script refuses to run while any is blank.
+  `AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH` come from the proof program build the network's provers run
+  at Denim, as documented in `config/<network>/.env`. The deploy script refuses to run while any of
+  them is blank.
 - `PROTOCOL_VERSIONS_DENIM_ACTIVATION_TIMESTAMP` matches the Denim activation in the base/base release
   that activates Denim on the network.
 - `PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION` is the live value and
@@ -110,31 +110,7 @@ For any non-mainnet rollout, remove each generated `taskOriginConfig` and add th
 
 Commit them and share `config/<network>/README.md` with signers.
 
-## 5. Before executing
-
-Execution, not Denim activation, switches new games to `AggregateVerifier` `0.3.0` and its proof
-hashes. Games created afterwards need proofs from the new build. Before executing:
-
-1. Register the enclave signer(s) built from the prover build documented in `config/<network>/.env`
-   in the network's `TEEProverRegistry`, using `TEE_PROVER_REGISTRY_PROXY` from the repository's
-   `config/<network>.env`. Their PCR0 hash, `keccak256(PCR0)`, must equal
-   `AGGREGATE_VERIFIER_TEE_IMAGE_HASH`. Registration does not check the current verifier's hash,
-   so it can happen before execution.
-2. Roll the network's proposer and provers to that build.
-3. Confirm the new signer registrations and the proposer/prover deployments' reported build, then
-   execute. With the network's `TEE_PROVER_REGISTRY_PROXY` and `L1_RPC_URL` set, enumerate the signers
-   and check each new signer's image hash equals `AGGREGATE_VERIFIER_TEE_IMAGE_HASH`:
-
-   ```bash
-   cast call "$TEE_PROVER_REGISTRY_PROXY" 'getRegisteredSigners()(address[])' --rpc-url "$L1_RPC_URL"
-   cast call "$TEE_PROVER_REGISTRY_PROXY" 'signerImageHash(address)(bytes32)' <signer> --rpc-url "$L1_RPC_URL"
-   ```
-
-Between rolling the provers and executing, proofs from the new build do not verify against the old
-verifier, and signers with the new image hash are not valid until execution, so keep that window
-short or keep the old build running until execution.
-
-## 6. Collect signatures and execute
+## 5. Collect signatures and execute
 
 The ProxyAdmin owner is a 2-of-2 of the Base multisig and the Security Council, so each approves its
 own nested Safe before the outer transaction runs.

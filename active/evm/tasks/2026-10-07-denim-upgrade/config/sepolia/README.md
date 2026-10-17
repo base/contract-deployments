@@ -8,8 +8,7 @@ Prepares Base Sepolia for the Denim hardfork in one transaction:
 
 - registers `AggregateVerifier` `0.3.0` for game type 621 in the `DisputeGameFactory`. It switches the
   proposal intervals from 600 / 30 to 6000 / 300 blocks at Denim, when blocks go from 2s to 200ms, and
-  carries the proof program hashes with the per-game intermediate block interval fix, effective when
-  the transaction executes, not at Denim;
+  carries the Denim proof program hashes with the per-game intermediate block interval fix;
 - schedules Denim (upgrade id 13) in `ProtocolVersions` for October 21, 2026 at 18:00 UTC and raises
   the minimum protocol version from v1.4.0 to v1.5.0;
 - sends five separate `OptimismPortal` deposits to the L2 `ProxyAdmin`, upgrading
