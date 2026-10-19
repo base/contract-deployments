@@ -10,6 +10,20 @@ interface ISafe {
     function nonce() external view returns (uint256);
 }
 
+/// @dev Field order of the Safe `SafeTx` EIP-712 struct.
+struct SafeTx {
+    address to;
+    uint256 value;
+    bytes data;
+    Enum.Operation operation;
+    uint256 safeTxGas;
+    uint256 baseGas;
+    uint256 gasPrice;
+    address gasToken;
+    address refundReceiver;
+    uint256 nonce;
+}
+
 /// @notice Test task for the signing tool. The Base multisig calls its own `nonce()` view, so the only
 ///         state change is the Safe nonce increment that every executed Safe transaction makes.
 /// @dev Lives on the long-lived `test/e2e` branch only. Never merge into main.
@@ -54,6 +68,32 @@ contract BumpSafeNonce is MultisigScript {
                 );
             }
         }
+    }
+
+    /// @notice `sign` plus the full SafeTx in stateDiff.json, which the signing tool needs for Trezor.
+    /// @dev Stand-in until base/contracts `MultisigScript.sign` records `safeTx` itself. Same encoding:
+    ///      `abi.encode(SafeTx)` for the Safe that signs (`safes[0]` after appending the owner Safe).
+    function signWithSafeTx(address[] memory safes) public {
+        sign(safes);
+        if (!vm.envOr("RECORD_STATE_DIFF", false)) return;
+
+        address[] memory chain = _appendOwnerSafe({safes: safes});
+        Call memory call = _buildCallsChain({safes: chain})[0];
+        bytes memory safeTx = abi.encode(
+            SafeTx({
+                to: call.target,
+                value: call.value,
+                data: call.data,
+                operation: call.operation,
+                safeTxGas: 0,
+                baseGas: 0,
+                gasPrice: 0,
+                gasToken: address(0),
+                refundReceiver: address(0),
+                nonce: _getNonce({safe: chain[0]})
+            })
+        );
+        vm.writeJson(string.concat('"', vm.toString(safeTx), '"'), "stateDiff.json", ".safeTx");
     }
 
     function _ownerSafe() internal view override returns (address) {

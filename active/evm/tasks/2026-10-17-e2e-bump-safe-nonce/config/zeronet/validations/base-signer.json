@@ -1,5 +1,5 @@
 {
-  "cmd": "CB_MULTISIG=0x856611ed7e07d83243b15e93f6321f2df6865852 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-10-17-e2e-bump-safe-nonce/script/BumpSafeNonce.s.sol:BumpSafeNonce --sig sign(address[]) [] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "cmd": "CB_MULTISIG=0x856611ed7e07d83243b15e93f6321f2df6865852 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net tasks/2026-10-17-e2e-bump-safe-nonce/script/BumpSafeNonce.s.sol:BumpSafeNonce --sig signWithSafeTx(address[]) [] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
   "ledgerId": 1,
   "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
   "expectedDomainAndMessageHashes": {

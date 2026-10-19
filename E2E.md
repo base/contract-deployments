@@ -20,8 +20,9 @@ make sign-task SIGNER_TOOL_COMMIT=<commit>
 
 Pick "E2E Test: Bump Safe Nonce" (Zeronet), then "Base Signer".
 
-Trezor signing needs `safeTx` in `stateDiff.json`. Set `BASE_CONTRACTS_COMMIT` in the task's
-`config/zeronet/.env` to a base/contracts commit that emits it, then regenerate the validation file.
+Trezor signing needs the full SafeTx in `stateDiff.json`. base/contracts `MultisigScript.sign` does not record it
+yet, so the task simulates through `signWithSafeTx`, which calls `sign` and then adds `safeTx` itself. Trezor also
+needs `trezorctl` (`pipx install trezor`) and a Core-firmware device: Model T, Safe 3 or Safe 5.
 
 ## Rules
 

@@ -23,5 +23,5 @@ From the repository root, with the signing-tool commit under test:
 make sign-task SIGNER_TOOL_COMMIT=<commit>
 ```
 
-Select this Zeronet task and sign. Do not send the signature anywhere unless the facilitator is
+Select this Zeronet task, pick Ledger or Trezor, and sign. Trezor needs `trezorctl` (`pipx install trezor`). Do not send the signature anywhere unless the facilitator is
 testing execution.

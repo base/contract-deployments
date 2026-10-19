@@ -31,10 +31,18 @@ NONCE_ENV = CB_MULTISIG=$(CB_MULTISIG)
 # The Base multisig is the executing Safe, so there are no nested Safes to approve. Test networks
 # skip task origin validation. Regenerate after every Base multisig transaction: the nonce is part
 # of the signed hash.
+#
+# Same as Multisig.mk GEN_VALIDATION, but simulates through `signWithSafeTx` so stateDiff.json also
+# carries the full SafeTx and the signing tool can offer Trezor.
 .PHONY: gen-validation-cb
 gen-validation-cb: deps-signer-tool
 	@test -n "$(CB_SENDER)" || { echo "Could not read CB_MULTISIG owners from $(L1_RPC_URL)" >&2; exit 1; }
-	$(call GEN_VALIDATION,$(SCRIPT_NAME),,$(CB_SENDER),base-signer.json,$(NONCE_ENV))
+	cd $(SIGNER_TOOL_PATH) && $(MISE_EXEC) npx tsx scripts/genValidationFile.ts \
+		--rpc-url $(RPC_URL) \
+		--workdir $(PROJECT_DIR) \
+		--forge-cmd '$(NONCE_ENV) mise exec -- forge script --rpc-url $(RPC_URL) $(SCRIPT_NAME) --sig "signWithSafeTx(address[])" "[]" --sender $(CB_SENDER)' \
+		--ledger-id $(LEDGER_ACCOUNT) \
+		--out $(VALIDATIONS_DIR)/base-signer.json
 	@f=$(VALIDATIONS_DIR)/base-signer.json; \
 	jq 'del(.taskOriginConfig) | . + {skipTaskOriginValidation: true}' $$f > $$f.tmp && mv $$f.tmp $$f
 
