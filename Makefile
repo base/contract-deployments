@@ -38,6 +38,24 @@ archive-task:
 	@python3 $(REPO_ROOT)/scripts/standby-task.py archive --repo "$(REPO_ROOT)" --task "$(STANDBY_TASK_DIR)" --network "$(TASK_NETWORK)" --date "$(TASK_DATE)"
 endif
 
+ifneq ($(filter new-task,$(MAKECMDGOALS)),)
+ifneq ($(origin TASK_NETWORK),command line)
+$(error TASK_NETWORK is required on the command line, e.g. make new-task TASK_SLUG=<slug> TASK_NETWORK=<network>)
+endif
+endif
+
+.PHONY: new-task check-task-status
+new-task: export TASK_SLUG := $(TASK_SLUG)
+new-task: export TASK_ID := $(TASK_ID)
+new-task: export STANDBY_OP := $(STANDBY_OP)
+new-task: export TASK_NETWORK := $(TASK_NETWORK)
+new-task: export TASK_DATE := $(TASK_DATE)
+new-task:
+	@python3 -B "$(REPO_ROOT)/scripts/new-task.py" --repo "$(REPO_ROOT)"
+
+check-task-status:
+	@python3 -B "$(REPO_ROOT)/scripts/task-status.py" check --repo "$(REPO_ROOT)"
+
 ##
 # Toolchain bootstrap (mise)
 ##

@@ -1,6 +1,14 @@
 # Denim upgrade
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x53082224aeae1b764a2e0809245749aa31962bd42dbc73947fc0a8dc9b3b4118)
+
+## Transactions
+
+Executed on October 19, 2026 at 20:42:48 UTC (Sepolia L1 block 11950611).
+
+- Coinbase multisig approval: [`0xe554f466d6aa7a17443a2479d4872849ebb8d7b88e01bf8d15f3e01e3919f773`](https://sepolia.etherscan.io/tx/0xe554f466d6aa7a17443a2479d4872849ebb8d7b88e01bf8d15f3e01e3919f773) (artefact: [run-1792442365112.json](../../records/ExecuteDenimUpgradeWithL2Predeploys.s.sol/11155111/run-1792442365112.json))
+- Security Council approval: [`0x5d7ac3b683a3c3e83e6d3c09456ab24e3e91d6a44d4811aaae578a5b59c287dc`](https://sepolia.etherscan.io/tx/0x5d7ac3b683a3c3e83e6d3c09456ab24e3e91d6a44d4811aaae578a5b59c287dc) (artefact: [run-1792442485898.json](../../records/ExecuteDenimUpgradeWithL2Predeploys.s.sol/11155111/run-1792442485898.json))
+- Execution via ProxyAdmin owner: [`0x53082224aeae1b764a2e0809245749aa31962bd42dbc73947fc0a8dc9b3b4118`](https://sepolia.etherscan.io/tx/0x53082224aeae1b764a2e0809245749aa31962bd42dbc73947fc0a8dc9b3b4118) (artefact: [run-1792442571043.json](../../records/ExecuteDenimUpgradeWithL2Predeploys.s.sol/11155111/run-1792442571043.json))
 
 ## Description
 
