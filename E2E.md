@@ -22,7 +22,7 @@ Pick "E2E Test: Bump Safe Nonce" (Zeronet), then "Base Signer".
 
 Trezor signing needs the full SafeTx in `stateDiff.json`. base/contracts `MultisigScript.sign` does not record it
 yet, so the task simulates through `signWithSafeTx`, which calls `sign` and then adds `safeTx` itself. Trezor also
-needs `trezorctl` (`pipx install trezor`) and a Core-firmware device: Model T, Safe 3 or Safe 5.
+needs a Core-firmware device: Model T, Safe 3 or Safe 5.
 
 ## Rules
 
