@@ -392,7 +392,7 @@ class SemanticComparison(DriftFixture):
 
 class MakeIntegration(DriftFixture):
     def prepare_make(self, operation=None):
-        for name in ["Multisig.mk", "scripts/validation-drift.py", "Makefile", "scripts/Standby.mk", "scripts/standby-task.py", "active/evm/foundry.toml"]:
+        for name in ["Multisig.mk", "scripts/validation-drift.py", "Makefile", "scripts/Standby.mk", "scripts/standby-task.py", "scripts/task-status.py", "scripts/task-status.schema.json", "active/evm/foundry.toml"]:
             target = self.repo / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / name, target)
