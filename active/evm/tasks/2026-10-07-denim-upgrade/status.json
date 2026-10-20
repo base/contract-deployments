@@ -2,8 +2,24 @@
   "schema_version": 1,
   "task": "2026-10-07-denim-upgrade",
   "kind": "active",
-  "last_updated": "2026-10-17T18:10:50Z",
+  "last_updated": "2026-10-19T21:36:07Z",
   "networks": {
+    "sepolia": {
+      "step": "executed",
+      "pr": "https://github.com/base/contract-deployments/pull/819",
+      "blocksec_ticket": null,
+      "signatures": {
+        "base": {
+          "collected": 3,
+          "required": 3
+        },
+        "security-council": {
+          "collected": 1,
+          "required": 1
+        }
+      },
+      "executed_tx": "0x53082224aeae1b764a2e0809245749aa31962bd42dbc73947fc0a8dc9b3b4118"
+    },
     "zeronet": {
       "step": "executed",
       "pr": "https://github.com/base/contract-deployments/pull/806",
