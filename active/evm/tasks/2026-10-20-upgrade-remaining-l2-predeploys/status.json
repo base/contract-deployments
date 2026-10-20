@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "task": "2026-10-20-upgrade-remaining-l2-predeploys",
+  "kind": "active",
+  "last_updated": "2026-10-20T21:30:00Z",
+  "networks": {
+    "sepolia": {
+      "step": "authoring",
+      "pr": null,
+      "blocksec_ticket": null,
+      "signatures": {
+        "base": { "collected": 0, "required": 3 },
+        "security-council": { "collected": 0, "required": 1 }
+      },
+      "executed_tx": null
+    }
+  }
+}
