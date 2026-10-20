@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task": "2026-10-08-denim-system-config",
   "kind": "active",
-  "last_updated": "2026-10-20T14:55:12Z",
+  "last_updated": "2026-10-20T15:05:18Z",
   "networks": {
     "zeronet": {
       "step": "executed",
@@ -12,10 +12,15 @@
       "executed_tx": "0x2bf7928e72e17a4657a3fd24e33907574881b63878ac04d0cfeaa5e7af880a5b"
     },
     "sepolia": {
-      "step": "ready_to_sign",
-      "pr": null,
+      "step": "authoring",
+      "pr": "https://github.com/base/contract-deployments/pull/824",
       "blocksec_ticket": null,
-      "signatures": {},
+      "signatures": {
+        "base-signer": {
+          "collected": 0,
+          "required": 3
+        }
+      },
       "executed_tx": null
     }
   }
