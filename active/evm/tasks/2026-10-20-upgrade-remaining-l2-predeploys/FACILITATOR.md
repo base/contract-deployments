@@ -26,7 +26,7 @@ The repository's internal L1 RPC may be unavailable. A public Sepolia RPC can be
 make TASK_NETWORK=<network> deploy
 ```
 
-Only the facilitator runs this step with an L2-funded deployment account. The task-local Foundry config matches base/contracts compiler settings: exact Solidity 0.8.15 for the factory with 5000 optimizer runs; 0.8.25 for the operator vault and 0.8.19 for attestations with 999999 runs. All use Cancun and no bytecode hash. Compiler restrictions also build the factory's token bytecode with 5000 runs.
+Only the facilitator runs this step with an L2-funded deployment account. The task-local Foundry config matches base/contracts compiler settings: exact Solidity 0.8.15 for the factory with 5000 optimizer runs; 0.8.25 for the operator vault and 0.8.19 for attestations with 999999 runs. Compiler restrictions also build the factory's token bytecode with 5000 runs. All omit the bytecode hash. Like the pinned source, the config selects Cancun; Forge caps the effective target at London for 0.8.15 and Paris for 0.8.19. The vault uses Cancun.
 
 Each deployment checks version() and writes to `config/<network>/addresses.json`. Commit that file and task-scoped `records/`. Never substitute the local fork test's deployment addresses.
 
