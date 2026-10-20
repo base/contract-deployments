@@ -18,10 +18,20 @@ contract SimulationHarness is UpgradeL2Predeploys {
 
 contract SimulationTest is L2UpgradeTest {
     function testL1MultisigSimulation() public {
-        address[4] memory impls = _implementations();
-        string[4] memory keys =
-            [string("ERC721_FACTORY_IMPL"), "OPERATOR_FEE_VAULT_IMPL", "SCHEMA_REGISTRY_IMPL", "EAS_IMPL"];
-        for (uint256 i; i < 4; i++) {
+        address[8] memory impls = _implementations();
+        string[8] memory keys = [
+            string("ERC721_FACTORY_IMPL"),
+            "OPERATOR_FEE_VAULT_IMPL",
+            "SCHEMA_REGISTRY_IMPL",
+            "EAS_IMPL",
+            "MESSENGER_IMPL",
+            "BRIDGE_IMPL",
+            "ERC20_FACTORY_IMPL",
+            "ERC721_BRIDGE_IMPL"
+        ];
+        vm.makePersistent(localMigrator);
+        vm.setEnv("LEGACY_MIGRATOR", vm.toString(localMigrator));
+        for (uint256 i; i < 8; i++) {
             vm.makePersistent(impls[i]);
             vm.setEnv(keys[i], vm.toString(impls[i]));
         }

@@ -2,15 +2,17 @@
 pragma solidity 0.8.15;
 
 import {L2Upgrade} from "../script/L2Upgrade.sol";
-import {IProxyAdmin} from "interfaces/universal/IProxyAdmin.sol";
-import {AddressAliasHelper} from "src/vendor/AddressAliasHelper.sol";
+import {LegacyMigrator} from "../script/LegacyMigrator.sol";
 
-import {L2CrossDomainMessenger} from "@base-contracts/src/L2/L2CrossDomainMessenger.sol";
 import {L2StandardBridge} from "@base-contracts/src/L2/L2StandardBridge.sol";
-import {L2ERC721Bridge} from "@base-contracts/src/L2/L2ERC721Bridge.sol";
-import {OptimismMintableERC20Factory} from "@base-contracts/src/universal/OptimismMintableERC20Factory.sol";
 
 abstract contract L2UpgradeTest is L2Upgrade {
+    address internal localMigrator;
+
+    function _migrator() internal view override returns (address) {
+        return localMigrator;
+    }
+
     struct AttestationData {
         address recipient;
         uint64 expirationTime;
@@ -27,6 +29,7 @@ abstract contract L2UpgradeTest is L2Upgrade {
 
     function setUp() public {
         vm.createSelectFork(vm.envString("L2_RPC_URL"));
+        localMigrator = address(new LegacyMigrator());
     }
 
     function _deploy(string memory artifact, bytes memory args) internal returns (address deployed) {
@@ -35,7 +38,7 @@ abstract contract L2UpgradeTest is L2Upgrade {
         require(deployed != address(0), "local deployment failed");
     }
 
-    function _implementations() internal returns (address[4] memory) {
+    function _implementations() internal returns (address[8] memory) {
         return [
             _deploy(
                 "OptimismMintableERC721Factory.sol:OptimismMintableERC721Factory",
@@ -43,41 +46,12 @@ abstract contract L2UpgradeTest is L2Upgrade {
             ),
             _deploy("OperatorFeeVault.sol:OperatorFeeVault", ""),
             _deploy("SchemaRegistry.sol:SchemaRegistry", ""),
-            _deploy("EAS.sol:EAS", "")
+            _deploy("EAS.sol:EAS", ""),
+            _deploy("L2CrossDomainMessenger.sol:L2CrossDomainMessenger", ""),
+            _deploy("L2StandardBridge.sol:L2StandardBridge", ""),
+            _deploy("OptimismMintableERC20Factory.sol:OptimismMintableERC20Factory", ""),
+            _deploy("L2ERC721Bridge.sol:L2ERC721Bridge", "")
         ];
-    }
-
-    function testExcludedMigrationsRejectExistingInitializerVersion() public {
-        address[4] memory proxies = [
-            address(0x4200000000000000000000000000000000000007),
-            address(0x4200000000000000000000000000000000000010),
-            address(0x4200000000000000000000000000000000000014),
-            address(0x4200000000000000000000000000000000000012)
-        ];
-        address[4] memory implementations = [
-            address(new L2CrossDomainMessenger()),
-            address(new L2StandardBridge()),
-            address(new L2ERC721Bridge()),
-            address(new OptimismMintableERC20Factory())
-        ];
-        address[4] memory counterparts = [
-            vm.envAddress("L1_CROSS_DOMAIN_MESSENGER"),
-            vm.envAddress("L1_STANDARD_BRIDGE"),
-            vm.envAddress("L1_ERC721_BRIDGE"),
-            address(0x4200000000000000000000000000000000000010)
-        ];
-        for (uint256 i; i < 4; i++) {
-            uint256 initialSlot = uint256(vm.load(proxies[i], bytes32(0)));
-            require(uint8(initialSlot >> (i == 0 ? 160 : 0)) == 2, "legacy initializer changed");
-            vm.prank(AddressAliasHelper.applyL1ToL2Alias(ownerSafe));
-            IProxyAdmin(ADMIN).upgrade(payable(proxies[i]), implementations[i]);
-            vm.expectRevert(bytes("Initializable: contract is already initialized"));
-            (bool ok,) = proxies[i].call(abi.encodeWithSignature("initialize(address)", counterparts[i]));
-            require(ok, "initialization failed");
-            string memory getter =
-                i == 0 ? "otherMessenger()" : i == 1 ? "otherBridge()" : i == 2 ? "messenger()" : "bridge()";
-            require(_uint(proxies[i], getter) == 0, "expected missing migrated configuration");
-        }
     }
 
     function _call(address target, bytes memory data) internal returns (bytes memory result) {
@@ -86,8 +60,51 @@ abstract contract L2UpgradeTest is L2Upgrade {
         require(ok, "fixture call failed");
     }
 
+    function _uintWithArgs(address target, bytes memory data) internal returns (uint256) {
+        return abi.decode(_call(target, data), (uint256));
+    }
+
+    function _assertERC20Bridge() internal {
+        address remoteToken = address(0x1234);
+        address token = abi.decode(
+            _call(
+                ERC20_FACTORY,
+                abi.encodeWithSignature(
+                    "createOptimismMintableERC20(address,string,string)", remoteToken, "Migration token", "MIG"
+                )
+            ),
+            (address)
+        );
+        require(_uint(token, "BRIDGE()") == uint160(BRIDGE), "token bridge mismatch");
+        vm.store(MESSENGER, bytes32(uint256(204)), bytes32(uint256(uint160(l1Bridge))));
+        vm.prank(MESSENGER);
+        L2StandardBridge(payable(BRIDGE))
+            .finalizeBridgeERC20(token, remoteToken, address(0x5678), address(this), 100, "");
+        vm.store(MESSENGER, bytes32(uint256(204)), bytes32(uint256(0xdead)));
+        require(
+            _uintWithArgs(token, abi.encodeWithSignature("balanceOf(address)", address(this))) == 100,
+            "bridge mint failed"
+        );
+        _call(
+            BRIDGE,
+            abi.encodeWithSignature(
+                "bridgeERC20To(address,address,address,uint256,uint32,bytes)",
+                token,
+                remoteToken,
+                address(0x5678),
+                40,
+                uint32(100000),
+                bytes("")
+            )
+        );
+        require(
+            _uintWithArgs(token, abi.encodeWithSignature("balanceOf(address)", address(this))) == 60,
+            "bridge burn failed"
+        );
+    }
+
     function testUpgradePreservesConfiguration() public {
-        address[4] memory impls = _implementations();
+        address[8] memory impls = _implementations();
         address token = abi.decode(
             _call(
                 FACTORY,
@@ -121,7 +138,35 @@ abstract contract L2UpgradeTest is L2Upgrade {
         bytes memory attestationRead = abi.encodeWithSignature("getAttestation(bytes32)", uid);
         bytes32 beforeSchema = keccak256(_call(REGISTRY, schemaRead));
         bytes32 beforeAttestation = keccak256(_call(EAS_PROXY, attestationRead));
+        bytes32 messageHash = keccak256("pre-existing successful message");
+        bytes32 successfulSlot = keccak256(abi.encode(messageHash, uint256(203)));
+        bytes32 depositsSlot =
+            keccak256(abi.encode(address(0x5678), keccak256(abi.encode(address(0x1234), uint256(2)))));
+        // Synthetic entries avoid relying on an undocumented live message hash or token pair.
+        vm.store(MESSENGER, successfulSlot, bytes32(uint256(1)));
+        vm.store(BRIDGE, depositsSlot, bytes32(uint256(123)));
+        require(
+            _uintWithArgs(MESSENGER, abi.encodeWithSignature("successfulMessages(bytes32)", messageHash)) == 1,
+            "message fixture missing"
+        );
+        require(
+            _uintWithArgs(
+                    BRIDGE, abi.encodeWithSignature("deposits(address,address)", address(0x1234), address(0x5678))
+                ) == 123,
+            "deposits fixture missing"
+        );
         _replay(impls);
+        require(
+            _uintWithArgs(MESSENGER, abi.encodeWithSignature("successfulMessages(bytes32)", messageHash)) == 1,
+            "successful message lost"
+        );
+        require(
+            _uintWithArgs(
+                    BRIDGE, abi.encodeWithSignature("deposits(address,address)", address(0x1234), address(0x5678))
+                ) == 123,
+            "deposits lost"
+        );
+        _assertERC20Bridge();
         require(keccak256(_call(REGISTRY, schemaRead)) == beforeSchema, "schema storage changed");
         require(keccak256(_call(EAS_PROXY, attestationRead)) == beforeAttestation, "attestation storage changed");
         require(abi.decode(_call(FACTORY, factoryRead), (bool)), "factory registration lost");

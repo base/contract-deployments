@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task": "2026-10-20-upgrade-remaining-l2-predeploys",
   "kind": "active",
-  "last_updated": "2026-10-20T21:30:00Z",
+  "last_updated": "2026-10-20T22:06:39Z",
   "networks": {
     "sepolia": {
       "step": "authoring",

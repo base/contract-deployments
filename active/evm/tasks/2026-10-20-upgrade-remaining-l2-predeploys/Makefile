@@ -21,6 +21,8 @@ CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) 'getOwners()(address[]
 SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) 'getOwners()(address[])' --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 impl = $(shell jq -er '.$(1)' $(ADDRESSES_JSON) 2>/dev/null)
 CONFIG_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) FACTORY_BRIDGE=$(FACTORY_BRIDGE) \
+	L1_CROSS_DOMAIN_MESSENGER=$(L1_CROSS_DOMAIN_MESSENGER) L1_STANDARD_BRIDGE=$(L1_STANDARD_BRIDGE) \
+	L1_ERC721_BRIDGE=$(L1_ERC721_BRIDGE) ERC20_FACTORY_BRIDGE=$(ERC20_FACTORY_BRIDGE) \
 	REMOTE_CHAIN_ID=$(REMOTE_CHAIN_ID) L2_RPC_URL=$(L2_RPC_URL) \
 	OPERATOR_FEE_VAULT_RECIPIENT=$(OPERATOR_FEE_VAULT_RECIPIENT) \
 	OPERATOR_FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=$(OPERATOR_FEE_VAULT_MIN_WITHDRAWAL_AMOUNT) \
@@ -28,7 +30,10 @@ CONFIG_ENV = PROXY_ADMIN_OWNER=$(PROXY_ADMIN_OWNER) FACTORY_BRIDGE=$(FACTORY_BRI
 UPGRADE_ENV = $(CONFIG_ENV) OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) \
 	ERC721_FACTORY_IMPL=$(call impl,optimismMintableERC721Factory) \
 	OPERATOR_FEE_VAULT_IMPL=$(call impl,operatorFeeVault) \
-	SCHEMA_REGISTRY_IMPL=$(call impl,schemaRegistry) EAS_IMPL=$(call impl,eas)
+	SCHEMA_REGISTRY_IMPL=$(call impl,schemaRegistry) EAS_IMPL=$(call impl,eas) \
+	MESSENGER_IMPL=$(call impl,l2CrossDomainMessenger) BRIDGE_IMPL=$(call impl,l2StandardBridge) \
+	ERC20_FACTORY_IMPL=$(call impl,optimismMintableERC20Factory) ERC721_BRIDGE_IMPL=$(call impl,l2ERC721Bridge) \
+	LEGACY_MIGRATOR=$(call impl,legacyMigrator)
 PREDEPLOY_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_OPTIMIZER_RUNS=999999 \
 	FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun
 
@@ -56,13 +61,15 @@ deploy: build
 	$(CONFIG_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
 		script/DeployFactory.s.sol:DeployFactory --rpc-url $(L2_RPC_URL) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 	ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
+		script/DeployBridges.s.sol:DeployBridges --rpc-url $(L2_RPC_URL) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+	ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
 		script/DeployOperatorFeeVault.s.sol:DeployOperatorFeeVault --rpc-url $(L2_RPC_URL) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 	ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
 		script/DeployAttestations.s.sol:DeployAttestations --rpc-url $(L2_RPC_URL) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 check-implementations:
-	@jq -e '[.optimismMintableERC721Factory, .operatorFeeVault, .schemaRegistry, .eas] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
-		{ echo 'Deploy all four implementations before validation, approval or execution'; exit 1; }
+	@jq -e '[.optimismMintableERC721Factory, .operatorFeeVault, .schemaRegistry, .eas, .l2CrossDomainMessenger, .l2StandardBridge, .optimismMintableERC20Factory, .l2ERC721Bridge, .legacyMigrator] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
+		{ echo 'Deploy all eight implementations and the migrator before validation, approval or execution'; exit 1; }
 
 gen-validation-cb gen-validation-sc: check-implementations
 deps-signer-tool: check-implementations

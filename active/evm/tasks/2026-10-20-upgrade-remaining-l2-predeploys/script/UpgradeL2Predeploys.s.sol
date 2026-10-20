@@ -13,6 +13,15 @@ contract UpgradeL2Predeploys is MultisigScript, L2Upgrade {
     address internal immutable vaultImpl = vm.envAddress("OPERATOR_FEE_VAULT_IMPL");
     address internal immutable registryImpl = vm.envAddress("SCHEMA_REGISTRY_IMPL");
     address internal immutable easImpl = vm.envAddress("EAS_IMPL");
+    address internal immutable messengerImpl = vm.envAddress("MESSENGER_IMPL");
+    address internal immutable bridgeImpl = vm.envAddress("BRIDGE_IMPL");
+    address internal immutable erc20FactoryImpl = vm.envAddress("ERC20_FACTORY_IMPL");
+    address internal immutable erc721BridgeImpl = vm.envAddress("ERC721_BRIDGE_IMPL");
+    address internal immutable migrator = vm.envAddress("LEGACY_MIGRATOR");
+
+    function _migrator() internal view override returns (address) {
+        return migrator;
+    }
     string internal l2RpcUrl = vm.envString("L2_RPC_URL");
 
     function setUp() public view {
@@ -22,8 +31,18 @@ contract UpgradeL2Predeploys is MultisigScript, L2Upgrade {
         require(vaultNetwork <= 1 && remoteChainId == block.chainid, "invalid network configuration");
     }
 
-    function _implementations() internal view returns (address[4] memory) {
-        return [factoryImpl, vaultImpl, registryImpl, easImpl];
+    function _implementations() internal view returns (address[8] memory) {
+        return
+            [
+                factoryImpl,
+                vaultImpl,
+                registryImpl,
+                easImpl,
+                messengerImpl,
+                bridgeImpl,
+                erc20FactoryImpl,
+                erc721BridgeImpl
+            ];
     }
 
     function _buildCalls() internal view override returns (Call[] memory calls) {
@@ -39,7 +58,7 @@ contract UpgradeL2Predeploys is MultisigScript, L2Upgrade {
         }
     }
 
-    function _postCheck(Vm.AccountAccess[] memory accesses, Simulation.Payload memory) internal override {
+    function _assertDeposits(Vm.AccountAccess[] memory accesses) internal view {
         uint256 deposits;
         for (uint256 i; i < accesses.length; i++) {
             Vm.AccountAccess memory access = accesses[i];
@@ -50,7 +69,11 @@ contract UpgradeL2Predeploys is MultisigScript, L2Upgrade {
             require(access.accessor == ownerSafe && !access.reverted, "invalid deposit");
             deposits++;
         }
-        require(deposits == 4, "unexpected deposit count");
+        require(deposits == 8, "unexpected deposit count");
+    }
+
+    function _postCheck(Vm.AccountAccess[] memory accesses, Simulation.Payload memory) internal override {
+        _assertDeposits(accesses);
         uint256 l1Fork = vm.activeFork();
         vm.createSelectFork(l2RpcUrl);
         require(block.chainid == 84532, "Base Sepolia L2 only");
