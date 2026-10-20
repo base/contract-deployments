@@ -8,7 +8,9 @@ ifneq ($(TASK_NETWORK),sepolia)
 $(error This invocation supports only TASK_NETWORK=sepolia)
 endif
 
-PROJECT_DIR := $(CURDIR)
+PROJECT_DIR := $(abspath ../..)
+TASK_PROJECT_DIR := $(CURDIR)
+TASK_DIR := tasks/2026-10-20-upgrade-remaining-l2-predeploys
 include $(REPO_ROOT)/config/$(TASK_NETWORK).env
 include config/$(TASK_NETWORK)/.env
 
@@ -16,7 +18,7 @@ SIGNER_TOOL_PATH := $(REPO_ROOT)/signer-tool
 VALIDATIONS_DIR := $(CURDIR)/config/$(TASK_NETWORK)/validations
 RPC_URL := $(L1_RPC_URL)
 ADDRESSES_JSON := $(CURDIR)/config/$(TASK_NETWORK)/addresses.json
-SCRIPT_NAME := script/UpgradeL2Predeploys.s.sol:UpgradeL2Predeploys
+SCRIPT_NAME := $(TASK_DIR)/script/UpgradeL2Predeploys.s.sol:UpgradeL2Predeploys
 CB_SENDER = $(shell $(MISE_EXEC) cast call $(CB_MULTISIG) 'getOwners()(address[])' --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 SC_SENDER = $(shell $(MISE_EXEC) cast call $(BASE_SECURITY_COUNCIL) 'getOwners()(address[])' --rpc-url $(L1_RPC_URL) | tr -d '[]' | cut -d',' -f1)
 impl = $(shell jq -er '.$(1)' $(ADDRESSES_JSON) 2>/dev/null)
@@ -38,33 +40,35 @@ PREDEPLOY_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_OPTIMIZER_RUNS=999999 \
 	FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun
 
 # Keep all dependency installation in the shared library directory.
-clean-lib forge-deps: PROJECT_DIR := $(abspath ../..)
 clean-lib: bootstrap-mise install-eip712sign
 forge-deps: clean-lib
 deps:
-	cd ../.. && $(MISE_EXEC) forge install --no-git \
+	cd $(PROJECT_DIR) && $(MISE_EXEC) forge install --no-git \
 		github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d \
 		github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@0a2cb9a445c365870ed7a8ab461b12acf3e27d63
 
-.PHONY: build simulate-l2 deploy check-implementations gen-validation-cb gen-validation-sc approve-cb approve-sc execute
+.PHONY: build build-multisig simulate-l2 deploy check-implementations gen-validation-cb gen-validation-sc approve-cb approve-sc execute
 build:
-	$(PREDEPLOY_BUILD) $(MISE_EXEC) forge build
+	cd $(TASK_PROJECT_DIR) && $(PREDEPLOY_BUILD) $(MISE_EXEC) forge build
 
-simulate-l2: build
-	$(CONFIG_ENV) L1_RPC_URL=$(L1_RPC_URL) OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) CB_MULTISIG=$(CB_MULTISIG) \
+build-multisig:
+	cd $(PROJECT_DIR) && $(MISE_EXEC) forge build $(TASK_DIR)/script/UpgradeL2Predeploys.s.sol
+
+simulate-l2: build build-multisig
+	cd $(TASK_PROJECT_DIR) && $(CONFIG_ENV) L1_RPC_URL=$(L1_RPC_URL) OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) CB_MULTISIG=$(CB_MULTISIG) \
 		L1_CROSS_DOMAIN_MESSENGER=$(L1_CROSS_DOMAIN_MESSENGER) \
 		L1_STANDARD_BRIDGE=$(L1_STANDARD_BRIDGE) L1_ERC721_BRIDGE=$(L1_ERC721_BRIDGE) \
 		$(PREDEPLOY_BUILD) $(MISE_EXEC) forge test -vv
 
 deploy: build
 	@test -f "$(ADDRESSES_JSON)" || echo '{}' > "$(ADDRESSES_JSON)"
-	$(CONFIG_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
+	cd $(TASK_PROJECT_DIR) && $(CONFIG_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
 		script/DeployFactory.s.sol:DeployFactory --rpc-url $(L2_RPC_URL) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
-	ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
+	cd $(TASK_PROJECT_DIR) && ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
 		script/DeployBridges.s.sol:DeployBridges --rpc-url $(L2_RPC_URL) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
-	ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
+	cd $(TASK_PROJECT_DIR) && ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
 		script/DeployOperatorFeeVault.s.sol:DeployOperatorFeeVault --rpc-url $(L2_RPC_URL) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
-	ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
+	cd $(TASK_PROJECT_DIR) && ADDRESSES_JSON=$(ADDRESSES_JSON) $(PREDEPLOY_BUILD) $(MISE_EXEC) forge script \
 		script/DeployAttestations.s.sol:DeployAttestations --rpc-url $(L2_RPC_URL) --ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
 
 check-implementations:

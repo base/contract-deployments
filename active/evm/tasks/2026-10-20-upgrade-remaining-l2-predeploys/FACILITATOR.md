@@ -6,7 +6,7 @@ For the messenger, standard bridge, ERC20 factory and ERC721 bridge, each deposi
 
 BaseTime is excluded from this task. Execution is independent of Denim activation and has no timestamp guard. EAS changes its delegated-signature domain version to 1.3.0, invalidating outstanding signatures for 1.2.0.
 
-Run from this task directory. Replace `<network>` with the configured network; the Makefile rejects unsupported networks.
+Run Make commands from this task directory. Replace `<network>` with the configured network; the Makefile rejects unsupported networks. Build, deployment and fork tests use the task-local Foundry project. Validation generation, approval and execution use the shared `active/evm` project and a script path relative to it, matching the signer tool. Records remain under this task's `records/`.
 
 ## Prepare and simulate
 
@@ -15,6 +15,8 @@ make TASK_NETWORK=<network> deps
 make TASK_NETWORK=<network> build
 make TASK_NETWORK=<network> simulate-l2
 ```
+
+`simulate-l2` also builds the multisig script from `active/evm` with its default Foundry settings to catch signer-side compilation failures. The multisig script does not deploy implementations or require the task-local compiler profiles.
 
 Review `config/<network>/.env` against fresh live reads. The shared fork replay rejects changed legacy slot-0 values, counterparts, factory configuration, vault configuration or owner, an initialized operator vault, and a messenger whose sender is not the idle default. It checks all implementations, versions, initializer flags and configuration after replay, and preserves the messenger nonce, idle sender and vault totalProcessed. Tests also preserve message, deposit, schema, attestation and factory records; create an ERC20 token and exercise bridge mint/burn; and prove failed migrations roll back on all four proxies. The L1 test exercises MultisigScript's signer simulation and the same L2 post-check with local implementations persisted across forks. No test broadcasts.
 

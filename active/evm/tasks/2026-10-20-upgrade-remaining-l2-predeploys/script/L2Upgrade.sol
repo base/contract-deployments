@@ -4,7 +4,7 @@ pragma solidity 0.8.15;
 import {Script, console} from "forge-std/Script.sol";
 import {IProxyAdmin} from "interfaces/universal/IProxyAdmin.sol";
 import {ISemver} from "interfaces/universal/ISemver.sol";
-import {AddressAliasHelper} from "src/vendor/AddressAliasHelper.sol";
+import {AddressAliasHelper} from "@base-contracts/src/vendor/AddressAliasHelper.sol";
 import {LegacyMigrator} from "./LegacyMigrator.sol";
 
 abstract contract L2Upgrade is Script {
