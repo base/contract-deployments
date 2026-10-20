@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "task": "2026-10-08-denim-system-config",
+  "kind": "active",
+  "last_updated": "2026-10-20T12:28:09Z",
+  "networks": {
+    "zeronet": {
+      "step": "executed",
+      "pr": "https://github.com/base/contract-deployments/pull/808",
+      "blocksec_ticket": null,
+      "signatures": {},
+      "executed_tx": "0x2bf7928e72e17a4657a3fd24e33907574881b63878ac04d0cfeaa5e7af880a5b"
+    }
+  }
+}
