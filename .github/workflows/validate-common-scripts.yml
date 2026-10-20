@@ -1,4 +1,4 @@
-name: Validate Common Scripts
+name: Validate EVM Scripts
 
 on:
   pull_request:
@@ -21,7 +21,7 @@ env:
 
 jobs:
   validate-common:
-    name: active/evm script/common
+    name: active and standby EVM scripts
     runs-on: ubuntu-latest
 
     steps:
@@ -32,6 +32,9 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Test pause signing
+        run: python3 -B -m unittest discover -s active/evm/script/common/pause/tests -v
 
       # ── Toolchain (mise) ─────────────────────────────────────────────
       # Installs all tools pinned in mise.toml (foundry, node, bun, go) so
@@ -68,3 +71,26 @@ jobs:
             echo "::error::Compilation failed. Check imports, types, and dependency versions."
             exit 1
           fi
+
+      - name: Check standby Solidity formatting
+        run: forge fmt --root . --check standby/evm/tasks/ scripts/tests/*.sol
+
+      - name: Compile standby Solidity using the shared contracts pin
+        working-directory: active/evm
+        run: find ../../standby/evm/tasks -path '*/script/*.sol' -not -path '*/update-verifier-hashes/*' -exec forge build {} +
+
+      - name: Install local ProtocolVersions fixture dependency
+        working-directory: active/evm
+        run: forge install --no-git github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d
+
+      - name: Test standby delay invariants
+        run: sh scripts/tests/run-standby-solidity.sh
+
+      - name: Build and test verifier standby against its supported contracts pin
+        run: STANDBY_OPERATION=update-verifier-hashes sh scripts/tests/run-standby-solidity.sh
+
+      - name: Test standby archival and Make guards without credentials
+        run: python3 -B -m unittest scripts.tests.test_standby_lifecycle -v
+
+      - name: Test pinned validation generator and signer discovery/API paths
+        run: sh scripts/tests/run-signer-standby.sh

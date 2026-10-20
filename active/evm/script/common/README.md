@@ -7,14 +7,14 @@ Reusable EVM operation scripts live here. A script belongs in this directory whe
 Reference common scripts by explicit Forge target path from `active/evm`:
 
 ```bash
-ADDRESSES_JSON="tasks/<task-id>/config/<network>/addresses.json" \
-  mise exec -- forge script --rpc-url "$L1_RPC_URL" script/common/verifier-update/UpdateVerifierHashes.s.sol:UpdateVerifierHashes
+PROXY_ADMIN_OWNER=<owner-safe> INCIDENT_MULTISIG=<incident-safe> SYSTEM_CONFIG=<system-config> \
+  mise exec -- forge script --rpc-url "$L1_RPC_URL" script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership
 ```
 
 In Makefiles, prefer the same explicit path:
 
 ```makefile
-SCRIPT_NAME = script/common/verifier-update/UpdateVerifierHashes.s.sol:UpdateVerifierHashes
+SCRIPT_NAME = script/common/ownership/TransferSystemConfigOwnership.s.sol:TransferSystemConfigOwnership
 ```
 
 This keeps validation JSON portable and avoids ambiguity when different files define similarly named contracts.
@@ -23,8 +23,6 @@ This keeps validation JSON portable and avoids ambiguity when different files de
 
 | Folder | Script | Purpose | Required task files |
 | --- | --- | --- | --- |
-| `verifier-update/` | `DeployAggregateVerifier.s.sol` | Deploys a replacement `AggregateVerifier` by copying immutable constructor inputs from the live implementation and replacing verifier hashes. | `tasks/<task-id>/config/<network>/.env`, `ADDRESSES_JSON=tasks/<task-id>/config/<network>/addresses.json` |
-| `verifier-update/` | `UpdateVerifierHashes.s.sol` | Multisig script that updates `DisputeGameFactory.gameImpls(gameType)` to a deployed `AggregateVerifier`. | `ADDRESSES_JSON=tasks/<task-id>/config/<network>/addresses.json` containing `aggregateVerifier` |
 | `funding/` | `Fund.s.sol` | Sends native token from a Safe to recipients listed in `funding.json`. | `funding.json` |
 | `gas/` | `IncreaseEip1559ElasticityAndIncreaseGasLimit.s.sol` | Updates gas limit, EIP-1559 elasticity, and DA footprint gas scalar on `SystemConfig`. | config env values |
 | `bridge/` | `PauseBridge.s.sol` | Deposits an L2 transaction through the portal to pause or unpause the L2 bridge. | config env values |
@@ -37,6 +35,6 @@ This keeps validation JSON portable and avoids ambiguity when different files de
 
 Use exact Solidity pragmas based on the contracts they import; preserve a script's original exact pragma when moving it here. Load config from environment variables into immutable variables where possible. Keep scalar task-specific values in `tasks/<task-id>/config/<network>/.env`, or use the script-documented JSON input when structured data is required, rather than hardcoding values in common scripts.
 
-Network-specific deployment address artifacts belong under `tasks/<task-id>/config/<network>/addresses.json`. Common verifier scripts must require `ADDRESSES_JSON` explicitly instead of defaulting to the shared project or task root. Forge broadcast records remain at task scope because Foundry separates them by script and chain ID.
+Network-specific deployment address artifacts belong under `tasks/<task-id>/config/<network>/addresses.json`. Forge broadcast records remain at task scope because Foundry separates them by script and chain ID. Verifier hash rotations use the pre-reviewed [standby operation](../../../../standby/evm/tasks/update-verifier-hashes/FACILITATOR.md), not shared common scripts.
 
 If a script needs task-specific behavior, prefer a small task-local wrapper or Makefile target that passes environment variables into a common script. Move the underlying Solidity into this directory only when the operation itself is reusable.

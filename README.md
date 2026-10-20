@@ -4,7 +4,7 @@
 
 This repo contains execution code and artifacts related to Base contract deployments, upgrades, and calls. For actual contract implementations, see [base/contracts](https://github.com/base/contracts).
 
-This repo is structured with each network having a high-level directory which contains subdirectories of any "tasks" (contract deployments/calls) that have happened for that network.
+EVM operations have three lifecycles: pending one-off tasks in `active/evm/tasks/`, pre-reviewed dateless operations in `standby/evm/tasks/`, and historical dated tasks in `archive/evm/`.
 
 <!-- Badge row 1 - status -->
 
@@ -31,9 +31,9 @@ This repo is structured with each network having a high-level directory which co
 
 ### Toolchain (mise)
 
-All required tooling (Foundry, Node.js, Bun, Go) is pinned in [`mise.toml`](mise.toml) so that every contributor — and especially every signer — runs identical versions. This eliminates a class of bugs where domain separators, build artifacts, or generated signatures differ between machines.
+Foundry, Node.js, Bun, and Go are pinned in [`mise.toml`](mise.toml) so contributors and signers run identical versions. This prevents mismatches in domain separators, build artifacts, and generated signatures. Standby lifecycle commands also require Python 3.9 or newer on PATH and use only its standard library.
 
-**Signers and facilitators don't need to install anything.** `make sign-task` (and `make deps`, `make execute`, etc.) automatically:
+`make sign-task`, `make deps`, and execution targets bootstrap the mise-managed toolchain automatically:
 
 1. Installs [`mise`](https://mise.jdx.dev) to `~/.local/bin/mise` if it's not already present, using the vendored installer at [`scripts/install-mise.sh`](scripts/install-mise.sh).
 2. Trusts the repo's `mise.toml` and runs `mise install` to fetch the pinned `foundry`, `node`, `bun`, and `go` versions.
@@ -90,7 +90,7 @@ Please note, for some older tasks (that have not yet been adapted to use the sig
 
 ## Network configuration
 
-Each network directory (`mainnet/`, `sepolia/`, `sepolia-alpha/`, `zeronet/`) contains a `.env` file that defines all contract addresses and network metadata for that chain. These variables are automatically available to every task via the `include ../.env` directive in each task's Makefile, so there is no need to manually load addresses in individual tasks or templates.
+Global `config/<network>.env` files define stable addresses and network metadata. EVM tasks include the selected global file and their own `config/<network>/.env`. Stable `PROTOCOL_VERSIONS_PROXY` values belong in global config; incident-specific inputs belong in the invocation.
 
 The network `.env` files contain:
 
@@ -101,7 +101,7 @@ The network `.env` files contain:
 
 All address variables are prefixed with `export` so they are available to child shell processes (Forge scripts, shell commands, etc.). Foundry scripts can access them via `vm.envAddress("VARIABLE_NAME")`.
 
-> **Note:** If you need to add or update a contract address, edit the corresponding `{network}/.env` file directly. Do not create per-task address definitions unless they are truly task-specific.
+> Update stable addresses in `config/<network>.env`. Override an address in an invocation only when that operation targets a different deployment.
 
 ## Directory structure
 
@@ -112,11 +112,12 @@ active/evm/
 ├── foundry.toml                 # shared Foundry configuration
 ├── script/
 │   └── common/                  # reusable scripts, shared across tasks
-│       └── <category>/          # bridge, funding, gas, ownership, safe, superchain, verifier-update
+│       └── <category>/          # bridge, funding, gas, ownership, safe, superchain
 └── tasks/
     └── <YYYY-MM-DD-task-name>/
         ├── Makefile             # task dependencies, validation, approvals, and execution
         ├── FACILITATOR.md       # network-agnostic facilitator procedure
+        ├── status.json          # task progress across network invocations
         ├── script/              # optional one-off task scripts
         ├── config/
         │   └── <network>/
@@ -130,6 +131,11 @@ active/evm/
             └── <script>/<chain-id>/ # Forge broadcast records
 ```
 
+### Task guides
+
+- Task `README.md` files are for signers and should contain only the concise information needed to sign. For active EVM tasks, they live in `config/<network>/README.md`.
+- `FACILITATOR.md` files are for facilitators and cover generating validation files, executing approvals, and executing the task. Some legacy tasks use the name `FACILITATORS.md` for this guide.
+
 Run task commands from `active/evm/tasks/<task-id>/`. A task with multiple network configurations must require `TASK_NETWORK` on each Make command line, for example `make TASK_NETWORK=sepolia gen-validation-cb`; it must not rely on a mutable default or exported environment value. Keep the root `FACILITATOR.md` authoritative and network-agnostic, and make the need to replace `TASK_NETWORK=<network>` explicit. Per-network facilitator files are discouraged; if one is unavoidable for a materially different procedure, put only that procedural delta in `config/<network>/FACILITATOR.md` and link to it from the root guide.
 
 One task directory represents one logical operation across its intended network rollouts. Add sibling `config/<network>/` directories and keep the task active until all intended networks are executed or canceled and their final artifacts are committed. Do not run `make archive-task` between network rollouts.
@@ -140,6 +146,29 @@ Reusable scripts are documented in [`active/evm/script/common/README.md`](active
 make deps PROJECT_DIR="$PWD/active/evm" BASE_CONTRACTS_COMMIT=<commit>
 ```
 
+### Standby operations
+
+Canonical standby tasks are dateless, pre-reviewed operations with no real network configuration or artifacts. Invoke directly from `standby/evm/tasks/<operation>/` by adding `config/<network>/.env`, a concise signer README with `Status: READY TO SIGN`, and a task-root `status.json`. Do not copy the task into active or edit its canonical Makefile, Solidity, or root `FACILITATOR.md` for an incident. Every Make command requires explicit command-line `TASK_NETWORK=<network>`, not an exported value or default.
+
+Use the [upgrade-delay guide](standby/evm/tasks/delay-upgrade-activation/FACILITATOR.md) or [verifier hash rotation guide](standby/evm/tasks/update-verifier-hashes/FACILITATOR.md) for exact commands. The verifier operation supports AggregateVerifier 0.3.0 at its reviewed contracts pin and replaces the former common verifier scripts. Standby tasks use the shared `active/evm` Foundry project, but each operation's dependency pin and build settings must be respected. Signer discovery includes an invocation only after JSON validations exist under `config/<network>/validations/`. The pinned signer checkout receives the deterministic repo-owned patch in `scripts/patches/signer-standby.patch`; changing its upstream pin or content without reviewing the patch fails closed.
+
+Pre-review does not replace incident-specific simulation. Re-review the canonical operation if the target ABI, ownership or responder role, base/contracts pin, or signing workflow changes. Keep addresses and other network-specific artifacts under `config/<network>/`; Forge records stay at task scope under `records/<script>/<chain-id>/`.
+
+After execution or cancellation, finalize every present network's README and commit all final artifacts. Fetch main, then run `make TASK_NETWORK=<network> archive-task TASK_DATE=<YYYY-MM-DD>`. Pending sibling invocations block archival because task-scoped records cannot safely be split by network. The command refuses invalid identifiers, overwrites, and canonical differences from `origin/main`. It preserves all finalized networks and artifacts in `archive/evm/<YYYY-MM-DD>-<operation>/`, including the canonical task source, Foundry configuration, and global network snapshots. Only invocation directories are removed; canonical standby files remain byte-for-byte identical.
+
+Keep the operational PR unmerged until all intended invocations are executed or canceled and the dated archive, final artifacts, and standby invocation removals are committed. On `main`, canonical standby must remain unchanged and contain no invocation-specific data before and after merge.
+
+```text
+standby/evm/tasks/<operation>/
+├── Makefile
+├── FACILITATOR.md
+├── README.md
+└── script/
+    └── <operation>.s.sol
+```
+
+Invocation-only `config/`, `signatures/`, and `records/` directories and the task-root `status.json` are added during an incident and removed by archival. Later incidents reuse the canonical standby directory. Historical archives must not be edited or executed.
+
 ### Legacy tasks
 
 Each legacy task (under a network directory, or `archive/legacy/`) has a directory structure similar to the following:
@@ -149,26 +178,67 @@ Each legacy task (under a network directory, or `archive/legacy/`) has a directo
 - **src/** place to store any one-off smart contracts (long-lived contracts should go in [base/contracts](https://github.com/base/contracts))
 - **.env** place to store task-specific environment variables (contract addresses are inherited from the network-level `.env`)
 
-## CI — Common Script Validation
+## Task status and scaffolding
 
-A GitHub Actions workflow automatically validates the shared `active/evm` scripts on every pull request and on pushes to `main`.
+Every active task and every standby operation with a network invocation has one task-root `status.json`. Humans and the automation bot read and update the same file. Never put it under `config/<network>/`, because task-origin signing covers that directory and later status updates must not change the signed payload. A canonical standby operation without invocations must not have a status file; archival carries invocation status into the dated archive and removes it from standby.
+
+[`scripts/task-status.schema.json`](scripts/task-status.schema.json) defines version 1. All fields are required and unknown fields are rejected. `schema_version` is `1`, `task` matches the task directory name, `kind` is `active` or `standby`, and `last_updated` is a UTC timestamp in `YYYY-MM-DDTHH:MM:SSZ` form. `networks` contains exactly the directories under the task's `config/` and must not be empty. Each network has:
+
+- `step`, one of the lifecycle steps below.
+- `pr`, the task's pull request URL in this repository, or `null` before one exists.
+- `blocksec_ticket`, an HTTPS ticket URL, or `null` if none applies.
+- `signatures`, an object keyed by validation file stem, such as `base-signer`, with nonnegative integer `collected` and positive integer `required` counts. Use `{}` until the required signer roles are known.
+- `executed_tx`, a 32-byte hex transaction hash only when the step is `executed`; otherwise `null`.
+
+| Step | Meaning |
+| --- | --- |
+| `authoring` | The facilitator is writing scripts and configuration. |
+| `validation` | The facilitator is generating and checking simulation artifacts. |
+| `review` | Reviewers are checking the task and validation files. |
+| `ready_to_sign` | Reviewed validation files are ready for signers. |
+| `collecting` | Signers are submitting signatures. |
+| `ready_to_execute` | Required signatures and approvals are ready for execution. |
+| `executed` | Execution succeeded and its transaction hash is recorded. |
+| `canceled` | The invocation will not execute. |
+
+The facilitator or bot updates the network step, links, signature counts, and `last_updated` when progress changes. The initial machine step is `authoring` even though the signer README starts with `Status: READY TO SIGN`; do not ask signers to sign until validations are reviewed. Finalize the signer README as `EXECUTED` or `CANCELED` and update `status.json` in the same change. The checker requires both final states to match and accepts only uppercase `EXECUTED` or `CANCELED`, optionally followed by an HTTP(S) URL, or `[EXECUTED](<url>)` or `[CANCELED](<url>)` with an HTTP(S) URL. Other final-looking formats are rejected.
+
+Run these commands from the repository root. Provide exactly one selector and a command-line `TASK_NETWORK` with a matching global `config/<network>.env`. The date defaults to today; identifiers use lowercase letters, digits, and single hyphens, with slugs, operations, and networks starting with a letter.
+
+```sh
+make new-task TASK_SLUG=<slug> TASK_NETWORK=<network> TASK_DATE=YYYY-MM-DD
+make new-task TASK_ID=<existing-active-task-id> TASK_NETWORK=<network>
+make new-task STANDBY_OP=<operation> TASK_NETWORK=<network>
+make check-task-status
+```
+
+The first mode creates `active/evm/tasks/<date>-<slug>/` with a shared Makefile skeleton, facilitator guide, tracked `script/` directory, network `.env`, signer README, and initial `status.json`. Implement the operation and fill in the empty contracts pin before using it. The second mode adds only a network config and status entry to an existing active task. The third adds a standby invocation without changing canonical files; follow the operation's facilitator guide to fill in its reviewed pin and required inputs. All modes refuse overwrites and leave generated validations, addresses, signatures, and records to the facilitator.
+
+To adopt an existing task, run `python3 -B scripts/task-status.py add-network <task-dir> <network>` once for each existing network, then update its progress and final artifacts. The CLI refuses duplicate entries. `make check-task-status` validates all active tasks and invoked standby operations, including network directories, execution hashes, and finalized README consistency. The [task status workflow](.github/workflows/validate-task-status.yml) runs the checker and scaffolder tests on pull requests and pushes to main.
+
+## CI script validation
+
+The GitHub Actions workflow validates shared active scripts and canonical standby Solidity on every pull request and push to `main`.
 
 **What CI checks:**
 
-1. **Solidity formatting** — `forge fmt --check script/` ensures formatting consistency.
-2. **Compilation** — `forge build` verifies that imports resolve, types are correct, and all dependencies are present.
+1. `forge fmt --check script/` and `forge build` check the shared active project.
+2. `forge fmt --root . --check standby/evm/tasks/ scripts/tests/*.sol` checks standby formatting. The delay script compiles against the shared active project's dependencies; verifier rotation builds and tests in an isolated fixture against its supported v8.4.0.rc2 pin.
+3. `sh scripts/tests/run-standby-solidity.sh` tests delay invariants against local ProtocolVersions proxies. `STANDBY_OPERATION=update-verifier-hashes sh scripts/tests/run-standby-solidity.sh` installs the supported pin, format-checks and builds canonical scripts, and tests verifier deployment, prechecks, factory write scope, and postchecks without RPC or credentials.
+4. `python3 -B -m unittest scripts.tests.test_standby_lifecycle -v` checks lossless archival and Make guards in temporary Git repositories without RPC or credentials.
+5. `sh scripts/tests/run-signer-standby.sh` runs the pinned signer's TypeScript checks, discovery/API tests, and local validation-generator tests for the direct delay and nested verifier approval paths.
 
 **How it works:**
 
 - All tooling (Foundry, Node, Bun, Go) is installed by the [`jdx/mise-action`](https://github.com/jdx/mise-action) GitHub Action using the versions pinned in [`mise.toml`](mise.toml), so CI matches local signer environments.
 - `make deps PROJECT_DIR="$PWD/active/evm"` installs dependencies into the shared `active/evm` Foundry project. `BASE_CONTRACTS_COMMIT` is supplied via the workflow's `env` block, since the shared project has no task `.env` of its own.
-- `forge fmt --check` and `forge build` then run in `active/evm` against the shared `foundry.toml` and `script/common/`.
+- Standby test runners create isolated temporary projects and invocation folders. They never generate canonical validations or access live networks.
 
 **What CI does NOT do:**
 
 - Does not run `forge script` (requires RPC URLs, env vars, and hardware wallets).
-- Does not run `forge test` (no test files exist for these scripts).
-- Does not run signing or execution targets (they depend on network state and hardware wallets).
+- Does not run tests against live networks. Standby tests use isolated local fixtures and credential stubs.
+- Does not sign or execute live transactions. The signing entry smoke test replaces the UI process with a credential-free stub.
 
 > See [`.github/workflows/validate-common-scripts.yml`](.github/workflows/validate-common-scripts.yml) for the full workflow definition.
 
