@@ -39,5 +39,7 @@ make TASK_NETWORK=<network> execute
 make TASK_NETWORK=<network> verify
 ```
 
-Set `Status: [EXECUTED](<transaction-url>)` in `config/<network>/README.md`, commit the record
-under `records/`, then run `make archive-task` from the repository root.
+In the same change, set `Status: [EXECUTED](<transaction-url>)` in `config/<network>/README.md`
+and update the network in the task-root `status.json` (`step: executed`, `executed_tx`,
+`last_updated`). Commit the record under `records/`, then run `make check-task-status` and
+`make archive-task` from the repository root.
