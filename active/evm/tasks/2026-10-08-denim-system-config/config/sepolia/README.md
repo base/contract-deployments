@@ -1,6 +1,6 @@
 # Denim SystemConfig gas parameters
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0x1626e1dcefdf7d5a842c3895108e89ea24f12cc5e53ff34dc73bd460eeb4cf2d)
 
 ## Description
 
