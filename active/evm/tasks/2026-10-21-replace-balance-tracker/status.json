@@ -1,15 +1,20 @@
 {
   "schema_version": 1,
-  "task": "2026-10-06-transfer-balance-tracker-ownership",
+  "task": "2026-10-21-replace-balance-tracker",
   "kind": "active",
   "networks": {
     "sepolia": {
       "step": "review",
       "pr": "https://github.com/base/contract-deployments/pull/807",
       "blocksec_ticket": null,
-      "signatures": {},
+      "signatures": {
+        "base": {
+          "collected": 0,
+          "required": 3
+        }
+      },
       "executed_tx": null
     }
   },
-  "last_updated": "2026-10-21T18:16:45Z"
+  "last_updated": "2026-10-21T19:30:41Z"
 }
