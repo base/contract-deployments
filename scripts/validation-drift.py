@@ -95,7 +95,7 @@ def input_files(repo, directories):
     return (p for p in paths if p.is_file())
 
 
-def script_entrypoint(project, cmd):
+def script_entrypoint(cmd):
     if not isinstance(cmd, str):
         raise ValueError("validation must have a Forge script cmd")
     tokens = shlex.split(cmd)
@@ -103,7 +103,7 @@ def script_entrypoint(project, cmd):
         if tokens[index:index + 2] == ["forge", "script"]:
             for token in tokens[index + 2:]:
                 if not token.startswith("-") and re.fullmatch(r"[^:]+\.sol(?::[^/:]+)?", token):
-                    return (project / token.split(":", 1)[0]).resolve()
+                    return token.split(":", 1)[0]
             break
     raise ValueError("cmd must contain a Forge script .sol path")
 
@@ -111,14 +111,18 @@ def script_entrypoint(project, cmd):
 def fingerprint(repo, task, network, cmd):
     if not re.fullmatch(r"[a-z0-9-]+", network):
         raise ValueError("invalid network identifier")
-    project = task if (task / "foundry.toml").is_file() else repo / "active/evm"
+    entrypoint = script_entrypoint(cmd)
+    # A task-local foundry.toml may serve only build or deploy profiles while
+    # GEN_VALIDATION still runs Forge from active/evm.
+    projects = ([task] if (task / "foundry.toml").is_file() else []) + [repo / "active/evm"]
+    project = next((p for p in projects if (p / entrypoint).is_file()), projects[0])
     config = task / "config" / network
     paths = {task / "Makefile", config / ".env", repo / "config" / f"{network}.env"}
     # prestate.json is a post-execution check baseline, not a signed-call input.
     paths.update(p for p in input_files(repo, [config, task / "script"])
                  if p not in {config / "README.md", config / "prestate.json"}
                  and not p.is_relative_to(config / "validations"))
-    paths.add(script_entrypoint(project, cmd))
+    paths.add((project / entrypoint).resolve())
     pending = [p for p in paths if p.suffix == ".sol"]
     visited = set()
     mappings = remappings(project)
@@ -202,6 +206,9 @@ def check(args):
                 if not (config / ".env").is_file():
                     if readme.exists() or validations.exists():
                         errors.append(f"{label}: missing .env")
+                    continue
+                if not declared:
+                    errors.append(f"{label}: pending network but the Makefile declares no GEN_VALIDATION files")
                     continue
                 present = {path.name for path in validations.glob("*.json")}
                 errors.extend(f"{label}: missing validation {name}" for name in sorted(declared - present))

@@ -221,6 +221,17 @@ class InputChecks(DriftFixture):
         path.write_text(path.read_text() + "\n")
         self.assert_error(self.check(), "changed: " + path.relative_to(self.repo).as_posix())
 
+    def test_task_foundry_config_with_shared_forge_project(self):
+        self.put("active/evm/tasks/example/foundry.toml", "[profile.default]\n")
+        self.stamp()
+        self.assertIn("active/evm/script/common/Common.sol", json.loads(self.file.read_text())["taskInputs"]["files"])
+        self.assertEqual(self.check().returncode, 0)
+
+    def test_pending_network_without_declared_validations(self):
+        self.put("active/evm/tasks/example/Makefile", "# gen-validation:\n#\t$(call GEN_VALIDATION,$(SCRIPT),,,base-signer.json,)\n")
+        self.file.unlink()
+        self.assert_error(self.check(), "declares no GEN_VALIDATION files")
+
     def test_added_and_removed_inputs_are_named(self):
         for relative in ["script/New.sol", "config/local/addresses.json"]:
             with self.subTest(relative=relative):
