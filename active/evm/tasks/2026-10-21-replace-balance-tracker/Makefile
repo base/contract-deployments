@@ -61,10 +61,10 @@ task-extra-deps:
 .PHONY: deploy-l1
 deploy-l1:
 	@test ! -f "$(ADDRESSES_JSON)" || { echo '$(ADDRESSES_JSON) already exists; BalanceTracker is already deployed'; exit 1; }
-	echo '{}' > "$(ADDRESSES_JSON)"
+	@echo '{}' > "$(ADDRESSES_JSON)"
 	cd $(PROJECT_DIR) && $(DEPLOY_L1_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_L1_SCRIPT) \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv || { rm -f "$(ADDRESSES_JSON)"; exit 1; }
 
 .PHONY: deploy-l2
 deploy-l2:
@@ -73,7 +73,8 @@ deploy-l2:
 	cd $(PROJECT_DIR) && FEE_DISBURSER=$(FEE_DISBURSER) FEE_DISBURSEMENT_INTERVAL=$(FEE_DISBURSEMENT_INTERVAL) \
 		ADDRESSES_JSON=$(ADDRESSES_JSON) \
 		$(MISE_EXEC) forge script --rpc-url $(L2_RPC_URL) $(DEPLOY_L2_SCRIPT) \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv || \
+		{ jq 'del(.feeDisburserImplementation)' "$(ADDRESSES_JSON)" > "$(ADDRESSES_JSON).tmp" && mv "$(ADDRESSES_JSON).tmp" "$(ADDRESSES_JSON)"; exit 1; }
 
 .PHONY: check-deployments
 check-deployments:

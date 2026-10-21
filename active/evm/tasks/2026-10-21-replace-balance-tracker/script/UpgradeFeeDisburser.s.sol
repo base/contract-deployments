@@ -26,6 +26,7 @@ contract UpgradeFeeDisburser is MultisigScript {
 
     address internal immutable OWNER_SAFE;
     address internal immutable NEW_ADMIN;
+    address internal immutable NEW_ADMIN_L2_ALIAS;
     address internal immutable OPTIMISM_PORTAL;
     address internal immutable FEE_DISBURSER;
     address internal immutable FEE_DISBURSER_IMPL;
@@ -35,6 +36,7 @@ contract UpgradeFeeDisburser is MultisigScript {
     constructor() {
         OWNER_SAFE = vm.envAddress("OWNER_SAFE");
         NEW_ADMIN = vm.envAddress("NEW_ADMIN");
+        NEW_ADMIN_L2_ALIAS = vm.envAddress("NEW_ADMIN_L2_ALIAS");
         OPTIMISM_PORTAL = vm.envAddress("OPTIMISM_PORTAL");
         FEE_DISBURSER = vm.envAddress("FEE_DISBURSER");
         FEE_DISBURSER_IMPL = vm.envAddress("NEW_FEE_DISBURSER_IMPL");
@@ -42,7 +44,7 @@ contract UpgradeFeeDisburser is MultisigScript {
         L2_FORK = vm.createFork(vm.envString("L2_RPC_URL"));
 
         require(
-            vm.envAddress("NEW_ADMIN_L2_ALIAS") == AddressAliasHelper.applyL1ToL2Alias(NEW_ADMIN),
+            NEW_ADMIN_L2_ALIAS == AddressAliasHelper.applyL1ToL2Alias(NEW_ADMIN),
             "NEW_ADMIN_L2_ALIAS is not the alias of NEW_ADMIN"
         );
     }
@@ -122,7 +124,7 @@ contract UpgradeFeeDisburser is MultisigScript {
     function _l2Calls() internal view returns (bytes[] memory calls) {
         calls = new bytes[](2);
         calls[0] = abi.encodeCall(IProxy.upgradeTo, (FEE_DISBURSER_IMPL));
-        calls[1] = abi.encodeCall(IProxy.changeAdmin, (AddressAliasHelper.applyL1ToL2Alias(NEW_ADMIN)));
+        calls[1] = abi.encodeCall(IProxy.changeAdmin, (NEW_ADMIN_L2_ALIAS));
     }
 
     function _admin(address proxy) internal returns (address) {

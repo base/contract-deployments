@@ -74,11 +74,23 @@ contract DeployBalanceTracker is Script {
         require(tracker.systemAddresses(1) == SYSTEM_ADDRESS_1, "system address 1 mismatch");
         require(tracker.targetBalances(0) == TARGET_BALANCE_0, "target balance 0 mismatch");
         require(tracker.targetBalances(1) == TARGET_BALANCE_1, "target balance 1 mismatch");
+        (bool hasThird,) = balanceTracker.staticcall(abi.encodeWithSelector(tracker.systemAddresses.selector, 2));
+        require(!hasThird, "unexpected system address count");
 
         address payable[] memory none = new address payable[](0);
         (bool ok,) = balanceTracker.call(abi.encodeCall(BalanceTracker.initialize, (none, new uint256[](0))));
         require(!ok, "proxy can be reinitialized");
         (ok,) = balanceTrackerImpl.call(abi.encodeCall(BalanceTracker.initialize, (none, new uint256[](0))));
         require(!ok, "implementation can be initialized");
+
+        uint256 snapshot = vm.snapshotState();
+        uint256 profitBefore = PROFIT_WALLET.balance;
+        vm.deal(balanceTracker, TARGET_BALANCE_0 + TARGET_BALANCE_1 + 1 ether);
+        tracker.processFees();
+        require(balanceTracker.balance == 0, "fees not processed");
+        require(SYSTEM_ADDRESS_0.balance >= TARGET_BALANCE_0, "system address 0 not refilled");
+        require(SYSTEM_ADDRESS_1.balance >= TARGET_BALANCE_1, "system address 1 not refilled");
+        require(PROFIT_WALLET.balance >= profitBefore + 1 ether, "profit not sent");
+        vm.revertToState(snapshot);
     }
 }
