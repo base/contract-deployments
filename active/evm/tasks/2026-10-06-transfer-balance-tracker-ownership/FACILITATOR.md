@@ -5,13 +5,6 @@ Guide for moving the `BalanceTracker` proxy admin from the current EOA to the Co
 The current admin is an EOA, not a Safe, so this task has no signer validation file, no multisig
 approvals and no task-origin signatures. The `CURRENT_ADMIN` Ledger sends the transaction directly.
 
-## 0. Ordering
-
-The Sepolia `BalanceTracker` profit-wallet upgrade
-([#768](https://github.com/base/contract-deployments/pull/768)) is executed by the same EOA admin.
-Execute that upgrade before this task, or confirm it has been abandoned. After this transfer, the
-upgrade must go through the multisig instead.
-
 ## 1. Install dependencies and simulate
 
 ```bash
