@@ -116,7 +116,7 @@ deps: bootstrap-mise install-eip712sign clean-lib forge-deps
 
 .PHONY: install-eip712sign
 install-eip712sign:
-	$(MISE_EXEC) go install github.com/base/eip712sign@v0.0.11
+	$(MISE_EXEC) go install github.com/base/eip712sign@v0.0.15
 
 .PHONY: clean-lib
 clean-lib:
