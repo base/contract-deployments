@@ -35,8 +35,7 @@ UPGRADE_ENV = $(CONFIG_ENV) OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) \
 	SCHEMA_REGISTRY_IMPL=$(call impl,schemaRegistry) EAS_IMPL=$(call impl,eas) \
 	MESSENGER_IMPL=$(call impl,l2CrossDomainMessenger) BRIDGE_IMPL=$(call impl,l2StandardBridge) \
 	ERC20_FACTORY_IMPL=$(call impl,optimismMintableERC20Factory) ERC721_BRIDGE_IMPL=$(call impl,l2ERC721Bridge) \
-	LEGACY_MIGRATOR=$(call impl,legacyMigrator) \
-	$(if $(CB_SAFE_NONCE),SAFE_NONCE_$(call ADDR_UPPER,$(CB_MULTISIG))=$(CB_SAFE_NONCE))
+	LEGACY_MIGRATOR=$(call impl,legacyMigrator)
 PREDEPLOY_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_OPTIMIZER_RUNS=999999 \
 	FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun
 
