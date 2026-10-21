@@ -49,6 +49,7 @@ contract DeployFeeDisburser is Script {
         uint256 nextDisbursement = proxy.lastDisbursementTime() + FEE_DISBURSEMENT_INTERVAL;
         if (block.timestamp < nextDisbursement) vm.warp(nextDisbursement);
         proxy.disburseFees();
+        require(FEE_DISBURSER.balance == 0, "fees not disbursed");
         vm.revertToState(snapshot);
     }
 }
