@@ -17,7 +17,7 @@ Upgrades eight Base Sepolia predeploys to base/contracts v8.4.0. The L1 ProxyAdm
 
 The operator vault is initialized atomically, preserving its BaseFeeVault recipient, zero minimum and L2 withdrawal network. The factory keeps its ERC721 bridge and Sepolia L1 chain ID. Existing schema and attestation storage is preserved. EAS changes its signing domain version from 1.2.0 to 1.3.0, so outstanding delegated signatures need to be regenerated.
 
-Execution is independent of Denim activation and has no timestamp guard. BaseTime is excluded from this task.
+Execution is independent of Denim activation and has no timestamp guard. Base signatures use CB Coordinator Safe nonce 34 (`CB_SAFE_NONCE` in `config/sepolia/.env`), so execute only after the Sepolia Denim gas parameters task executes at nonce 33. BaseTime is excluded from this task.
 
 The messenger, standard bridge, ERC20 factory and ERC721 bridge each use a task-local migrator in one atomic upgradeAndCall. It resets only the legacy initializer slot, installs the new implementation and initializes its live counterparts. If initialization fails, the entire L2 call reverts and the old implementation and storage remain intact.
 

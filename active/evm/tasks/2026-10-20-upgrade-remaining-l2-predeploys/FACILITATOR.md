@@ -4,7 +4,7 @@ This task upgrades eight predeploys through eight separate L1 deposits to the L2
 
 For the messenger, standard bridge, ERC20 factory and ERC721 bridge, each deposit calls `ProxyAdmin.upgradeAndCall(proxy, migrator, migrate(newImpl, initData))`. The task-local migrator resets legacy initializer state, installs the final implementation and calls its `initialize(address)` in the proxy's context. A failed L2 call reverts the whole upgradeAndCall, leaving the old implementation and storage intact.
 
-BaseTime is excluded from this task. Execution is independent of Denim activation and has no timestamp guard. EAS changes its delegated-signature domain version to 1.3.0, invalidating outstanding signatures for 1.2.0.
+BaseTime is excluded from this task. Execution is independent of Denim activation and has no timestamp guard. Base signatures use CB Coordinator Safe nonce 34 (`CB_SAFE_NONCE` in `config/sepolia/.env`), so execute only after the Sepolia Denim gas parameters task executes at nonce 33. EAS changes its delegated-signature domain version to 1.3.0, invalidating outstanding signatures for 1.2.0.
 
 Run Make commands from this task directory. Replace `<network>` with the configured network; the Makefile rejects unsupported networks. Build, deployment and fork tests use the task-local Foundry project. Validation generation, approval and execution use the shared `active/evm` project and a script path relative to it, matching the signer tool. Records remain under this task's `records/`.
 

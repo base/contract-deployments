@@ -2,10 +2,10 @@
   "schema_version": 1,
   "task": "2026-10-20-upgrade-remaining-l2-predeploys",
   "kind": "active",
-  "last_updated": "2026-10-20T22:15:26Z",
+  "last_updated": "2026-10-21T14:37:32Z",
   "networks": {
     "sepolia": {
-      "step": "authoring",
+      "step": "review",
       "pr": "https://github.com/base/contract-deployments/pull/825",
       "blocksec_ticket": null,
       "signatures": {

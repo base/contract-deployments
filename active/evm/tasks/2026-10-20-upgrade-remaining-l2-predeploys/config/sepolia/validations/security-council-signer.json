@@ -1,0 +1,86 @@
+{
+  "cmd": "PROXY_ADMIN_OWNER=0x0fe884546476dDd290eC46318785046ef68a0BA9 FACTORY_BRIDGE=0x4200000000000000000000000000000000000014 L1_CROSS_DOMAIN_MESSENGER=0xC34855F4De64F1840e5686e64278da901e261f20 L1_STANDARD_BRIDGE=0xfd0Bf71F60660E2f608ed56e1659C450eB113120 L1_ERC721_BRIDGE=0x21eFD066e581FA55Ef105170Cc04d74386a09190 ERC20_FACTORY_BRIDGE=0x4200000000000000000000000000000000000010 REMOTE_CHAIN_ID=11155111 L2_RPC_URL=https://sepolia.base.org OPERATOR_FEE_VAULT_RECIPIENT=0x4200000000000000000000000000000000000019 OPERATOR_FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=0 OPERATOR_FEE_VAULT_WITHDRAWAL_NETWORK=1 OPTIMISM_PORTAL=0x49f53e41452C74589E85cA1677426Ba426459e85 ERC721_FACTORY_IMPL=0x2963D48B49DD3f6bffA9459afE76d8474e1b000c OPERATOR_FEE_VAULT_IMPL=0x10A1F82fbff4be64699C411aBf35500F6d7be622 SCHEMA_REGISTRY_IMPL=0xbBAc3F3b485099f33ea9450299fdd5fC0a2A0a5a EAS_IMPL=0xc919d2C8d3a7B617feA7604b68D862027bD02e64 MESSENGER_IMPL=0x4414E1030595860a268B7F14181CF2F88F74C823 BRIDGE_IMPL=0xB704544947B208f3cF0cF1cE9D9515B6b88d9444 ERC20_FACTORY_IMPL=0x65c5b76E6af6906f29554B8795dFB86976be4F0F ERC721_BRIDGE_IMPL=0x09BBb02383A35fc5aA860d113d9E6a5BF7F80B0C LEGACY_MIGRATOR=0x72d8204d8BbFbEa1e172d24FaFCf6572B139290a SAFE_NONCE_0X646132A1667CA7AD00D36616AFBA1A28116C770A=34 mise exec -- forge script --rpc-url https://ethereum-sepolia-rpc.publicnode.com tasks/2026-10-20-upgrade-remaining-l2-predeploys/script/UpgradeL2Predeploys.s.sol:UpgradeL2Predeploys --sig sign(address[]) [0x6AF0674791925f767060Dd52f7fB20984E8639d8] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-sepolia-rpc.publicnode.com",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+    "domainHash": "0x6f25427e79742a1eb82c103e2bf43c85fc59509274ec258ad6ed841c4a0048aa",
+    "messageHash": "0x8eec038cead01adabe663b26ced43e367d3a053650a17fc01bf82e30c6dfffa7"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "overrides": [
+        {
+          "key": "0xe5c339af1cf4cea3abb767989c765fc4d5d5638b027c971a805758278c6a46c6",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Sepolia",
+      "address": "0x0fe884546476dDd290eC46318785046ef68a0BA9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000002b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000002c",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x18d58d8642060920319a46259e6e2f33048b64bcc19aee210ec9f3e39b9d4380",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the Security Council's approval of the upgrade transaction hash",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Sepolia",
+      "address": "0x49f53e41452C74589E85cA1677426Ba426459e85",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000000b68a8d00000000000052080000000000000000000000003b9aca00",
+          "after": "0x0000000000b68aa80000000000249f000000000000000000000000003b9aca00",
+          "description": "Updates the ResourceMetering parameters (prevBlockNum, prevBoughtGas, prevBaseFee).",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "Mock OP Safe / Mock Security Council - Sepolia",
+      "address": "0x6AF0674791925f767060Dd52f7fB20984E8639d8",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000002b",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000002c",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
