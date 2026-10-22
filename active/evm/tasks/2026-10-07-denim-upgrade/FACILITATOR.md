@@ -1,16 +1,16 @@
 # Denim upgrade facilitator guide
 
-Sepolia and mainnet use `ExecuteDenimUpgradeWithL2Predeploys` for the two Denim L1 calls and five
-L2 upgrade deposits in one ProxyAdmin-owner transaction. The Security Council signs once.
-Zeronet ran `ExecuteDenimUpgrade` for Denim only and upgraded the L2 predeploys separately.
-The unset `UPGRADE_SCRIPT_NAME` preserves that Denim-only path. For the combined path, set
-`UPGRADE_SCRIPT_NAME=ExecuteDenimUpgradeWithL2Predeploys` in `config/<network>/.env`.
+Sepolia executed `ExecuteDenimUpgradeWithL2Predeploys`: two Denim L1 calls and five L2 deposits.
+Mainnet selects `ExecuteDenimUpgradeWithAllL2Predeploys`: two Denim L1 calls and thirteen L2 deposits,
+fifteen calls in ONE ProxyAdmin-owner transaction. The Security Council approves this transaction once,
+with eight member signatures. Zeronet ran `ExecuteDenimUpgrade` for Denim only. Leave the executed
+paths and their network configurations unchanged.
 
 | Change | Contracts touched |
 | --- | --- |
 | Fork-gated proof intervals for 200ms blocks | `AggregateVerifier` (redeployed as `0.3.0`), `DisputeGameFactory` (`setImplementation`) |
 | Denim activation and minimum node version | `ProtocolVersions` (`registerUpgrade`, upgrade id 13) |
-| L2 predeploy upgrades through `OptimismPortal` deposits | `L2ToL1MessagePasser` `1.2.0`, `L1Block` `1.8.0`, `SequencerFeeVault`, `BaseFeeVault`, `L1FeeVault` `1.6.0` |
+| First five L2 predeploy upgrades through `OptimismPortal` deposits | `L2ToL1MessagePasser` `1.2.0`, `L1Block` `1.8.0`, `SequencerFeeVault`, `BaseFeeVault`, `L1FeeVault` `1.6.0` |
 
 `AggregateVerifier` `0.3.0` carries two proposal interval pairs: the slow pair for 2s blocks and the
 fast pair for Denim's 200ms blocks. It reads the Denim activation from `ProtocolVersions` index 13 and
@@ -50,6 +50,20 @@ Open `config/<network>/.env` and confirm:
 
 Every other `AggregateVerifier` constructor argument is copied from the live verifier at deploy time.
 
+For mainnet, obtain PCR0 and both SP1 verification keys from the reproducible v1.5.1-based prover
+build before deploying or generating validations. The three hash fields intentionally start blank.
+The Sepolia f3a459f build cannot derive post-Denim mainnet blocks because it disables mainnet Denim.
+Do not reuse its hashes. Mainnet validation, approval and execution also refuse missing hashes.
+
+Mainnet preserves the live vault recipients and L2 withdrawal networks. `BaseTime` is excluded:
+Denim installs it only while its implementation slot is empty. The mainnet script refuses an occupied
+implementation slot or an admin other than the L2 ProxyAdmin in both setup and the L2 post-check.
+
+EAS mainnet `1.0.1` uses EIP-712 domain version `1.0.1`, not Sepolia's `1.2.0`. The new domain is
+`1.3.0`. Outstanding delegated attestation/revocation signatures become invalid; clients must sign
+again using the new domain, type hashes and delegation ABI. Existing attestations, schemas and nonces
+remain at their existing storage locations.
+
 ## 3. Deploy and verify
 
 ```bash
@@ -67,7 +81,21 @@ For the combined path, deploy the five L2 implementations after deploying the ve
 make TASK_NETWORK=<network> deploy-l2
 ```
 
-The facilitator runs both deployment steps with a Ledger. `deploy-l2` uses the L2 RPC, 999999 optimizer runs,
+For mainnet, then deploy the other eight implementations and LegacyMigrator with the task-local
+Foundry project:
+
+```bash
+make TASK_NETWORK=<network> deploy-remaining-l2
+make TASK_NETWORK=<network> simulate
+```
+
+The extra deployments use 0.8.15 for factories and bridges, 0.8.19 for attestations, and 0.8.25 for
+OperatorFeeVault. Per-file factory optimizer profiles use 5000 runs; the other implementations use
+999999 runs, no bytecode hash, and Cancun. The multisig script also builds from `active/evm` using
+its default compiler settings. `simulate` uses test-only verifier hashes and local implementations;
+it does not deploy, generate validations, sign or broadcast.
+
+The facilitator runs all deployment steps with a Ledger. `deploy-l2` uses the L2 RPC, 999999 optimizer runs,
 no bytecode hash and Cancun, matching base/contracts. It appends `l2ToL1MessagePasser`, `l1Block`,
 `sequencerFeeVault`, `baseFeeVault` and `l1FeeVault` to `config/<network>/addresses.json`. There is no
 L2 source-verification step. Deploy the verifier first because its script replaces the address file;
@@ -76,7 +104,7 @@ while the verifier and other L2 deployment use 0.8.15.
 
 Commit `config/<network>/addresses.json` and the task-scoped `records/` broadcast artifacts, then
 fill in the implementation addresses in `config/<network>/README.md`. The combined validation,
-approval and execution targets refuse to proceed until all six implementation addresses are present.
+approval and execution targets refuse to proceed until all six addresses on Sepolia, or all fifteen addresses on mainnet including the migrator, are present.
 
 ## 4. Generate validation files
 
@@ -93,15 +121,36 @@ and state-change descriptions. Expected state changes:
 - `ProtocolVersions`: a 14th schedule entry (Denim) with
   `PROTOCOL_VERSIONS_DENIM_ACTIVATION_TIMESTAMP`, the extended schedule id chain, and the new
   minimum protocol version.
-- Combined path only: five separate `OptimismPortal.depositTransaction` calls to the L2 ProxyAdmin,
+- Sepolia combined path: five separate `OptimismPortal.depositTransaction` calls to the L2 ProxyAdmin,
   with five `TransactionDeposited` events and portal resource-metering state changes such as resource
   params. Each deposit has zero value and a 200000 L2 gas limit. Check that the sender is the owner Safe.
+- Mainnet: thirteen separate zero-value owner-Safe deposits to the L2 ProxyAdmin, each with a
+  300000 gas limit, totaling 3900000 L2 gas against the portal's 20000000 resource limit. The first
+  five calls are the Sepolia set above. The remaining eight are:
+
+  | Target | New version | Method |
+  | --- | --- | --- |
+  | OptimismMintableERC721Factory | 1.4.2 | upgrade |
+  | OperatorFeeVault | 1.1.0 | upgradeAndCall initialize |
+  | SchemaRegistry | 1.3.1-beta.2 | upgrade |
+  | EAS | 1.4.1-beta.3 | upgrade |
+  | L2CrossDomainMessenger | 2.2.0 | upgradeAndCall LegacyMigrator.migrate |
+  | L2StandardBridge | 1.13.0 | upgradeAndCall LegacyMigrator.migrate |
+  | OptimismMintableERC20Factory | 1.10.2 | upgradeAndCall LegacyMigrator.migrate |
+  | L2ERC721Bridge | 1.10.0 | upgradeAndCall LegacyMigrator.migrate |
+
+  The four migrations clear legacy slot 0, install the final implementation, and initialize its
+  counterpart atomically. On mainnet those slots contain only initializer flags or zero spacers,
+  unlike Sepolia's packed state. All three fee vaults and OperatorFeeVault initialize their storage
+  configuration without clearing totalProcessed in slot 0. The new ERC20 factory deployments mapping
+  starts empty; it does not backfill tokens created by the old factory.
 - L2 storage changes are not part of the L1 validation state diff. The script post-check replays the
   deposits on an L2 fork and checks implementation addresses, versions and all three vaults' initialized
   recipient, minimum withdrawal and withdrawal network. Each upgrade is its own deposit so the
   L2 ProxyAdmin sees the aliased owner.
 - Safe nonce and approval changes.
 
+For mainnet, KEEP `taskOriginConfig`. Task-origin validation is required for this owner-Safe transaction.
 For any non-mainnet rollout, remove each generated `taskOriginConfig` and add this root field:
 
 ```json
@@ -126,9 +175,10 @@ margin. `ProtocolVersions` enforces this one-hour `MIN_NOTICE`. Once registered,
 only be delayed by the incident responder and freezes one hour before it lands.
 
 The deposits execute on L2 shortly after the L1 transaction, not at Denim activation. The predeploy
-upgrades have no ordering dependency on Denim. Check that all five deposits succeeded on L2.
+upgrades have no ordering dependency on Denim. Check that all five Sepolia deposits, or all thirteen mainnet deposits, succeeded on L2.
 
 Immediately after execution, roll the network's proposer and provers to the prover build documented in `config/<network>/.env`.
+On mainnet this MUST be the reproducible v1.5.1-based build. Execute first, then roll immediately; do not roll before execution.
 The new verifier accepts proofs only from that build, so proposals pause until the rollout lands; keep the gap short.
 New enclave signers register themselves in `TEEProverRegistry` on startup. The nitro host's health check requires a signer valid
 for the registry's current expected image hash, so the new build cannot be deployed before execution. Confirm the new signers
@@ -143,6 +193,14 @@ cast call "$TEE_PROVER_REGISTRY_PROXY" 'signerImageHash(address)(bytes32)' <sign
 After execution the script checks that the factory points at the new verifier, that Denim is upgrade
 id 13 with the expected timestamp, that earlier upgrades are unchanged, and that the new verifier
 returns the slow intervals for the block before Denim and the fast intervals from the first Denim
-block. On the combined path it also checks the five successful owner-Safe deposits, replays each
+block. On the combined path it also checks the five Sepolia or thirteen mainnet successful owner-Safe deposits, replays each
 on an L2 fork as the aliased owner, and checks implementations, versions, fee-vault config and the
 unchanged L2 ProxyAdmin owner. Set the README status to the execution transaction link.
+
+Before execution, rerun mainnet simulation against current state and check portal metering. The
+300000 uniform limit exceeds 1.5 times every cold L2 measurement. Portal burn for all deposits is
+`3900000 * prevBaseFee / max(L1 basefee, 1 gwei)`, less the metered work already performed. At a
+1 gwei portal fee and an L1 basefee below 1 gwei, the burn budget is 3900000 L1 gas. Each additional
+1 gwei adds 3900000 gas. A rising fee can exhaust the 16777216 transaction cap even though the
+60000000 L1 block limit and the portal resource limit are not exhausted. Do not execute if the
+current simulation lacks headroom. Do not split this transaction.

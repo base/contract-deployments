@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task": "2026-10-07-denim-upgrade",
   "kind": "active",
-  "last_updated": "2026-10-19T21:36:07Z",
+  "last_updated": "2026-10-22T19:19:26Z",
   "networks": {
     "sepolia": {
       "step": "executed",
@@ -26,6 +26,22 @@
       "blocksec_ticket": null,
       "signatures": {},
       "executed_tx": "0x9468085edf0a0d5e3dbeea7ab84f13400a496aafc6c21ca8420e4f136c106034"
+    },
+    "mainnet": {
+      "step": "authoring",
+      "pr": null,
+      "blocksec_ticket": null,
+      "signatures": {
+        "base": {
+          "collected": 0,
+          "required": 3
+        },
+        "security-council": {
+          "collected": 0,
+          "required": 8
+        }
+      },
+      "executed_tx": null
     }
   }
 }
