@@ -232,27 +232,20 @@ including the notice window, simulates the owner transaction using the actual ap
 all deposits on the current L2 fork. Missing deployment addresses or approvals stop the command.
 Do not execute unless it succeeds; the historical `test` / `simulate` target is not a substitute.
 
-The historical isolated gas tests require 1.5 times each deposit's total gas to fit within 300000.
-The total includes execution gas, 21000 intrinsic gas and calldata gas. They include CALL and measurement overhead
-in execution gas and take no refund credit. The largest measured total is 126660 gas for each of
-the standard bridge and ERC721 bridge migrations, requiring 189990 gas with the margin. A plain
-upgrade measures 24506 execution gas, not the warm 6933. The 300000 uniform limit remains unchanged.
-These are historical fixture measurements; `simulate-current` checks the actual deposited calldata
-and replays it with the deposit gas limit minus intrinsic and calldata gas, but does not measure
-cold transaction gas.
-Portal burn for all deposits
-is bounded by `3900000 * fee / max(L1 basefee, 1 gwei)` without credit for metered work.
-In `setUp` (validation, approval and execution simulations), the script reads live portal `params()`
-and resource configuration. It bounds `fee` by `prevBaseFee` plus any positive first-deposit fee
-update from the previous block's bought gas, applies the configured minimum (and maximum on a block
-update), and takes no
-credit for empty-block decay. It requires this burn plus a 5000000 base-cost allowance to be at most
-14000000 gas. The isolated owner transaction measures 4218345 gas including intrinsic and calldata
-gas, without refund credit. The test requires at least 10% margin within the 5000000 allowance.
-The allowance rounds that baseline up by ~18.5%,
-then adds the full metering burn without subtracting the baseline's burn. The 14000000 ceiling
-leaves 2777216 gas (~16.6%) below the EIP-7825 per-transaction cap of 16777216. At a 1 gwei portal
-fee and L1 basefee below 1 gwei the burn bound is 3900000; each additional 1 gwei adds 3900000.
+Gas rules enforced by the script and tests:
+
+- Every deposit has a 300000 L2 gas limit. The isolated cold gas tests (`testColdL2DepositGas`,
+  run by `test` with `--isolate`) require 1.5 times each deposit's execution, intrinsic and calldata
+  gas to fit within it. `simulate-current` replays the actual deposited calldata with the deposit
+  gas limit minus intrinsic and calldata gas, but does not measure cold transaction gas.
+- In `setUp` (validation, approval and execution simulations), the script reads the live portal
+  `params()` and resource configuration. It bounds the portal fee by `prevBaseFee` plus any positive
+  first-deposit fee update from the previous block's bought gas, applies the configured minimum (and
+  maximum on a block update), and takes no credit for empty-block decay. The burn for all deposits is
+  bounded by `3900000 * fee / max(L1 basefee, 1 gwei)`.
+- The script requires that burn plus a 5000000 base-cost allowance to be at most 14000000 gas, below
+  the EIP-7825 per-transaction cap of 16777216. `testColdL1OwnerTransactionGas` requires the cold
+  owner transaction to fit within the allowance with at least 10% margin.
 
 Fees and resource use can change after simulation. Recheck immediately before submission and do
 not override a failed guard or split this transaction. The L1 block limit and portal resource limit

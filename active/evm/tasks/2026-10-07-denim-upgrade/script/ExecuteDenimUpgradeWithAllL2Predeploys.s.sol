@@ -49,7 +49,7 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
     // Each deposit must call the L2 ProxyAdmin directly so it sees the aliased owner, not an L2 multicall.
     // The L1 simulation cannot execute deposits, so the post-check replays them on an L2 fork.
     uint64 internal constant L2_GAS_LIMIT = 300_000;
-    // Round the cold ~4.22M baseline up to 5M, add the full burn, and leave 2,777,216 below EIP-7825.
+    // The base budget covers the cold owner transaction (testColdL1OwnerTransactionGas); the ceiling stays below EIP-7825's 16,777,216.
     uint256 internal constant MAX_PROJECTED_L1_GAS = 14_000_000;
     uint256 internal constant L1_BASE_GAS_BUDGET = 5_000_000;
     string internal constant L2_TO_L1_MESSAGE_PASSER_VERSION = "1.2.0";
