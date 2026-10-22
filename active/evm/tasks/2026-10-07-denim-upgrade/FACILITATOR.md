@@ -105,7 +105,10 @@ OperatorFeeVault. Per-file factory optimizer profiles use 5000 runs; the other i
 999999 runs, no bytecode hash, and Cancun. The multisig script also builds from `active/evm` using
 its default compiler settings. `simulate` (an alias for `test`) runs deterministic historical fork
 tests with test-only verifier hashes and local implementations. It is not the current-state execution
-prerequisite. Neither simulation command deploys, generates validations, signs or broadcasts.
+prerequisite. The gas tests use `forge test --isolate`, so each measured ProxyAdmin call and
+the owner-Safe execution starts a separate transaction with cold storage. Other tests run without
+isolation so cheatcode basefee overrides remain effective. Neither simulation command deploys,
+generates validations, signs or broadcasts.
 
 The facilitator runs all deployment steps with a Ledger. `deploy-l2` uses the L2 RPC, 999999 optimizer runs,
 no bytecode hash and Cancun, matching base/contracts. It appends `l2ToL1MessagePasser`, `l1Block`,
@@ -156,9 +159,11 @@ and state-change descriptions. Expected state changes:
   unlike Sepolia's packed state. All three fee vaults and OperatorFeeVault initialize their storage
   configuration without clearing totalProcessed in slot 0. The new ERC20 factory deployments mapping
   starts empty; it does not backfill tokens created by the old factory.
-- L2 storage changes are not part of the L1 validation state diff. The script post-check replays the
-  deposits on an L2 fork and checks implementation addresses, versions and all three vaults' initialized
-  recipient, minimum withdrawal and withdrawal network. Each upgrade is its own deposit so the
+- L2 storage changes are not part of the L1 validation state diff. On mainnet, the script post-check validates the
+  captured deposit arguments in order, including the target, zero value, gas limit, creation flag and
+  calldata. It replays that decoded calldata on an L2 fork and checks implementation addresses,
+  versions and all three vaults' initialized recipient, minimum withdrawal and withdrawal network.
+  Sepolia replays its five expected calls and checks the same vault settings. Each upgrade is its own deposit so the
   L2 ProxyAdmin sees the aliased owner.
 - Safe nonce and approval changes.
 
@@ -227,14 +232,24 @@ including the notice window, simulates the owner transaction using the actual ap
 all deposits on the current L2 fork. Missing deployment addresses or approvals stop the command.
 Do not execute unless it succeeds; the historical `test` / `simulate` target is not a substitute.
 
-The 300000 uniform limit exceeds 1.5 times every cold L2 measurement. Portal burn for all deposits
+The historical isolated gas tests require 1.5 times each deposit's total gas to fit within 300000.
+The total includes execution gas, 21000 intrinsic gas and calldata gas. They include CALL and measurement overhead
+in execution gas and take no refund credit. The largest measured total is 126660 gas for each of
+the standard bridge and ERC721 bridge migrations, requiring 189990 gas with the margin. A plain
+upgrade measures 24506 execution gas, not the warm 6933. The 300000 uniform limit remains unchanged.
+These are historical fixture measurements; `simulate-current` checks the actual deposited calldata
+and replays it with the deposit gas limit minus intrinsic and calldata gas, but does not measure
+cold transaction gas.
+Portal burn for all deposits
 is bounded by `3900000 * fee / max(L1 basefee, 1 gwei)` without credit for metered work.
 In `setUp` (validation, approval and execution simulations), the script reads live portal `params()`
 and resource configuration. It bounds `fee` by `prevBaseFee` plus any positive first-deposit fee
 update from the previous block's bought gas, applies the configured minimum (and maximum on a block
 update), and takes no
 credit for empty-block decay. It requires this burn plus a 5000000 base-cost allowance to be at most
-14000000 gas. The allowance rounds the measured ~4300000 baseline transaction cost up by ~16%,
+14000000 gas. The isolated owner transaction measures 4218345 gas including intrinsic and calldata
+gas, without refund credit. The test requires at least 10% margin within the 5000000 allowance.
+The allowance rounds that baseline up by ~18.5%,
 then adds the full metering burn without subtracting the baseline's burn. The 14000000 ceiling
 leaves 2777216 gas (~16.6%) below the EIP-7825 per-transaction cap of 16777216. At a 1 gwei portal
 fee and L1 basefee below 1 gwei the burn bound is 3900000; each additional 1 gwei adds 3900000.

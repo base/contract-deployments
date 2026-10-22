@@ -165,7 +165,8 @@ MAINNET_CONFIG_ENV = FACTORY_BRIDGE=$(FACTORY_BRIDGE) REMOTE_CHAIN_ID=$(REMOTE_C
 	OPERATOR_FEE_VAULT_RECIPIENT=$(OPERATOR_FEE_VAULT_RECIPIENT) \
 	OPERATOR_FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=$(OPERATOR_FEE_VAULT_MIN_WITHDRAWAL_AMOUNT) \
 	OPERATOR_FEE_VAULT_WITHDRAWAL_NETWORK=$(OPERATOR_FEE_VAULT_WITHDRAWAL_NETWORK)
-UPGRADE_ENV += $(MAINNET_CONFIG_ENV) \
+UPGRADE_ENV += CB_MULTISIG=$(CB_MULTISIG) BASE_SECURITY_COUNCIL=$(BASE_SECURITY_COUNCIL) \
+	$(MAINNET_CONFIG_ENV) \
 	ERC721_FACTORY_IMPL=$(call impl,optimismMintableERC721Factory) \
 	OPERATOR_FEE_VAULT_IMPL=$(call impl,operatorFeeVault) \
 	SCHEMA_REGISTRY_IMPL=$(call impl,schemaRegistry) EAS_IMPL=$(call impl,eas) \
@@ -179,6 +180,15 @@ deps:
 	cd $(PROJECT_DIR) && $(MISE_EXEC) forge install --no-git \
 		github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d \
 		github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@0a2cb9a445c365870ed7a8ab461b12acf3e27d63
+
+.PHONY: check-upgrade-env
+check-upgrade-env:
+	@set -e; keys=' $(foreach assignment,$(UPGRADE_ENV),$(firstword $(subst =, ,$(assignment)))) '; \
+	for key in $$(grep -oE 'vm\.env[A-Za-z0-9_]+\("[A-Z0-9_]+"' script/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol | cut -d '"' -f 2 | sort -u); do \
+		case "$$keys" in *" $$key "*) ;; *) echo "UPGRADE_ENV missing $$key"; exit 1;; esac; \
+	done
+
+gen-validation-cb gen-validation-sc simulate-current test: check-upgrade-env
 
 .PHONY: check-prover-hashes deploy-remaining-l2 build-multisig simulate test
 check-prover-hashes:
@@ -210,6 +220,7 @@ simulate-current: check-implementations check-prover-hashes
 		--sig "simulate(bytes)" 0x -vvvv
 
 simulate test: build-multisig
-	cd $(TASK_PROJECT_DIR) && $(UPGRADE_ENV) L1_RPC_URL=$(L1_RPC_URL) CB_MULTISIG=$(CB_MULTISIG) \
-		$(MISE_EXEC) forge test -vv
+	cd $(TASK_PROJECT_DIR) && export $(UPGRADE_ENV) L1_RPC_URL=$(L1_RPC_URL) && \
+		$(MISE_EXEC) forge test --no-match-test 'testCold' -vv && \
+		$(MISE_EXEC) forge test --isolate --match-test 'testCold' -vv
 endif

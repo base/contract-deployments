@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
 
-import {console} from "forge-std/console.sol";
 import {LegacyMigrator} from "./LegacyMigrator.sol";
 import {Vm, VmSafe} from "forge-std/Vm.sol";
 
@@ -50,7 +49,7 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
     // Each deposit must call the L2 ProxyAdmin directly so it sees the aliased owner, not an L2 multicall.
     // The L1 simulation cannot execute deposits, so the post-check replays them on an L2 fork.
     uint64 internal constant L2_GAS_LIMIT = 300_000;
-    // Round the measured ~4.3M baseline up to 5M, add the full burn, and leave 2,777,216 below EIP-7825.
+    // Round the cold ~4.22M baseline up to 5M, add the full burn, and leave 2,777,216 below EIP-7825.
     uint256 internal constant MAX_PROJECTED_L1_GAS = 14_000_000;
     uint256 internal constant L1_BASE_GAS_BUDGET = 5_000_000;
     string internal constant L2_TO_L1_MESSAGE_PASSER_VERSION = "1.2.0";
@@ -255,8 +254,7 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
 
     function _postCheck(Vm.AccountAccess[] memory accesses, Simulation.Payload memory) internal override {
         _assertDenimUpgrade();
-        _assertDeposits(accesses);
-        _assertL2Upgrade();
+        _assertL2Upgrade(_assertDeposits(accesses));
     }
 
     function _assertDenimUpgrade() internal view {
@@ -320,7 +318,9 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
         require(av.L2_BLOCK_TIME() == live.L2_BLOCK_TIME(), "l2 block time mismatch");
     }
 
-    function _assertDeposits(Vm.AccountAccess[] memory accesses) internal view {
+    function _assertDeposits(Vm.AccountAccess[] memory accesses) internal view returns (bytes[] memory deposited) {
+        bytes[] memory expected = _l2Calls();
+        deposited = new bytes[](expected.length);
         bytes4 depositSelector = IOptimismPortal2.depositTransaction.selector;
         uint256 deposits;
         for (uint256 i; i < accesses.length; i++) {
@@ -329,12 +329,25 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
             if (access.data.length < 4 || bytes4(access.data) != depositSelector) continue;
             require(access.accessor == ownerSafe, "deposit not sent by the proxy admin owner");
             require(!access.reverted, "deposit reverted");
+            require(deposits < expected.length, "unexpected deposit count");
+            bytes memory arguments = new bytes(access.data.length - 4);
+            for (uint256 j; j < arguments.length; j++) {
+                arguments[j] = access.data[j + 4];
+            }
+            (address to, uint256 value, uint64 gasLimit, bool isCreation, bytes memory data) =
+                abi.decode(arguments, (address, uint256, uint64, bool, bytes));
+            require(to == ADMIN, "deposit target mismatch");
+            require(value == 0 && access.value == 0, "deposit value mismatch");
+            require(gasLimit == L2_GAS_LIMIT, "deposit gas limit mismatch");
+            require(!isCreation, "deposit creates contract");
+            require(keccak256(data) == keccak256(expected[deposits]), "deposit data mismatch");
+            deposited[deposits] = data;
             deposits++;
         }
         require(deposits == 13, "unexpected deposit count");
     }
 
-    function _assertL2Upgrade() internal {
+    function _assertL2Upgrade(bytes[] memory calls) internal {
         uint256 l1Fork = vm.activeFork();
         vm.selectFork(l2Fork);
         _assertL2Before();
@@ -357,30 +370,12 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
         processed[3] = _uint(VAULT, "totalProcessed()");
         uint256 nonce = _uint(MESSENGER, "messageNonce()");
         bytes32 sender = vm.load(MESSENGER, bytes32(uint256(204)));
-        bytes[] memory calls = _l2Calls();
         for (uint256 i; i < 13; i++) {
             require(impls[i].code.length != 0, "implementation missing");
-            vm.cool(ADMIN);
-            vm.cool(proxies[i]);
-            vm.cool(impls[i]);
-            vm.cool(legacyMigrator);
-            vm.coolSlot(ADMIN, bytes32(0));
-            vm.coolSlot(ADMIN, IMPLEMENTATION_SLOT);
-            vm.coolSlot(proxies[i], IMPLEMENTATION_SLOT);
-            vm.coolSlot(proxies[i], ADMIN_SLOT);
-            vm.coolSlot(proxies[i], INITIALIZABLE_SLOT);
-            for (uint256 slot; slot <= 4; slot++) {
-                vm.coolSlot(proxies[i], bytes32(slot));
-            }
-            vm.coolSlot(MESSENGER, bytes32(uint256(204)));
-            vm.coolSlot(MESSENGER, bytes32(uint256(207)));
             vm.prank(aliasOwner);
-            uint256 beforeGas = gasleft();
-            (bool ok, bytes memory reason) = ADMIN.call{gas: L2_GAS_LIMIT}(calls[i]);
-            uint256 used = beforeGas - gasleft();
-            console.log("L2 cold call gas", i, used);
+            uint256 executionLimit = L2_GAS_LIMIT - _intrinsicGas(calls[i]);
+            (bool ok, bytes memory reason) = ADMIN.call{gas: executionLimit}(calls[i]);
             if (!ok) assembly { revert(add(reason, 32), mload(reason)) }
-            require(used * 3 <= uint256(L2_GAS_LIMIT) * 2, "L2 call lacks gas headroom");
         }
         _assertPredeploy(proxies[0], impls[0], L2_TO_L1_MESSAGE_PASSER_VERSION);
         _assertPredeploy(proxies[1], impls[1], L1_BLOCK_VERSION);
@@ -396,6 +391,13 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
         require(IL2ProxyAdmin(ADMIN).owner() == aliasOwner, "l2 owner changed");
         _assertBaseTime();
         vm.selectFork(l1Fork);
+    }
+
+    function _intrinsicGas(bytes memory data) internal pure returns (uint256 gas) {
+        gas = 21_000;
+        for (uint256 i; i < data.length; i++) {
+            gas += data[i] == 0 ? 4 : 16;
+        }
     }
 
     function _assertFeeVault(address proxy, address impl) internal view {

@@ -2,7 +2,7 @@
 pragma solidity 0.8.15;
 
 import {Script, console} from "forge-std/Script.sol";
-import {Vm} from "forge-std/Vm.sol";
+import {Vm, VmSafe} from "forge-std/Vm.sol";
 import {Simulation} from "@base-contracts/scripts/universal/Simulation.sol";
 import {AggregateVerifier} from "@base-contracts/src/L1/proofs/AggregateVerifier.sol";
 import {DeployDenimProofImpls} from "../script/DeployDenimProofImpls.s.sol";
@@ -50,7 +50,26 @@ contract MainnetHarness is ExecuteDenimUpgradeWithAllL2Predeploys {
     }
 
     function replay() external {
-        _assertL2Upgrade();
+        _assertL2Upgrade(_l2Calls());
+    }
+
+    function l2Calls() external view returns (bytes[] memory, uint64) {
+        return (_l2Calls(), L2_GAS_LIMIT);
+    }
+
+    function checkDeposits(Vm.AccountAccess[] memory accesses) external view returns (bytes[] memory) {
+        return _assertDeposits(accesses);
+    }
+
+    function depositAccesses() external view returns (Vm.AccountAccess[] memory accesses) {
+        Call[] memory calls = _buildCalls();
+        accesses = new Vm.AccountAccess[](13);
+        for (uint256 i; i < 13; i++) {
+            accesses[i].account = optimismPortal;
+            accesses[i].accessor = ownerSafe;
+            accesses[i].kind = VmSafe.AccountAccessKind.Call;
+            accesses[i].data = calls[i + 2].data;
+        }
     }
 
     function simulateForTest() external {
@@ -66,10 +85,12 @@ contract MainnetHarness is ExecuteDenimUpgradeWithAllL2Predeploys {
         require(used < 12_000_000, "owner transaction lacks gas headroom");
         _postCheck(accesses, payload);
         require(vm.revertToState(snapshot), "simulation restore failed");
-        _measureOwnerTransaction(_buildCallsChain(safes)[0], accesses);
     }
 
-    function _measureOwnerTransaction(Call memory call, Vm.AccountAccess[] memory accesses) internal {
+    function prepareOwnerTransaction() external returns (address, bytes memory) {
+        address[] memory safes = new address[](1);
+        safes[0] = ownerSafe;
+        Call memory call = _buildCallsChain(safes)[0];
         address base = vm.envAddress("CB_MULTISIG");
         address council = vm.envAddress("BASE_SECURITY_COUNCIL");
         bytes32 hash = _getTransactionHash(ownerSafe, call);
@@ -86,17 +107,7 @@ contract MainnetHarness is ExecuteDenimUpgradeWithAllL2Predeploys {
             uint8(1)
         );
         Call memory execution = _buildExecTransactionCall(ownerSafe, call, signatures);
-        for (uint256 i; i < accesses.length; i++) {
-            vm.cool(accesses[i].account);
-            for (uint256 j; j < accesses[i].storageAccesses.length; j++) {
-                vm.coolSlot(accesses[i].account, accesses[i].storageAccesses[j].slot);
-            }
-        }
-        uint256 beforeExecution = gasleft();
-        (bool ok, bytes memory result) = ownerSafe.call{gas: 12_000_000}(execution.data);
-        uint256 executionGas = beforeExecution - gasleft() + 21_000 + 16 * execution.data.length;
-        console.log("L1 two-owner transaction gas upper bound", executionGas);
-        require(ok && abi.decode(result, (bool)) && executionGas < 12_000_000, "owner transaction too expensive");
+        return (ownerSafe, execution.data);
     }
 }
 
@@ -195,6 +206,112 @@ contract MainnetTest is Script {
         bool ok;
         (ok, result) = target.staticcall(data);
         require(ok, "record read failed");
+    }
+
+    function _intrinsicGas(bytes memory data) internal pure returns (uint256 gas) {
+        gas = 21_000;
+        for (uint256 i; i < data.length; i++) {
+            gas += data[i] == 0 ? 4 : 16;
+        }
+    }
+
+    function testColdL2DepositGas() public {
+        MainnetHarness upgrade = _upgradeL2();
+        (bytes[] memory calls, uint64 limit) = upgrade.l2Calls();
+        address aliasOwner = 0x8cC51c3008b3f03Fe483B28B8Db90e19cF076a6d;
+        for (uint256 i; i < calls.length; i++) {
+            uint256 intrinsic = _intrinsicGas(calls[i]);
+            vm.prank(aliasOwner);
+            uint256 beforeGas = gasleft();
+            (bool ok,) = ADMIN.call{gas: limit - intrinsic}(calls[i]);
+            // Isolated calls charge intrinsic gas and deduct refunds from gasleft().
+            uint256 total = beforeGas - gasleft();
+            Vm.Gas memory measured = vm.lastCallGas();
+            if (measured.gasRefunded > 0) total += uint64(measured.gasRefunded);
+            uint256 execution = total - intrinsic;
+            require(ok, "cold deposit failed");
+            if (i == 0) require(execution > 20_000, "gas measurement is not cold; use --isolate");
+            console.log("L2 cold execution gas", i, execution);
+            console.log("L2 intrinsic gas", i, intrinsic);
+            console.log("L2 total gas", i, execution + intrinsic);
+            require((execution + intrinsic) * 3 <= uint256(limit) * 2, "L2 deposit lacks gas headroom");
+        }
+    }
+
+    function testColdL1OwnerTransactionGas() public {
+        MainnetHarness upgrade = new MainnetHarness();
+        upgrade.setUp();
+        (address owner, bytes memory data) = upgrade.prepareOwnerTransaction();
+        uint256 beforeGas = gasleft();
+        (bool ok, bytes memory result) = owner.call{gas: 12_000_000}(data);
+        // Isolation already includes transaction intrinsic gas in the charged gas.
+        uint256 total = beforeGas - gasleft();
+        Vm.Gas memory measured = vm.lastCallGas();
+        if (measured.gasRefunded > 0) total += uint64(measured.gasRefunded);
+        console.log("L1 cold owner transaction gas", total);
+        require(ok && abi.decode(result, (bool)), "owner transaction failed");
+        require(total * 11 <= 5_000_000 * 10, "L1 baseline lacks ten percent margin");
+    }
+
+    function testRejectsCorruptedDeposits() public {
+        MainnetHarness upgrade = new MainnetHarness();
+        Vm.AccountAccess[] memory accesses = upgrade.depositAccesses();
+        bytes[] memory decoded = upgrade.checkDeposits(accesses);
+        require(decoded.length == 13, "valid deposits rejected");
+        bytes memory original = accesses[0].data;
+        bytes memory args = new bytes(original.length - 4);
+        for (uint256 i; i < args.length; i++) {
+            args[i] = original[i + 4];
+        }
+        (address to, uint256 value, uint64 gasLimit, bool creation, bytes memory data) =
+            abi.decode(args, (address, uint256, uint64, bool, bytes));
+        for (uint256 field; field < 5; field++) {
+            accesses[0].data = abi.encodeWithSelector(
+                bytes4(original),
+                field == 0 ? address(1) : to,
+                field == 1 ? uint256(1) : value,
+                field == 2 ? gasLimit + 1 : gasLimit,
+                field == 3 ? true : creation,
+                field == 4 ? bytes("corrupt") : data
+            );
+            string[5] memory errors = [
+                string("deposit target mismatch"),
+                "deposit value mismatch",
+                "deposit gas limit mismatch",
+                "deposit creates contract",
+                "deposit data mismatch"
+            ];
+            vm.expectRevert(bytes(errors[field]));
+            upgrade.checkDeposits(accesses);
+        }
+        accesses[0].data = original;
+        (accesses[0], accesses[1]) = (accesses[1], accesses[0]);
+        vm.expectRevert(bytes("deposit data mismatch"));
+        upgrade.checkDeposits(accesses);
+    }
+
+    function testRejectsInstalledBaseTime() public {
+        MainnetHarness upgrade = new MainnetHarness();
+        vm.selectFork(upgrade.l2ForkId());
+        vm.store(
+            0x4200000000000000000000000000000000000030,
+            0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc,
+            bytes32(uint256(1))
+        );
+        vm.expectRevert(bytes("BaseTime already installed"));
+        upgrade.replay();
+    }
+
+    function testRejectsWrongBaseTimeAdmin() public {
+        MainnetHarness upgrade = new MainnetHarness();
+        vm.selectFork(upgrade.l2ForkId());
+        vm.store(
+            0x4200000000000000000000000000000000000030,
+            0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103,
+            bytes32(uint256(1))
+        );
+        vm.expectRevert(bytes("BaseTime admin mismatch"));
+        upgrade.replay();
     }
 
     function testLiveRecordsSurviveUpgrade() public {
