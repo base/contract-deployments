@@ -39,7 +39,7 @@ make TASK_NETWORK=<network> deploy-l1 RESUME=1
 make TASK_NETWORK=<network> deploy-l2 RESUME=1
 ```
 
-`--resume` only re-sends the unconfirmed transactions from `records/` and doesn't re-run the script's checks. Afterwards, confirm onchain that the `BalanceTracker` proxy's `admin()` is `NEW_ADMIN` and that every address in `addresses.json` has code. `gen-validation` also refuses to run until the `BalanceTracker` admin is `NEW_ADMIN`. Delete `addresses.json` only if `records/` shows that no transaction was sent.
+`--resume` only re-sends the unconfirmed transactions from `records/` and doesn't re-run the script's checks. It can't recover transactions that were mined but reverted. If a creation reverted, for example out of gas, check whether each address in `addresses.json` has code. If none does, nothing usable was deployed: delete `addresses.json` and run the target again without `RESUME`. Afterwards, confirm onchain that the `BalanceTracker` proxy's `admin()` is `NEW_ADMIN` and that every address in `addresses.json` has code. `gen-validation` also refuses to run until the `BalanceTracker` admin is `NEW_ADMIN`. Delete `addresses.json` only if `records/` shows that no transaction was sent.
 
 ## Generate validation files
 
