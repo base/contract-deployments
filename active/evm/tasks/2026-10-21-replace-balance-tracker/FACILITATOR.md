@@ -20,8 +20,8 @@ make TASK_NETWORK=<network> deps
 
 Use the Ledger account at `LEDGER_ACCOUNT`; it needs gas on both L1 and L2. Each script simulates and checks its output before broadcasting:
 
-- `deploy-l1` checks the new proxy's admin, implementation, profit wallet, system addresses and targets, and that neither the proxy nor the implementation can be reinitialized.
-- `deploy-l2` runs `disburseFees()` through the live `FeeDisburser` proxy with the new implementation against the live fee vaults.
+- `deploy-l1` checks the new proxy's admin, implementation, profit wallet, system addresses and targets. It also checks that `initialize` with the real arguments reverts with the initializer guard on both the proxy and the implementation, and that `processFees()` refills both system addresses and sends the rest to the profit wallet.
+- `deploy-l2` runs `disburseFees()` through the live `FeeDisburser` proxy with the new implementation. Each fee vault is topped up to its minimum withdrawal amount first, so every vault withdrawal and the bridge to the new `BalanceTracker` always run.
 
 ```sh
 make TASK_NETWORK=<network> deploy-l1
@@ -29,6 +29,17 @@ make TASK_NETWORK=<network> deploy-l2
 ```
 
 Commit `config/<network>/addresses.json` and the task-scoped `records/`. Each target refuses to run again once its address is recorded.
+
+### If a deploy fails partway
+
+The scripts write `addresses.json` during simulation, before broadcasting. If the broadcast then fails, some transactions may be onchain and others not. For example, `deploy-l1` can stop before `changeAdmin`, leaving the new proxy admined by the facilitator's Ledger. Don't delete `addresses.json` or start a fresh deployment. Finish the recorded broadcast instead:
+
+```sh
+make TASK_NETWORK=<network> deploy-l1 RESUME=1
+make TASK_NETWORK=<network> deploy-l2 RESUME=1
+```
+
+`--resume` only re-sends the unconfirmed transactions from `records/` and doesn't re-run the script's checks. Afterwards, confirm onchain that the `BalanceTracker` proxy's `admin()` is `NEW_ADMIN` and that every address in `addresses.json` has code. `gen-validation` also refuses to run until the `BalanceTracker` admin is `NEW_ADMIN`. Delete `addresses.json` only if `records/` shows that no transaction was sent.
 
 ## Generate validation files
 
