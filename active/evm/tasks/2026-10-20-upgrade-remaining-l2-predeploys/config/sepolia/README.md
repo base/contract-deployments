@@ -1,6 +1,6 @@
 # Remaining L2 predeploy upgrades
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xf1796b09553f22172fdccf79d6b203bf5fc9bfab8512720bd148b19e7f13ab9d)
 
 Upgrades eight Base Sepolia predeploys to base/contracts v8.4.0. The L1 ProxyAdmin owner sends eight separate deposits through the OptimismPortal to the L2 ProxyAdmin. Its L2 alias owns that ProxyAdmin. No ETH is transferred.
 
