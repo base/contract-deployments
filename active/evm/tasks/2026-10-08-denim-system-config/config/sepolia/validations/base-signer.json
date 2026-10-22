@@ -1,0 +1,67 @@
+{
+  "cmd": "CB_MULTISIG=0x646132A1667ca7aD00d36616AFBA1A28116C770A SYSTEM_CONFIG=0xf272670eb55e895584501d564AfEB048bEd26194 OLD_GAS_LIMIT=1200000000 NEW_GAS_LIMIT=120000000 OLD_EIP1559_DENOMINATOR=100 NEW_EIP1559_DENOMINATOR=1000 mise exec -- forge script --rpc-url https://ethereum-sepolia-rpc.publicnode.com tasks/2026-10-08-denim-system-config/script/UpdateDenimGasParams.s.sol:UpdateDenimGasParams --sig sign(address[]) [] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://ethereum-sepolia-rpc.publicnode.com",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+    "domainHash": "0x1d3f2566fd7b1bf017258b03d4d4d435d326d9cb051d5b7993d7c65e7ec78d0e",
+    "messageHash": "0xaebf2f1262036a49b091686f557c586a70714a906ee5a309270c168d9abfa401"
+  },
+  "stateOverrides": [
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x33eccc13e40bfe26bb3d4e3269031cc5abfd276d8e39208517f75f9a6fda6abb",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "CB Coordinator Safe - Sepolia",
+      "address": "0x646132A1667ca7aD00d36616AFBA1A28116C770A",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000021",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000022",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "System Config - Sepolia",
+      "address": "0xf272670eb55e895584501d564AfEB048bEd26194",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000068",
+          "before": "0x00000000000000000000000000000000000a118b0000044d0000000047868c00",
+          "after": "0x00000000000000000000000000000000000a118b0000044d0000000007270e00",
+          "description": "Sets gasLimit from 1,200,000,000 to 120,000,000. basefeeScalar and blobbasefeeScalar are unchanged.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x000000000000000000000000000000000000000000000000000000000000006a",
+          "before": "0x0000000000000000000001be0000000000000000000000000000000f00000064",
+          "after": "0x0000000000000000000001be0000000000000000000000000000000f000003e8",
+          "description": "Sets eip1559Denominator from 100 to 1000. eip1559Elasticity (15) and daFootprintGasScalar (446) are unchanged.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
