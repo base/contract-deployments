@@ -29,7 +29,7 @@
     },
     "mainnet": {
       "step": "authoring",
-      "pr": null,
+      "pr": "https://github.com/base/contract-deployments/pull/827",
       "blocksec_ticket": null,
       "signatures": {
         "base": {
