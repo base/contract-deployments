@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "task": "2026-10-20-upgrade-remaining-l2-predeploys",
+  "kind": "active",
+  "last_updated": "2026-10-22T18:25:48Z",
+  "networks": {
+    "sepolia": {
+      "step": "executed",
+      "pr": "https://github.com/base/contract-deployments/pull/825",
+      "blocksec_ticket": "https://jira.coinbase-corp.com/browse/BLOCKSEC-5445",
+      "signatures": {
+        "base": { "collected": 3, "required": 3 },
+        "security-council": { "collected": 1, "required": 1 }
+      },
+      "executed_tx": "0xf1796b09553f22172fdccf79d6b203bf5fc9bfab8512720bd148b19e7f13ab9d"
+    }
+  }
+}
