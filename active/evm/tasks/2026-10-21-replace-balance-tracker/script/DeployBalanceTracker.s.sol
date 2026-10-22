@@ -32,21 +32,12 @@ contract DeployBalanceTracker is Script {
     }
 
     function run() external {
-        address payable[] memory systemAddresses = new address payable[](2);
-        systemAddresses[0] = SYSTEM_ADDRESS_0;
-        systemAddresses[1] = SYSTEM_ADDRESS_1;
-        uint256[] memory targetBalances = new uint256[](2);
-        targetBalances[0] = TARGET_BALANCE_0;
-        targetBalances[1] = TARGET_BALANCE_1;
-
         vm.startBroadcast();
         (, address deployer,) = vm.readCallers();
 
         balanceTrackerImpl = address(new BalanceTracker(PROFIT_WALLET));
         Proxy proxy = new Proxy(deployer);
-        proxy.upgradeToAndCall(
-            balanceTrackerImpl, abi.encodeCall(BalanceTracker.initialize, (systemAddresses, targetBalances))
-        );
+        proxy.upgradeToAndCall(balanceTrackerImpl, _initializeCall());
         proxy.changeAdmin(NEW_ADMIN);
 
         vm.stopBroadcast();
@@ -77,11 +68,8 @@ contract DeployBalanceTracker is Script {
         (bool hasThird,) = balanceTracker.staticcall(abi.encodeWithSelector(tracker.systemAddresses.selector, 2));
         require(!hasThird, "unexpected system address count");
 
-        address payable[] memory none = new address payable[](0);
-        (bool ok,) = balanceTracker.call(abi.encodeCall(BalanceTracker.initialize, (none, new uint256[](0))));
-        require(!ok, "proxy can be reinitialized");
-        (ok,) = balanceTrackerImpl.call(abi.encodeCall(BalanceTracker.initialize, (none, new uint256[](0))));
-        require(!ok, "implementation can be initialized");
+        _assertInitializerLocked(balanceTracker, "proxy can be reinitialized");
+        _assertInitializerLocked(balanceTrackerImpl, "implementation can be initialized");
 
         uint256 snapshot = vm.snapshotState();
         uint256 profitBefore = PROFIT_WALLET.balance;
@@ -92,5 +80,28 @@ contract DeployBalanceTracker is Script {
         require(SYSTEM_ADDRESS_1.balance >= TARGET_BALANCE_1, "system address 1 not refilled");
         require(PROFIT_WALLET.balance >= profitBefore + 1 ether, "profit not sent");
         vm.revertToState(snapshot);
+    }
+
+    /// @dev Uses the real initialize arguments, so the only possible revert is the initializer guard.
+    function _assertInitializerLocked(address target, string memory message) internal {
+        (bool ok, bytes memory reason) = target.call(_initializeCall());
+        require(!ok, message);
+        require(
+            keccak256(reason)
+                == keccak256(
+                    abi.encodeWithSignature("Error(string)", "Initializable: contract is already initialized")
+                ),
+            "unexpected initialize revert"
+        );
+    }
+
+    function _initializeCall() internal view returns (bytes memory) {
+        address payable[] memory systemAddresses = new address payable[](2);
+        systemAddresses[0] = SYSTEM_ADDRESS_0;
+        systemAddresses[1] = SYSTEM_ADDRESS_1;
+        uint256[] memory targetBalances = new uint256[](2);
+        targetBalances[0] = TARGET_BALANCE_0;
+        targetBalances[1] = TARGET_BALANCE_1;
+        return abi.encodeCall(BalanceTracker.initialize, (systemAddresses, targetBalances));
     }
 }
