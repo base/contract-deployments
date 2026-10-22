@@ -49,7 +49,13 @@ make TASK_NETWORK=<network> gen-validation
 
 This writes `config/<network>/validations/base-signer.json` for `OWNER_SAFE`. The post-check replays both deposits as the alias of `OWNER_SAFE` on an L2 fork. It then asserts the new implementation, the new admin, the new `L1_WALLET`, and an unchanged `lastDisbursementTime`.
 
-Check the state diff and replace any summary placeholders. Commit the validation, set the network step to `ready_to_sign`, then `collecting`, and update the `base` signature count in `status.json` as signatures arrive.
+Check the state diff and replace any summary placeholders. This task is not a mainnet ProxyAdmin-owner operation, so remove the generated `taskOriginConfig` and add this root field instead:
+
+```json
+"skipTaskOriginValidation": true
+```
+
+Commit the validation, set the network step to `ready_to_sign`, then `collecting`, and update the `base` signature count in `status.json` as signatures arrive.
 
 ## Execute
 
