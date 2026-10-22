@@ -19,6 +19,11 @@ import {GameType} from "@base-contracts/src/libraries/bridge/Types.sol";
 
 import {IAggregateVerifierV020} from "./IAggregateVerifierV020.sol";
 
+interface IMainnetSafe {
+    function getThreshold() external view returns (uint256);
+    function getOwners() external view returns (address[] memory);
+}
+
 interface IProxyAdmin {
     function owner() external view returns (address);
 }
@@ -64,6 +69,8 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
     string internal constant NEW_VERSION = "0.3.0";
 
     address internal immutable ownerSafe;
+    address internal immutable baseSafe = vm.envAddress("CB_MULTISIG");
+    address internal immutable councilSafe = vm.envAddress("BASE_SECURITY_COUNCIL");
     address internal immutable proxyAdmin;
     address internal immutable disputeGameFactory;
     GameType internal immutable gameType;
@@ -132,6 +139,12 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
             "prover hashes missing"
         );
         require(!IOptimismPortal2(payable(optimismPortal)).paused(), "optimism portal paused");
+        require(_eq(ISemver(optimismPortal).version(), "6.0.1"), "portal version changed");
+        require(
+            uint256(L2_GAS_LIMIT) * 13
+                < IOptimismPortal2(payable(optimismPortal)).systemConfig().resourceConfig().maxResourceLimit,
+            "deposits exhaust portal resource limit"
+        );
         require(feeVaultRecipient != address(0), "fee vault recipient not set");
         IDisputeGameFactoryAdmin dgf = IDisputeGameFactoryAdmin(disputeGameFactory);
         IProtocolVersions registry = IProtocolVersions(protocolVersions);
@@ -139,6 +152,19 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
         // Both calls are authorized against the same Safe: the factory owner and the ProxyAdmin owner.
         require(dgf.owner() == ownerSafe, "dgf owner mismatch");
         require(IProxyAdmin(proxyAdmin).owner() == ownerSafe, "proxy admin owner mismatch");
+        _assertSafe(ownerSafe, 2, 2);
+        _assertSafe(baseSafe, 3, 6);
+        _assertSafe(councilSafe, 8, 11);
+        address[] memory owners = IMainnetSafe(ownerSafe).getOwners();
+        require(
+            (owners[0] == baseSafe && owners[1] == councilSafe) || (owners[1] == baseSafe && owners[0] == councilSafe),
+            "owner Safe members changed"
+        );
+        require(IAggregateVerifierV020(oldAggregateVerifier).BLOCK_INTERVAL() == 600, "slow interval changed");
+        require(
+            IAggregateVerifierV020(oldAggregateVerifier).INTERMEDIATE_BLOCK_INTERVAL() == 30,
+            "slow intermediate interval changed"
+        );
 
         require(dgf.gameImpls(gameType) == oldAggregateVerifier, "unexpected current aggregate verifier");
         require(dgf.gameArgs(gameType).length == 0, "aggregate game args not empty");
@@ -150,6 +176,8 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
 
         uint64[] memory schedule = registry.getSchedule();
         require(schedule.length == DENIM_UPGRADE_ID, "unexpected upgrade count");
+        require(schedule[7] == 0 && schedule[12] == 1790791200, "legacy schedule changed");
+        require(registry.MIN_NOTICE() == 3600, "minimum notice changed");
         require(denimActivationTimestamp > schedule[schedule.length - 1], "denim must activate after cobalt");
         require(
             denimActivationTimestamp >= uint64(block.timestamp) + registry.MIN_NOTICE(),
@@ -161,6 +189,11 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
         );
         require(newMinimumProtocolVersion > currentMinimumProtocolVersion, "minimum protocol version not increased");
         require(newMinimumProtocolVersion <= type(uint128).max, "minimum protocol version too large");
+    }
+
+    function _assertSafe(address safe, uint256 threshold, uint256 owners) internal view {
+        require(IMainnetSafe(safe).getThreshold() == threshold, "Safe threshold changed");
+        require(IMainnetSafe(safe).getOwners().length == owners, "Safe owner count changed");
     }
 
     function _buildCalls() internal view override returns (Call[] memory) {
@@ -540,6 +573,7 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
         }
         require(_uint(FACTORY, "BRIDGE()") == uint160(factoryBridge), "live factory bridge changed");
         require(_uint(FACTORY, "REMOTE_CHAIN_ID()") == remoteChainId, "live remote chain changed");
+        require(vm.load(FACTORY, bytes32(0)) == bytes32(0), "ERC721 factory root slot changed");
         require(_uint(VAULT, "RECIPIENT()") == uint160(vaultRecipient), "live operator recipient changed");
         require(_uint(VAULT, "MIN_WITHDRAWAL_AMOUNT()") == vaultMinimum, "live operator minimum changed");
         require(_uint(VAULT, "WITHDRAWAL_NETWORK()") == vaultNetwork, "live operator network changed");

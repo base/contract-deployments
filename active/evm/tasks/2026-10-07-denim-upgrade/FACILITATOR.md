@@ -50,10 +50,21 @@ Open `config/<network>/.env` and confirm:
 
 Every other `AggregateVerifier` constructor argument is copied from the live verifier at deploy time.
 
-For mainnet, obtain PCR0 and both SP1 verification keys from the reproducible v1.5.1-based prover
-build before deploying or generating validations. The three hash fields intentionally start blank.
-The Sepolia f3a459f build cannot derive post-Denim mainnet blocks because it disables mainnet Denim.
-Do not reuse its hashes. Mainnet validation, approval and execution also refuse missing hashes.
+For mainnet, verify the PCR0 and both SP1 verification keys against the v1.5.1 build provenance
+in the network config before deploying or generating validations. The Sepolia f3a459f build cannot
+derive post-Denim mainnet blocks because it disables mainnet Denim. Do not reuse its hashes.
+Mainnet validation, approval and execution refuse missing hashes.
+
+Build enclave and zk images from exactly base/base v1.5.1 at 5476069f1eb74a56bccb56fdefd4b4bb0e3cda42.
+Use the proof-build recipes at 228352e514233177a65cc2d9873f6bf4b08e67cd, Rust 1.94.0 alpine,
+linuxkit v1.8.2 and aws-nitro-enclaves-image-format 483114f. A different source revision, recipe or
+toolchain can change the accepted hashes.
+
+The mainnet script checks L1 chain id 1, L2 chain id 8453, the owner Safe's 2-of-2 membership,
+Base 3-of-6 and Security Council 8-of-11, the current verifier's 600/30 intervals, portal version
+6.0.1, the portal resource budget, schedule length 13, canceled entry 7, last entry 1790791200,
+and MIN_NOTICE 3600. It also checks the live L2 versions, proxy admins, legacy storage guards
+and counterpart/vault configuration. Re-run simulation if any precondition changes.
 
 Mainnet preserves the live vault recipients and L2 withdrawal networks. `BaseTime` is excluded:
 Denim installs it only while its implementation slot is empty. The mainnet script refuses an occupied

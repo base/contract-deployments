@@ -41,6 +41,10 @@ contract RevertingInitializer {
 }
 
 contract MainnetHarness is ExecuteDenimUpgradeWithAllL2Predeploys {
+    constructor() {
+        vm.rollFork(l2Fork, 52953400);
+    }
+
     function l2ForkId() external view returns (uint256) {
         return l2Fork;
     }
@@ -73,11 +77,20 @@ contract MainnetHarness is ExecuteDenimUpgradeWithAllL2Predeploys {
         vm.store(ownerSafe, Simulation.computeApprovedHashSlot(council, hash), bytes32(uint256(1)));
         require(vm.load(ownerSafe, bytes32(uint256(4))) == bytes32(uint256(2)), "owner threshold changed");
         require(council < base, "signature order changed");
-        bytes memory signatures = abi.encodePacked(bytes32(uint256(uint160(council))), bytes32(0), uint8(1), bytes32(uint256(uint160(base))), bytes32(0), uint8(1));
+        bytes memory signatures = abi.encodePacked(
+            bytes32(uint256(uint160(council))),
+            bytes32(0),
+            uint8(1),
+            bytes32(uint256(uint160(base))),
+            bytes32(0),
+            uint8(1)
+        );
         Call memory execution = _buildExecTransactionCall(ownerSafe, call, signatures);
         for (uint256 i; i < accesses.length; i++) {
             vm.cool(accesses[i].account);
-            for (uint256 j; j < accesses[i].storageAccesses.length; j++) vm.coolSlot(accesses[i].account, accesses[i].storageAccesses[j].slot);
+            for (uint256 j; j < accesses[i].storageAccesses.length; j++) {
+                vm.coolSlot(accesses[i].account, accesses[i].storageAccesses[j].slot);
+            }
         }
         uint256 beforeExecution = gasleft();
         (bool ok, bytes memory result) = ownerSafe.call{gas: 12_000_000}(execution.data);
@@ -106,6 +119,12 @@ contract MainnetTest is Script {
     ];
     address[13] internal implementations;
     uint256 internal l2;
+
+    struct PreservedState {
+        bytes32[9] blockAttributes;
+        bytes32[206] messengerState;
+        bytes easNonce;
+    }
 
     function _deploy(string memory artifact, bytes memory args) internal returns (address deployed) {
         bytes memory code = abi.encodePacked(vm.getCode(artifact), args);
@@ -199,6 +218,16 @@ contract MainnetTest is Script {
             abi.encodeWithSignature("messageNonce()")
         ];
         bytes32 domainBefore = keccak256(_read(proxies[8], abi.encodeWithSignature("getDomainSeparator()")));
+        PreservedState memory state;
+        for (uint256 i; i < 9; i++) {
+            state.blockAttributes[i] = vm.load(proxies[1], bytes32(i));
+        }
+        for (uint256 i = 1; i <= 206; i++) {
+            state.messengerState[i - 1] = vm.load(proxies[9], bytes32(i));
+        }
+        // A synthetic delegated nonce also pins the inherited EIP-712 mapping's storage location.
+        vm.store(proxies[8], keccak256(abi.encode(address(0xabcd), uint256(0))), bytes32(uint256(17)));
+        state.easNonce = _read(proxies[8], abi.encodeWithSignature("getNonce(address)", address(0xabcd)));
         bytes[6] memory beforeReads;
         for (uint256 i; i < 6; i++) {
             beforeReads[i] = _read(targets[i], reads[i]);
@@ -224,6 +253,17 @@ contract MainnetTest is Script {
             require(vault.balance == balances[i] && vm.load(vault, bytes32(0)) == totals[i], "vault accounting changed");
         }
         require(vm.load(proxies[10], depositSlot) == bytes32(uint256(123)), "native escrow changed");
+        for (uint256 i; i < 9; i++) {
+            require(vm.load(proxies[1], bytes32(i)) == state.blockAttributes[i], "L1Block attributes changed");
+        }
+        for (uint256 i = 1; i <= 206; i++) {
+            require(vm.load(proxies[9], bytes32(i)) == state.messengerState[i - 1], "messenger legacy state changed");
+        }
+        require(
+            keccak256(_read(proxies[8], abi.encodeWithSignature("getNonce(address)", address(0xabcd))))
+                == keccak256(state.easNonce),
+            "delegated nonce changed"
+        );
         require(
             keccak256(_read(proxies[8], abi.encodeWithSignature("getDomainSeparator()"))) != domainBefore,
             "EAS delegated signature domain not upgraded"
@@ -249,10 +289,20 @@ contract MainnetTest is Script {
                 : abi.encodeWithSignature("initialize(address,uint256,uint8)", address(1), uint256(1), uint8(1));
             address target = i >= 9 ? vm.envAddress("LEGACY_MIGRATOR") : bad;
             bytes memory data = i >= 9 ? abi.encodeWithSignature("migrate(address,bytes)", bad, init) : init;
+            vm.expectCall(bad, init);
             vm.prank(aliasOwner);
-            (bool ok,) =
+            (bool ok, bytes memory reason) =
                 ADMIN.call(abi.encodeWithSignature("upgradeAndCall(address,address,bytes)", proxies[i], target, data));
             require(!ok, "failed initializer accepted");
+            require(
+                keccak256(reason)
+                    == keccak256(
+                        abi.encodeWithSignature(
+                            "Error(string)", "Proxy: delegatecall to new implementation contract failed"
+                        )
+                    ),
+                "upgrade failed before reaching initializer"
+            );
             require(vm.load(proxies[i], implSlot) == oldImpl, "failed init changed implementation");
             require(vm.load(proxies[i], initializerSlot) == oldFlags, "failed init changed initializer flags");
             for (uint256 j; j < 5; j++) {
@@ -353,6 +403,15 @@ contract MainnetTest is Script {
         upgrade.setUp();
         vm.prank(vm.envAddress("CB_MULTISIG"));
         upgrade.simulateForTest();
+    }
+
+    function testRejectsChangedSafeThreshold() public {
+        MainnetHarness upgrade = new MainnetHarness();
+        vm.mockCall(
+            vm.envAddress("BASE_SECURITY_COUNCIL"), abi.encodeWithSignature("getThreshold()"), abi.encode(uint256(1))
+        );
+        vm.expectRevert(bytes("Safe threshold changed"));
+        upgrade.setUp();
     }
 
     function testMainnetSignerSimulation() public {
