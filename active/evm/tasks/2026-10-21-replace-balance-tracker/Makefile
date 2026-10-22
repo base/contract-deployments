@@ -63,6 +63,8 @@ task-extra-deps:
 # transactions from the task-scoped broadcast record instead of starting a fresh deployment.
 PARTIAL_DEPLOY = Deploy failed; $(ADDRESSES_JSON) is kept. Finish the broadcast with RESUME=1, see FACILITATOR.md.
 
+# Foundry 1.5.1 predates Sepolia's Oct 2026 fork and underprices contract creation by about 7x, so its
+# simulated gas limits run out of gas onchain. --skip-simulation sends sequentially with eth_estimateGas limits.
 .PHONY: deploy-l1
 deploy-l1:
 ifndef RESUME
@@ -71,7 +73,7 @@ ifndef RESUME
 endif
 	cd $(PROJECT_DIR) && $(DEPLOY_L1_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) \
 		$(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(DEPLOY_L1_SCRIPT) \
-		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast $(if $(RESUME),--resume) -vvvv || { echo "$(PARTIAL_DEPLOY)"; exit 1; }
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast --skip-simulation $(if $(RESUME),--resume) -vvvv || { echo "$(PARTIAL_DEPLOY)"; exit 1; }
 
 .PHONY: deploy-l2
 deploy-l2:
