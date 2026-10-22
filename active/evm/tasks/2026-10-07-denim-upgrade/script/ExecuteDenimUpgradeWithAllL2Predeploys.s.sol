@@ -6,6 +6,7 @@ import {LegacyMigrator} from "./LegacyMigrator.sol";
 import {Vm, VmSafe} from "forge-std/Vm.sol";
 
 import {IOptimismPortal2} from "interfaces/L1/IOptimismPortal2.sol";
+import {IResourceMetering} from "interfaces/L1/IResourceMetering.sol";
 import {IFeeVault, Types} from "interfaces/L2/IFeeVault.sol";
 import {IProxyAdmin as IL2ProxyAdmin} from "interfaces/universal/IProxyAdmin.sol";
 import {ISemver} from "interfaces/universal/ISemver.sol";
@@ -49,6 +50,9 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
     // Each deposit must call the L2 ProxyAdmin directly so it sees the aliased owner, not an L2 multicall.
     // The L1 simulation cannot execute deposits, so the post-check replays them on an L2 fork.
     uint64 internal constant L2_GAS_LIMIT = 300_000;
+    // Round the measured ~4.3M baseline up to 5M, add the full burn, and leave 2,777,216 below EIP-7825.
+    uint256 internal constant MAX_PROJECTED_L1_GAS = 14_000_000;
+    uint256 internal constant L1_BASE_GAS_BUDGET = 5_000_000;
     string internal constant L2_TO_L1_MESSAGE_PASSER_VERSION = "1.2.0";
     string internal constant L1_BLOCK_VERSION = "1.8.0";
     string internal constant FEE_VAULT_VERSION = "1.6.0";
@@ -129,6 +133,7 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
 
     function setUp() public {
         require(block.chainid == 1, "wrong L1 chain");
+        _assertPortalGasHeadroom();
         uint256 l1Fork = vm.activeFork();
         vm.selectFork(l2Fork);
         require(block.chainid == 8453, "wrong L2 chain");
@@ -189,6 +194,23 @@ contract ExecuteDenimUpgradeWithAllL2Predeploys is MultisigScript {
         );
         require(newMinimumProtocolVersion > currentMinimumProtocolVersion, "minimum protocol version not increased");
         require(newMinimumProtocolVersion <= type(uint128).max, "minimum protocol version too large");
+    }
+
+    function _assertPortalGasHeadroom() internal view {
+        IOptimismPortal2 portal = IOptimismPortal2(payable(optimismPortal));
+        (uint128 prevBaseFee, uint64 prevBoughtGas, uint64 prevBlockNum) = portal.params();
+        IResourceMetering.ResourceConfig memory config = portal.systemConfig().resourceConfig();
+        uint256 fee = uint256(prevBaseFee);
+        uint256 target = uint256(config.maxResourceLimit) / config.elasticityMultiplier;
+        // Bound the first deposit's fee update without taking credit for empty-block decay.
+        if (block.number > prevBlockNum && prevBoughtGas > target) {
+            fee += fee * (prevBoughtGas - target) / (target * config.baseFeeMaxChangeDenominator);
+        }
+        if (fee < config.minimumBaseFee) fee = config.minimumBaseFee;
+        if (block.number > prevBlockNum && fee > config.maximumBaseFee) fee = config.maximumBaseFee;
+        uint256 basefee = block.basefee > 1 gwei ? block.basefee : 1 gwei;
+        uint256 burn = uint256(L2_GAS_LIMIT) * 13 * fee / basefee;
+        require(L1_BASE_GAS_BUDGET + burn <= MAX_PROJECTED_L1_GAS, "portal fees exceed L1 gas budget");
     }
 
     function _assertSafe(address safe, uint256 threshold, uint256 owners) internal view {

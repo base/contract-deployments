@@ -62,9 +62,9 @@ toolchain can change the accepted hashes.
 
 The mainnet script checks L1 chain id 1, L2 chain id 8453, the owner Safe's 2-of-2 membership,
 Base 3-of-6 and Security Council 8-of-11, the current verifier's 600/30 intervals, portal version
-6.0.1, the portal resource budget, schedule length 13, canceled entry 7, last entry 1790791200,
+6.0.1, the portal resource and L1 gas budgets described below, schedule length 13, canceled entry 7, last entry 1790791200,
 and MIN_NOTICE 3600. It also checks the live L2 versions, proxy admins, legacy storage guards
-and counterpart/vault configuration. Re-run simulation if any precondition changes.
+and counterpart/vault configuration. Re-run `simulate-current` if any precondition changes.
 
 Mainnet preserves the live vault recipients and L2 withdrawal networks. `BaseTime` is excluded:
 Denim installs it only while its implementation slot is empty. The mainnet script refuses an occupied
@@ -103,8 +103,9 @@ make TASK_NETWORK=<network> simulate
 The extra deployments use 0.8.15 for factories and bridges, 0.8.19 for attestations, and 0.8.25 for
 OperatorFeeVault. Per-file factory optimizer profiles use 5000 runs; the other implementations use
 999999 runs, no bytecode hash, and Cancun. The multisig script also builds from `active/evm` using
-its default compiler settings. `simulate` uses test-only verifier hashes and local implementations;
-it does not deploy, generate validations, sign or broadcast.
+its default compiler settings. `simulate` (an alias for `test`) runs deterministic historical fork
+tests with test-only verifier hashes and local implementations. It is not the current-state execution
+prerequisite. Neither simulation command deploys, generates validations, signs or broadcasts.
 
 The facilitator runs all deployment steps with a Ledger. `deploy-l2` uses the L2 RPC, 999999 optimizer runs,
 no bytecode hash and Cancun, matching base/contracts. It appends `l2ToL1MessagePasser`, `l1Block`,
@@ -178,6 +179,12 @@ own nested Safe before the outer transaction runs.
 ```bash
 SIGNATURES=<concatenated base signatures>             make TASK_NETWORK=<network> approve-cb
 SIGNATURES=<concatenated security council signatures> make TASK_NETWORK=<network> approve-sc
+```
+
+On mainnet, first run `make TASK_NETWORK=mainnet simulate-current` after both approvals are onchain.
+The current-state simulation requirements and gas budget are below.
+
+```bash
 make TASK_NETWORK=<network> execute
 ```
 
@@ -208,10 +215,30 @@ block. On the combined path it also checks the five Sepolia or thirteen mainnet 
 on an L2 fork as the aliased owner, and checks implementations, versions, fee-vault config and the
 unchanged L2 ProxyAdmin owner. Set the README status to the execution transaction link.
 
-Before execution, rerun mainnet simulation against current state and check portal metering. The
-300000 uniform limit exceeds 1.5 times every cold L2 measurement. Portal burn for all deposits is
-`3900000 * prevBaseFee / max(L1 basefee, 1 gwei)`, less the metered work already performed. At a
-1 gwei portal fee and an L1 basefee below 1 gwei, the burn budget is 3900000 L1 gas. Each additional
-1 gwei adds 3900000 gas. A rising fee can exhaust the 16777216 transaction cap even though the
-60000000 L1 block limit and the portal resource limit are not exhausted. Do not execute if the
-current simulation lacks headroom. Do not split this transaction.
+Immediately before mainnet execution, after both Safe approvals are onchain, run from this directory:
+
+```bash
+make TASK_NETWORK=mainnet simulate-current
+```
+
+This invokes `MultisigScript.simulate(bytes)` with `0x` signatures, the real implementations from
+`config/mainnet/addresses.json`, and the current L1 and L2 RPC heads. It checks the prerequisites,
+including the notice window, simulates the owner transaction using the actual approvals, and replays
+all deposits on the current L2 fork. Missing deployment addresses or approvals stop the command.
+Do not execute unless it succeeds; the historical `test` / `simulate` target is not a substitute.
+
+The 300000 uniform limit exceeds 1.5 times every cold L2 measurement. Portal burn for all deposits
+is bounded by `3900000 * fee / max(L1 basefee, 1 gwei)` without credit for metered work.
+In `setUp` (validation, approval and execution simulations), the script reads live portal `params()`
+and resource configuration. It bounds `fee` by `prevBaseFee` plus any positive first-deposit fee
+update from the previous block's bought gas, applies the configured minimum (and maximum on a block
+update), and takes no
+credit for empty-block decay. It requires this burn plus a 5000000 base-cost allowance to be at most
+14000000 gas. The allowance rounds the measured ~4300000 baseline transaction cost up by ~16%,
+then adds the full metering burn without subtracting the baseline's burn. The 14000000 ceiling
+leaves 2777216 gas (~16.6%) below the EIP-7825 per-transaction cap of 16777216. At a 1 gwei portal
+fee and L1 basefee below 1 gwei the burn bound is 3900000; each additional 1 gwei adds 3900000.
+
+Fees and resource use can change after simulation. Recheck immediately before submission and do
+not override a failed guard or split this transaction. The L1 block limit and portal resource limit
+do not protect against the per-transaction cap.

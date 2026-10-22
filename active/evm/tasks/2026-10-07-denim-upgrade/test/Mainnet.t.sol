@@ -241,9 +241,10 @@ contract MainnetTest is Script {
             totals[i] = vm.load(vault, bytes32(0));
         }
         // No nonzero L2 deposits entry was identified in the sampled withdrawal events.
-        // A synthetic native-token escrow entry pins this mapping's slot without inventing a live pair.
         bytes32 depositSlot = keccak256(abi.encode(address(0x5678), keccak256(abi.encode(address(0x1234), uint256(2)))));
         vm.store(proxies[10], depositSlot, bytes32(uint256(123)));
+        bytes memory escrowRead = abi.encodeWithSignature("deposits(address,address)", address(0x1234), address(0x5678));
+        require(abi.decode(_read(proxies[10], escrowRead), (uint256)) == 123, "legacy escrow fixture inaccessible");
         upgrade.replay();
         for (uint256 i; i < 6; i++) {
             require(keccak256(_read(targets[i], reads[i])) == keccak256(beforeReads[i]), "live record changed");
@@ -252,7 +253,9 @@ contract MainnetTest is Script {
             address vault = i == 3 ? proxies[6] : proxies[i + 2];
             require(vault.balance == balances[i] && vm.load(vault, bytes32(0)) == totals[i], "vault accounting changed");
         }
-        require(vm.load(proxies[10], depositSlot) == bytes32(uint256(123)), "native escrow changed");
+        require(
+            abi.decode(_read(proxies[10], escrowRead), (uint256)) == 123, "bridge escrow inaccessible after upgrade"
+        );
         for (uint256 i; i < 9; i++) {
             require(vm.load(proxies[1], bytes32(i)) == state.blockAttributes[i], "L1Block attributes changed");
         }
@@ -403,6 +406,36 @@ contract MainnetTest is Script {
         upgrade.setUp();
         vm.prank(vm.envAddress("CB_MULTISIG"));
         upgrade.simulateForTest();
+    }
+
+    function testRejectsPortalFeesWithoutGasHeadroom() public {
+        vm.fee(0);
+        address portal = vm.envAddress("OPTIMISM_PORTAL");
+        vm.store(portal, bytes32(uint256(1)), bytes32(uint256(3 gwei) | (uint256(block.number) << 192)));
+        MainnetHarness upgrade = new MainnetHarness();
+        vm.expectRevert(bytes("portal fees exceed L1 gas budget"));
+        upgrade.setUp();
+    }
+
+    function testPortalGasBudgetUsesL1Basefee() public {
+        vm.fee(3 gwei);
+        address portal = vm.envAddress("OPTIMISM_PORTAL");
+        vm.store(portal, bytes32(uint256(1)), bytes32(uint256(6 gwei) | (uint256(block.number) << 192)));
+        MainnetHarness upgrade = new MainnetHarness();
+        upgrade.setUp();
+    }
+
+    function testRejectsPortalFeeIncreaseAfterFullBlock() public {
+        vm.fee(1 gwei);
+        address portal = vm.envAddress("OPTIMISM_PORTAL");
+        vm.store(
+            portal,
+            bytes32(uint256(1)),
+            bytes32(uint256(2 gwei) | (uint256(20_000_000) << 128) | (uint256(block.number - 1) << 192))
+        );
+        MainnetHarness upgrade = new MainnetHarness();
+        vm.expectRevert(bytes("portal fees exceed L1 gas budget"));
+        upgrade.setUp();
     }
 
     function testRejectsChangedSafeThreshold() public {

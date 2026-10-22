@@ -28,11 +28,13 @@ LegacyMigrator: Pending deployment. ProtocolVersions adds upgrade id 13.
 BaseTime is excluded. Existing vault recipients and withdrawal networks are preserved.
 EAS delegated signatures must be signed again for domain version 1.3.0.
 
-The facilitator must confirm the reproducible v1.5.1-based prover hashes and fill the
-implementation addresses before generating validations. Mainnet task-origin validation is required.
+The reproducible v1.5.1-based prover hashes and their provenance are set in `.env`.
+The facilitator must deploy the implementations and generate mainnet task-origin validations before signing.
 
-From `active/evm/tasks/2026-10-07-denim-upgrade/`:
+From the repository root:
 
 ```bash
 make TASK_NETWORK=mainnet sign-task
 ```
+
+Select `2026-10-07-denim-upgrade` for mainnet, sign, and send the signature to the facilitator.

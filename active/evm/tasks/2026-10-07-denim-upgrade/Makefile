@@ -64,7 +64,7 @@ UPGRADE_ENV += OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) \
 .PHONY: check-implementations
 check-implementations:
 	@jq -e '[.aggregateVerifier, .l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault $(MAINNET_IMPLEMENTATIONS)] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
-		{ echo 'Deploy AggregateVerifier and all five L2 implementations into $(ADDRESSES_JSON) before validation, approval or execution'; exit 1; }
+		{ echo 'Deploy AggregateVerifier and $(if $(filter ExecuteDenimUpgradeWithAllL2Predeploys,$(UPGRADE_SCRIPT_NAME)),all thirteen L2 implementations and LegacyMigrator,all five L2 implementations) into $(ADDRESSES_JSON) before validation, approval or execution'; exit 1; }
 
 approve-cb approve-sc execute: check-implementations
 endif
@@ -203,6 +203,11 @@ deploy-remaining-l2:
 
 build-multisig:
 	cd $(PROJECT_DIR) && $(MISE_EXEC) forge build $(TASK_DIR)/script/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol
+
+.PHONY: simulate-current
+simulate-current: check-implementations check-prover-hashes
+	cd $(PROJECT_DIR) && $(UPGRADE_ENV) $(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(UPGRADE_SCRIPT) \
+		--sig "simulate(bytes)" 0x -vvvv
 
 simulate test: build-multisig
 	cd $(TASK_PROJECT_DIR) && $(UPGRADE_ENV) L1_RPC_URL=$(L1_RPC_URL) CB_MULTISIG=$(CB_MULTISIG) \
