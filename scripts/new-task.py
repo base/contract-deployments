@@ -68,9 +68,10 @@ After implementing the targets, generate and inspect `config/<network>/validatio
 
 ```sh
 make TASK_NETWORK=<network> gen-validation
+make TASK_NETWORK=<network> check-validations
 ```
 
-Commit the reviewed configuration and validation files before asking signers to sign. Set the network step to `ready_to_sign`, then `collecting`, and update signature counts in `status.json` as signatures arrive. Signers use the network README's Sign section and send signatures to the facilitator.
+`check-validations` regenerates the signer files on a machine with internal RPC access and fails if they differ from the committed files. Commit the reviewed configuration and validation files before asking signers to sign. Set the network step to `ready_to_sign`, then `collecting`, and update signature counts in `status.json` as signatures arrive. Signers use the network README's Sign section and send signatures to the facilitator.
 
 ## Approve and execute
 
