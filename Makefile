@@ -61,7 +61,8 @@ check-task-status:
 ##
 # Every signer- and contributor-facing target depends on `bootstrap-mise`, so a
 # fresh clone needs nothing more than `make sign-task` (or `make deps`, etc.) to
-# get the exact pinned toolchain from `mise.toml`. We deliberately invoke each
+# get the exact pinned toolchain from `mise.toml` (Linux also needs the libudev
+# headers to build eip712sign; see README Setup). We deliberately invoke each
 # tool via `mise exec --` rather than relying on `mise activate`, so that the
 # user's interactive shell environment (e.g. a global `foundryup` install) is
 # left untouched.
