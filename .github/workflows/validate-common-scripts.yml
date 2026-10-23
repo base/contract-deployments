@@ -44,6 +44,11 @@ jobs:
         with:
           experimental: true
 
+      # eip712sign (installed by make deps) builds base/usbwallet's hidapi hidraw
+      # backend on Linux, which needs the libudev headers.
+      - name: Install libudev headers
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libudev-dev
+
       # ── Dependencies ─────────────────────────────────────────────────
       # Install Foundry deps into the shared active/evm project. PROJECT_DIR
       # points forge install at active/evm; BASE_CONTRACTS_COMMIT is supplied
