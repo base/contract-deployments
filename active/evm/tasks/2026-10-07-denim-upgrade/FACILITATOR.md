@@ -97,12 +97,12 @@ Foundry project:
 
 ```bash
 make TASK_NETWORK=mainnet deploy-remaining-l2
-make TASK_NETWORK=mainnet verify-l2
+VERIFIER_API_KEY=<key> make TASK_NETWORK=mainnet verify-l2
 make TASK_NETWORK=<network> simulate
 ```
 
 On mainnet, all thirteen L2 implementations and LegacyMigrator must pass `verify-l2` on Basescan.
-Fill in their verified-source links in `config/<network>/README.md` before generating validations
+Fill in their verified-source links in `config/mainnet/README.md` before generating validations
 or signing. `verify-l2` waits for each result and stops on a missing address or failed verification.
 
 The extra deployments use 0.8.15 for factories and bridges, 0.8.19 for attestations, and 0.8.25 for
