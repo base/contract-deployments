@@ -50,12 +50,12 @@ Open `config/<network>/.env` and confirm:
 
 Every other `AggregateVerifier` constructor argument is copied from the live verifier at deploy time.
 
-For mainnet, verify the PCR0 and both SP1 verification keys against the v1.5.1 build provenance
+For mainnet, verify the PCR0 and both SP1 verification keys against the v1.5.2 build provenance
 in the network config before deploying or generating validations. The Sepolia f3a459f build cannot
 derive post-Denim mainnet blocks because it disables mainnet Denim. Do not reuse its hashes.
 Mainnet validation, approval and execution refuse missing hashes.
 
-Build enclave and zk images from exactly base/base v1.5.1 at 5476069f1eb74a56bccb56fdefd4b4bb0e3cda42.
+Build enclave and zk images from exactly base/base releases/v1.5.2 at 6efa75662b57c578d897fea2449035636f6ad9ad.
 Use the proof-build recipes at 228352e514233177a65cc2d9873f6bf4b08e67cd, Rust 1.94.0 alpine,
 linuxkit v1.8.2 and aws-nitro-enclaves-image-format 483114f. A different source revision, recipe or
 toolchain can change the accepted hashes.
@@ -201,7 +201,7 @@ The deposits execute on L2 shortly after the L1 transaction, not at Denim activa
 upgrades have no ordering dependency on Denim. Check that all five Sepolia deposits, or all thirteen mainnet deposits, succeeded on L2.
 
 Immediately after execution, roll the network's proposer and provers to the prover build documented in `config/<network>/.env`.
-On mainnet this MUST be the reproducible v1.5.1-based build. Execute first, then roll immediately; do not roll before execution.
+On mainnet this MUST be the reproducible v1.5.2 build. Execute first, then roll immediately; do not roll before execution.
 The new verifier accepts proofs only from that build, so proposals pause until the rollout lands; keep the gap short.
 New enclave signers register themselves in `TEEProverRegistry` on startup. The nitro host's health check requires a signer valid
 for the registry's current expected image hash, so the new build cannot be deployed before execution. Confirm the new signers

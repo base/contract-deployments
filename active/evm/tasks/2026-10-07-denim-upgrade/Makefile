@@ -195,7 +195,7 @@ check-prover-hashes:
 	@for hash in "$(AGGREGATE_VERIFIER_TEE_IMAGE_HASH)" "$(AGGREGATE_VERIFIER_ZK_RANGE_HASH)" "$(AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH)"; do \
 		printf '%s\n' "$$hash" | grep -Eq '^0x[0-9a-fA-F]{64}$$' && \
 		test "$$hash" != 0x0000000000000000000000000000000000000000000000000000000000000000 || \
-		{ echo 'Confirm the reproducible mainnet v1.5.1-based prover hashes first'; exit 1; }; \
+		{ echo 'Confirm the reproducible mainnet v1.5.2 prover hashes first'; exit 1; }; \
 	done
 
 deploy gen-validation-cb gen-validation-sc approve-cb approve-sc execute: check-prover-hashes

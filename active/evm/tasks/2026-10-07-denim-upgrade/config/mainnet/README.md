@@ -28,7 +28,7 @@ LegacyMigrator: Pending deployment. ProtocolVersions adds upgrade id 13.
 BaseTime is excluded. Existing vault recipients and withdrawal networks are preserved.
 EAS delegated signatures must be signed again for domain version 1.3.0.
 
-The reproducible v1.5.1-based prover hashes and their provenance are set in `.env`.
+The reproducible v1.5.2 prover hashes and their provenance are set in `.env`.
 The facilitator must deploy the implementations and generate mainnet task-origin validations before signing.
 
 From the repository root:
