@@ -211,6 +211,40 @@ deploy-remaining-l2:
 		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv; \
 	done
 
+.PHONY: verify-l2
+verify-l2:
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
+	@jq -e '[.l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault $(MAINNET_IMPLEMENTATIONS)] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
+		{ echo 'Deploy all thirteen L2 implementations and LegacyMigrator before verify-l2'; exit 1; }
+	@set -e; cd $(TASK_PROJECT_DIR); \
+	verify_l2() { \
+		address=$$(jq -er --arg key "$$1" '.[$$key]' "$(ADDRESSES_JSON)"); \
+		contract=$$2; compiler=$$3; runs=$$4; profile=$$5; shift 5; \
+		RUST_LOG=off $(AGGREGATE_VERIFIER_BUILD) FOUNDRY_VIA_IR=false \
+			$(MISE_EXEC) forge verify-contract "$$address" "$$contract" \
+			--root $(TASK_PROJECT_DIR) --compilation-profile "$$profile" \
+			--compiler-version "$$compiler" --num-of-optimizations "$$runs" \
+			--chain 8453 --verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=8453" \
+			--verifier-api-key $(VERIFIER_API_KEY) --watch "$$@"; \
+	}; \
+	verify_l2 l2ToL1MessagePasser ../../lib/contracts/src/L2/L2ToL1MessagePasser.sol:L2ToL1MessagePasser v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 l1Block ../../lib/contracts/src/L2/L1Block.sol:L1Block v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 sequencerFeeVault ../../lib/contracts/src/L2/SequencerFeeVault.sol:SequencerFeeVault v0.8.25+commit.b61c2a91 999999 default; \
+	verify_l2 baseFeeVault ../../lib/contracts/src/L2/BaseFeeVault.sol:BaseFeeVault v0.8.25+commit.b61c2a91 999999 default; \
+	verify_l2 l1FeeVault ../../lib/contracts/src/L2/L1FeeVault.sol:L1FeeVault v0.8.25+commit.b61c2a91 999999 default; \
+	verify_l2 optimismMintableERC721Factory ../../lib/contracts/src/L2/OptimismMintableERC721Factory.sol:OptimismMintableERC721Factory v0.8.15+commit.e14f2714 5000 factory \
+		--constructor-args "$$( $(MISE_EXEC) cast abi-encode 'constructor(address,uint256)' $(FACTORY_BRIDGE) $(REMOTE_CHAIN_ID))"; \
+	verify_l2 operatorFeeVault ../../lib/contracts/src/L2/OperatorFeeVault.sol:OperatorFeeVault v0.8.25+commit.b61c2a91 999999 default; \
+	verify_l2 schemaRegistry ../../lib/contracts/src/vendor/eas/SchemaRegistry.sol:SchemaRegistry v0.8.19+commit.7dd6d404 999999 default; \
+	verify_l2 eas ../../lib/contracts/src/vendor/eas/EAS.sol:EAS v0.8.19+commit.7dd6d404 999999 default; \
+	verify_l2 l2CrossDomainMessenger ../../lib/contracts/src/L2/L2CrossDomainMessenger.sol:L2CrossDomainMessenger v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 l2StandardBridge ../../lib/contracts/src/L2/L2StandardBridge.sol:L2StandardBridge v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 optimismMintableERC20Factory ../../lib/contracts/src/universal/OptimismMintableERC20Factory.sol:OptimismMintableERC20Factory v0.8.15+commit.e14f2714 5000 factory; \
+	verify_l2 l2ERC721Bridge ../../lib/contracts/src/L2/L2ERC721Bridge.sol:L2ERC721Bridge v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 legacyMigrator script/LegacyMigrator.sol:LegacyMigrator v0.8.15+commit.e14f2714 999999 default
+
 build-multisig:
 	cd $(PROJECT_DIR) && $(MISE_EXEC) forge build $(TASK_DIR)/script/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol
 

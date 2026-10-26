@@ -96,13 +96,20 @@ For mainnet, then deploy the other eight implementations and LegacyMigrator with
 Foundry project:
 
 ```bash
-make TASK_NETWORK=<network> deploy-remaining-l2
+make TASK_NETWORK=mainnet deploy-remaining-l2
+make TASK_NETWORK=mainnet verify-l2
 make TASK_NETWORK=<network> simulate
 ```
 
+On mainnet, all thirteen L2 implementations and LegacyMigrator must pass `verify-l2` on Basescan.
+Fill in their verified-source links in `config/<network>/README.md` before generating validations
+or signing. `verify-l2` waits for each result and stops on a missing address or failed verification.
+
 The extra deployments use 0.8.15 for factories and bridges, 0.8.19 for attestations, and 0.8.25 for
 OperatorFeeVault. Per-file factory optimizer profiles use 5000 runs; the other implementations use
-999999 runs, no bytecode hash, and Cancun. The multisig script also builds from `active/evm` using
+999999 runs and no bytecode hash. All use `via-ir=false`. Foundry clamps the configured Cancun
+EVM target to London for 0.8.15 and Paris for 0.8.19; 0.8.25 uses Cancun.
+The multisig script also builds from `active/evm` using
 its default compiler settings. `simulate` (an alias for `test`) runs deterministic historical fork
 tests with test-only verifier hashes and local implementations. It is not the current-state execution
 prerequisite. The gas tests use `forge test --isolate`, so each measured ProxyAdmin call and
@@ -113,7 +120,8 @@ generates validations, signs or broadcasts.
 The facilitator runs all deployment steps with a Ledger. `deploy-l2` uses the L2 RPC, 999999 optimizer runs,
 no bytecode hash and Cancun, matching base/contracts. It appends `l2ToL1MessagePasser`, `l1Block`,
 `sequencerFeeVault`, `baseFeeVault` and `l1FeeVault` to `config/<network>/addresses.json`. There is no
-L2 source-verification step. Deploy the verifier first because its script replaces the address file;
+L2 source-verification target for Sepolia or Zeronet.
+Deploy the verifier first because its script replaces the address file;
 `deploy` refuses to overwrite recorded L2 addresses. The fee-vault deployment uses Solidity 0.8.25,
 while the verifier and other L2 deployment use 0.8.15.
 

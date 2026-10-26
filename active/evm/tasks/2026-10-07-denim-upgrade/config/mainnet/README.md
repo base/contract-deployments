@@ -7,29 +7,31 @@ One ProxyAdmin-owner transaction replaces AggregateVerifier, registers Denim for
 upgrade deposits. The Security Council signs once, with eight member signatures.
 The Base multisig requires three member signatures.
 
-| Target | Current version | New version | New implementation |
-| --- | --- | --- | --- |
-| AggregateVerifier, game type 621 | 0.2.0 | 0.3.0 | Pending deployment |
-| L2ToL1MessagePasser | 1.0.0 | 1.2.0 | Pending deployment |
-| L1Block | 1.7.0 | 1.8.0 | Pending deployment |
-| SequencerFeeVault | 1.3.0 | 1.6.0 | Pending deployment |
-| BaseFeeVault | 1.3.0 | 1.6.0 | Pending deployment |
-| L1FeeVault | 1.3.0 | 1.6.0 | Pending deployment |
-| OptimismMintableERC721Factory | 1.2.0 | 1.4.2 | Pending deployment |
-| OperatorFeeVault | 1.0.0 | 1.1.0 | Pending deployment |
-| SchemaRegistry | 1.0.1 | 1.3.1-beta.2 | Pending deployment |
-| EAS | 1.0.1 | 1.4.1-beta.3 | Pending deployment |
-| L2CrossDomainMessenger | 1.4.0 | 2.2.0 | Pending deployment |
-| L2StandardBridge | 1.1.0 | 1.13.0 | Pending deployment |
-| OptimismMintableERC20Factory | 1.9.0 | 1.10.2 | Pending deployment |
-| L2ERC721Bridge | 1.1.0 | 1.10.0 | Pending deployment |
+| Target | Current version | New version | New implementation | Basescan verified source |
+| --- | --- | --- | --- | --- |
+| AggregateVerifier, game type 621 | 0.2.0 | 0.3.0 | Pending deployment | N/A (L1) |
+| L2ToL1MessagePasser | 1.0.0 | 1.2.0 | Pending deployment | Pending deployment |
+| L1Block | 1.7.0 | 1.8.0 | Pending deployment | Pending deployment |
+| SequencerFeeVault | 1.3.0 | 1.6.0 | Pending deployment | Pending deployment |
+| BaseFeeVault | 1.3.0 | 1.6.0 | Pending deployment | Pending deployment |
+| L1FeeVault | 1.3.0 | 1.6.0 | Pending deployment | Pending deployment |
+| OptimismMintableERC721Factory | 1.2.0 | 1.4.2 | Pending deployment | Pending deployment |
+| OperatorFeeVault | 1.0.0 | 1.1.0 | Pending deployment | Pending deployment |
+| SchemaRegistry | 1.0.1 | 1.3.1-beta.2 | Pending deployment | Pending deployment |
+| EAS | 1.0.1 | 1.4.1-beta.3 | Pending deployment | Pending deployment |
+| L2CrossDomainMessenger | 1.4.0 | 2.2.0 | Pending deployment | Pending deployment |
+| L2StandardBridge | 1.1.0 | 1.13.0 | Pending deployment | Pending deployment |
+| OptimismMintableERC20Factory | 1.9.0 | 1.10.2 | Pending deployment | Pending deployment |
+| L2ERC721Bridge | 1.1.0 | 1.10.0 | Pending deployment | Pending deployment |
 
-LegacyMigrator: Pending deployment. ProtocolVersions adds upgrade id 13.
+LegacyMigrator: Pending deployment. Basescan verified source: Pending deployment.
+ProtocolVersions adds upgrade id 13.
 BaseTime is excluded. Existing vault recipients and withdrawal networks are preserved.
 EAS delegated signatures must be signed again for domain version 1.3.0.
 
 The reproducible v1.5.2 prover hashes and their provenance are set in `.env`.
-The facilitator must deploy the implementations and generate mainnet task-origin validations before signing.
+Before signing, the facilitator must verify all thirteen L2 implementations and LegacyMigrator on Basescan,
+fill in their verified-source links above, and generate mainnet task-origin validations.
 
 From the repository root:
 
