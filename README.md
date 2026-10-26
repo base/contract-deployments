@@ -31,7 +31,7 @@ EVM operations have three lifecycles: pending one-off tasks in `active/evm/tasks
 
 ### Toolchain (mise)
 
-Foundry, Node.js, Bun, and Go are pinned in [`mise.toml`](mise.toml) so contributors and signers run identical versions. This prevents mismatches in domain separators, build artifacts, and generated signatures. Standby lifecycle commands also require Python 3.9 or newer on PATH and use only its standard library.
+Foundry, Node.js, Bun, and Go are pinned in [`mise.toml`](mise.toml) so contributors and signers run identical versions. This prevents mismatches in domain separators, build artifacts, and generated signatures. Standby lifecycle commands also require Python 3.9 or newer on PATH and use only its standard library. On Linux, building `eip712sign` (installed by `make deps`) also needs the libudev headers: `libudev-dev` on Debian/Ubuntu, `systemd-devel` on Fedora/RHEL. macOS needs nothing extra.
 
 `make sign-task`, `make deps`, and execution targets bootstrap the mise-managed toolchain automatically:
 
