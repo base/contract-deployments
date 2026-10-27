@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-Register `<replacement-address>` instead of `0x4780D45fcf885a4D1F4c3aFDfAc9Eb9740820635` for game type `621` on `DisputeGameFactory` (`0xd930e0cebd52d7c77b8f900de242e818506c5474`).
+Register [`0xa8320712fF181D74e719Ff7E6E1012bbe4687b26`](https://hoodi.etherscan.io/address/0xa8320712fF181D74e719Ff7E6E1012bbe4687b26) ([deployment](https://hoodi.etherscan.io/tx/0x56da76c2c84b882f3fafeaf3835c2045730a0b1a850f12e13d52447de4b40c98)) instead of `0x4780D45fcf885a4D1F4c3aFDfAc9Eb9740820635` for game type `621` on `DisputeGameFactory` (`0xd930e0cebd52d7c77b8f900de242e818506c5474`).
 Update `ZK_RANGE_HASH` and `ZK_AGGREGATE_HASH`; preserve `TEE_IMAGE_HASH` (`0x44cca4430eaac037ec451534ff7c9361095fa36e0f53fac9fa03f8305c879ef7`) and every other constructor input.
 
 Hash provenance:
