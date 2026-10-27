@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "task": "update-verifier-hashes",
+  "kind": "standby",
+  "networks": {
+    "zeronet": {
+      "step": "authoring",
+      "pr": "https://github.com/base/contract-deployments/pull/828",
+      "blocksec_ticket": null,
+      "signatures": {},
+      "executed_tx": null
+    },
+    "sepolia": {
+      "step": "authoring",
+      "pr": "https://github.com/base/contract-deployments/pull/828",
+      "blocksec_ticket": null,
+      "signatures": {},
+      "executed_tx": null
+    }
+  },
+  "last_updated": "2026-10-27T17:49:47Z"
+}
