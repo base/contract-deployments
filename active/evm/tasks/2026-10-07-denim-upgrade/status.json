@@ -30,7 +30,7 @@
     "mainnet": {
       "step": "review",
       "pr": "https://github.com/base/contract-deployments/pull/827",
-      "blocksec_ticket": "BLOCKSEC-5463",
+      "blocksec_ticket": "https://jira.coinbase-corp.com/servicedesk/customer/portal/92/BLOCKSEC-5463",
       "signatures": {
         "base": {
           "collected": 0,
