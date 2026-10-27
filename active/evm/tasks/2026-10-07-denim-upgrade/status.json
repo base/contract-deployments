@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task": "2026-10-07-denim-upgrade",
   "kind": "active",
-  "last_updated": "2026-10-22T20:22:28Z",
+  "last_updated": "2026-10-27T20:19:52Z",
   "networks": {
     "sepolia": {
       "step": "executed",
@@ -28,7 +28,7 @@
       "executed_tx": "0x9468085edf0a0d5e3dbeea7ab84f13400a496aafc6c21ca8420e4f136c106034"
     },
     "mainnet": {
-      "step": "authoring",
+      "step": "review",
       "pr": "https://github.com/base/contract-deployments/pull/827",
       "blocksec_ticket": null,
       "signatures": {
