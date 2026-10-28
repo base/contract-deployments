@@ -1,6 +1,7 @@
 # 2026-10-21-replace-balance-tracker
 
-Status: READY TO SIGN
+Status: EXECUTED
+https://sepolia.etherscan.io/tx/0x1d9e7be871ea17c1fc215940e01c19dfabbb67ace76d83275ac72f0609096789
 
 ## Description
 

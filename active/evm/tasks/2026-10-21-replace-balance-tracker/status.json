@@ -4,17 +4,17 @@
   "kind": "active",
   "networks": {
     "sepolia": {
-      "step": "ready_to_sign",
+      "step": "executed",
       "pr": "https://github.com/base/contract-deployments/pull/807",
       "blocksec_ticket": null,
       "signatures": {
         "base": {
-          "collected": 0,
+          "collected": 3,
           "required": 3
         }
       },
-      "executed_tx": null
+      "executed_tx": "0x1d9e7be871ea17c1fc215940e01c19dfabbb67ace76d83275ac72f0609096789"
     }
   },
-  "last_updated": "2026-10-22T22:22:07Z"
+  "last_updated": "2026-10-28T17:34:35Z"
 }
