@@ -1,0 +1,150 @@
+{
+  "cmd": "DISPUTE_GAME_FACTORY_PROXY=0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e GAME_TYPE=621 OLD_AGGREGATE_VERIFIER=0xeF9eCeA15265321753047EBF7D54C858D53cB94f FAST_BLOCK_INTERVAL=6000 FAST_INTERMEDIATE_BLOCK_INTERVAL=300 AGGREGATE_VERIFIER_TEE_IMAGE_HASH=0x73181275ec86503b629510176b5bedec00309060b3f4ff5d8e55d9e83dad5cbd AGGREGATE_VERIFIER_ZK_RANGE_HASH=0x3d3713d31a8936563bc56791040067131bb3fa3c0ab8b5e65e9c4cc0755b5fdb AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=0x00d5a43068d7a9d1eac440a790b776c749ae6516c43f1a572226190cef6fd45a PROXY_ADMIN_OWNER=0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c L1_PROXY_ADMIN=0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E NEW_AGGREGATE_VERIFIER=0xc08b8fFAF04Abb1d7013B74a0E57Eccbd7fa5A70 PROTOCOL_VERSIONS_DENIM_ACTIVATION_TIMESTAMP=1793901600 PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION=79228162588051313896972091392 PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=79228162606498057966386675712 OPTIMISM_PORTAL=0x49048044D57e1C92A77f79988d21Fa8fAF74E97e L2_RPC_URL=https://mainnet.base.org L2_TO_L1_MESSAGE_PASSER_IMPL=0xF729d45aA58A015835A745474D4bd18551C3A92c L1_BLOCK_IMPL=0x8BDE8F549F56D405f07e1aA15Df9e1FC69839881 SEQUENCER_FEE_VAULT_IMPL=0x31574645D1Cc22778e10b394BF3713beA4aa2B68 BASE_FEE_VAULT_IMPL=0x113B0749737B06D94267fe59e935D38e13849deF L1_FEE_VAULT_IMPL=0x93759deE9D2100Ca0a0e3EA10A0e5Cc5f07b229B FEE_VAULT_RECIPIENT=0x09C7bAD99688a55a2e83644BFAed09e62bDcCcBA FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=2000000000000000000 FEE_VAULT_WITHDRAWAL_NETWORK=1 CB_MULTISIG=0x9855054731540A48b28990B63DcF4f33d8AE46A1 BASE_SECURITY_COUNCIL=0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd FACTORY_BRIDGE=0x4200000000000000000000000000000000000014 REMOTE_CHAIN_ID=1 L1_CROSS_DOMAIN_MESSENGER=0x866E82a600A1414e583f7F13623F1aC5d58b0Afa L1_STANDARD_BRIDGE=0x3154Cf16ccdb4C6d922629664174b904d80F2C35 L1_ERC721_BRIDGE=0x608d94945A64503E642E6370Ec598e519a2C1E53 ERC20_FACTORY_BRIDGE=0x4200000000000000000000000000000000000010 OPERATOR_FEE_VAULT_RECIPIENT=0x4200000000000000000000000000000000000019 OPERATOR_FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=0 OPERATOR_FEE_VAULT_WITHDRAWAL_NETWORK=1 ERC721_FACTORY_IMPL=0x6e4f4f3E193880339c79605F88a2CD15370C8e02 OPERATOR_FEE_VAULT_IMPL=0x47B6C3e3C3d8144c83910D26E3b517DF4f6058c7 SCHEMA_REGISTRY_IMPL=0xA88AB4351cC11acd42Ca148cd98Cfd91294Aa7BD EAS_IMPL=0xb6288DE3f61E3aCfAf4f1b0923656e2ab78C1Ad4 MESSENGER_IMPL=0xFe016829CbD44B469a4Bb76Ed95343A9458DCbA6 BRIDGE_IMPL=0xff312C3496f0848CD94d71dC06C434D487A46a10 ERC20_FACTORY_IMPL=0x87481a9CBf0aABf9a5f92838F51D9Ca635a33878 ERC721_BRIDGE_IMPL=0x6cf5489360C17e648d9009c74019699aa716d60c LEGACY_MIGRATOR=0x690D24732FB1Ed4869dCA5Cd2820FE54272aad09 mise exec -- forge script --rpc-url https://eth-mainnet.public.blastapi.io tasks/2026-10-07-denim-upgrade/script/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol:ExecuteDenimUpgradeWithAllL2Predeploys --sig sign(address[]) [0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd] --sender 0xbDE1845c879942fC326F247Ad708677733Dd5594",
+  "ledgerId": 0,
+  "rpcUrl": "https://eth-mainnet.public.blastapi.io",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "domainHash": "0x1fbfdc61ceb715f63cb17c56922b88c3a980f1d83873df2b9325a579753e8aa3",
+    "messageHash": "0x4498374f3aced6c1801775fa49772e2c01f7bad0e75c3a0d9a58e51c63f27d91"
+  },
+  "stateOverrides": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x9866bfd07f84880c8bba704bfcefea74108e7b260e885b4e537602ea59038bb6",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Security Council Safe - Mainnet",
+      "address": "0x20AcF55A3DCfe07fC4cecaCFa1628F788EC8A4Dd",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000010",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000011",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Dispute Game Factory Proxy - Mainnet",
+      "address": "0x43edB88C4B80fDD2AdFF2412A7BebF9dF42cB40e",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x000000000000000000000000ef9ecea15265321753047ebf7d54c858d53cb94f",
+          "after": "0x000000000000000000000000c08b8ffaf04abb1d7013b74a0e57eccbd7fa5a70",
+          "description": "Updates gameImpls[621] from 0xeF9eCeA15265321753047EBF7D54C858D53cB94f (version 0.2.0) to 0xc08b8fFAF04Abb1d7013B74a0E57Eccbd7fa5A70 (version 0.3.0), which switches the proposal intervals from 600/30 to 6000/300 blocks at Denim. Existing games are unchanged.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "OptimismPortal - Mainnet",
+      "address": "0x49048044D57e1C92A77f79988d21Fa8fAF74E97e",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x0000000001911934000000000007df760000000000000000000000003b9aca00",
+          "after": "0x000000000191193400000000004361d60000000000000000000000003b9aca00",
+          "description": "Updates the ResourceMetering parameters (prevBlockNum, prevBoughtGas, prevBaseFee) after the thirteen L2 ProxyAdmin upgrade deposits. The values depend on the L1 block at simulation time, so a signer's own run can differ.",
+          "allowDifference": true
+        }
+      ]
+    },
+    {
+      "name": "ProtocolVersions - Mainnet",
+      "address": "0x7480Afc8D99a5c645c247dB5A1e4a4f440e6e095",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000d",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "description": "Sets the _timestamps array length from 13 to 14, registering Denim as upgrade id 13.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000000e",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000000f",
+          "description": "Sets the _upgradeScheduleId array length from 14 to 15: one more hash-chain link for the new upgrade.",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+          "before": "0x0000000000000000000000000000000000000001000000040000000200000000",
+          "after": "0x0000000000000000000000000000000000000001000000050000000100000000",
+          "description": "Raises minimumProtocolVersion from v1.4.2 to v1.5.1 (0x00000001_00000005_00000001_00000000).",
+          "allowDifference": false
+        },
+        {
+          "key": "0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5adc",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0xa7e0db8fbcc1f948bc5fdb3c8957f40a430e1b24942b3635543abb4d6934b68d",
+          "description": "_upgradeScheduleId[14]: hash-chain link committing to upgrade id 13 (denim) at 1793901600. As the tail of the chain, this is the registry's new scheduleId.",
+          "allowDifference": false
+        },
+        {
+          "key": "0xb10e2d527612073b26eecdfd717e6a320cf44b4afac2b0732d9fcbe2b7fa0cf9",
+          "before": "0x000000000000000000000000000000000000000000000000000000006abd4e20",
+          "after": "0x00000000000000000000000000000000000000006aecc420000000006abd4e20",
+          "description": "_timestamps[12..15] packed: the previous last entry stays at 1790791200 and denim (id 13) is scheduled for 1793901600, which is 2026-11-05 18:00:00 UTC.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Proxy Admin Owner - Mainnet",
+      "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000016",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000017",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x74886423be1a3fa02fbeab0f8200d18b985684cc89c90fbf9a58228c7ac73330",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the Denim upgrade transaction hash from the Security Council Safe.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "taskOriginConfig": {
+    "taskCreator": {
+      "commonName": "jack.chuma@coinbase.com"
+    }
+  }
+}

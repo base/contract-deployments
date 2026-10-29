@@ -48,7 +48,7 @@ UPGRADE_ENV = $(VERIFIER_ENV) \
 	PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION=$(PROTOCOL_VERSIONS_CURRENT_MINIMUM_PROTOCOL_VERSION) \
 	PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION=$(PROTOCOL_VERSIONS_MINIMUM_PROTOCOL_VERSION)
 
-ifeq ($(UPGRADE_SCRIPT_NAME),ExecuteDenimUpgradeWithL2Predeploys)
+ifneq ($(filter ExecuteDenimUpgradeWithL2Predeploys ExecuteDenimUpgradeWithAllL2Predeploys,$(UPGRADE_SCRIPT_NAME)),)
 impl = $(shell jq -er '.$(1)' $(ADDRESSES_JSON) 2>/dev/null)
 UPGRADE_ENV += OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) \
 	L2_RPC_URL=$(L2_RPC_URL) \
@@ -63,8 +63,8 @@ UPGRADE_ENV += OPTIMISM_PORTAL=$(OPTIMISM_PORTAL) \
 
 .PHONY: check-implementations
 check-implementations:
-	@jq -e '[.aggregateVerifier, .l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
-		{ echo 'Deploy AggregateVerifier and all five L2 implementations into $(ADDRESSES_JSON) before validation, approval or execution'; exit 1; }
+	@jq -e '[.aggregateVerifier, .l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault $(MAINNET_IMPLEMENTATIONS)] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
+		{ echo 'Deploy AggregateVerifier and $(if $(filter ExecuteDenimUpgradeWithAllL2Predeploys,$(UPGRADE_SCRIPT_NAME)),all thirteen L2 implementations and LegacyMigrator,all five L2 implementations) into $(ADDRESSES_JSON) before validation, approval or execution'; exit 1; }
 
 approve-cb approve-sc execute: check-implementations
 endif
@@ -78,8 +78,8 @@ AGGREGATE_VERIFIER_BUILD = FOUNDRY_OPTIMIZER=true FOUNDRY_OPTIMIZER_RUNS=999999 
 
 .PHONY: deploy
 deploy:
-ifeq ($(UPGRADE_SCRIPT_NAME),ExecuteDenimUpgradeWithL2Predeploys)
-	@test ! -f "$(ADDRESSES_JSON)" || jq -e '[.l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault] | all(.[]; . == null)' "$(ADDRESSES_JSON)" >/dev/null || \
+ifneq ($(filter ExecuteDenimUpgradeWithL2Predeploys ExecuteDenimUpgradeWithAllL2Predeploys,$(UPGRADE_SCRIPT_NAME)),)
+	@test ! -f "$(ADDRESSES_JSON)" || jq -e '[.l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault $(MAINNET_IMPLEMENTATIONS)] | all(.[]; . == null)' "$(ADDRESSES_JSON)" >/dev/null || \
 		{ echo 'deploy replaces addresses.json; deploy AggregateVerifier before deploy-l2'; exit 1; }
 endif
 	@test -f "$(ADDRESSES_JSON)" || echo '{}' > "$(ADDRESSES_JSON)"
@@ -92,7 +92,7 @@ DEPLOY_FEE_VAULTS_SCRIPT := $(TASK_DIR)/script/DeployFeeVaultImpls.s.sol:DeployF
 
 .PHONY: deploy-l2
 deploy-l2:
-	@test "$(UPGRADE_SCRIPT_NAME)" = ExecuteDenimUpgradeWithL2Predeploys || \
+	@test -n "$(filter ExecuteDenimUpgradeWithL2Predeploys ExecuteDenimUpgradeWithAllL2Predeploys,$(UPGRADE_SCRIPT_NAME))" || \
 		{ echo 'deploy-l2 requires the combined upgrade script in config/$(TASK_NETWORK)/.env'; exit 1; }
 	@jq -e '.aggregateVerifier | type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000"' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
 		{ echo 'Run deploy before deploy-l2; it initializes $(ADDRESSES_JSON)'; exit 1; }
@@ -134,11 +134,11 @@ endif
 # Validation files
 ##
 .PHONY: gen-validation-cb
-gen-validation-cb: $(if $(filter ExecuteDenimUpgradeWithL2Predeploys,$(UPGRADE_SCRIPT_NAME)),check-implementations) deps-signer-tool
+gen-validation-cb: $(if $(filter ExecuteDenimUpgradeWithL2Predeploys ExecuteDenimUpgradeWithAllL2Predeploys,$(UPGRADE_SCRIPT_NAME)),check-implementations) deps-signer-tool
 	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT),$(CB_MULTISIG),$(CB_SENDER),base-signer.json,$(UPGRADE_ENV))
 
 .PHONY: gen-validation-sc
-gen-validation-sc: $(if $(filter ExecuteDenimUpgradeWithL2Predeploys,$(UPGRADE_SCRIPT_NAME)),check-implementations) deps-signer-tool
+gen-validation-sc: $(if $(filter ExecuteDenimUpgradeWithL2Predeploys ExecuteDenimUpgradeWithAllL2Predeploys,$(UPGRADE_SCRIPT_NAME)),check-implementations) deps-signer-tool
 	$(call GEN_VALIDATION,$(UPGRADE_SCRIPT),$(BASE_SECURITY_COUNCIL),$(SC_SENDER),security-council-signer.json,$(UPGRADE_ENV))
 
 ##
@@ -155,3 +155,106 @@ approve-sc:
 .PHONY: execute
 execute:
 	export $(UPGRADE_ENV); $(call MULTISIG_EXECUTE,0x)
+
+ifeq ($(UPGRADE_SCRIPT_NAME),ExecuteDenimUpgradeWithAllL2Predeploys)
+TASK_PROJECT_DIR := $(CURDIR)
+MAINNET_IMPLEMENTATIONS = , .optimismMintableERC721Factory, .operatorFeeVault, .schemaRegistry, .eas, .l2CrossDomainMessenger, .l2StandardBridge, .optimismMintableERC20Factory, .l2ERC721Bridge, .legacyMigrator
+MAINNET_CONFIG_ENV = FACTORY_BRIDGE=$(FACTORY_BRIDGE) REMOTE_CHAIN_ID=$(REMOTE_CHAIN_ID) \
+	L1_CROSS_DOMAIN_MESSENGER=$(L1_CROSS_DOMAIN_MESSENGER) L1_STANDARD_BRIDGE=$(L1_STANDARD_BRIDGE) \
+	L1_ERC721_BRIDGE=$(L1_ERC721_BRIDGE) ERC20_FACTORY_BRIDGE=$(ERC20_FACTORY_BRIDGE) \
+	OPERATOR_FEE_VAULT_RECIPIENT=$(OPERATOR_FEE_VAULT_RECIPIENT) \
+	OPERATOR_FEE_VAULT_MIN_WITHDRAWAL_AMOUNT=$(OPERATOR_FEE_VAULT_MIN_WITHDRAWAL_AMOUNT) \
+	OPERATOR_FEE_VAULT_WITHDRAWAL_NETWORK=$(OPERATOR_FEE_VAULT_WITHDRAWAL_NETWORK)
+UPGRADE_ENV += CB_MULTISIG=$(CB_MULTISIG) BASE_SECURITY_COUNCIL=$(BASE_SECURITY_COUNCIL) \
+	$(MAINNET_CONFIG_ENV) \
+	ERC721_FACTORY_IMPL=$(call impl,optimismMintableERC721Factory) \
+	OPERATOR_FEE_VAULT_IMPL=$(call impl,operatorFeeVault) \
+	SCHEMA_REGISTRY_IMPL=$(call impl,schemaRegistry) EAS_IMPL=$(call impl,eas) \
+	MESSENGER_IMPL=$(call impl,l2CrossDomainMessenger) BRIDGE_IMPL=$(call impl,l2StandardBridge) \
+	ERC20_FACTORY_IMPL=$(call impl,optimismMintableERC20Factory) ERC721_BRIDGE_IMPL=$(call impl,l2ERC721Bridge) \
+	LEGACY_MIGRATOR=$(call impl,legacyMigrator)
+
+clean-lib: bootstrap-mise install-eip712sign
+forge-deps: clean-lib
+deps:
+	cd $(PROJECT_DIR) && $(MISE_EXEC) forge install --no-git \
+		github.com/OpenZeppelin/openzeppelin-contracts@ecd2ca2cd7cac116f7a37d0e474bbb3d7d5e1c4d \
+		github.com/OpenZeppelin/openzeppelin-contracts-upgradeable@0a2cb9a445c365870ed7a8ab461b12acf3e27d63
+
+.PHONY: check-upgrade-env
+check-upgrade-env:
+	@set -e; keys=' $(foreach assignment,$(UPGRADE_ENV),$(firstword $(subst =, ,$(assignment)))) '; \
+	for key in $$(grep -oE 'vm\.env[A-Za-z0-9_]+\("[A-Z0-9_]+"' script/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol | cut -d '"' -f 2 | sort -u); do \
+		case "$$keys" in *" $$key "*) ;; *) echo "UPGRADE_ENV missing $$key"; exit 1;; esac; \
+	done
+
+gen-validation-cb gen-validation-sc simulate-current test: check-upgrade-env
+
+.PHONY: check-prover-hashes deploy-remaining-l2 build-multisig simulate test
+check-prover-hashes:
+	@for hash in "$(AGGREGATE_VERIFIER_TEE_IMAGE_HASH)" "$(AGGREGATE_VERIFIER_ZK_RANGE_HASH)" "$(AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH)"; do \
+		printf '%s\n' "$$hash" | grep -Eq '^0x[0-9a-fA-F]{64}$$' && \
+		test "$$hash" != 0x0000000000000000000000000000000000000000000000000000000000000000 || \
+		{ echo 'Confirm the reproducible mainnet v1.5.2 prover hashes first'; exit 1; }; \
+	done
+
+deploy gen-validation-cb gen-validation-sc approve-cb approve-sc execute: check-prover-hashes
+deps-signer-tool: check-prover-hashes
+
+deploy-remaining-l2:
+	@jq -e '[.aggregateVerifier, .l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null || \
+		{ echo 'Run deploy and deploy-l2 first'; exit 1; }
+	cd $(TASK_PROJECT_DIR) && $(AGGREGATE_VERIFIER_BUILD) $(MISE_EXEC) forge build
+	@set -e; for script in DeployFactory DeployBridges DeployOperatorFeeVault DeployAttestations; do \
+		cd $(TASK_PROJECT_DIR); $(MAINNET_CONFIG_ENV) ADDRESSES_JSON=$(ADDRESSES_JSON) $(AGGREGATE_VERIFIER_BUILD) \
+		$(MISE_EXEC) forge script script/$$script.s.sol:$$script --rpc-url $(L2_RPC_URL) \
+		--ledger --hd-paths $(LEDGER_HD_PATH) --broadcast -vvvv; \
+	done
+
+.PHONY: verify-l2
+verify-l2:
+ifndef VERIFIER_API_KEY
+	$(error VERIFIER_API_KEY is not set)
+endif
+	@jq -e '[.l2ToL1MessagePasser, .l1Block, .sequencerFeeVault, .baseFeeVault, .l1FeeVault $(MAINNET_IMPLEMENTATIONS)] | all(.[]; type == "string" and test("^0x[0-9a-fA-F]{40}$$") and ascii_downcase != "0x0000000000000000000000000000000000000000")' "$(ADDRESSES_JSON)" >/dev/null 2>&1 || \
+		{ echo 'Deploy all thirteen L2 implementations and LegacyMigrator before verify-l2'; exit 1; }
+	@set -e; cd $(TASK_PROJECT_DIR); \
+	verify_l2() { \
+		address=$$(jq -er --arg key "$$1" '.[$$key]' "$(ADDRESSES_JSON)"); \
+		contract=$$2; compiler=$$3; runs=$$4; profile=$$5; shift 5; \
+		RUST_LOG=off $(AGGREGATE_VERIFIER_BUILD) FOUNDRY_VIA_IR=false \
+			$(MISE_EXEC) forge verify-contract "$$address" "$$contract" \
+			--root $(TASK_PROJECT_DIR) --compilation-profile "$$profile" \
+			--compiler-version "$$compiler" --num-of-optimizations "$$runs" \
+			--chain 8453 --verifier custom --verifier-url "https://api.etherscan.io/v2/api?chainid=8453" \
+			--verifier-api-key $(VERIFIER_API_KEY) --watch "$$@"; \
+	}; \
+	verify_l2 l2ToL1MessagePasser ../../lib/contracts/src/L2/L2ToL1MessagePasser.sol:L2ToL1MessagePasser v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 l1Block ../../lib/contracts/src/L2/L1Block.sol:L1Block v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 sequencerFeeVault ../../lib/contracts/src/L2/SequencerFeeVault.sol:SequencerFeeVault v0.8.25+commit.b61c2a91 999999 default; \
+	verify_l2 baseFeeVault ../../lib/contracts/src/L2/BaseFeeVault.sol:BaseFeeVault v0.8.25+commit.b61c2a91 999999 default; \
+	verify_l2 l1FeeVault ../../lib/contracts/src/L2/L1FeeVault.sol:L1FeeVault v0.8.25+commit.b61c2a91 999999 default; \
+	verify_l2 optimismMintableERC721Factory ../../lib/contracts/src/L2/OptimismMintableERC721Factory.sol:OptimismMintableERC721Factory v0.8.15+commit.e14f2714 5000 factory \
+		--constructor-args "$$( $(MISE_EXEC) cast abi-encode 'constructor(address,uint256)' $(FACTORY_BRIDGE) $(REMOTE_CHAIN_ID))"; \
+	verify_l2 operatorFeeVault ../../lib/contracts/src/L2/OperatorFeeVault.sol:OperatorFeeVault v0.8.25+commit.b61c2a91 999999 default; \
+	verify_l2 schemaRegistry ../../lib/contracts/src/vendor/eas/SchemaRegistry.sol:SchemaRegistry v0.8.19+commit.7dd6d404 999999 default; \
+	verify_l2 eas ../../lib/contracts/src/vendor/eas/EAS.sol:EAS v0.8.19+commit.7dd6d404 999999 default; \
+	verify_l2 l2CrossDomainMessenger ../../lib/contracts/src/L2/L2CrossDomainMessenger.sol:L2CrossDomainMessenger v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 l2StandardBridge ../../lib/contracts/src/L2/L2StandardBridge.sol:L2StandardBridge v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 optimismMintableERC20Factory ../../lib/contracts/src/universal/OptimismMintableERC20Factory.sol:OptimismMintableERC20Factory v0.8.15+commit.e14f2714 5000 factory; \
+	verify_l2 l2ERC721Bridge ../../lib/contracts/src/L2/L2ERC721Bridge.sol:L2ERC721Bridge v0.8.15+commit.e14f2714 999999 default; \
+	verify_l2 legacyMigrator script/LegacyMigrator.sol:LegacyMigrator v0.8.15+commit.e14f2714 999999 default
+
+build-multisig:
+	cd $(PROJECT_DIR) && $(MISE_EXEC) forge build $(TASK_DIR)/script/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol
+
+.PHONY: simulate-current
+simulate-current: check-implementations check-prover-hashes
+	cd $(PROJECT_DIR) && $(UPGRADE_ENV) $(MISE_EXEC) forge script --rpc-url $(L1_RPC_URL) $(UPGRADE_SCRIPT) \
+		--sig "simulate(bytes)" 0x -vvvv
+
+simulate test: build-multisig
+	cd $(TASK_PROJECT_DIR) && export $(UPGRADE_ENV) L1_RPC_URL=$(L1_RPC_URL) && \
+		$(MISE_EXEC) forge test --no-match-test 'testCold' -vv && \
+		$(MISE_EXEC) forge test --isolate --match-test 'testCold' -vv
+endif
