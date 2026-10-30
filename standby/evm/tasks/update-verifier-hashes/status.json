@@ -4,19 +4,10 @@
   "kind": "standby",
   "networks": {
     "zeronet": {
-      "step": "ready_to_sign",
+      "step": "authoring",
       "pr": "https://github.com/base/contract-deployments/pull/828",
       "blocksec_ticket": null,
-      "signatures": {
-        "base": {
-          "collected": 0,
-          "required": 3
-        },
-        "security-council": {
-          "collected": 0,
-          "required": 1
-        }
-      },
+      "signatures": {},
       "executed_tx": null
     },
     "sepolia": {
@@ -27,5 +18,5 @@
       "executed_tx": null
     }
   },
-  "last_updated": "2026-10-27T19:40:00Z"
+  "last_updated": "2026-10-30T19:20:00Z"
 }
