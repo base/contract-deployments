@@ -1,6 +1,6 @@
 # Rotate verifier hashes on zeronet
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://hoodi.etherscan.io/tx/0x5ced71df91e83fa59782f1b8adc1f6cb2d2b8fde80634fb97b07c7ca63c13959)
 
 ## Description
 
