@@ -4,7 +4,7 @@ Status: READY TO SIGN
 
 ## Description
 
-Register `<replacement-address>` instead of `0xB5abCf8656E3F26990ECEEEc99D22023E7eb7E3b` for game type `621` on `DisputeGameFactory` (`0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1`).
+Register [`0x4234216f1648A8119c6E41e6C0C73956Ecc850Af`](https://sepolia.etherscan.io/address/0x4234216f1648A8119c6E41e6C0C73956Ecc850Af) ([deployment](https://sepolia.etherscan.io/tx/0x2da28cbea0d3ff91aaeec91b314542487b627a08bc61553bcafb9e2c84bac501)) instead of `0xB5abCf8656E3F26990ECEEEc99D22023E7eb7E3b` for game type `621` on `DisputeGameFactory` (`0xd6E6dBf4F7EA0ac412fD8b65ED297e64BB7a06E1`).
 Update `TEE_IMAGE_HASH`, `ZK_RANGE_HASH` and `ZK_AGGREGATE_HASH`; preserve every other constructor input.
 
 Hash provenance:
