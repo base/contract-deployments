@@ -66,7 +66,7 @@ VALIDATIONS_DIR ?= $(CURDIR)/validations
 define GEN_VALIDATION
 $(call require_vars,GEN_VALIDATION,RPC_URL LEDGER_ACCOUNT) \
 	cd $(SIGNER_TOOL_PATH) && \
-		$(MISE_EXEC) npx tsx scripts/genValidationFile.ts \
+		$(MISE_SIGNER_EXEC) npx tsx scripts/genValidationFile.ts \
 			--rpc-url $(RPC_URL) \
 			--workdir $(PROJECT_DIR) \
 			--forge-cmd '$(if $(5),$(5) )mise exec -- forge script --rpc-url $(RPC_URL) $(1) --sig "sign(address[])" "[$(2)]" --sender $(3)' \

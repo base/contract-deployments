@@ -71,6 +71,9 @@ check-task-status:
 # installer writes to (`$HOME/.local/bin/mise`).
 MISE := $(shell command -v mise 2>/dev/null || echo $(HOME)/.local/bin/mise)
 MISE_EXEC := $(MISE) exec --
+# The pinned signer checkout has its own .nvmrc; keep the root toolchain even
+# when users enable mise's idiomatic version files globally.
+MISE_SIGNER_EXEC := MISE_IDIOMATIC_VERSION_FILE_ENABLE_TOOLS= $(MISE_EXEC)
 
 .PHONY: bootstrap-mise
 bootstrap-mise:
@@ -152,13 +155,13 @@ checkout-signer-tool:
 # Checkout and install signer-tool dependencies (used as a prerequisite by gen-validation targets)
 .PHONY: deps-signer-tool
 deps-signer-tool: bootstrap-mise checkout-signer-tool
-	cd $(SIGNER_TOOL_PATH) && $(MISE_EXEC) npm ci
+	cd $(SIGNER_TOOL_PATH) && $(MISE_SIGNER_EXEC) npm ci
 
 .PHONY: sign-task
 sign-task: bootstrap-mise checkout-signer-tool
-	cd $(SIGNER_TOOL_PATH); \
-	$(MISE_EXEC) npm ci; \
-	$(MISE_EXEC) npm run dev
+	cd $(SIGNER_TOOL_PATH) && \
+	$(MISE_SIGNER_EXEC) npm ci && \
+	$(MISE_SIGNER_EXEC) npm run dev
 
 # Task origin signature variables (auto-derived, overridable).
 # Legacy task subdirectories sign their own folder by default. Active EVM tasks
@@ -171,7 +174,7 @@ SIGNATURE_DIR ?= $(CURDIR)/../signatures/$(TASK_NAME)
 sign-as-task-creator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
-		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
+		$(MISE_SIGNER_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder "$(TASK_ORIGIN_DIR)" \
 		--signature-path "$(SIGNATURE_DIR)"
 
@@ -179,7 +182,7 @@ sign-as-task-creator: deps-signer-tool
 sign-as-base-facilitator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
-		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
+		$(MISE_SIGNER_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder "$(TASK_ORIGIN_DIR)" \
 		--signature-path "$(SIGNATURE_DIR)" \
 		--facilitator base
@@ -188,7 +191,7 @@ sign-as-base-facilitator: deps-signer-tool
 sign-as-sc-facilitator: deps-signer-tool
 	mkdir -p "$(SIGNATURE_DIR)"
 	cd $(SIGNER_TOOL_PATH) && \
-		$(MISE_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
+		$(MISE_SIGNER_EXEC) npx tsx scripts/genTaskOriginSig.ts sign \
 		--task-folder "$(TASK_ORIGIN_DIR)" \
 		--signature-path "$(SIGNATURE_DIR)" \
 		--facilitator security-council

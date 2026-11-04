@@ -36,5 +36,8 @@ cd "$signer"
     src/lib/__tests__/deployments.test.ts \
     src/app/api/upgrade-config/__tests__/route.test.ts \
     src/app/api/install-deps/__tests__/route.test.ts
+# Exercise existing signature fixtures without generating or signing with keys.
+"$npm" test -- --runTestsByPath __tests__/task-origin-validate.test.ts \
+    --testNamePattern=buildAndValidateSignature
 cd "$root"
 STANDBY_SIGNER_HOME="$signer" python3 -B -m unittest scripts.tests.test_standby_validation -v
