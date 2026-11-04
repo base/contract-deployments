@@ -2,7 +2,7 @@
   "schema_version": 1,
   "task": "2026-10-07-denim-upgrade",
   "kind": "active",
-  "last_updated": "2026-10-27T21:02:20Z",
+  "last_updated": "2026-11-04T15:36:45Z",
   "networks": {
     "sepolia": {
       "step": "executed",
@@ -28,20 +28,20 @@
       "executed_tx": "0x9468085edf0a0d5e3dbeea7ab84f13400a496aafc6c21ca8420e4f136c106034"
     },
     "mainnet": {
-      "step": "review",
+      "step": "executed",
       "pr": "https://github.com/base/contract-deployments/pull/827",
       "blocksec_ticket": "https://jira.coinbase-corp.com/servicedesk/customer/portal/92/BLOCKSEC-5463",
       "signatures": {
         "base": {
-          "collected": 0,
+          "collected": 3,
           "required": 3
         },
         "security-council": {
-          "collected": 0,
+          "collected": 8,
           "required": 8
         }
       },
-      "executed_tx": null
+      "executed_tx": "0x037f60045f4304460e2b0d5d4f3d8b223200d220212e2399db1ce0f77a19b77b"
     }
   }
 }
