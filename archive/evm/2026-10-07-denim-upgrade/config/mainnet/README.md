@@ -1,6 +1,14 @@
 # Base mainnet Denim upgrade
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://etherscan.io/tx/0x037f60045f4304460e2b0d5d4f3d8b223200d220212e2399db1ce0f77a19b77b)
+
+## Transactions
+
+Executed on November 4, 2026 at 15:29:11 UTC (Ethereum block 26342351).
+
+- Coinbase multisig approval: [`0xe08364bc748f60fcf73d336500ea2fd769688a2324e4dfb1491235a2c7ab2689`](https://etherscan.io/tx/0xe08364bc748f60fcf73d336500ea2fd769688a2324e4dfb1491235a2c7ab2689) (artefact: [run-1793805903664.json](../../records/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol/1/run-1793805903664.json))
+- Security Council approval: [`0x863b51fc3f6c459f7c420f9280937c3efde9d097f32b68ecc6fb827e2d439748`](https://etherscan.io/tx/0x863b51fc3f6c459f7c420f9280937c3efde9d097f32b68ecc6fb827e2d439748) (artefact: [run-1793806032709.json](../../records/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol/1/run-1793806032709.json))
+- Execution via ProxyAdmin owner: [`0x037f60045f4304460e2b0d5d4f3d8b223200d220212e2399db1ce0f77a19b77b`](https://etherscan.io/tx/0x037f60045f4304460e2b0d5d4f3d8b223200d220212e2399db1ce0f77a19b77b) (artefact: [run-1793806154607.json](../../records/ExecuteDenimUpgradeWithAllL2Predeploys.s.sol/1/run-1793806154607.json))
 
 One ProxyAdmin-owner transaction replaces AggregateVerifier, registers Denim for
 2026-11-05 18:00:00 UTC with minimum node version v1.5.1, and sends thirteen L2
