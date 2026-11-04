@@ -1,0 +1,28 @@
+[profile.default]
+src = "script"
+test = "test"
+out = "out"
+libs = ["../../lib"]
+broadcast = "records"
+fs_permissions = [{ access = "read-write", path = "./" }]
+optimizer = true
+optimizer_runs = 999999
+bytecode_hash = "none"
+evm_version = "cancun"
+auto_detect_solc = true
+additional_compiler_profiles = [{ name = "factory", optimizer_runs = 5000 }]
+compilation_restrictions = [
+    { paths = "../../lib/contracts/src/universal/OptimismMintableERC20Factory.sol", optimizer_runs = 5000 },
+    { paths = "../../lib/contracts/src/L2/OptimismMintableERC721Factory.sol", optimizer_runs = 5000 },
+    { paths = "../../lib/contracts/src/L2/OptimismMintableERC721.sol", optimizer_runs = 5000 },
+]
+remappings = [
+    "forge-std/=../../lib/forge-std/src/",
+    "@base-contracts/=../../lib/contracts/",
+    "interfaces/=../../lib/contracts/interfaces/",
+    "src/=../../lib/contracts/src/",
+    "lib/=../../lib/",
+]
+
+[lint]
+lint_on_build = false
