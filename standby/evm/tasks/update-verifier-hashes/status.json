@@ -20,21 +20,21 @@
       "executed_tx": "0x5ced71df91e83fa59782f1b8adc1f6cb2d2b8fde80634fb97b07c7ca63c13959"
     },
     "sepolia": {
-      "step": "ready_to_sign",
+      "step": "executed",
       "pr": "https://github.com/base/contract-deployments/pull/828",
       "blocksec_ticket": null,
       "signatures": {
         "base-signer": {
-          "collected": 0,
+          "collected": 3,
           "required": 3
         },
         "security-council-signer": {
-          "collected": 0,
+          "collected": 1,
           "required": 1
         }
       },
-      "executed_tx": null
+      "executed_tx": "0xfdee9a1ff523ce2d6f9dd1ae3f1fc0e8b84e4de1bff634fb3dbbd2b28eecb007"
     }
   },
-  "last_updated": "2026-11-02T19:35:00Z"
+  "last_updated": "2026-11-04T04:35:00Z"
 }

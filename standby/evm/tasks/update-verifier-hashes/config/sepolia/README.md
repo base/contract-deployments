@@ -1,6 +1,6 @@
 # Rotate verifier hashes on sepolia
 
-Status: READY TO SIGN
+Status: [EXECUTED](https://sepolia.etherscan.io/tx/0xfdee9a1ff523ce2d6f9dd1ae3f1fc0e8b84e4de1bff634fb3dbbd2b28eecb007)
 
 ## Description
 
