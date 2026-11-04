@@ -110,23 +110,23 @@ get_checksum() {
 
   # For current version use static checksum otherwise
   # use checksum from releases
-  if [ "$version" = "v2025.3.2" ]; then
-    checksum_linux_x86_64="5d2e40270c32c906385c1b35c8dac0f995c4765b429aff5fe67e9efc9957aed5  ./mise-v2025.3.2-linux-x64.tar.gz"
-    checksum_linux_x86_64_musl="d8312658bd020b717a90bc2c3729625656c97b37c70edda645ce8bcbd68edf56  ./mise-v2025.3.2-linux-x64-musl.tar.gz"
-    checksum_linux_arm64="8dd66426b9f36f5c1bed161d3d79b2e12294c1c8a9801b1f654311e008787a5b  ./mise-v2025.3.2-linux-arm64.tar.gz"
-    checksum_linux_arm64_musl="7746d2ab653caa73128936dd2bc7704fe4f106fa58597d65f5020843767f3ceb  ./mise-v2025.3.2-linux-arm64-musl.tar.gz"
-    checksum_linux_armv7="a2a626b3e1d393e19fe600103e97659acec8de18f6868014928a2a3f68301307  ./mise-v2025.3.2-linux-armv7.tar.gz"
-    checksum_linux_armv7_musl="e3dc41cdf7ce857c322b8713fc619708ad7c8f1da8d5b00b7a6fb62f215819f6  ./mise-v2025.3.2-linux-armv7-musl.tar.gz"
-    checksum_macos_x86_64="c1f58a5772b80e2d7fe64f6c0dd832c38c5146deb763130f71f09984a5328acb  ./mise-v2025.3.2-macos-x64.tar.gz"
-    checksum_macos_arm64="d5f836d2e946201147be4ca3467c547ab847a14f93b26c6a4f736804fc2107ef  ./mise-v2025.3.2-macos-arm64.tar.gz"
-    checksum_linux_x86_64_zstd="ea4f403772ec034bc11f654f410aeaade40fcffc1cee78fd02340f8bae3e9db7  ./mise-v2025.3.2-linux-x64.tar.zst"
-    checksum_linux_x86_64_musl_zstd="c7c6f96421658eb7cb8f7fd8cb37e36fc91b025d0564899828376d07789a80b4  ./mise-v2025.3.2-linux-x64-musl.tar.zst"
-    checksum_linux_arm64_zstd="5696404d02481cd8bd9d9d8a721ec80141f3f74cb0f77f3eee0bbf3fc0f9b20b  ./mise-v2025.3.2-linux-arm64.tar.zst"
-    checksum_linux_arm64_musl_zstd="68695587360d52bd6889e11ff79ff1b18a533fc81c56dadf213db9364b1ca082  ./mise-v2025.3.2-linux-arm64-musl.tar.zst"
-    checksum_linux_armv7_zstd="6411d630c4515a49ab903865647a1da0fa3fe97c4a990ccd078364abcb6b2d7b  ./mise-v2025.3.2-linux-armv7.tar.zst"
-    checksum_linux_armv7_musl_zstd="fbcbd945b7700f9c54e7dea423010889df1a51ca3edf25b20a01766e706619d5  ./mise-v2025.3.2-linux-armv7-musl.tar.zst"
-    checksum_macos_x86_64_zstd="af0af814ad8aa8828bd4cef455f3edc4059984ea3490bec4827778ca9c73951b  ./mise-v2025.3.2-macos-x64.tar.zst"
-    checksum_macos_arm64_zstd="30763db42007598d8c6042d88bf6045bb3834e8d12a0844a5aa0005d609beb8b  ./mise-v2025.3.2-macos-arm64.tar.zst"
+  if [ "$version" = "2026.11.1" ]; then
+    checksum_linux_x86_64="9c3f740597f5e5815ecb50ec6fafa080e94472d0780220bcb214eb98bd902dca  ./mise-v2026.11.1-linux-x64.tar.gz"
+    checksum_linux_x86_64_musl="582ce75e1dbd32661d3655fb86d94abb110f5fd1df121a93c3f3d9d18a239e98  ./mise-v2026.11.1-linux-x64-musl.tar.gz"
+    checksum_linux_arm64="6b54d9223f8bce04f9168ef482d9ee27f219c1ea11f4903569660049e5dec5aa  ./mise-v2026.11.1-linux-arm64.tar.gz"
+    checksum_linux_arm64_musl="f7330bad3d808c3bc9f7516e6c0c6d8df9e62a571fad417fd96b454aea189fda  ./mise-v2026.11.1-linux-arm64-musl.tar.gz"
+    checksum_linux_armv7="da9c4c4749a2c0a5ec53fdf48a47caabfd7e1b99779c23a4b7708cc0c3bc9df8  ./mise-v2026.11.1-linux-armv7.tar.gz"
+    checksum_linux_armv7_musl="e8ddb8a7781d18526033b939c1f3838c93f03af7986262542b96b7cf2166a675  ./mise-v2026.11.1-linux-armv7-musl.tar.gz"
+    checksum_macos_x86_64="c22089a8cb02e8e3eca09b45aad2674bf537313692bf105e9b8e5ab24ce8552f  ./mise-v2026.11.1-macos-x64.tar.gz"
+    checksum_macos_arm64="e1eaf20469e586f65849256a0be6a58dd7a3e93ae8db68bc74dd7af5ca0fe7f6  ./mise-v2026.11.1-macos-arm64.tar.gz"
+    checksum_linux_x86_64_zstd="f03bdcce49d820f94711b6e25372a2c060e3b2ae305a0693460e555e8336d3e7  ./mise-v2026.11.1-linux-x64.tar.zst"
+    checksum_linux_x86_64_musl_zstd="61bffc00388ee0bf9a9a68dde1b3aeb6c138844274598cd3a977d47ff95c7f6e  ./mise-v2026.11.1-linux-x64-musl.tar.zst"
+    checksum_linux_arm64_zstd="4aa5bf6d93599254b47bdcdc9a1a18cf2c09ae9e2ad38c152525ed5f83325e5f  ./mise-v2026.11.1-linux-arm64.tar.zst"
+    checksum_linux_arm64_musl_zstd="25efc8055e074f497e47e1b6f2a16aaf73b266b1186f86ca01d698e6b6e49180  ./mise-v2026.11.1-linux-arm64-musl.tar.zst"
+    checksum_linux_armv7_zstd="de2fbb4132d7187917b7ace5f5e3b755ab3cb85e28a0d28cc08da32c4fb21359  ./mise-v2026.11.1-linux-armv7.tar.zst"
+    checksum_linux_armv7_musl_zstd="d12bae8d57e17e344e6ebd86f8b274a4deea8c0b57b398186d049b92e19ebb88  ./mise-v2026.11.1-linux-armv7-musl.tar.zst"
+    checksum_macos_x86_64_zstd="6e587464f81607545c7566eb089c75ba8ae71b8f2b6580ecc50f460f02d770c9  ./mise-v2026.11.1-macos-x64.tar.zst"
+    checksum_macos_arm64_zstd="411d7e9badbf75a51186807fe226b50fb4e0c9f39b0177159002c77782856604  ./mise-v2026.11.1-macos-arm64.tar.zst"
 
     # TODO: refactor this, it's a bit messy
     if [ "$(get_ext)" = "tar.zst" ]; then
@@ -237,13 +237,14 @@ download_file() {
 }
 
 install_mise() {
-  version="${MISE_VERSION:-v2025.3.2}"
+  version="${MISE_VERSION:-v2026.11.1}"
   version="${version#v}"
   os="$(get_os)"
   arch="$(get_arch)"
   ext="$(get_ext)"
   install_path="${MISE_INSTALL_PATH:-$HOME/.local/bin/mise}"
   install_dir="$(dirname "$install_path")"
+  [ ! -d "$install_path" ] || error "mise install path is a directory: $install_path"
   tarball_url="https://github.com/jdx/mise/releases/download/v${version}/mise-v${version}-${os}-${arch}.${ext}"
 
   cache_file=$(download_file "$tarball_url")
@@ -254,14 +255,13 @@ install_mise() {
 
   # extract tarball
   mkdir -p "$install_dir"
-  rm -rf "$install_path"
   cd "$(mktemp -d)"
   if [ "$(get_ext)" = "tar.zst" ] && ! tar_supports_zstd; then
     zstd -d -c "$cache_file" | tar -xf -
   else
     tar -xf "$cache_file"
   fi
-  mv mise/bin/mise "$install_path"
+  mv -f mise/bin/mise "$install_path"
   info "mise: installed successfully to $install_path"
 }
 

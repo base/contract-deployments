@@ -35,7 +35,7 @@ Foundry, Node.js, Bun, and Go are pinned in [`mise.toml`](mise.toml) so contribu
 
 `make sign-task`, `make deps`, and execution targets bootstrap the mise-managed toolchain automatically:
 
-1. Installs [`mise`](https://mise.jdx.dev) to `~/.local/bin/mise` if it's not already present, using the vendored installer at [`scripts/install-mise.sh`](scripts/install-mise.sh).
+1. Installs [`mise`](https://mise.jdx.dev) 2026.11.1 to `~/.local/bin/mise` if it's not already present, using the vendored installer at [`scripts/install-mise.sh`](scripts/install-mise.sh). If you already have an older `mise`, update it using your installation method.
 2. Trusts the repo's `mise.toml` and runs `mise install` to fetch the pinned `foundry`, `node`, `bun`, and `go` versions.
 3. Invokes every toolchain command through `mise exec --`, so the pinned versions are used without modifying your shell environment or `PATH`. This deliberately avoids conflicts with any existing `foundryup` or system-level installs.
 
