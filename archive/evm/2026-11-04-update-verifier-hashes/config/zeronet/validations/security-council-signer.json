@@ -1,0 +1,86 @@
+{
+  "cmd": "FOUNDRY_SOLC_VERSION=0.8.15 FOUNDRY_OPTIMIZER=true FOUNDRY_OPTIMIZER_RUNS=999999 FOUNDRY_BYTECODE_HASH=none FOUNDRY_EVM_VERSION=cancun FOUNDRY_VIA_IR=false BASE_CONTRACTS_COMMIT=8c21f6d08a36b4059ae2bb8938f1e7e758a0e962 DISPUTE_GAME_FACTORY_PROXY=0xd930e0cebd52d7c77b8f900de242e818506c5474 GAME_TYPE=621 CURRENT_AGGREGATE_VERIFIER=0x4780D45fcf885a4D1F4c3aFDfAc9Eb9740820635 AGGREGATE_VERIFIER_TEE_IMAGE_HASH=0x73181275ec86503b629510176b5bedec00309060b3f4ff5d8e55d9e83dad5cbd AGGREGATE_VERIFIER_ZK_RANGE_HASH=0x3d3713d31a8936563bc56791040067131bb3fa3c0ab8b5e65e9c4cc0755b5fdb AGGREGATE_VERIFIER_ZK_AGGREGATE_HASH=0x00d5a43068d7a9d1eac440a790b776c749ae6516c43f1a572226190cef6fd45a PROXY_ADMIN_OWNER=0x3d59999977e0896ee1f8783bb8251df16fb483e9 NEW_AGGREGATE_VERIFIER=0x50521128e3eB8708F05129D7B7283737D55a1936 mise exec -- forge script --rpc-url https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net ../../standby/evm/tasks/update-verifier-hashes/script/UpdateVerifierHashes.s.sol:UpdateVerifierHashes --sig sign(address[]) [0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA] --sender 0x2c1475476B586d66a85bC65A5aB396BBbAa4f3aD",
+  "ledgerId": 1,
+  "rpcUrl": "https://c3-chainproxy-eth-hoodi-full-dev.cbhq.net",
+  "expectedDomainAndMessageHashes": {
+    "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+    "domainHash": "0x1e2faea9157fbff31d9297595a71e2dedfeb1184207c07bb6bd64f807332a525",
+    "messageHash": "0x86cfa654d897c11e5ab9d5c2792b2cad36beeb0613f536499f30c998eabcf26f"
+  },
+  "stateOverrides": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "overrides": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000004",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Override the threshold to 1 so the transaction simulation can occur.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "overrides": [
+        {
+          "key": "0xfaf50497979f3665da94a275d59251dcf42439cce78a5e3ac2c495bce17a01d1",
+          "value": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Simulates an approval from msg.sender in order for the task simulation to succeed.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "stateChanges": [
+    {
+      "name": "Proxy Admin Owner - Zeronet",
+      "address": "0x3d59999977e0896ee1f8783bB8251DF16fb483E9",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001c",
+          "after": "0x000000000000000000000000000000000000000000000000000000000000001d",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        },
+        {
+          "key": "0x0f02f7b782fb12ff2418d1c0cbfaa9a6fee5282556f15d17a52146efc71231ed",
+          "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "description": "Records the nested Safe approval of the verifier hash update transaction hash from the Security Council Safe.",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "Security Council Safe - Zeronet",
+      "address": "0xC4c0aD998B5DfA4CF4B298970F21b9015a5eE7bA",
+      "changes": [
+        {
+          "key": "0x0000000000000000000000000000000000000000000000000000000000000005",
+          "before": "0x000000000000000000000000000000000000000000000000000000000000001f",
+          "after": "0x0000000000000000000000000000000000000000000000000000000000000020",
+          "description": "Increments the nonce",
+          "allowDifference": false
+        }
+      ]
+    },
+    {
+      "name": "DisputeGameFactory - Zeronet",
+      "address": "0xD930e0cebD52D7C77b8F900dE242E818506C5474",
+      "changes": [
+        {
+          "key": "0x32912047a4c082de3e601c4b381c2aa6252270818a4be33442b17fb41b6cf7d6",
+          "before": "0x0000000000000000000000004780d45fcf885a4d1f4c3afdfac9eb9740820635",
+          "after": "0x00000000000000000000000050521128e3eb8708f05129d7b7283737d55a1936",
+          "description": "Updates gameImpls[621] from 0x4780D45fcf885a4D1F4c3aFDfAc9Eb9740820635 to 0x50521128e3eB8708F05129D7B7283737D55a1936, the same AggregateVerifier 0.3.0 with the base/base v1.5.2 TEE image hash and SP1 range and aggregation vkeys. Existing games are unchanged.",
+          "allowDifference": false
+        }
+      ]
+    }
+  ],
+  "balanceChanges": [],
+  "skipTaskOriginValidation": true
+}
