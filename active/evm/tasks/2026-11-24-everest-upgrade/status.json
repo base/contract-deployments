@@ -5,11 +5,11 @@
   "networks": {
     "zeronet": {
       "step": "authoring",
-      "pr": null,
+      "pr": "https://github.com/base/contract-deployments/pull/831",
       "blocksec_ticket": null,
       "signatures": {},
       "executed_tx": null
     }
   },
-  "last_updated": "2026-11-24T09:03:10Z"
+  "last_updated": "2026-11-24T09:10:17Z"
 }
